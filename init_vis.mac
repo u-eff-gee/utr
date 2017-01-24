@@ -1,0 +1,3 @@
+/run/initialize
+
+/control/execute vis.mac
