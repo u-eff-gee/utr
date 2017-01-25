@@ -6,6 +6,7 @@
 
 #include "G4ProcessManager.hh"
 #include "G4PhysicsListHelper.hh"
+#include "G4LossTableManager.hh"
 
 //Particles
 #include "G4BosonConstructor.hh"
@@ -63,11 +64,11 @@ void Physics::ConstructParticle(){
 }
 
 void Physics::ConstructProcess(){
-  	AddTransportation();
-  	ConstructEMPenelope();
+  	//AddTransportation();
+  	//ConstructEMPenelope();
 	//ConstructEMLivermore();
-  	ConstructHPNeutron();
-	ConstructChargedParticle();
+  	//ConstructHPNeutron();
+	//ConstructChargedParticle();
 }
 
 //Penelope Models
@@ -86,7 +87,8 @@ void Physics::ConstructProcess(){
 void Physics::ConstructEMPenelope(){
   	G4PhysicsListHelper* ph = G4PhysicsListHelper::GetPhysicsListHelper();
   	G4ProcessManager* procMan = G4Gamma::Gamma()->GetProcessManager();
-  
+
+     	auto theParticleIterator = GetParticleIterator();	
   	theParticleIterator->reset();
   	while( (*theParticleIterator)() ){
   		G4ParticleDefinition* particle = theParticleIterator->value();
@@ -168,6 +170,7 @@ void Physics::ConstructEMLivermore(){
   	G4PhysicsListHelper* ph = G4PhysicsListHelper::GetPhysicsListHelper();
   	G4ProcessManager* procMan = G4Gamma::Gamma()->GetProcessManager();
   
+     	auto theParticleIterator = GetParticleIterator();	
   	theParticleIterator->reset();
   	while( (*theParticleIterator)() ){
   		G4ParticleDefinition* particle = theParticleIterator->value();
@@ -255,6 +258,7 @@ void Physics::ConstructHPNeutron(){
 
   	G4PhysicsListHelper* ph = G4PhysicsListHelper::GetPhysicsListHelper();
   
+     	auto theParticleIterator = GetParticleIterator();	
   	theParticleIterator->reset();
   	while( (*theParticleIterator)() ){
     		G4ParticleDefinition* particle = theParticleIterator->value();
@@ -286,6 +290,7 @@ void Physics::ConstructHPNeutron(){
 void Physics::ConstructChargedParticle(){
   	G4PhysicsListHelper* ph = G4PhysicsListHelper::GetPhysicsListHelper();
   
+     	auto theParticleIterator = GetParticleIterator();	
   	theParticleIterator->reset();
   	while( (*theParticleIterator)() ){
     		G4ParticleDefinition* particle = theParticleIterator->value();

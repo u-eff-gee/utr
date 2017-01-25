@@ -1,13 +1,13 @@
-#ifndef PRIMARYGENERATORACTION_HH
-#define PRIMARYGENERATORACTION_HH
+#ifndef GENERALPARTICLESOURCE_HH
+#define GENERALPARTICLESOURCE_HH
 
 #include "G4VUserPrimaryGeneratorAction.hh"
 #include "G4GeneralParticleSource.hh"
 
-class PrimaryGeneratorAction: public G4VUserPrimaryGeneratorAction{
+class GeneralParticleSource: public G4VUserPrimaryGeneratorAction{
 public:
-	PrimaryGeneratorAction();
-	~PrimaryGeneratorAction();
+	GeneralParticleSource();
+	~GeneralParticleSource();
 
    	void GeneratePrimaries(G4Event* anEvent);
 

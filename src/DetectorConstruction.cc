@@ -1443,6 +1443,8 @@ new G4PVPlacement(0, G4ThreeVector(0., 0., BeamTube_Length_Downstream + TargetTu
 	HPGe2_55_rt -= fc->FilterCaseBottom_Thickness - fc->FilterCase_Length*0.5;
 	fc->Put(HPGe2_55_rt*sin(HPGe2_55_theta)*cos(HPGe2_55_phi), HPGe2_55_rt*sin(HPGe2_55_theta)*sin(HPGe2_55_phi) + HPGe2_55_dy, Target2_To_Target + HPGe2_55_rt*cos(HPGe2_55_theta) + HPGe2_55_dz, HPGe2_55_AngleX, HPGe2_55_AngleY, 0.);	
 
+	//G4Sphere* sphere = new G4Sphere();
+
 	return world_phys;
 }
 
@@ -1456,17 +1458,24 @@ void DetectorConstruction::ConstructSDandField()
 	HPGe2SD->SetDetectorID(2);
 	SetSensitiveDetector("HPGe2", HPGe2SD, true);
 
-	EnergyDepositionSD* HPGe3SD = new EnergyDepositionSD("HPGe3","HPGe3");
-	HPGe3SD->SetDetectorID(3);
-	SetSensitiveDetector("HPGe3", HPGe3SD, true);
+	EnergyDepositionSD* Polarimeter_TUDSD = new EnergyDepositionSD("Polarimeter_TUD","Polarimeter_TUD");
+	Polarimeter_TUDSD->SetDetectorID(5);
+	SetSensitiveDetector("Polarimeter_TUD", Polarimeter_TUDSD, true);
 
 	EnergyDepositionSD* HPGe4SD = new EnergyDepositionSD("HPGe4","HPGe4");
 	HPGe4SD->SetDetectorID(4);
 	SetSensitiveDetector("HPGe4", HPGe4SD, true);
 
-	EnergyDepositionSD* Polarimeter_TUDSD = new EnergyDepositionSD("Polarimeter_TUD","Polarimeter_TUD");
-	Polarimeter_TUDSD->SetDetectorID(5);
-	SetSensitiveDetector("Polarimeter_TUD", Polarimeter_TUDSD, true);
+	EnergyDepositionSD* HPGe2_55SD = new EnergyDepositionSD("HPGe2_55","HPGe2_55");
+	HPGe2_55SD->SetDetectorID(4);
+	SetSensitiveDetector("HPGe2_55", HPGe2_55SD, true);
 
+	EnergyDepositionSD* HPGe1_55SD = new EnergyDepositionSD("HPGe1_55","HPGe1_55");
+	HPGe1_55SD->SetDetectorID(4);
+	SetSensitiveDetector("HPGe1_55", HPGe1_55SD, true);
+
+	EnergyDepositionSD* Germanium2_TUDSD = new EnergyDepositionSD("Germanium2_TUD","Germanium2_TUD");
+	Germanium2_TUDSD->SetDetectorID(4);
+	SetSensitiveDetector("Germanium2_TUD", Germanium2_TUDSD, true);
 }
 
