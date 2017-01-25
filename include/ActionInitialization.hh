@@ -4,14 +4,13 @@
 #include "G4VUserActionInitialization.hh"
 
 // Custom class definition
-class ActionInitialization : public G4VUserActionInitialization
-{
+class ActionInitialization : public G4VUserActionInitialization {
   public:
-    ActionInitialization();
-    virtual ~ActionInitialization();
+	ActionInitialization();
+	virtual ~ActionInitialization();
 
-    virtual void BuildForMaster() const;
-    virtual void Build() const;
+	virtual void BuildForMaster() const;
+	virtual void Build() const;
 };
 
 #endif

@@ -3,19 +3,17 @@
 
 #include "G4VUserPhysicsList.hh"
 
-class Physics: public G4VUserPhysicsList
-{
-public:
+class Physics : public G4VUserPhysicsList {
+  public:
 	Physics();
-   	~Physics();
-        
+	~Physics();
 
-protected:
-      	void ConstructParticle();
-      	void ConstructProcess();
-      	void ConstructEMPenelope();
+  protected:
+	void ConstructParticle();
+	void ConstructProcess();
+	void ConstructEMPenelope();
 	void ConstructEMLivermore();
-      	void ConstructHPNeutron();
+	void ConstructHPNeutron();
 	void ConstructChargedParticle();
 };
 

@@ -7,23 +7,21 @@
 
 #include "G4LogicalVolume.hh"
 
-class ZeroDegree
-{
-public:
-  	ZeroDegree();
-  	~ZeroDegree();
-  
-  	G4LogicalVolume* Get_Logical() { return ZeroDegree_Logical; }
+class ZeroDegree {
+  public:
+	ZeroDegree();
+	~ZeroDegree();
 
-	G4double Get_Length(){ return Length; };
-	G4double Get_Radius(){ return Radius; };
-  
+	G4LogicalVolume *Get_Logical() { return ZeroDegree_Logical; }
 
-private:
-  	G4double Length;
-  	G4double Radius;
+	G4double Get_Length() { return Length; };
+	G4double Get_Radius() { return Radius; };
 
-  	G4LogicalVolume* ZeroDegree_Logical;
+  private:
+	G4double Length;
+	G4double Radius;
+
+	G4LogicalVolume *ZeroDegree_Logical;
 };
 
 #endif

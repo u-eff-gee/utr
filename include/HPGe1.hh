@@ -7,22 +7,21 @@
 
 #include "G4LogicalVolume.hh"
 
-class HPGe1
-{
-public:
-  	HPGe1(G4String Detector_Name);
-  	~HPGe1();
-  
-  	G4LogicalVolume* Get_Logical() { return HPGe1_Logical; }
+class HPGe1 {
+  public:
+	HPGe1(G4String Detector_Name);
+	~HPGe1();
 
-	G4double Get_Length(){ return Length; };
-	G4double Get_Radius(){ return Radius; };
-  
-private:
-  	G4double Length;
-  	G4double Radius;
-  
-  	G4LogicalVolume* HPGe1_Logical;
+	G4LogicalVolume *Get_Logical() { return HPGe1_Logical; }
+
+	G4double Get_Length() { return Length; };
+	G4double Get_Radius() { return Radius; };
+
+  private:
+	G4double Length;
+	G4double Radius;
+
+	G4LogicalVolume *HPGe1_Logical;
 };
 
 #endif

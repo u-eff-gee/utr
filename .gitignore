@@ -11,3 +11,11 @@ CTestTestfile.cmake
 
 # Compiled binaries
 higs
+
+# Root files
+*.root
+
+# ViM temporary files
+*~
+*.swp
+*.swo
