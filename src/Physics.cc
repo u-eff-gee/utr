@@ -64,11 +64,11 @@ void Physics::ConstructParticle(){
 }
 
 void Physics::ConstructProcess(){
-  	//AddTransportation();
-  	//ConstructEMPenelope();
+  	AddTransportation();
+  	ConstructEMPenelope();
 	//ConstructEMLivermore();
-  	//ConstructHPNeutron();
-	//ConstructChargedParticle();
+  	ConstructHPNeutron();
+	ConstructChargedParticle();
 }
 
 //Penelope Models
@@ -87,11 +87,11 @@ void Physics::ConstructProcess(){
 void Physics::ConstructEMPenelope(){
   	G4PhysicsListHelper* ph = G4PhysicsListHelper::GetPhysicsListHelper();
   	G4ProcessManager* procMan = G4Gamma::Gamma()->GetProcessManager();
-
-     	auto theParticleIterator = GetParticleIterator();	
-  	theParticleIterator->reset();
-  	while( (*theParticleIterator)() ){
-  		G4ParticleDefinition* particle = theParticleIterator->value();
+ 
+    auto particleIterator = G4ParticleTable::GetParticleTable()->GetIterator();
+  	particleIterator->reset();
+  	while( (*particleIterator)() ){
+  		G4ParticleDefinition* particle = particleIterator->value();
     		G4String particleName = particle->GetParticleName();
     		
 		if(particleName == "gamma") {
@@ -170,10 +170,10 @@ void Physics::ConstructEMLivermore(){
   	G4PhysicsListHelper* ph = G4PhysicsListHelper::GetPhysicsListHelper();
   	G4ProcessManager* procMan = G4Gamma::Gamma()->GetProcessManager();
   
-     	auto theParticleIterator = GetParticleIterator();	
-  	theParticleIterator->reset();
-  	while( (*theParticleIterator)() ){
-  		G4ParticleDefinition* particle = theParticleIterator->value();
+    auto particleIterator = G4ParticleTable::GetParticleTable()->GetIterator();
+  	particleIterator->reset();
+  	while( (*particleIterator)() ){
+  		G4ParticleDefinition* particle = particleIterator->value();
     		G4String particleName = particle->GetParticleName();
     		
 		if(particleName == "gamma") {
@@ -258,10 +258,10 @@ void Physics::ConstructHPNeutron(){
 
   	G4PhysicsListHelper* ph = G4PhysicsListHelper::GetPhysicsListHelper();
   
-     	auto theParticleIterator = GetParticleIterator();	
-  	theParticleIterator->reset();
-  	while( (*theParticleIterator)() ){
-    		G4ParticleDefinition* particle = theParticleIterator->value();
+    auto particleIterator = G4ParticleTable::GetParticleTable()->GetIterator();
+  	particleIterator->reset();
+  	while( (*particleIterator)() ){
+    		G4ParticleDefinition* particle = particleIterator->value();
     		G4String particleName = particle->GetParticleName();
     		
 		if(particleName == "neutron") {
@@ -290,10 +290,10 @@ void Physics::ConstructHPNeutron(){
 void Physics::ConstructChargedParticle(){
   	G4PhysicsListHelper* ph = G4PhysicsListHelper::GetPhysicsListHelper();
   
-     	auto theParticleIterator = GetParticleIterator();	
-  	theParticleIterator->reset();
-  	while( (*theParticleIterator)() ){
-    		G4ParticleDefinition* particle = theParticleIterator->value();
+    auto particleIterator = G4ParticleTable::GetParticleTable()->GetIterator();
+  	particleIterator->reset();
+  	while( (*particleIterator)() ){
+    		G4ParticleDefinition* particle = particleIterator->value();
     		G4String particleName = particle->GetParticleName();
     		
 		if(!particle->IsShortLived() && particle->GetPDGCharge() != 0.0 && particle->GetParticleName() != "chargedgeantino" && particle->GetParticleName() != "e-" && particle->GetParticleName() != "e+") {
