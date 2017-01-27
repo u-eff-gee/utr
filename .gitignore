@@ -10,7 +10,7 @@ compile_commands.json
 CTestTestfile.cmake
 
 # Compiled binaries
-higs
+utr
 
 # Root files
 *.root

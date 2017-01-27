@@ -3,11 +3,9 @@
 
 #include "G4Allocator.hh"
 #include "G4THitsCollection.hh"
+#include "G4Threading.hh"
 #include "G4ThreeVector.hh"
 #include "G4VHit.hh"
-#include "tls.hh"
-
-/// Target hit class
 
 class TargetHit : public G4VHit {
   public:
@@ -15,18 +13,15 @@ class TargetHit : public G4VHit {
 	TargetHit(const TargetHit &);
 	virtual ~TargetHit();
 
-	// operators
 	const TargetHit &operator=(const TargetHit &);
 	G4int operator==(const TargetHit &) const;
 
 	inline void *operator new(size_t);
 	inline void operator delete(void *);
 
-	// methods from base class
 	virtual void Draw();
 	virtual void Print();
 
-	// Set methods
 	void SetKineticEnergy(G4double ek) { ekin = ek; };
 	void SetEnergyDeposition(G4double ed) { edep = ed; };
 	void SetParticleType(G4int t) { type = t; };
@@ -34,7 +29,6 @@ class TargetHit : public G4VHit {
 	void SetPosition(G4ThreeVector p) { pos = p; };
 	void SetMomentum(G4ThreeVector momentum) { mom = momentum; };
 
-	// Get methods
 	G4double GetKineticEnergy() { return ekin; };
 	G4double GetEnergyDeposition() { return edep; };
 	G4int GetParticleType() { return type; };
@@ -51,7 +45,7 @@ class TargetHit : public G4VHit {
 	G4ThreeVector mom;
 };
 
-typedef G4THitsCollection<TargetHit> TargetHitsCollection;
+using TargetHitsCollection = G4THitsCollection<TargetHit>;
 
 extern G4ThreadLocal G4Allocator<TargetHit> *TargetHitAllocator;
 

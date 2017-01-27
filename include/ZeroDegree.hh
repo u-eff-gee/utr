@@ -9,7 +9,7 @@
 
 class ZeroDegree {
   public:
-	ZeroDegree();
+	ZeroDegree(G4String Detector_Name);
 	~ZeroDegree();
 
 	G4LogicalVolume *Get_Logical() { return ZeroDegree_Logical; }

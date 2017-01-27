@@ -1,6 +1,3 @@
-/// \file HPGe2.cc
-/// \brief Implementation of HPGe2 class
-
 //**************************************************************//
 //	60%  HPGe detector 2 @ HIGS Serial No. 36-TN30986A
 //**************************************************************//
@@ -10,13 +7,10 @@
 #include "G4Material.hh"
 #include "G4MaterialTable.hh"
 #include "G4PVPlacement.hh"
+#include "G4Polycone.hh"
 #include "G4RotationMatrix.hh"
-#include "G4Sphere.hh"
-#include "G4SubtractionSolid.hh"
 #include "G4ThreeVector.hh"
-#include "G4Torus.hh"
 #include "G4Tubs.hh"
-#include "G4UnionSolid.hh"
 #include "G4VisAttributes.hh"
 
 #include "G4NistManager.hh"
@@ -24,6 +18,8 @@
 
 #include "G4PhysicalConstants.hh"
 #include "G4SystemOfUnits.hh"
+
+#include "OptimizePolycone.hh"
 
 HPGe2::HPGe2(G4String Detector_Name) {
 
@@ -39,14 +35,13 @@ HPGe2::HPGe2(G4String Detector_Name) {
 	G4Colour orange(1.0, 0.5, 0.0);
 	G4Colour light_orange(1.0, 0.82, 0.36);
 
-	G4NistManager *man = G4NistManager::Instance();
+	G4NistManager *nist = G4NistManager::Instance();
 
-	G4Material *Cu = man->FindOrBuildMaterial("G4_Cu");
-	G4Material *Al = man->FindOrBuildMaterial("G4_Al");
-	G4Material *Ge = man->FindOrBuildMaterial("G4_Ge");
-	G4Material *vacuum = man->FindOrBuildMaterial("G4_Galactic");
-	//  G4Material* air = man->FindOrBuildMaterial("G4_AIR");
-	G4Material *Be = man->FindOrBuildMaterial("G4_Be");
+	G4Material *Cu = nist->FindOrBuildMaterial("G4_Cu");
+	G4Material *Al = nist->FindOrBuildMaterial("G4_Al");
+	G4Material *Ge = nist->FindOrBuildMaterial("G4_Ge");
+	G4Material *vacuum = nist->FindOrBuildMaterial("G4_Galactic");
+	G4Material *Be = nist->FindOrBuildMaterial("G4_Be");
 
 	// Detector dimensions and materials as given in the ORTEC data sheet.
 
@@ -69,11 +64,11 @@ HPGe2::HPGe2(G4String Detector_Name) {
 	G4double EndCap_Wall = 1. * mm;            // (I)
 
 	G4double ColdFinger_Radius =
-	    4. * mm / 2; // Brent Fallin's suggestion, not in the ORTEC data sheet.
+	    4. * mm / 2; // Suggestion by B. Fallin, not in the ORTEC data sheet.
 	G4double ColdFinger_Length =
 	    MountCup_Base +
 	    (MountCup_Length - MountCup_Wall - MountCup_Base - Detector_Length) +
-	    Hole_Depth - 5. * mm; // 5mm less than tip of the hole.
+	    Hole_Depth - 5. * mm;
 
 	G4Material *Mother_Material = vacuum;
 	G4Material *MountCup_Material = Al;
@@ -82,7 +77,7 @@ HPGe2::HPGe2(G4String Detector_Name) {
 	G4Material *ColdFinger_Material = Cu;
 	G4Material *Crystal_Material = Ge;
 
-	// Mother Volume (tub of air)
+	// Mother Volume
 
 	G4double Mother_Radius =
 	    Detector_Radius + MountCup_Wall + End_Cap_To_Crystal_Gap + EndCap_Wall;
@@ -123,7 +118,6 @@ HPGe2::HPGe2(G4String Detector_Name) {
 	// End Cap Window
 
 	G4double EndCap_Window_Radius = EndCap_outerRadius;
-	//  G4double EndCap_Window_Length = 0.5*mm;
 
 	G4Tubs *EndCap_Window_Solid =
 	    new G4Tubs("EndCap_Window_Solid", 0., EndCap_Window_Radius,
@@ -196,68 +190,108 @@ HPGe2::HPGe2(G4String Detector_Name) {
 	                  MountCup_Face_Logical, "MountCup_Face", HPGe2_Logical,
 	                  false, 0);
 
-	// Cold finger
+	// Cold Finger
 
-	G4Tubs *ColdFinger_Tub =
-	    new G4Tubs("ColdFinger_Tub", 0., ColdFinger_Radius,
-	               ColdFinger_Length / 2, 0. * deg, 360. * deg);
-	G4Sphere *ColdFinger_Tip =
-	    new G4Sphere("ColdFinger_Tip", 0., ColdFinger_Radius, 0. * deg,
-	                 360. * deg, 0. * deg, 180. * deg);
+	const G4int nsteps = 100;
 
-	G4UnionSolid *ColdFinger_Solid =
-	    new G4UnionSolid("ColdFinger_Solid", ColdFinger_Tub, ColdFinger_Tip, 0,
-	                     G4ThreeVector(0., 0., ColdFinger_Length / 2));
+	G4double zPlaneTemp[nsteps];
+	G4double rInnerTemp[nsteps];
+	G4double rOuterTemp[nsteps];
+
+	G4double z;
+
+	for (int i = 0; i < nsteps; i++) {
+		z = (double)i / (nsteps - 1) * ColdFinger_Length;
+
+		zPlaneTemp[i] = z;
+
+		rInnerTemp[i] = 0. * mm;
+
+		if (z <= ColdFinger_Length - ColdFinger_Radius) {
+			rOuterTemp[i] = ColdFinger_Radius;
+		} else if (z <= ColdFinger_Length) {
+			rOuterTemp[i] =
+			    ColdFinger_Radius *
+			    sqrt(1 - pow((z - (ColdFinger_Length - ColdFinger_Radius)) /
+			                     ColdFinger_Radius,
+			                 2));
+		} else {
+			rOuterTemp[i] = 0. * mm;
+		}
+	}
+
+	G4double zPlane[nsteps];
+	G4double rInner[nsteps];
+	G4double rOuter[nsteps];
+
+	OptimizePolycone *opt = new OptimizePolycone();
+	G4int nsteps_optimized =
+	    opt->Optimize(zPlaneTemp, rInnerTemp, rOuterTemp, zPlane, rInner,
+	                  rOuter, nsteps, "ColdFinger_Solid");
+
+	G4Polycone *ColdFinger_Solid =
+	    new G4Polycone("ColdFinger_Solid", 0. * deg, 360. * deg,
+	                   nsteps_optimized, zPlane, rInner, rOuter);
 
 	G4LogicalVolume *ColdFinger_Logical = new G4LogicalVolume(
 	    ColdFinger_Solid, ColdFinger_Material, "ColdFinger_Logical", 0, 0, 0);
 
 	ColdFinger_Logical->SetVisAttributes(new G4VisAttributes(orange));
 
-	new G4PVPlacement(
-	    0, G4ThreeVector(0., 0., -Length / 2 + ColdFinger_Length / 2),
-	    ColdFinger_Logical, "ColdFinger", HPGe2_Logical, false, 0);
+	new G4PVPlacement(0, G4ThreeVector(0., 0., -Length * 0.5),
+	                  ColdFinger_Logical, "ColdFinger", HPGe2_Logical, false,
+	                  0);
 
 	// Germanium Detector Crystal
 
-	G4Tubs *Crystal_Body = new G4Tubs(
-	    "Crystal_Body", 0., Detector_Radius,
-	    (Detector_Length - Detector_End_Radius) / 2, 0. * deg, 360. * deg);
-	G4Tubs *Crystal_Face =
-	    new G4Tubs("Crystal_Face", 0., Detector_Radius - Detector_End_Radius,
-	               Detector_End_Radius, 0. * deg, 360. * deg);
-	G4Torus *Crystal_Edge = new G4Torus("Crystal_Edge", 0., Detector_End_Radius,
-	                                    Detector_Radius - Detector_End_Radius,
-	                                    0. * deg, 360. * deg);
+	for (int i = 0; i < nsteps; i++) {
+		z = (double)i / (nsteps - 1) * Detector_Length;
 
-	G4UnionSolid *Crystal_Tub1 = new G4UnionSolid(
-	    "Crystal_Tub1", Crystal_Body, Crystal_Edge, 0,
-	    G4ThreeVector(0., 0., (Detector_Length - Detector_End_Radius) / 2));
-	G4UnionSolid *Crystal_Tub = new G4UnionSolid(
-	    "Crystal_Tub", Crystal_Tub1, Crystal_Face, 0,
-	    G4ThreeVector(0., 0., (Detector_Length - Detector_End_Radius) / 2));
+		zPlaneTemp[i] = z;
 
-	G4Tubs *Hole_Tub = new G4Tubs("Hole_Tub", 0., Hole_Radius, Hole_Depth / 2,
-	                              0. * deg, 360. * deg);
-	G4Sphere *Hole_Tip = new G4Sphere("Hole_Tip", 0., Hole_Radius, 0.,
-	                                  360. * deg, 0., 90. * deg);
+		if (z <= Hole_Depth) {
+			if (z <= Hole_Depth - Hole_Bottom_Radius) {
+				rInnerTemp[i] = Hole_Radius;
+			} else {
+				rInnerTemp[i] =
+				    Hole_Radius *
+				    sqrt(1 - pow((z - (Hole_Depth - Hole_Bottom_Radius)) /
+				                     Hole_Bottom_Radius,
+				                 2));
+			}
+		} else {
+			rInnerTemp[i] = 0. * mm;
+		}
 
-	G4UnionSolid *Crystal_Hole =
-	    new G4UnionSolid("Crystal_Hole", Hole_Tub, Hole_Tip, 0,
-	                     G4ThreeVector(0., 0., Hole_Depth / 2));
+		if (z <= Detector_Length - Detector_End_Radius) {
+			rOuterTemp[i] = Detector_Radius;
+		} else if (z <= Detector_Length) {
+			rOuterTemp[i] =
+			    Detector_End_Radius *
+			        sqrt(1 - pow((z - (Detector_Length - Detector_End_Radius)) /
+			                         Detector_End_Radius,
+			                     2)) +
+			    (Detector_Radius - Detector_End_Radius);
+		} else {
+			rOuterTemp[i] = 0. * mm;
+		}
+	}
 
-	G4SubtractionSolid *crystal_Solid = new G4SubtractionSolid(
-	    "crystal_Solid", Crystal_Tub, Crystal_Hole, 0,
-	    G4ThreeVector(0., 0., -(Detector_Length - Hole_Depth) / 2));
+	nsteps_optimized = opt->Optimize(zPlaneTemp, rInnerTemp, rOuterTemp, zPlane,
+	                                 rInner, rOuter, nsteps, "Crystal_Solid");
+
+	G4Polycone *Crystal_Solid =
+	    new G4Polycone("Crystal_Solid", 0. * deg, 360. * deg, nsteps_optimized,
+	                   zPlane, rInner, rOuter);
+
 	G4LogicalVolume *Crystal_Logical = new G4LogicalVolume(
-	    crystal_Solid, Crystal_Material, Detector_Name, 0, 0, 0);
+	    Crystal_Solid, Crystal_Material, Detector_Name, 0, 0, 0);
 
 	Crystal_Logical->SetVisAttributes(new G4VisAttributes(green));
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., Length / 2 - EndCap_Window -
+	new G4PVPlacement(0, G4ThreeVector(0., 0., Length * 0.5 - EndCap_Window -
 	                                               End_Cap_To_Crystal_Gap -
 	                                               MountCup_Wall -
-	                                               Detector_Length / 2 -
-	                                               Detector_End_Radius / 2),
+	                                               Detector_Length),
 	                  Crystal_Logical, "Crystal", HPGe2_Logical, false, 0);
 }

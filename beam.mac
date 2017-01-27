@@ -10,13 +10,5 @@
 /gps/ene/type Mono
 /gps/ene/mono 2. MeV
 
-#/vis/open HepRepFile
-#/vis/drawVolume
-#/vis/viewer/flush
-#/vis/scene/add/trajectories
-#/vis/scene/add/hits
-#/vis/modeling/trajectories/create/drawByParticleID
-#/vis/scene/endOfEventAction accumulate
-
-/run/printProgress 1
-/run/beamOn 4
+/run/printProgress 1000
+/run/beamOn 100000

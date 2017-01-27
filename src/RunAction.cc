@@ -21,7 +21,7 @@ RunAction::RunAction() : G4UserRunAction() {
 	// in Analysis.hh
 	G4AnalysisManager *analysisManager = G4AnalysisManager::Instance();
 
-	analysisManager->CreateNtuple("higs", "Particle information");
+	analysisManager->CreateNtuple("utr", "Particle information");
 	analysisManager->CreateNtupleDColumn("ekin");
 	analysisManager->CreateNtupleDColumn("edep");
 	analysisManager->CreateNtupleDColumn("type");
@@ -53,7 +53,7 @@ void RunAction::BeginOfRunAction(const G4Run *) {
 
 	G4FileUtilities *fu = new G4FileUtilities();
 	std::stringstream ss;
-	G4String fileNamePrefix = "higs";
+	G4String fileNamePrefix = "utr";
 
 	G4int threadId = G4Threading::G4GetThreadId();
 

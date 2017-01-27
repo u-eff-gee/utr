@@ -17,12 +17,9 @@ EnergyDepositionSD::EnergyDepositionSD(const G4String &name,
 EnergyDepositionSD::~EnergyDepositionSD() {}
 
 void EnergyDepositionSD::Initialize(G4HCofThisEvent *hce) {
-	// Create hits collection
 
 	hitsCollection =
 	    new TargetHitsCollection(SensitiveDetectorName, collectionName[0]);
-
-	// Add this collection in hce
 
 	G4int hcID =
 	    G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]);
@@ -30,6 +27,7 @@ void EnergyDepositionSD::Initialize(G4HCofThisEvent *hce) {
 }
 
 G4bool EnergyDepositionSD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
+
 	TargetHit *hit = new TargetHit();
 
 	G4Track *track = aStep->GetTrack();
@@ -47,21 +45,14 @@ G4bool EnergyDepositionSD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
 }
 
 void EnergyDepositionSD::EndOfEvent(G4HCofThisEvent *) {
+
 	G4int nHits = hitsCollection->entries();
 	G4double totalEnergyDeposition = 0.;
 
 	if (nHits > 0) {
-		//			G4cout << "Listing hits in volume " << GetDetectorID() <<
-		// G4endl;
 		for (G4int i = 0; i < nHits; i++) {
-			//			G4cout << (i+1) << ": \t" <<
-			//(*hitsCollection)[i]->GetKineticEnergy() << G4endl;
-			//			G4cout << (*hitsCollection)[i]->GetEnergyDeposition() <<
-			// G4endl;
 			totalEnergyDeposition +=
 			    (*hitsCollection)[i]->GetEnergyDeposition();
-			//			G4cout << (*hitsCollection)[i]->GetPosition() << G4endl;
-			//			G4cout << (*hitsCollection)[i]->GetMomentum() << G4endl;
 		}
 	}
 
@@ -88,8 +79,5 @@ void EnergyDepositionSD::EndOfEvent(G4HCofThisEvent *) {
 		    9, (*hitsCollection)[0]->GetMomentum().z());
 
 		analysisManager->AddNtupleRow();
-
-		G4cout << "Total energy deposition: " << totalEnergyDeposition << " MeV"
-		       << G4endl;
 	}
 }

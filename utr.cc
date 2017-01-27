@@ -4,11 +4,9 @@
 #include "G4VisExecutive.hh"
 #include "G4VisManager.hh"
 
+#include "ActionInitialization.hh"
 #include "DetectorConstruction.hh"
 #include "Physics.hh"
-//#include "AngularDistributionGenerator.hh"
-//#include "GeneralParticleSource.hh"
-#include "ActionInitialization.hh"
 #include "RunAction.hh"
 
 #include "G4UIExecutive.hh"
@@ -21,9 +19,7 @@ using namespace std;
 
 const char *argp_program_version = "0.1.0";
 const char *argp_program_bug_address = "<ugayer@ikp.tu-darmstadt.de>";
-static char doc[] = "GEANT4 simulation of Bremsstrahlung generation at the "
-                    "DHIPS site at the S-DALINAC.\vExecution without specified "
-                    "macro file will start UI mode.";
+static char doc[] = "GEANT4 simulation of the UTR at HIGS";
 static char args_doc[] = "MACROFILE";
 static struct argp_option options[] = {
     {"macrofile", 'm', "MACRO", 0, "Macro file"},
@@ -58,8 +54,8 @@ int main(int argc, char *argv[]) {
 	argp_parse(&argp, argc, argv, 0, 0, &arguments);
 
 	G4Random::setTheEngine(new CLHEP::RanecuEngine);
-	// 	time_t timer;
 	// 'Real' random results
+	// 	time_t timer;
 	//  	G4Random::setTheSeed(time(&timer));
 	// Deterministic results
 	G4Random::setTheSeed(1);
