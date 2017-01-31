@@ -4,6 +4,8 @@
 #include "G4PhysicalConstants.hh"
 #include "G4SystemOfUnits.hh"
 
+#define PI 3.141592
+
 Materials::Materials() { ConstructMaterials(); }
 
 Materials::~Materials() {}
@@ -59,6 +61,101 @@ void Materials::ConstructMaterials() {
 	target_TiO2->AddElement(enriched_Ti, natoms = 1);
 	target_TiO2->AddElement(nat_O, natoms = 2);
 
+	/*************************************************/
+	// Enriched Kr gas from 2016/2017 NRF experiments
+	/*************************************************/
+
+	G4Isotope *Kr78 = new G4Isotope(name = "78Kr", z = 36, n = 42,
+	                                a = 77.920364783 * g / mole);
+	G4Isotope *Kr80 = new G4Isotope(name = "80Kr", z = 36, n = 44,
+	                                a = 79.916378965 * g / mole);
+	G4Isotope *Kr82 =
+	    new G4Isotope(name = "82Kr", z = 36, n = 46, a = 81.9134836 * g / mole);
+	G4Isotope *Kr83 = new G4Isotope(name = "83Kr", z = 36, n = 47,
+	                                a = 82.914136099 * g / mole);
+	G4Isotope *Kr84 = new G4Isotope(name = "84Kr", z = 36, n = 48,
+	                                a = 83.811506687 * g / mole);
+	G4Isotope *Kr86 = new G4Isotope(name = "86Kr", z = 36, n = 50,
+	                                a = 85.910610729 * g / mole);
+
+	G4Element *enriched_Kr =
+	    new G4Element(name = "enriched Kr", symbol = "Kr", ncomponents = 6);
+
+	enriched_Kr->AddIsotope(Kr78, abundance = 0.003 * perCent);
+	enriched_Kr->AddIsotope(Kr80, abundance = 0.005 * perCent);
+	enriched_Kr->AddIsotope(Kr82, abundance = 99.945 * perCent);
+	enriched_Kr->AddIsotope(Kr83, abundance = 0.041 * perCent);
+	enriched_Kr->AddIsotope(Kr84, abundance = 0.003 * perCent);
+	enriched_Kr->AddIsotope(Kr86, abundance = 0.003 * perCent);
+
+	G4double Kr_Mass = 1.50218 * g;
+	G4double GasSphere_Inner_Radius = 9. * mm; // Estimated
+
+	G4double Kr_Density =
+	    Kr_Mass / (4. / 3. * PI * pow(GasSphere_Inner_Radius, 3));
+
+	target_Kr = new G4Material(name = "target_Kr", Kr_Density, ncomponents = 1);
+	target_Kr->AddElement(enriched_Kr, natoms = 1);
+
+	/*************************************************/
+	// Enriched Se target from 2016 NRF experiment
+	/*************************************************/
+
+	G4Isotope *Se74 = new G4Isotope(name = "74Se", z = 34, n = 40,
+	                                a = 73.922476436 * g / mole);
+	G4Isotope *Se76 = new G4Isotope(name = "76Se", z = 34, n = 42,
+	                                a = 75.919213597 * g / mole);
+	G4Isotope *Se77 = new G4Isotope(name = "77Se", z = 34, n = 43,
+	                                a = 76.919914038 * g / mole);
+	G4Isotope *Se78 = new G4Isotope(name = "78Se", z = 34, n = 44,
+	                                a = 77.91730909 * g / mole);
+	G4Isotope *Se80 = new G4Isotope(name = "80Se", z = 34, n = 46,
+	                                a = 79.916521271 * g / mole);
+	G4Isotope *Se82 = new G4Isotope(name = "82Se", z = 34, n = 48,
+	                                a = 81.916699401 * g / mole);
+
+	G4Element *enriched_Se =
+	    new G4Element(name = "enriched Se", symbol = "Se", ncomponents = 6);
+
+	enriched_Se->AddIsotope(Se74, abundance = 0.01 * perCent);
+	enriched_Se->AddIsotope(Se76, abundance = 0.01 * perCent);
+	enriched_Se->AddIsotope(Se77, abundance = 0.01 * perCent);
+	enriched_Se->AddIsotope(Se78, abundance = 0.02 * perCent);
+	enriched_Se->AddIsotope(Se80, abundance = 0.02 * perCent);
+	enriched_Se->AddIsotope(Se82, abundance = 99.93 * perCent);
+
+	G4double Se_Mass = 1.99845 * g;
+	G4double TargetContainer_Inner_Radius = 10. * mm;
+	G4double TargetContainer_Inner_Length = 4. * mm; // Estimated
+
+	G4double Se_Density = Se_Mass / (2. * PI * TargetContainer_Inner_Length *
+	                                 TargetContainer_Inner_Radius);
+
+	target_Se = new G4Material(name = "target_Se", Se_Density, ncomponents = 1);
+	target_Se->AddElement(enriched_Se, natoms = 1);
+
+	/************************************************************/
+	// Enriched Sn target from 2016 NRF experiment (preliminary)
+	/************************************************************/
+
+	G4Isotope *Sn120 = new G4Isotope(name = "120Sn", z = 50, n = 70,
+	                                 a = 119.902201634 * g / mole);
+
+	G4Element *enriched_Sn =
+	    new G4Element(name = "enriched Sn", symbol = "Sn", ncomponents = 1);
+
+	enriched_Sn->AddIsotope(Sn120, abundance = 100. * perCent);
+
+	G4double Sn_Mass = 5. * g;     // Estimated;
+	G4double Sn_Length = 3. * mm;  // Estimated;
+	G4double Sn_Radius = 10. * mm; // Estimated;
+
+	G4double Sn_Density = Sn_Mass / (2. * PI * Sn_Length * Sn_Radius);
+
+	target_Sn = new G4Material(name = "target_Sn", Sn_Density, ncomponents = 1);
+
+	target_Sn->AddElement(enriched_Sn, natoms = 1);
+
 	/***********************************/
 	//       Lanthanum bromide
 	/***********************************/
@@ -83,5 +180,4 @@ void Materials::ConstructMaterials() {
 	LaCl3Ce->AddElement(nat_La, fractionmass = 53.804 * perCent);
 	LaCl3Ce->AddElement(nat_Cl, fractionmass = 41.196 * perCent);
 	LaCl3Ce->AddElement(nat_Ce, fractionmass = 5.0 * perCent);
-	//
 }
