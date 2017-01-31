@@ -92,34 +92,28 @@ void Physics::ConstructEMPenelope() {
 		G4String particleName = particle->GetParticleName();
 
 		if (particleName == "gamma") {
-			G4EmProcessOptions opt;
 
 			G4ComptonScattering *cs = new G4ComptonScattering;
 			cs->SetEmModel(new G4PenelopeComptonModel(), 1);
 			ph->RegisterProcess(cs, particle);
-			opt.SetProcessBiasingFactor("compt", 1.);
 
 			G4GammaConversion *gc = new G4GammaConversion;
 			gc->SetEmModel(new G4PenelopeGammaConversionModel);
 			ph->RegisterProcess(gc, particle);
-			opt.SetProcessBiasingFactor("conv", 1.);
 
 			G4PhotoElectricEffect *pe = new G4PhotoElectricEffect;
 			pe->SetEmModel(new G4PenelopePhotoElectricModel);
 			ph->RegisterProcess(pe, particle);
-			opt.SetProcessBiasingFactor("phot", 1.);
 
 			G4RayleighScattering *rs = new G4RayleighScattering;
 			rs->SetEmModel(new G4PenelopeRayleighModel);
 			ph->RegisterProcess(rs, particle);
-			opt.SetProcessBiasingFactor("Rayl", 1.);
 
 			G4PhotoNuclearProcess *thePhotoNuclearProcess =
 			    new G4PhotoNuclearProcess();
 			G4CascadeInterface *theLEModel = new G4CascadeInterface;
 			thePhotoNuclearProcess->RegisterMe(theLEModel);
 			procMan->AddDiscreteProcess(thePhotoNuclearProcess);
-			opt.SetProcessBiasingFactor("PhotonInelastic", 1.);
 		}
 
 		else if (particleName == "e-") {
@@ -174,34 +168,28 @@ void Physics::ConstructEMLivermore() {
 		G4String particleName = particle->GetParticleName();
 
 		if (particleName == "gamma") {
-			G4EmProcessOptions opt;
 
 			G4ComptonScattering *cs = new G4ComptonScattering;
 			cs->SetEmModel(new G4LivermoreComptonModel(), 1);
 			ph->RegisterProcess(cs, particle);
-			opt.SetProcessBiasingFactor("compt", 1.);
 
 			G4GammaConversion *gc = new G4GammaConversion;
 			gc->SetEmModel(new G4LivermoreGammaConversionModel);
 			ph->RegisterProcess(gc, particle);
-			opt.SetProcessBiasingFactor("conv", 1.);
 
 			G4PhotoElectricEffect *pe = new G4PhotoElectricEffect;
 			pe->SetEmModel(new G4LivermorePhotoElectricModel);
 			ph->RegisterProcess(pe, particle);
-			opt.SetProcessBiasingFactor("phot", 1.);
 
 			G4RayleighScattering *rs = new G4RayleighScattering;
 			rs->SetEmModel(new G4LivermoreRayleighModel);
 			ph->RegisterProcess(rs, particle);
-			opt.SetProcessBiasingFactor("Rayl", 1.);
 
 			G4PhotoNuclearProcess *thePhotoNuclearProcess =
 			    new G4PhotoNuclearProcess();
 			G4CascadeInterface *theLEModel = new G4CascadeInterface;
 			thePhotoNuclearProcess->RegisterMe(theLEModel);
 			procMan->AddDiscreteProcess(thePhotoNuclearProcess);
-			opt.SetProcessBiasingFactor("PhotonInelastic", 1.);
 		}
 
 		else if (particleName == "e-") {

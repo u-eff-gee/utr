@@ -5,9 +5,19 @@
 
 class Materials {
 
-  public:
+  private:
 	Materials();
 	~Materials();
+
+	static Materials *instance;
+
+  public:
+	static Materials *Instance() {
+		if (instance == NULL) {
+			instance = new Materials();
+		}
+		return instance;
+	}
 
 	void ConstructMaterials();
 

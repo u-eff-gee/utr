@@ -5,6 +5,7 @@
 #include "G4Material.hh"
 #include "G4NistManager.hh"
 #include "Materials.hh"
+Materials *Materials::instance = NULL;
 
 // Geometry
 #include "G4Box.hh"
@@ -55,7 +56,8 @@ DetectorConstruction::DetectorConstruction() {
 	// Initialize material data. Once initialized, the G4Materials defined in
 	// Materials.cc can be accessed via
 	// their respective Get* methods.
-	new Materials();
+	// new Materials();
+	Materials *mat = Materials::Instance();
 }
 
 DetectorConstruction::~DetectorConstruction() {}
