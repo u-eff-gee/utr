@@ -1,9 +1,9 @@
 #ifndef ANGULARDISTRIBUTIONGENERATOR_HH
 #define ANGULARDISTRIBUTIONGENERATOR_HH
 
+#include "G4Navigator.hh"
 #include "G4ParticleGun.hh"
 #include "G4ThreeVector.hh"
-#include "G4Navigator.hh"
 #include "G4VUserPrimaryGeneratorAction.hh"
 
 class AngularDistributionGenerator : public G4VUserPrimaryGeneratorAction {
@@ -12,7 +12,9 @@ class AngularDistributionGenerator : public G4VUserPrimaryGeneratorAction {
 	~AngularDistributionGenerator();
 
 	void GeneratePrimaries(G4Event *anEvent);
-	G4ThreeVector AngularDistributionRandomDirection(G4double *states, G4int nstates, G4double* mixing_ratios);
+	G4ThreeVector AngularDistributionRandomDirection(G4double *states,
+	                                                 G4int nstates,
+	                                                 G4double *mixing_ratios);
 
   private:
 	G4ParticleGun *particleGun;
@@ -34,7 +36,9 @@ class AngularDistributionGenerator : public G4VUserPrimaryGeneratorAction {
 	G4double random_y;
 	G4double random_z;
 
-	G4Navigator* navi;
+	G4Navigator *navi;
+
+	G4bool checked;
 };
 
 #endif

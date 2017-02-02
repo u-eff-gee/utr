@@ -55,8 +55,7 @@ Materials *Materials::instance = NULL;
 
 #define PI 3.141592
 
-DetectorConstruction::DetectorConstruction() {
-}
+DetectorConstruction::DetectorConstruction() {}
 
 DetectorConstruction::~DetectorConstruction() {}
 
@@ -1143,31 +1142,44 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	/**************** g3 Target/Source ******************/
 
-	Se82_Target* se82_Target = new Se82_Target();
+	Se82_Target *se82_Target = new Se82_Target();
 
-	G4LogicalVolume* Se82_Target_Logical = se82_Target->Get_Logical();
+	G4LogicalVolume *Se82_Target_Logical = se82_Target->Get_Logical();
 
-	G4RotationMatrix* rotateG3Target = new G4RotationMatrix();
-	rotateG3Target->rotateY(180.*deg);
+	G4RotationMatrix *rotateG3Target = new G4RotationMatrix();
+	rotateG3Target->rotateY(180. * deg);
 
-	new G4PVPlacement(rotateG3Target, G4ThreeVector(0., 0., -BeamTube_Length_Downstream + BeamTube_Length*0.5 + se82_Target->Get_Target_Center()), Se82_Target_Logical, "Se82_Target_Physical", BeamTubeVacuum_Logical, false, 0);
+	new G4PVPlacement(
+	    rotateG3Target,
+	    G4ThreeVector(0., 0., -BeamTube_Length_Downstream +
+	                              BeamTube_Length * 0.5 +
+	                              se82_Target->Get_Target_Center()),
+	    Se82_Target_Logical, "Se82_Target_Physical", BeamTubeVacuum_Logical,
+	    false, 0);
 
-	// Box around the target/source. Inside this box, random coordinates for the AngularDistributionGenerator are sampled in order to find random points inside the target/source. The box should wrap the target/source volume as tightly as possible. Remove the box when doing an actual simulation.
+	// Box around the target/source. Inside this box, random coordinates for the
+	// AngularDistributionGenerator are sampled in order to find random points
+	// inside the target/source. The box should wrap the target/source volume as
+	// tightly as possible. Remove the box when doing an actual simulation.
 
-	G4double AuxBox_LengthX = 20.*mm;
-	G4double AuxBox_LengthY = 20.*mm;
-	G4double AuxBox_LengthZ = 4.*mm;
-	
-	G4double AuxBox_X = 0.*mm;
-	G4double AuxBox_Y = 0.*mm;
-	G4double AuxBox_Z = 0.*mm;
+	G4double AuxBox_LengthX = 20. * mm;
+	G4double AuxBox_LengthY = 20. * mm;
+	G4double AuxBox_LengthZ = 4. * mm;
 
-	G4Box* AuxiliaryBox_Solid = new G4Box("AuxiliaryBox_Solid", AuxBox_LengthX*0.5, AuxBox_LengthY*0.5, AuxBox_LengthZ*0.5);
-	G4LogicalVolume* AuxiliaryBox_Logical = new G4LogicalVolume(AuxiliaryBox_Solid, vacuum, "AuxiliaryBox_Logical");
+	G4double AuxBox_X = 0. * mm;
+	G4double AuxBox_Y = 0. * mm;
+	G4double AuxBox_Z = 0. * mm;
+
+	G4Box *AuxiliaryBox_Solid =
+	    new G4Box("AuxiliaryBox_Solid", AuxBox_LengthX * 0.5,
+	              AuxBox_LengthY * 0.5, AuxBox_LengthZ * 0.5);
+	G4LogicalVolume *AuxiliaryBox_Logical =
+	    new G4LogicalVolume(AuxiliaryBox_Solid, vacuum, "AuxiliaryBox_Logical");
 
 	AuxiliaryBox_Logical->SetVisAttributes(new G4VisAttributes(white));
 
-	//new G4PVPlacement(0, G4ThreeVector(AuxBox_X, AuxBox_Y, AuxBox_Z), AuxiliaryBox_Logical, "AuxiliaryBox", world_log, false, 0);
+	// new G4PVPlacement(0, G4ThreeVector(AuxBox_X, AuxBox_Y, AuxBox_Z),
+	// AuxiliaryBox_Logical, "AuxiliaryBox", world_log, false, 0);
 
 	/************************** Detectors ***************************/
 	//
