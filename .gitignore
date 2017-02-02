@@ -19,3 +19,6 @@ utr
 *~
 *.swp
 *.swo
+
+# GEANT4 macros for debugging
+run.mac
