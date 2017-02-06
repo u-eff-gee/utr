@@ -2357,71 +2357,137 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 void DetectorConstruction::ConstructSDandField() {
 
+	//	// HPGe detectors in g3
+	//	EnergyDepositionSD *HPGe1SD = new EnergyDepositionSD("HPGe1", "HPGe1");
+	//	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe1SD);
+	//	HPGe1SD->SetDetectorID(1);
+	//	SetSensitiveDetector("HPGe1", HPGe1SD, true);
+	//
+	//	EnergyDepositionSD *HPGe2SD = new EnergyDepositionSD("HPGe2", "HPGe2");
+	//	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe2SD);
+	//	HPGe2SD->SetDetectorID(2);
+	//	SetSensitiveDetector("HPGe2", HPGe2SD, true);
+	//
+	//	EnergyDepositionSD *Polarimeter_TUDSD =
+	//	    new EnergyDepositionSD("Polarimeter_TUD", "Polarimeter_TUD");
+	//	G4SDManager::GetSDMpointer()->AddNewDetector(Polarimeter_TUDSD);
+	//	Polarimeter_TUDSD->SetDetectorID(3);
+	//	SetSensitiveDetector("Polarimeter_TUD", Polarimeter_TUDSD, true);
+	//
+	//	EnergyDepositionSD *HPGe4SD = new EnergyDepositionSD("HPGe4", "HPGe4");
+	//	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe4SD);
+	//	HPGe4SD->SetDetectorID(4);
+	//	SetSensitiveDetector("HPGe4", HPGe4SD, true);
+	//
+	//	// LaBr detectors in g3
+	//	EnergyDepositionSD *LaBr1SD = new EnergyDepositionSD("LaBr1", "LaBr1");
+	//	G4SDManager::GetSDMpointer()->AddNewDetector(LaBr1SD);
+	//	LaBr1SD->SetDetectorID(11);
+	//	SetSensitiveDetector("LaBr1", LaBr1SD, true);
+	//
+	//	EnergyDepositionSD *LaBr2SD = new EnergyDepositionSD("LaBr2", "LaBr2");
+	//	G4SDManager::GetSDMpointer()->AddNewDetector(LaBr2SD);
+	//	LaBr2SD->SetDetectorID(22);
+	//	SetSensitiveDetector("LaBr2", LaBr2SD, true);
+	//
+	//	EnergyDepositionSD *LaBr3SD = new EnergyDepositionSD("LaBr3", "LaBr3");
+	//	G4SDManager::GetSDMpointer()->AddNewDetector(LaBr3SD);
+	//	LaBr3SD->SetDetectorID(33);
+	//	SetSensitiveDetector("LaBr3", LaBr3SD, true);
+	//
+	//	EnergyDepositionSD *LaBr4SD = new EnergyDepositionSD("LaBr4", "LaBr4");
+	//	G4SDManager::GetSDMpointer()->AddNewDetector(LaBr4SD);
+	//	LaBr4SD->SetDetectorID(44);
+	//	SetSensitiveDetector("LaBr4", LaBr4SD, true);
+	//
+	//	// HPGe detectors in second setup
+	//	EnergyDepositionSD *HPGe1_55SD =
+	//	    new EnergyDepositionSD("HPGe1_55", "HPGe1_55");
+	//	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe1_55SD);
+	//	HPGe1_55SD->SetDetectorID(7);
+	//	SetSensitiveDetector("HPGe1_55", HPGe1_55SD, true);
+	//
+	//	EnergyDepositionSD *HPGe2_55SD =
+	//	    new EnergyDepositionSD("HPGe2_55", "HPGe2_55");
+	//	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe2_55SD);
+	//	HPGe2_55SD->SetDetectorID(8);
+	//	SetSensitiveDetector("HPGe2_55", HPGe2_55SD, true);
+	//
+	//	EnergyDepositionSD *Germanium2_TUDSD =
+	//	    new EnergyDepositionSD("Germanium2_TUD", "Germanium2_TUD");
+	//	G4SDManager::GetSDMpointer()->AddNewDetector(Germanium2_TUDSD);
+	//	Germanium2_TUDSD->SetDetectorID(9);
+	//	SetSensitiveDetector("Germanium2_TUD", Germanium2_TUDSD, true);
+	//
+	//	// ZeroDegree detector
+	//	EnergyDepositionSD *ZeroDegreeSD =
+	//	    new EnergyDepositionSD("ZeroDegree", "ZeroDegree");
+	//	G4SDManager::GetSDMpointer()->AddNewDetector(ZeroDegreeSD);
+	//	ZeroDegreeSD->SetDetectorID(5);
+	//	SetSensitiveDetector("ZeroDegree", ZeroDegreeSD, true);
+
 	// HPGe detectors in g3
-	EnergyDepositionSD *HPGe1SD = new EnergyDepositionSD("HPGe1", "HPGe1");
+	ParticleSD *HPGe1SD = new ParticleSD("HPGe1", "HPGe1");
 	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe1SD);
 	HPGe1SD->SetDetectorID(1);
 	SetSensitiveDetector("HPGe1", HPGe1SD, true);
 
-	EnergyDepositionSD *HPGe2SD = new EnergyDepositionSD("HPGe2", "HPGe2");
+	ParticleSD *HPGe2SD = new ParticleSD("HPGe2", "HPGe2");
 	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe2SD);
 	HPGe2SD->SetDetectorID(2);
 	SetSensitiveDetector("HPGe2", HPGe2SD, true);
 
-	EnergyDepositionSD *Polarimeter_TUDSD =
-	    new EnergyDepositionSD("Polarimeter_TUD", "Polarimeter_TUD");
+	ParticleSD *Polarimeter_TUDSD =
+	    new ParticleSD("Polarimeter_TUD", "Polarimeter_TUD");
 	G4SDManager::GetSDMpointer()->AddNewDetector(Polarimeter_TUDSD);
 	Polarimeter_TUDSD->SetDetectorID(3);
 	SetSensitiveDetector("Polarimeter_TUD", Polarimeter_TUDSD, true);
 
-	EnergyDepositionSD *HPGe4SD = new EnergyDepositionSD("HPGe4", "HPGe4");
+	ParticleSD *HPGe4SD = new ParticleSD("HPGe4", "HPGe4");
 	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe4SD);
 	HPGe4SD->SetDetectorID(4);
 	SetSensitiveDetector("HPGe4", HPGe4SD, true);
 
 	// LaBr detectors in g3
-	EnergyDepositionSD *LaBr1SD = new EnergyDepositionSD("LaBr1", "LaBr1");
+	ParticleSD *LaBr1SD = new ParticleSD("LaBr1", "LaBr1");
 	G4SDManager::GetSDMpointer()->AddNewDetector(LaBr1SD);
 	LaBr1SD->SetDetectorID(11);
 	SetSensitiveDetector("LaBr1", LaBr1SD, true);
 
-	EnergyDepositionSD *LaBr2SD = new EnergyDepositionSD("LaBr2", "LaBr2");
+	ParticleSD *LaBr2SD = new ParticleSD("LaBr2", "LaBr2");
 	G4SDManager::GetSDMpointer()->AddNewDetector(LaBr2SD);
 	LaBr2SD->SetDetectorID(22);
 	SetSensitiveDetector("LaBr2", LaBr2SD, true);
 
-	EnergyDepositionSD *LaBr3SD = new EnergyDepositionSD("LaBr3", "LaBr3");
+	ParticleSD *LaBr3SD = new ParticleSD("LaBr3", "LaBr3");
 	G4SDManager::GetSDMpointer()->AddNewDetector(LaBr3SD);
 	LaBr3SD->SetDetectorID(33);
 	SetSensitiveDetector("LaBr3", LaBr3SD, true);
 
-	EnergyDepositionSD *LaBr4SD = new EnergyDepositionSD("LaBr4", "LaBr4");
+	ParticleSD *LaBr4SD = new ParticleSD("LaBr4", "LaBr4");
 	G4SDManager::GetSDMpointer()->AddNewDetector(LaBr4SD);
 	LaBr4SD->SetDetectorID(44);
 	SetSensitiveDetector("LaBr4", LaBr4SD, true);
 
 	// HPGe detectors in second setup
-	EnergyDepositionSD *HPGe1_55SD =
-	    new EnergyDepositionSD("HPGe1_55", "HPGe1_55");
+	ParticleSD *HPGe1_55SD = new ParticleSD("HPGe1_55", "HPGe1_55");
 	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe1_55SD);
 	HPGe1_55SD->SetDetectorID(7);
 	SetSensitiveDetector("HPGe1_55", HPGe1_55SD, true);
 
-	EnergyDepositionSD *HPGe2_55SD =
-	    new EnergyDepositionSD("HPGe2_55", "HPGe2_55");
+	ParticleSD *HPGe2_55SD = new ParticleSD("HPGe2_55", "HPGe2_55");
 	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe2_55SD);
 	HPGe2_55SD->SetDetectorID(8);
 	SetSensitiveDetector("HPGe2_55", HPGe2_55SD, true);
 
-	EnergyDepositionSD *Germanium2_TUDSD =
-	    new EnergyDepositionSD("Germanium2_TUD", "Germanium2_TUD");
+	ParticleSD *Germanium2_TUDSD =
+	    new ParticleSD("Germanium2_TUD", "Germanium2_TUD");
 	G4SDManager::GetSDMpointer()->AddNewDetector(Germanium2_TUDSD);
 	Germanium2_TUDSD->SetDetectorID(9);
 	SetSensitiveDetector("Germanium2_TUD", Germanium2_TUDSD, true);
 
 	// ZeroDegree detector
-	EnergyDepositionSD *ZeroDegreeSD =
-	    new EnergyDepositionSD("ZeroDegree", "ZeroDegree");
+	ParticleSD *ZeroDegreeSD = new ParticleSD("ZeroDegree", "ZeroDegree");
 	G4SDManager::GetSDMpointer()->AddNewDetector(ZeroDegreeSD);
 	ZeroDegreeSD->SetDetectorID(5);
 	SetSensitiveDetector("ZeroDegree", ZeroDegreeSD, true);

@@ -1,42 +1,32 @@
 #include "ParticleSD.hh"
 #include "Analysis.hh"
+#include "G4Event.hh"
 #include "G4HCofThisEvent.hh"
+#include "G4RunManager.hh"
 #include "G4SDManager.hh"
 #include "G4Step.hh"
 #include "G4ThreeVector.hh"
-#include "G4VProcess.hh"
-#include "G4ios.hh"
 
-ParticleSD::ParticleSD(const G4String &name,
-                       const G4String &hitsCollectionName)
-    : G4VSensitiveDetector(name) //,   fHitsCollection(NULL)
-{
+ParticleSD::ParticleSD(const G4String &name, const G4String &hitsCollectionName)
+    : G4VSensitiveDetector(name) {
 	collectionName.insert(hitsCollectionName);
 }
 
 ParticleSD::~ParticleSD() {}
 
-void ParticleSD::Initialize(G4HCofThisEvent *) {
-	// Create hits collection
-
-	// fHitsCollection
-	//  = new TargetHitsCollection(SensitiveDetectorName, collectionName[0]);
-
-	// Add this collection in hce
-
-	// G4int hcID
-	//  = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]);
-	// hce->AddHitsCollection( hcID, fHitsCollection );
-}
+void ParticleSD::Initialize(G4HCofThisEvent *) {}
 
 G4bool ParticleSD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
 	G4Track *track = aStep->GetTrack();
 	unsigned int trackID = track->GetTrackID();
 
-	if (trackID != getCurrentTrackID()) {
-		// G4cout << "--> First step in volume, Ekin = " <<
-		// aStep->GetPreStepPoint()->GetKineticEnergy() << " keV" << G4endl;
+	const G4Event *event = G4RunManager::GetRunManager()->GetCurrentEvent();
+	unsigned int eventID = event->GetEventID();
+
+	if (trackID != getCurrentTrackID() || eventID != getCurrentEventID()) {
+
 		setCurrentTrackID(trackID);
+		setCurrentEventID(eventID);
 
 		if (track->GetKineticEnergy() == 0.)
 			return false;
