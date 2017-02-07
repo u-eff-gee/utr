@@ -25,7 +25,7 @@ AngularDistributionGenerator::AngularDistributionGenerator()
 
 	// Set particle type and energy
 
-	particleName = "geantino";
+	particleName = "gamma";
 	particleEnergy = 3. * MeV;
 
 	G4ParticleTable *particleTable = G4ParticleTable::GetParticleTable();

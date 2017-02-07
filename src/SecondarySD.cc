@@ -1,6 +1,8 @@
 #include "SecondarySD.hh"
 #include "Analysis.hh"
+#include "G4Event.hh"
 #include "G4HCofThisEvent.hh"
+#include "G4RunManager.hh"
 #include "G4SDManager.hh"
 #include "G4Step.hh"
 #include "G4SystemOfUnits.hh"
@@ -20,9 +22,16 @@ void SecondarySD::Initialize(G4HCofThisEvent *) {}
 
 G4bool SecondarySD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
 	G4Track *track = aStep->GetTrack();
+	unsigned int trackID = track->GetTrackID();
 
-	if (track->GetParentID() > 0 &&
-	    track->GetTrackID() != getCurrentTrackID()) {
+	const G4Event *event = G4RunManager::GetRunManager()->GetCurrentEvent();
+	unsigned int eventID = event->GetEventID();
+
+	if ((trackID != getCurrentTrackID() && trackID > 1) ||
+	    (eventID != getCurrentEventID() && trackID > 1)) {
+
+		setCurrentTrackID(trackID);
+		setCurrentEventID(eventID);
 
 		if (track->GetKineticEnergy() == 0.)
 			return false;
@@ -33,10 +42,6 @@ G4bool SecondarySD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
 		analysisManager->FillNtupleDColumn(1, aStep->GetTotalEnergyDeposit());
 		analysisManager->FillNtupleDColumn(
 		    2, track->GetDefinition()->GetPDGEncoding());
-		//		G4cout << "PDGEncoding: " <<
-		// track->GetDefinition()->GetPDGEncoding() << G4endl;
-		//		G4cout << "\tParticle Name: " <<
-		// track->GetDefinition()->GetParticleName() << G4endl;
 		analysisManager->FillNtupleDColumn(3, getDetectorID());
 		analysisManager->FillNtupleDColumn(4, track->GetPosition().x());
 		analysisManager->FillNtupleDColumn(5, track->GetPosition().y());
@@ -46,12 +51,7 @@ G4bool SecondarySD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
 		analysisManager->FillNtupleDColumn(9, track->GetMomentum().z());
 
 		analysisManager->AddNtupleRow();
-
-		setCurrentTrackID(track->GetTrackID());
 	}
-
-	const G4TrackVector *trackVector = aStep->GetSecondary();
-	setNSecondaries(trackVector->size());
 
 	return true;
 }

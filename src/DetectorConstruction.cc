@@ -1,6 +1,5 @@
 #include "DetectorConstruction.hh"
 
-#include "HPGe1_55.hh"
 // Materials
 #include "G4Material.hh"
 #include "G4NistManager.hh"
@@ -2432,7 +2431,7 @@ void DetectorConstruction::ConstructSDandField() {
 	HPGe1SD->SetDetectorID(1);
 	SetSensitiveDetector("HPGe1", HPGe1SD, true);
 
-	ParticleSD *HPGe2SD = new ParticleSD("HPGe2", "HPGe2");
+	SecondarySD *HPGe2SD = new SecondarySD("HPGe2", "HPGe2");
 	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe2SD);
 	HPGe2SD->SetDetectorID(2);
 	SetSensitiveDetector("HPGe2", HPGe2SD, true);

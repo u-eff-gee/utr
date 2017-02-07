@@ -11,10 +11,6 @@
 
 #include "G4FileUtilities.hh"
 
-// G4int RunAction::EventID = 0;
-// G4int RunAction::oldEventID = 0;
-// G4int RunAction::nSecondaries = 0;
-
 RunAction::RunAction() : G4UserRunAction() {
 	// Create analysis manager
 	// The choice of analysis technique is done via selection of a namespace
@@ -24,7 +20,7 @@ RunAction::RunAction() : G4UserRunAction() {
 	analysisManager->CreateNtuple("utr", "Particle information");
 	analysisManager->CreateNtupleDColumn("ekin");
 	analysisManager->CreateNtupleDColumn("edep");
-	analysisManager->CreateNtupleDColumn("type");
+	analysisManager->CreateNtupleDColumn("particle");
 	analysisManager->CreateNtupleDColumn("volume");
 	analysisManager->CreateNtupleDColumn("x");
 	analysisManager->CreateNtupleDColumn("y");
@@ -48,27 +44,32 @@ void RunAction::BeginOfRunAction(const G4Run *) {
 	// <filename>_t<threadId>.root
 	//
 	// where the filename is given by the user in analysisManager->OpenFile()
-	// The following code ensures that existing files are not overwritten when
-	// /control/loop/.
 
 	G4FileUtilities *fu = new G4FileUtilities();
-	std::stringstream ss;
+	std::stringstream sstr;
+	std::stringstream sstr2;
 	G4String fileNamePrefix = "utr";
 
 	G4int threadId = G4Threading::G4GetThreadId();
 
-	for (int i = 0; i <= 100; i++) {
-		ss.str("");
-		ss << fileNamePrefix << i << "_t" << threadId << ".root";
+	if (threadId !=
+	    -1) { // threadId == -1 is the master thread which contains no data
+		for (int i = 0; i <= 100; i++) {
+			sstr.str("");
+			sstr << fileNamePrefix << i << ".root";
+			sstr2 << fileNamePrefix << i << "_t" << threadId << ".root";
 
-		if (!fu->FileExists(ss.str())) {
-			ss.str("");
-			ss << fileNamePrefix << i;
+			if (fu->FileExists(sstr2.str())) {
+				continue;
+			}
+
 			break;
 		}
-	}
 
-	analysisManager->OpenFile(ss.str());
+		analysisManager->OpenFile(sstr.str());
+	} else {
+		analysisManager->OpenFile("master.root");
+	}
 }
 
 void RunAction::EndOfRunAction(const G4Run *) {

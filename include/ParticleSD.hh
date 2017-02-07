@@ -5,11 +5,6 @@
 
 #include "TargetHit.hh"
 
-#include <vector>
-
-class G4Step;
-class G4HCofThisEvent;
-
 class ParticleSD : public G4VSensitiveDetector {
   public:
 	ParticleSD(const G4String &name, const G4String &hitsCollectionName);
@@ -27,7 +22,6 @@ class ParticleSD : public G4VSensitiveDetector {
 	void SetDetectorID(unsigned int detID) { detectorID = detID; };
 
   private:
-	// TargetHitsCollection* fHitsCollection;
 	unsigned int currentEventID = 0;
 	unsigned int currentTrackID = 0;
 	unsigned int detectorID = 0;
