@@ -104,18 +104,22 @@ void Materials::ConstructMaterials() {
 	// Density is the weighted mean of pure Fe and Cr
 	/*************************************************/
 
-	G4Element *nat_Fe = new G4Element(name = "natural Fe", symbol = "nat_Fe", z = 26, a = 55.845*g/mole);
-	G4Element *nat_Cr = new G4Element(name = "natural Cr", symbol = "nat_Cr", z = 24, a = 51.9961*g/mole);
+	G4Element *nat_Fe = new G4Element(name = "natural Fe", symbol = "nat_Fe",
+	                                  z = 26, a = 55.845 * g / mole);
+	G4Element *nat_Cr = new G4Element(name = "natural Cr", symbol = "nat_Cr",
+	                                  z = 24, a = 51.9961 * g / mole);
 
-	G4double Fe_Density = 7.874*g/cm3;
-	G4double Cr_Density = 7.19*g/cm3;
+	G4double Fe_Density = 7.874 * g / cm3;
+	G4double Cr_Density = 7.19 * g / cm3;
 
 	G4double Fe_Percent = 0.85;
 	G4double Cr_Percent = 0.15;
 
-	G4double StainlessSteel_Density = Fe_Percent*Fe_Density + Cr_Percent*Cr_Density;
+	G4double StainlessSteel_Density =
+	    Fe_Percent * Fe_Density + Cr_Percent * Cr_Density;
 
-	stainlessSteel = new G4Material(name = "Stainless_Steel", StainlessSteel_Density, ncomponents = 2);
+	stainlessSteel = new G4Material(name = "Stainless_Steel",
+	                                StainlessSteel_Density, ncomponents = 2);
 
 	stainlessSteel->AddElement(nat_Fe, natoms = 1);
 	stainlessSteel->AddElement(nat_Cr, natoms = 1);

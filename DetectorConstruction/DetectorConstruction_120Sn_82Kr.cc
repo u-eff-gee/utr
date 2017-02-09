@@ -57,7 +57,6 @@ Materials *Materials::instance = NULL;
 
 #define PI 3.141592
 
-
 DetectorConstruction::DetectorConstruction() {}
 
 DetectorConstruction::~DetectorConstruction() {}
@@ -388,9 +387,11 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	// WALL2: Concrete wall between collimator room and UTR (permanent)
 	// WALL3: Lead wall after concrete wall (permanent)
 	// WALL4: Second lead wall after concrete wall (permanent)
-	// WALL5: Lead shielding in front of g3 setup (since 82Se/82Kr experiment run 723)
+	// WALL5: Lead shielding in front of g3 setup (since 82Se/82Kr experiment
+	// run 723)
 	// WALL6: Lead shielding after g3 setup (since 82Se/82Kr experiment)
-	// WALL7: Lead + concrete shielding of 2nd setup (since 150Nd/152Sm experiment)
+	// WALL7: Lead + concrete shielding of 2nd setup (since 150Nd/152Sm
+	// experiment)
 	//
 
 	// Load Bricks

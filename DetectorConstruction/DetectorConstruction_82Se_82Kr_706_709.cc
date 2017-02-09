@@ -1,6 +1,6 @@
 // Geometry of 82Se - 82Kr experiment
-// Valid from 17.11. 12:43 am - 18.11. 01:35 pm
-// Run 710 - Run 718
+// Valid from 16.11. 10:37 pm - 17.11. 11:20 am
+// Run 706 - Run 709
 
 #include "DetectorConstruction.hh"
 
@@ -388,8 +388,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	// WALL4: Second lead wall after concrete wall (permanent)
 	// WALL5: Lead shielding in front of g3 setup (nonexistent here)
 	// WALL6: Lead shielding after g3 setup (since 82Se/82Kr experiment)
-	// WALL7: Lead + concrete shielding of 2nd setup (82Se/82Kr experiment runs
-	// 710 - 760)
+	// WALL7: Lead + concrete shielding of 2nd setup (nonexistent here)
 	//
 
 	// Load Bricks
@@ -400,8 +399,8 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	// HalfShortBrickWithHole *hsbh = new HalfShortBrickWithHole(world_log);
 	ConcreteBrick *cb = new ConcreteBrick(world_log);
 	// FlatConcreteBrick *fcb = new FlatConcreteBrick(world_log);
-	BridgeBrick *bb = new BridgeBrick(world_log);
-	ThinNormBrick *tb = new ThinNormBrick(world_log);
+	// BridgeBrick *bb = new BridgeBrick(world_log);
+	// ThinNormBrick *tb = new ThinNormBrick(world_log);
 	// ShortThinNormBrick *stb = new ShortThinNormBrick(world_log);
 	// FlatFlatThinNormBrick *fftb = new FlatFlatThinNormBrick(world_log);
 	ThreeQuarterShortNormBrick *tqsb =
@@ -772,47 +771,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	/************************ WALL7 Part on the second setup table ********/
 
-	cb->Put(PipeHolderTube_OuterRadius + cb->M * 0.5 - 7. * mm, -cb->M * 0.5,
-	        Wall7_To_Target + nb->S * 3. + cb->L * 0.5, 0., 10. * deg, 0.);
-	cb->Put(-PipeHolderTube_OuterRadius - cb->M * 0.5 + 7. * mm, -cb->M * 0.5,
-	        Wall7_To_Target + nb->S * 3. + cb->L * 0.5, 0., -10. * deg, 0.);
-	// Concrete blocks were slightly rotated in the setup. The 10.*deg are
-	// estimated. The 7.*mm are chosen such that the concrete blocks barely
-	// touch the PipeHolderTube.
-
-	bb->Put(0., bb->M * 0.5, Wall7_To_Target + nb->S * 3. +
-	                             PipeHolderTubeUpStream_Length + bb->S * 0.5,
-	        -90. * deg, 90. * deg, 0.);
-	bb->Put(0., bb->M * 0.5, Wall7_To_Target + nb->S * 3. +
-	                             PipeHolderTubeUpStream_Length + bb->S * 1.5,
-	        -90. * deg, 90. * deg, 0.);
-
-	nb->Put(0., bb->M + nb->S * 0.5,
-	        Wall7_To_Target + nb->S * 3. + PipeHolderTubeUpStream_Length +
-	            bb->S * 2. - nb->M * 0.5,
-	        0., 90. * deg, 0.);
-	nb->Put(0., bb->M + nb->S * 1.5,
-	        Wall7_To_Target + nb->S * 3. + PipeHolderTubeUpStream_Length +
-	            bb->S * 2. - nb->M * 0.5,
-	        0., 90. * deg, 0.);
-	nb->Put(0., bb->M + nb->S * 2.5,
-	        Wall7_To_Target + nb->S * 3. + PipeHolderTubeUpStream_Length +
-	            bb->S * 2. - nb->M * 0.5,
-	        0., 90. * deg, 0.);
-
-	nb->Put(bb->L * 0.5 + nb->M * 0.5, nb->S * 0.5,
-	        Wall7_To_Target + nb->S * 3. + PipeHolderTubeUpStream_Length +
-	            bb->S * 2. - nb->L * 0.5);
-	tb->Put(bb->L * 0.5 + tb->M * 0.5, nb->S * 1.5,
-	        Wall7_To_Target + nb->S * 3. + PipeHolderTubeUpStream_Length +
-	            bb->S * 2. - tb->L * 0.5);
-
-	nb->Put(-bb->L * 0.5 - nb->M * 0.5, nb->S * 0.5,
-	        Wall7_To_Target + nb->S * 3. + PipeHolderTubeUpStream_Length +
-	            bb->S * 2. - nb->L * 0.5);
-	nb->Put(-bb->L * 0.5 - nb->M * 0.5, nb->S * 1.5,
-	        Wall7_To_Target + nb->S * 3. + PipeHolderTubeUpStream_Length +
-	            bb->S * 2. - nb->L * 0.5);
+	// nonexistent here
 
 	/******************** Target Holder Tube with cap ***********/
 
@@ -1714,6 +1673,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	                  LaBr4_rt * cos(LaBr4_theta) + LaBr4_dz),
 	    LaBr4_Wrapping_Logical, "LaBr4_Wrapping", world_log, false, 0);
 	LaBr4_rt = LaBr4_rt - LaBr4_Wrapping_Length * 0.5;
+
 
 	/************************* HPGe6 (Germanium2_TUD)
 	 *********************************/

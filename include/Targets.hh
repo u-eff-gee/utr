@@ -1,8 +1,8 @@
 #include "G4Box.hh"
-#include "G4Sphere.hh"
 #include "G4LogicalVolume.hh"
 #include "G4PVPlacement.hh"
 #include "G4RotationMatrix.hh"
+#include "G4Sphere.hh"
 #include "G4SubtractionSolid.hh"
 #include "G4ThreeVector.hh"
 #include "G4Tubs.hh"
@@ -195,62 +195,85 @@ class Kr82_Target {
 		Materials *mat = Materials::Instance();
 
 		// Mother volume
-		G4double GasSphere_Outer_Radius = 10.*mm; // Measured
-		G4double GasSphere_Inner_Radius = 9.*mm; // Estimated
-	
-		G4double Tube_Length = 20.*mm;
-		G4double Tube_Inner_Radius = 0.25*mm; // Estimated
-		G4double Tube_Outer_Radius = 1.*mm; // Measured
+		G4double GasSphere_Outer_Radius = 10. * mm; // Measured
+		G4double GasSphere_Inner_Radius = 9. * mm;  // Estimated
 
-		G4double Valve_Length = 20.*mm; // Measured
-		G4double Valve_Outer_Radius = 2.5*mm; // Measured
+		G4double Tube_Length = 20. * mm;
+		G4double Tube_Inner_Radius = 0.25 * mm; // Estimated
+		G4double Tube_Outer_Radius = 1. * mm;   // Measured
+
+		G4double Valve_Length = 20. * mm;       // Measured
+		G4double Valve_Outer_Radius = 2.5 * mm; // Measured
 
 		Length = GasSphere_Outer_Radius * 2. + Tube_Length + Valve_Length;
-		Radius = GasSphere_Outer_Radius; 
-		Target_Center = Length * 0.5 - Valve_Length - Tube_Length - GasSphere_Outer_Radius;
+		Radius = GasSphere_Outer_Radius;
+		Target_Center =
+		    Length * 0.5 - Valve_Length - Tube_Length - GasSphere_Outer_Radius;
 
-		G4Tubs *Kr82_Solid = new G4Tubs("Kr82_Solid", 0.*mm, Radius, Length * 0.5, 0. *deg, 360.* deg);
+		G4Tubs *Kr82_Solid = new G4Tubs("Kr82_Solid", 0. * mm, Radius,
+		                                Length * 0.5, 0. * deg, 360. * deg);
 
-		Kr82_Target_Logical = new G4LogicalVolume(Kr82_Solid, vacuum, "Kr82_Logical");
+		Kr82_Target_Logical =
+		    new G4LogicalVolume(Kr82_Solid, vacuum, "Kr82_Logical");
 		Kr82_Target_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());
 
 		// Krypton gas
-		
-		G4Sphere* Krypton_Solid = new G4Sphere("Krypton_Solid", 0., GasSphere_Inner_Radius, 0., 360.*deg, 0., 180.*deg);
 
-		G4LogicalVolume* Krypton_Logical = new G4LogicalVolume(Krypton_Solid, mat->Get_target_Kr(), "Krypton_Logical");
+		G4Sphere *Krypton_Solid =
+		    new G4Sphere("Krypton_Solid", 0., GasSphere_Inner_Radius, 0.,
+		                 360. * deg, 0., 180. * deg);
+
+		G4LogicalVolume *Krypton_Logical = new G4LogicalVolume(
+		    Krypton_Solid, mat->Get_target_Kr(), "Krypton_Logical");
 
 		Krypton_Logical->SetVisAttributes(new G4VisAttributes(green));
 
-		new G4PVPlacement(0, G4ThreeVector(0., 0., -Length * 0.5 + GasSphere_Outer_Radius), Krypton_Logical, "Krypton", Kr82_Target_Logical, false, 0);
+		new G4PVPlacement(
+		    0, G4ThreeVector(0., 0., -Length * 0.5 + GasSphere_Outer_Radius),
+		    Krypton_Logical, "Krypton", Kr82_Target_Logical, false, 0);
 
 		// Sphere
-		
-		G4Sphere* Sphere_Solid = new G4Sphere("Sphere_Solid", GasSphere_Inner_Radius, GasSphere_Outer_Radius, 0., 360.*deg, 0., 180.*deg);
 
-		G4LogicalVolume* Sphere_Logical = new G4LogicalVolume(Sphere_Solid, mat->Get_Stainless_Steel(), "Sphere_Logical");
+		G4Sphere *Sphere_Solid = new G4Sphere(
+		    "Sphere_Solid", GasSphere_Inner_Radius, GasSphere_Outer_Radius, 0.,
+		    360. * deg, 0., 180. * deg);
+
+		G4LogicalVolume *Sphere_Logical = new G4LogicalVolume(
+		    Sphere_Solid, mat->Get_Stainless_Steel(), "Sphere_Logical");
 
 		Sphere_Logical->SetVisAttributes(new G4VisAttributes(grey));
 
-		new G4PVPlacement(0, G4ThreeVector(0., 0., -Length * 0.5 + GasSphere_Outer_Radius), Sphere_Logical, "Sphere", Kr82_Target_Logical, false, 0);
+		new G4PVPlacement(
+		    0, G4ThreeVector(0., 0., -Length * 0.5 + GasSphere_Outer_Radius),
+		    Sphere_Logical, "Sphere", Kr82_Target_Logical, false, 0);
 
 		// Tube
-		
-		G4Tubs *Tube_Solid = new G4Tubs("Tube_Solid", Tube_Inner_Radius, Tube_Outer_Radius, Tube_Length * 0.5, 0. *deg, 360.* deg);
 
-		G4LogicalVolume* Tube_Logical = new G4LogicalVolume(Tube_Solid, mat->Get_Stainless_Steel(), "Tube_Logical");
+		G4Tubs *Tube_Solid =
+		    new G4Tubs("Tube_Solid", Tube_Inner_Radius, Tube_Outer_Radius,
+		               Tube_Length * 0.5, 0. * deg, 360. * deg);
+
+		G4LogicalVolume *Tube_Logical = new G4LogicalVolume(
+		    Tube_Solid, mat->Get_Stainless_Steel(), "Tube_Logical");
 		Tube_Logical->SetVisAttributes(new G4VisAttributes(grey));
 
-		new G4PVPlacement(0, G4ThreeVector(0., 0., Length * 0.5 - Valve_Length - Tube_Length * 0.5), Tube_Logical, "Tube", Kr82_Target_Logical, false, 0);
-		
-		// Valve
-		
-		G4Tubs *Valve_Solid = new G4Tubs("Valve_Solid", 0., Valve_Outer_Radius, Valve_Length * 0.5, 0. *deg, 360.* deg);
+		new G4PVPlacement(0, G4ThreeVector(0., 0., Length * 0.5 - Valve_Length -
+		                                               Tube_Length * 0.5),
+		                  Tube_Logical, "Tube", Kr82_Target_Logical, false, 0);
 
-		G4LogicalVolume* Valve_Logical = new G4LogicalVolume(Valve_Solid, mat->Get_Stainless_Steel(), "Valve_Logical");
+		// Valve
+
+		G4Tubs *Valve_Solid =
+		    new G4Tubs("Valve_Solid", 0., Valve_Outer_Radius,
+		               Valve_Length * 0.5, 0. * deg, 360. * deg);
+
+		G4LogicalVolume *Valve_Logical = new G4LogicalVolume(
+		    Valve_Solid, mat->Get_Stainless_Steel(), "Valve_Logical");
 		Valve_Logical->SetVisAttributes(new G4VisAttributes(grey));
 
-		new G4PVPlacement(0, G4ThreeVector(0., 0., Length * 0.5 - Valve_Length * 0.5), Valve_Logical, "Valve", Kr82_Target_Logical, false, 0);
+		new G4PVPlacement(
+		    0, G4ThreeVector(0., 0., Length * 0.5 - Valve_Length * 0.5),
+		    Valve_Logical, "Valve", Kr82_Target_Logical, false, 0);
 	};
 
 	~Kr82_Target(){};
@@ -261,4 +284,3 @@ class Kr82_Target {
 
 	G4LogicalVolume *Get_Logical() { return Kr82_Target_Logical; };
 };
-

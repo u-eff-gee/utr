@@ -202,8 +202,8 @@ class Pb_41_5mm_3_64in {
 	G4RotationMatrix *rot;
 
   public:
-	const G4double Thickness = 3./64. * inch; // Measured
-	const G4double Radius = 41.5 * mm;        // Measured
+	const G4double Thickness = 3. / 64. * inch; // Measured
+	const G4double Radius = 41.5 * mm;          // Measured
 
 	Pb_41_5mm_3_64in(G4LogicalVolume *world_Logical) {
 		G4Colour grey(.5, .5, .5);
@@ -252,8 +252,8 @@ class Pb_44mm_3_64in {
 	G4RotationMatrix *rot;
 
   public:
-	const G4double Thickness = 3./64. * inch; // Measured
-	const G4double Radius = 44. * mm;        // Measured
+	const G4double Thickness = 3. / 64. * inch; // Measured
+	const G4double Radius = 44. * mm;           // Measured
 
 	Pb_44mm_3_64in(G4LogicalVolume *world_Logical) {
 		G4Colour grey(.5, .5, .5);
