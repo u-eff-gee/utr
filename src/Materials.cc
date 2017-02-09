@@ -12,7 +12,7 @@ Materials::~Materials() {}
 
 void Materials::ConstructMaterials() {
 
-	// Implement ma which are not in the Geant4 materials database
+	// Implement materials which are not in the Geant4 materials database
 	// http://geant4.cern.ch/UserDocumentation/UsersGuides/ForApplicationDeveloper/html/apas08.html
 	// for example isotopically enriched materials or materials with a
 	// non-standard density.
@@ -96,6 +96,29 @@ void Materials::ConstructMaterials() {
 
 	target_Kr = new G4Material(name = "target_Kr", Kr_Density, ncomponents = 1);
 	target_Kr->AddElement(enriched_Kr, natoms = 1);
+
+	/*************************************************/
+	//             "Stainless steel"
+	// Approximate alloy: 85% Fe
+	//                    15% Cr
+	// Density is the weighted mean of pure Fe and Cr
+	/*************************************************/
+
+	G4Element *nat_Fe = new G4Element(name = "natural Fe", symbol = "nat_Fe", z = 26, a = 55.845*g/mole);
+	G4Element *nat_Cr = new G4Element(name = "natural Cr", symbol = "nat_Cr", z = 24, a = 51.9961*g/mole);
+
+	G4double Fe_Density = 7.874*g/cm3;
+	G4double Cr_Density = 7.19*g/cm3;
+
+	G4double Fe_Percent = 0.85;
+	G4double Cr_Percent = 0.15;
+
+	G4double StainlessSteel_Density = Fe_Percent*Fe_Density + Cr_Percent*Cr_Density;
+
+	stainlessSteel = new G4Material(name = "Stainless_Steel", StainlessSteel_Density, ncomponents = 2);
+
+	stainlessSteel->AddElement(nat_Fe, natoms = 1);
+	stainlessSteel->AddElement(nat_Cr, natoms = 1);
 
 	/*************************************************/
 	// Enriched Se target from 2016 NRF experiment

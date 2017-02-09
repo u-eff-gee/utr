@@ -194,6 +194,106 @@ class Pb_45mm_1_4in {
 	}
 };
 
+class Pb_41_5mm_3_64in {
+  private:
+	G4LogicalVolume *World_Logical;
+
+	G4LogicalVolume *Pb_41_5mm_3_64in_Logical;
+	G4RotationMatrix *rot;
+
+  public:
+	const G4double Thickness = 3./64. * inch; // Measured
+	const G4double Radius = 41.5 * mm;        // Measured
+
+	Pb_41_5mm_3_64in(G4LogicalVolume *world_Logical) {
+		G4Colour grey(.5, .5, .5);
+
+		G4NistManager *nist = G4NistManager::Instance();
+		G4Material *Pb = nist->FindOrBuildMaterial("G4_Pb");
+
+		World_Logical = world_Logical;
+
+		G4Tubs *Pb_41_5mm_3_64in_Solid =
+		    new G4Tubs("Pb_41_5mm_3_64in_Solid", 0., Radius, Thickness * 0.5,
+		               0. * deg, 360. * deg);
+		Pb_41_5mm_3_64in_Logical = new G4LogicalVolume(
+		    Pb_41_5mm_3_64in_Solid, Pb, "Pb_41_5mm_3_64in_Logical", 0, 0, 0);
+
+		Pb_41_5mm_3_64in_Logical->SetVisAttributes(new G4VisAttributes(grey));
+
+		rot = new G4RotationMatrix();
+	}
+
+	~Pb_41_5mm_3_64in(){};
+
+	void Put(G4double x, G4double y, G4double z) {
+		new G4PVPlacement(0, G4ThreeVector(x, y, z), Pb_41_5mm_3_64in_Logical,
+		                  "Pb_41_5mm_3_64in", World_Logical, false, 0);
+	}
+
+	void Put(G4double x, G4double y, G4double z, G4double angle_x,
+	         G4double angle_y, G4double angle_z) {
+
+		rot = new G4RotationMatrix();
+		rot->rotateX(angle_x);
+		rot->rotateY(angle_y);
+		rot->rotateZ(angle_z);
+
+		new G4PVPlacement(rot, G4ThreeVector(x, y, z), Pb_41_5mm_3_64in_Logical,
+		                  "Pb_41_5mm_3_64in", World_Logical, false, 0);
+	}
+};
+
+class Pb_44mm_3_64in {
+  private:
+	G4LogicalVolume *World_Logical;
+
+	G4LogicalVolume *Pb_44mm_3_64in_Logical;
+	G4RotationMatrix *rot;
+
+  public:
+	const G4double Thickness = 3./64. * inch; // Measured
+	const G4double Radius = 44. * mm;        // Measured
+
+	Pb_44mm_3_64in(G4LogicalVolume *world_Logical) {
+		G4Colour grey(.5, .5, .5);
+
+		G4NistManager *nist = G4NistManager::Instance();
+		G4Material *Pb = nist->FindOrBuildMaterial("G4_Pb");
+
+		World_Logical = world_Logical;
+
+		G4Tubs *Pb_44mm_3_64in_Solid =
+		    new G4Tubs("Pb_44mm_3_64in_Solid", 0., Radius, Thickness * 0.5,
+		               0. * deg, 360. * deg);
+		Pb_44mm_3_64in_Logical = new G4LogicalVolume(
+		    Pb_44mm_3_64in_Solid, Pb, "Pb_44mm_3_64in_Logical", 0, 0, 0);
+
+		Pb_44mm_3_64in_Logical->SetVisAttributes(new G4VisAttributes(grey));
+
+		rot = new G4RotationMatrix();
+	}
+
+	~Pb_44mm_3_64in(){};
+
+	void Put(G4double x, G4double y, G4double z) {
+		new G4PVPlacement(0, G4ThreeVector(x, y, z), Pb_44mm_3_64in_Logical,
+		                  "Pb_44mm_3_64in", World_Logical, false, 0);
+	}
+
+	void Put(G4double x, G4double y, G4double z, G4double angle_x,
+	         G4double angle_y, G4double angle_z) {
+
+		rot = new G4RotationMatrix();
+		rot->rotateX(angle_x);
+		rot->rotateY(angle_y);
+		rot->rotateZ(angle_z);
+
+		new G4PVPlacement(rot, G4ThreeVector(x, y, z), Pb_44mm_3_64in_Logical,
+		                  "Pb_44mm_3_64in", World_Logical, false, 0);
+	}
+};
+
 class Pb_45mm_5_64in {
   private:
 	G4LogicalVolume *World_Logical;

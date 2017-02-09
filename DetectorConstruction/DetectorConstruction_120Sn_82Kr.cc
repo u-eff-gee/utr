@@ -1,3 +1,6 @@
+// Geometry of 120Sn - 82Kr experiment
+// Valid for entire experiment
+
 #include "DetectorConstruction.hh"
 
 // Materials
@@ -385,9 +388,9 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	// WALL2: Concrete wall between collimator room and UTR (permanent)
 	// WALL3: Lead wall after concrete wall (permanent)
 	// WALL4: Second lead wall after concrete wall (permanent)
-	// WALL5: Lead shielding in front of g3 setup (Nov. 2016)
-	// WALL6: Lead shielding after g3 setup (Nov. 2016)
-	// WALL7: Lead + concrete shielding of 2nd setup (Dec. 2016)
+	// WALL5: Lead shielding in front of g3 setup (since 82Se/82Kr experiment run 723)
+	// WALL6: Lead shielding after g3 setup (since 82Se/82Kr experiment)
+	// WALL7: Lead + concrete shielding of 2nd setup (since 150Nd/152Sm experiment)
 	//
 
 	// Load Bricks
