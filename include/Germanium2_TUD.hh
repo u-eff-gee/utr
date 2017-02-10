@@ -10,10 +10,7 @@ class Germanium2_TUD {
 
 	G4LogicalVolume *Get_Logical() { return germanium2_Logical; }
 	G4double Get_Length() { return Length; }
-	G4double Get_Radius() {
-		return Radius;
-		return Radius;
-	}
+	G4double Get_Radius() { return Radius; }
 
   private:
 	G4double Length;

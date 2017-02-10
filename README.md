@@ -2,46 +2,168 @@
 
 ![Geometry of the UTR Geant4 simulation](.media/geometry.png)
 
-This is a [Geant4](https://geant4.web.cern.ch/) simulation of the Upstream Target Room (UTR) at the High Intensity γ-ray Source (HIγS) facility [[1]](#ref-higs), located at the Duke Free Electron Laser Laboratory (DFELL) of the Triangle University Nuclear Laboratory (TUNL) at Duke University, Durham, NC, USA.
+This is a [Geant4](https://geant4.web.cern.ch/) [[1]](#ref-g4_1) [[2]](#ref-g4_2) [[3]](#ref-g4_3) simulation of the Upstream Target Room (UTR) at the High Intensity γ-ray Source (HIγS) facility [[4]](#ref-higs), located at the Duke Free Electron Laser Laboratory (DFELL) of the Triangle University Nuclear Laboratory (TUNL) at Duke University, Durham, NC, USA.
 
 
-## Features
+##1 Features
 
-The following objects located in the UTR are included in the simulation:
+###1.1 Geometry
+The `DetectorConstruction.cc` has to be adapted by the user for his or her experiment. At the moment, the most relevant parts of the collimator room and the utr (γ³ setup [[5]](#ref-g3) and second setup) for different NRF experiments have been implemented in the DetectorConstruction.cc files that can be found in the `DetectorConstruction/` directory. 
 
-* Collimator
-* Lead shieldings and walls
-* Concrete wall and blocks
-* Evacuated beam pipe and pipe holders
-* γ³ setup [[2]](#ref-g3), including the wheel
-* 2ⁿᵈ setup (also called the parasitic setup)
-* 0° detector
-* HPGe detectors of the TUNL and TU Darmstadt
-* LaBr₃(Ce) detectors of the TU Darmstadt
-* Polarimeter of the TU Darmstadt
-* Metal tables
-* Air
-* A variety of filters, shieldings and smaller objects
+To use the geometry named "DetectorConstructionXY" in the simulation, rename the files, place them in the `include/` and `src/` directory, and re-compile the simulation:
 
-Several processes are taken into consideration during the simulation: 
+```bash
+$ cd DetectorConstruction/
+$ cp DetectorConstructionXY.hh ../include/DetectorConstruction.hh
+$ cp DetectorConstructionXY.cc ../include/DetectorConstruction.cc
+$ cd ..
+$ make
+```
 
-* Compton and Rayleigh scattering
-* pair production
-* The photoelectric effect
-* photo nuclear inelastic scattering
-* electron bremsstrahlung, ionisation and (multiple) scattering 
-* ionisation and (multiple) scattering of charged particles
-* positron annihilation
-* atomic deexcitation
+Several pre-defined classes exist to simplify the geometry construction which are explained in the following.
 
-The simulation is able to generate the following: *TODO*.
+####1.1.1 Detectors
+Classes for several different detectors exist. In all of those, a G4LogicalVolume that contains all the parts of a detector is implemented which is returned by the class' Get_Logical() method. Furthermore, each detector class can return its mother volume's length and radius.
 
+To place a detector DetectorXY in the geometry, create an instance of the detector class in DetectorConstruction.cc, get the logical volume and place it in the geometry (using Get_Length() and Get_Radius() if necessary):
 
-## Getting started
+```
+DetectorXY* detectorXY_Instance = new DetectorXY("DetectorXY_Name");
+G4LogicalVolume* DetectorXY_Logical = detectorXY_Instance->Get_Logical();
+new G4PVPlacement( ... )
+```
+
+The name "DetectorXY_Name" is the name of the logical volume of the detector crystal which can be used to register it as a sensitive detector.
+
+*TODO List detectors here*
+
+####1.1.2 Bricks
+For maximum flexibility, the shielding of the setup can be constructed brick by brick. To avoid the `G4Solid->G4LogicalVolume->G4PhysicalVolume` procedure each time one would like to place a standardized brick, a lot of them are predefined as classes in `Bricks.hh`.
+
+Once instantiated in DetectorConstruction.cc, bricks can be placed inside the G4LogicalVolume which was defined to be their mother volume via their constructor. To place a brick, use the `Put(x, y, z, angle_x, angle_y, angle_z)` method in which the coordinates and rotation angles around the coordinate axes can be specified.
+
+Bricks are assumed to be cuboid objects, i.e. they can have 3 different side lengths. In `Bricks.hh`, the convention is that the long side points in z-direction, the medium side in x-direction and the short side in y-direction, if they can be distinguished. The respective lengths can be accessed via the member variables L, M and S.
+
+####1.1.3 Filters
+Similar to bricks, filters and filter cases in front of detectors are implemented in `Filters.hh` and can be placed using their `Put()` methods.
+
+####1.1.4 Targets
+Complicated targets can be implemented in `Targets.hh`. The placement in DetectorConstruction.cc works analog to the placement of detectors. Relevant properties of the targets can be made accessible using Get() methods.
+
+###1.2 Sensitive Detectors
+
+Information about the simulated particles is recorded by instances of the G4VSensitiveDetector class. Any unique logical volume can be declared a sensitive detector. 
+Any time a particle executes a step inside a G4VSensitiveDetector object, its ProcessHits routine will access information of the step. This way, live information about a particle can be accessed. Note that a "hit" in the GEANT4 sense does not necessarily imply an interaction with the sensitive detector. Any volume crossing is also a hit. Therefore, also non-interacting geantinos can generate hits, making them a nice tool to explore to explore the geometry, measure solid-angle coverage, ...
+After a complete event, a collection of all hits inside a given volume will be accessible via its HitsCollection. This way, cumulative information like the energy deposition inside the volume can be accessed.
+
+Three types of sensitive detectors are implemented at the moment:
+
+* **EnergyDepositionSD**
+    Records the total energy deposition by any particle per single event inside the sensitive detector.
+* **ParticleSD**
+    Records the first step of any particle inside the sensitive detector.
+* **SecondarySD**
+    Records the first step of any secondary particle inside the sensitive detector.
+    
+No matter which type of sensitive detector is chosen, the simulation output will be a [ROOT](https://root.cern.ch/) tree with the following 10 branches:
+
+* **ekin**
+    Kinetic energy (in MeV) of the particle at the time of its first hit of the sensitive detector.
+* **edep**
+    Total energy deposition (in MeV) of the event (EnergyDepositionSD) OR energy deposition of the first hit of the sensitive detector (ParticleSD, SecondarySD)
+* **particle**
+    Type of the particle whose first hit of the sensitive detector it was (ParticleSD, SecondarySD) OR type of the very first particle in this event that hit the sensitive detector (EnergyDepositionSD). The type of the particle is encoded in the [Monte Carlo Particle Numbering Scheme](http://pdg.lbl.gov/mc_particle_id_contents.html).
+* **volume**
+    User-defined identifier of the sensitive detector that recorded this set of data.
+* **x/y/z**
+    Coordinates (in mm) of the first hit of the sensitive detector by a particle (ParticleSD, SecondarySD) OR coordinates of the first hit by the first particle in this event that hit the sensitive detector (EnergyDepositionSD)
+* **vx/vy/vz**
+    Momentum (in MeV/c) of the particle at the position of the first hit of the sensitive detector (ParticleSD, SecondarySD) OR momentum of the first particle hitting the sensitive detector in this event at the position of its first hit (EnergyDepositionSD).
+    
+The meaning of the columns sometimes changes with the choice of the sensitive detector.
+
+To make a volume whose logical volume name is "Logic_Name" a sensitive detector of type XYSD, add the following lines in DetectorConstruction::ConstructSDandField(){}
+
+```
+XYSD *xySD = new XYSD("SD_Name", "SD_HitsCollection_Name");
+G4SDManager::GetSDMpointer()->AddNewDetector(xySD);
+xySD->SetDetectorID(volume); // volume is the detector ID which will be displayed in the ROOT output file
+SetSensitiveDetector("Logic_Name", xySD, true);
+```
+
+The following examples illustrates how the different sensitive detectors work.
+
+![Interaction with sensitive detector](.media/grid.svg)
+
+In the figure, a photon (orange, sinusoidal line) and several electrons (blue arrow) are shown which are part of a single event. Each hit in the sensitive detector (black circle) has a label that contains the particle number and the number of the hit. The history of the event is as follows:
+
+The primary particle 1 (a photon with an energy of 2.5 MeV) enters the sensitive detector at (0,3). It is Compton-scattered at (2,5) and transfers 1.0 MeV to an electron (particle 2). The electron slowly loses its kinetic energy again in scattering processes at (4,8), (6,9) and (7,8) inside the sensitive detector which do not create new secondary particles. In the meantime, particle 1 travels to (6,1) and creates an e-/e+ pair with its remaining 1.5 MeV. Each lepton (3 and 4) gets an initial energy of (1.500 - 1.022)/2 = 0.239 MeV. Lepton 3 loses its kinetic energy inside the sensitive detector, Lepton 4 leaves the sensitive detector.
+
+The following information would be recorded if the volume was a ...
+
+* ... ParticleSD
+
+```
+ekin	edep	particle	volume	x	y	vx	vy
+2.5		0.		22			0		0	3	2	2
+1.0		0.		11			0		2	5	2	5
+0.239	0.		11			0		6	1	3	3
+0.239	0.		11			0		6	1	-2	-2
+```
+* ... SecondarySD
+
+```
+ekin	edep	particle	volume	x	y	vx	vy
+1.0		0.		11			0		2	5	2	5
+0.239	0.		11			0		6	1	3	3
+0.239	0.		11			0		6	1	-2	-2
+```
+* ... EnergyDepositionSD
+
+```
+ekin	edep		particle	volume	x	y	vx	vy
+2.5		1.989		22			0		0	3	2	2
+```
+
+For simplicity, the momentum vector is given as the vector of the depicted arrow.
+The real values would be
+
+```
+vx_real = 1/sqrt(vx^2 + vy^2)*cos(arctan(y/x))*ekin/c
+vy_real = 1/sqrt(vx^2 + vy^2)*sin(arctan(y/x))*ekin/c
+```
+
+###1.3 Event generation
+
+*TODO*
+
+###1.4 Physics
+The physics processes are defined in `/src/Physics.cc`. In the Physics::ConstructProcess() method, physics lists for groups of particles can be activated by uncommenting the desired physics list. If you are working on a slow machine and you just want to visualize the geometry, it can be advantageous to switch off all physics.
+
+At the moment, physics processes for gammas, electrons/positrons, neutrons and other charged particles are available. Check Physics.cc to see which processes are defined.
+A description of the processes can be found in the [GEANT4 Physics Reference Manual](http://geant4.web.cern.ch/geant4/UserDocumentation/UsersGuides/PhysicsReferenceManual/fo/PhysicsReferenceManual.pdf)
+
+The physics list is largely inspired by the GEANT4 examples `TestEm7` and `Hadr04`
+
+####1.4.1 Transportation
+Mandatory for all particles. Without this, the simulation will do nothing.
+
+####1.4.2 EMPenelope, EMLivermore
+Uses the Penelope OR Livermore low-energy electromagnetic physics framework for gammas, electrons and positrons. Only one of them can be active at the same time. 
+
+Both frameworks aim at a more precise description of these processes than the standard G4 physics which are optimized for particle physics applications at CERN.
+
+####1.4.3 HPNeutron
+A specialized neutron physics framework for low energies.
+
+####1.4.4 ChargedParticle
+Standard processes for any other charged particle that might appear in the simulation. The probability for this in NRF applications is low, so this list is not very detailed.
+
+##2 Getting started
 
 These instructions will get you a copy of the simulation running.
 
-### Dependencies
+###2.1 Dependencies
 
 To build and run the simulation, the following dependencies are required:
 
@@ -49,7 +171,7 @@ To build and run the simulation, the following dependencies are required:
 * CMake (*build*)
 * Make (*build*)
 
-### Compilation
+###2.2 Compilation
 
 To compile the simulation, simply execute
 
@@ -60,27 +182,39 @@ $ make -j
 
 This will create the `utr` binary in the top directory.
 
+##3 Usage
 
-## Usage
+The compiled `utr` binary can be run with different arguments. To get an overview, type
 
-To open the simulation, run the compiled `utr` binary. The visualization can be initialized with
+```bash
+$ ./utr --help
+```
 
-    /control/execute init_vis.mac
+Running `utr` without any argument will launch a UI session of the simulation where macro commands can be entered. To visualize the geometry in the UI session, execute the macro file `init_vis.mac`
+```
+/control/execute init_vis.mac
+```
 
-This command executes the `init_vis.mac` macro that enables you to view the geometry of the simulation.
-The geometry is currently defined in the `src/DetectorConstruction.cc` file.
-It should be adjusted to reflect the actual configuration that was in place during the experiment you wish to simulate.
+Important optional arguments besides `--help` are:
+```bash
+$ ./utr -m MACROFILE
+```
+Executes macro file MACROFILE
+```bash
+$ ./utr -t NTHREADS
+```
+Sets the number of threads in multithreaded mode (default: 1)
+
+##4 License
 
 *TODO*
 
 
-## License
+##5 References
 
-*TODO*
-
-
-## References
-
-<a name="ref-higs">[1]</a> H. R. Weller *et al.*, “Research opportunities at the upgraded HIγS facility”. Prog. Part. Nucl. Phys. **62.1**, 257 (2009). [`doi:10.1016/j.ppnp.2008.07.001`](https://dx.doi.org/10.1016/j.ppnp.2008.07.001).  
-<a name="ref-g3">[2]</a> B. Löher *et al.*, “The high-efficiency γ-ray spectroscopy setup γ³ at HIγS”. Nucl. Instr. Meth. Phys. Res. A **723**, 136 (2013). [`doi:10.1016/j.nima.2013.04.087`](https://dx.doi.org/10.1016/j.nima.2013.04.087).  
+<a name="ref-g4_1">[1]</a> S. Agostinelli *et al.*, “GEANT4 - a simulation toolkit”, Nucl. Inst. Meth. A **506.3**, 250 (2003). [`doi:10.1016/S0168-9002(03)01368-8`](http://dx.doi.org/10.1016/S0168-9002(03)01368-8).  
+<a name="ref-g4_2">[2]</a> J. Allison *et al.*, “GEANT4 developments and applications”, IEEE Transactions on Nuclear Science, **53.1**, 270 (2006). [`doi:10.1109/TNS.2006.869826`](https://doi.org/10.1109/TNS.2006.869826).  
+<a name="ref-g4_3">[3]</a> J. Allison *et al.*, “Recent developments in GEANT4”, Nucl. Inst. Meth. A **835**, 186 (2016). [`doi:10.1016/j.nima.2016.06.125`](http://dx.doi.org/10.1016/j.nima.2016.06.125).  
+<a name="ref-higs">[4]</a> H. R. Weller *et al.*, “Research opportunities at the upgraded HIγS facility”, Prog. Part. Nucl. Phys. **62.1**, 257 (2009). [`doi:10.1016/j.ppnp.2008.07.001`](https://dx.doi.org/10.1016/j.ppnp.2008.07.001).  
+<a name="ref-g3">[5]</a> B. Löher *et al.*, “The high-efficiency γ-ray spectroscopy setup γ³ at HIγS”, Nucl. Instr. Meth. Phys. Res. A **723**, 136 (2013). [`doi:10.1016/j.nima.2013.04.087`](https://dx.doi.org/10.1016/j.nima.2013.04.087).  
 

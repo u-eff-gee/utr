@@ -1674,7 +1674,6 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	    LaBr4_Wrapping_Logical, "LaBr4_Wrapping", world_log, false, 0);
 	LaBr4_rt = LaBr4_rt - LaBr4_Wrapping_Length * 0.5;
 
-
 	/************************* HPGe6 (Germanium2_TUD)
 	 *********************************/
 

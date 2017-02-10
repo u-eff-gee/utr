@@ -25,7 +25,7 @@ AngularDistributionGenerator::AngularDistributionGenerator()
 
 	// Set particle type and energy
 
-	particleName = "gamma";
+	particleName = "geantino";
 	particleEnergy = 3. * MeV;
 
 	G4ParticleTable *particleTable = G4ParticleTable::GetParticleTable();
@@ -211,9 +211,9 @@ G4bool AngularDistributionGenerator::AngularDistribution(
 		// 0.1^+ -> 0.1^+ -> 0.1^+
 		// Wildcard for test distributions
 		if (states[0] == 0.1 && states[1] == 0.1 && states[2] == 0.1) {
-			if (rand_theta >= 80. * deg && rand_theta <= 100. * deg &&
-			    ((rand_phi >= 350. * deg && rand_phi <= 360. * deg) ||
-			     (rand_phi >= 0. * deg && rand_phi <= 10. * deg))) {
+			if (rand_theta >= 85. * deg && rand_theta <= 95. * deg &&
+			    ((rand_phi >= 355. * deg && rand_phi <= 360. * deg) ||
+			     (rand_phi >= 0. * deg && rand_phi <= 5. * deg))) {
 				return true;
 			}
 
