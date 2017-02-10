@@ -5,9 +5,9 @@
 This is a [Geant4](https://geant4.web.cern.ch/) [[1]](#ref-g4_1) [[2]](#ref-g4_2) [[3]](#ref-g4_3) simulation of the Upstream Target Room (UTR) at the High Intensity γ-ray Source (HIγS) facility [[4]](#ref-higs), located at the Duke Free Electron Laser Laboratory (DFELL) of the Triangle University Nuclear Laboratory (TUNL) at Duke University, Durham, NC, USA.
 
 
-##1 Features
+## 1 Features
 
-###1.1 Geometry
+### 1.1 Geometry
 The `DetectorConstruction.cc` has to be adapted by the user for his or her experiment. At the moment, the most relevant parts of the collimator room and the utr (γ³ setup [[5]](#ref-g3) and second setup) for different NRF experiments have been implemented in the DetectorConstruction.cc files that can be found in the `DetectorConstruction/` directory. 
 
 To use the geometry named "DetectorConstructionXY" in the simulation, rename the files, place them in the `include/` and `src/` directory, and re-compile the simulation:
@@ -22,7 +22,7 @@ $ make
 
 Several pre-defined classes exist to simplify the geometry construction which are explained in the following.
 
-####1.1.1 Detectors
+#### 1.1.1 Detectors
 Classes for several different detectors exist. In all of those, a G4LogicalVolume that contains all the parts of a detector is implemented which is returned by the class' Get_Logical() method. Furthermore, each detector class can return its mother volume's length and radius.
 
 To place a detector DetectorXY in the geometry, create an instance of the detector class in DetectorConstruction.cc, get the logical volume and place it in the geometry (using Get_Length() and Get_Radius() if necessary):
@@ -37,20 +37,20 @@ The name "DetectorXY_Name" is the name of the logical volume of the detector cry
 
 *TODO List detectors here*
 
-####1.1.2 Bricks
+#### 1.1.2 Bricks
 For maximum flexibility, the shielding of the setup can be constructed brick by brick. To avoid the `G4Solid->G4LogicalVolume->G4PhysicalVolume` procedure each time one would like to place a standardized brick, a lot of them are predefined as classes in `Bricks.hh`.
 
 Once instantiated in DetectorConstruction.cc, bricks can be placed inside the G4LogicalVolume which was defined to be their mother volume via their constructor. To place a brick, use the `Put(x, y, z, angle_x, angle_y, angle_z)` method in which the coordinates and rotation angles around the coordinate axes can be specified.
 
 Bricks are assumed to be cuboid objects, i.e. they can have 3 different side lengths. In `Bricks.hh`, the convention is that the long side points in z-direction, the medium side in x-direction and the short side in y-direction, if they can be distinguished. The respective lengths can be accessed via the member variables L, M and S.
 
-####1.1.3 Filters
+#### 1.1.3 Filters
 Similar to bricks, filters and filter cases in front of detectors are implemented in `Filters.hh` and can be placed using their `Put()` methods.
 
-####1.1.4 Targets
+#### 1.1.4 Targets
 Complicated targets can be implemented in `Targets.hh`. The placement in DetectorConstruction.cc works analog to the placement of detectors. Relevant properties of the targets can be made accessible using Get() methods.
 
-###1.2 Sensitive Detectors
+### 1.2 Sensitive Detectors
 
 Information about the simulated particles is recorded by instances of the G4VSensitiveDetector class. Any unique logical volume can be declared a sensitive detector. 
 Any time a particle executes a step inside a G4VSensitiveDetector object, its ProcessHits routine will access information of the step. This way, live information about a particle can be accessed. Note that a "hit" in the GEANT4 sense does not necessarily imply an interaction with the sensitive detector. Any volume crossing is also a hit. Therefore, also non-interacting geantinos can generate hits, making them a nice tool to explore to explore the geometry, measure solid-angle coverage, ...
@@ -133,11 +133,11 @@ vx_real = 1/sqrt(vx^2 + vy^2)*cos(arctan(y/x))*ekin/c
 vy_real = 1/sqrt(vx^2 + vy^2)*sin(arctan(y/x))*ekin/c
 ```
 
-###1.3 Event generation
+### 1.3 Event generation
 
 *TODO*
 
-###1.4 Physics
+### 1.4 Physics
 The physics processes are defined in `/src/Physics.cc`. In the Physics::ConstructProcess() method, physics lists for groups of particles can be activated by uncommenting the desired physics list. If you are working on a slow machine and you just want to visualize the geometry, it can be advantageous to switch off all physics.
 
 At the moment, physics processes for gammas, electrons/positrons, neutrons and other charged particles are available. Check Physics.cc to see which processes are defined.
@@ -145,25 +145,25 @@ A description of the processes can be found in the [GEANT4 Physics Reference Man
 
 The physics list is largely inspired by the GEANT4 examples `TestEm7` and `Hadr04`
 
-####1.4.1 Transportation
+#### 1.4.1 Transportation
 Mandatory for all particles. Without this, the simulation will do nothing.
 
-####1.4.2 EMPenelope, EMLivermore
+#### 1.4.2 EMPenelope, EMLivermore
 Uses the Penelope OR Livermore low-energy electromagnetic physics framework for gammas, electrons and positrons. Only one of them can be active at the same time. 
 
 Both frameworks aim at a more precise description of these processes than the standard G4 physics which are optimized for particle physics applications at CERN.
 
-####1.4.3 HPNeutron
+#### 1.4.3 HPNeutron
 A specialized neutron physics framework for low energies.
 
-####1.4.4 ChargedParticle
+#### 1.4.4 ChargedParticle
 Standard processes for any other charged particle that might appear in the simulation. The probability for this in NRF applications is low, so this list is not very detailed.
 
-##2 Getting started
+## 2 Getting started
 
 These instructions will get you a copy of the simulation running.
 
-###2.1 Dependencies
+### 2.1 Dependencies
 
 To build and run the simulation, the following dependencies are required:
 
@@ -171,7 +171,7 @@ To build and run the simulation, the following dependencies are required:
 * CMake (*build*)
 * Make (*build*)
 
-###2.2 Compilation
+### 2.2 Compilation
 
 To compile the simulation, simply execute
 
@@ -182,7 +182,7 @@ $ make -j
 
 This will create the `utr` binary in the top directory.
 
-##3 Usage
+## 3 Usage
 
 The compiled `utr` binary can be run with different arguments. To get an overview, type
 
@@ -205,12 +205,12 @@ $ ./utr -t NTHREADS
 ```
 Sets the number of threads in multithreaded mode (default: 1)
 
-##4 License
+## 4 License
 
 *TODO*
 
 
-##5 References
+## 5 References
 
 <a name="ref-g4_1">[1]</a> S. Agostinelli *et al.*, “GEANT4 - a simulation toolkit”, Nucl. Inst. Meth. A **506.3**, 250 (2003). [`doi:10.1016/S0168-9002(03)01368-8`](http://dx.doi.org/10.1016/S0168-9002(03)01368-8).  
 <a name="ref-g4_2">[2]</a> J. Allison *et al.*, “GEANT4 developments and applications”, IEEE Transactions on Nuclear Science, **53.1**, 270 (2006). [`doi:10.1109/TNS.2006.869826`](https://doi.org/10.1109/TNS.2006.869826).  
