@@ -29,11 +29,15 @@ class NormBrick {
 	G4double NormBrick_long;
 
   public:
-	const G4double L = 200. * mm;
-	const G4double M = 100. * mm;
-	const G4double S = 50. * mm;
+	G4double L;
+	G4double M;
+	G4double S;
 
 	NormBrick(G4LogicalVolume *world_Logical) {
+		L = 200. * mm;
+		M = 100. * mm;
+		S = 50. * mm;
+
 		G4Colour green(0., 1., 0.);
 
 		G4NistManager *nist = G4NistManager::Instance();
@@ -79,12 +83,17 @@ class NormBrickWithHole {
 	G4RotationMatrix *rot;
 
   public:
-	const G4double L = 200. * mm;
-	const G4double M = 100. * mm;
-	const G4double S = 50. * mm;
-	const G4double Hole_Radius = 1. * inch;
+	G4double L;
+	G4double M;
+	G4double S;
+	G4double Hole_Radius;
 
 	NormBrickWithHole(G4LogicalVolume *world_Logical) {
+		L = 200. * mm;
+		M = 100. * mm;
+		S = 50. * mm;
+		Hole_Radius = 1. * inch;
+
 		G4Colour green(0., 1., 0.);
 
 		G4NistManager *nist = G4NistManager::Instance();
@@ -145,11 +154,15 @@ class ShortNormBrick {
 	G4double ShortNormBrick_long;
 
   public:
-	const G4double L = 100. * mm;
-	const G4double M = 100. * mm;
-	const G4double S = 50. * mm;
+	G4double L;
+	G4double M;
+	G4double S;
 
 	ShortNormBrick(G4LogicalVolume *world_Logical) {
+		L = 100. * mm;
+		M = 100. * mm;
+		S = 50. * mm;
+
 		G4Colour green(0., 1., 0.);
 
 		G4NistManager *nist = G4NistManager::Instance();
@@ -200,12 +213,17 @@ class ShortBrickWithHole {
 	G4double ShortBrickWithHole_long;
 
   public:
-	const G4double L = 100. * mm;
-	const G4double M = 100. * mm;
-	const G4double S = 50. * mm;
-	const G4double Hole_Radius = 22.5 * mm;
+	G4double L;
+	G4double M;
+	G4double S;
+	G4double Hole_Radius;
 
 	ShortBrickWithHole(G4LogicalVolume *world_Logical) {
+		L = 100. * mm;
+		M = 100. * mm;
+		S = 50. * mm;
+		Hole_Radius = 22.5 * mm;
+
 		G4Colour green(0., 1., 0.);
 
 		G4NistManager *nist = G4NistManager::Instance();
@@ -269,12 +287,17 @@ class HalfShortBrickWithHole {
 	G4double HalfShortBrickWithHole_long;
 
   public:
-	const G4double L = 100. * mm;
-	const G4double M = 50. * mm;
-	const G4double S = 50. * mm;
-	const G4double Hole_Radius = 27.5 * mm;
+	G4double L;
+	G4double M;
+	G4double S;
+	G4double Hole_Radius;
 
 	HalfShortBrickWithHole(G4LogicalVolume *world_Logical) {
+		L = 100. * mm;
+		M = 50. * mm;
+		S = 50. * mm;
+		Hole_Radius = 27.5 * mm;
+
 		G4Colour green(0., 1., 0.);
 
 		G4NistManager *nist = G4NistManager::Instance();
@@ -339,11 +362,15 @@ class ConcreteBrick {
 	G4double ConcreteBrick_long;
 
   public:
-	const G4double L = 390. * mm;
-	const G4double M = 190. * mm;
-	const G4double S = 190. * mm;
+	G4double L;
+	G4double M;
+	G4double S;
 
 	ConcreteBrick(G4LogicalVolume *world_Logical) {
+		L = 390. * mm;
+		M = 190. * mm;
+		S = 190. * mm;
+
 		G4Colour white(1., 1., 1.);
 
 		G4NistManager *nist = G4NistManager::Instance();
@@ -394,12 +421,17 @@ class BridgeBrick {
 	G4double BridgeBrick_long;
 
   public:
-	const G4double L = 190. * mm;
-	const G4double M = 95. * mm;
-	const G4double S = 60. * mm;
-	const G4double Hole_Radius = 50. * mm;
+	G4double L;
+	G4double M;
+	G4double S;
+	G4double Hole_Radius;
 
 	BridgeBrick(G4LogicalVolume *world_Logical) {
+		L = 190. * mm;
+		M = 95. * mm;
+		S = 60. * mm;
+		Hole_Radius = 50. * mm;
+
 		G4Colour grey(0.5, 0.5, 0.5);
 
 		G4NistManager *nist = G4NistManager::Instance();
@@ -460,11 +492,15 @@ class ThinNormBrick {
 	G4double ThinNormBrick_long;
 
   public:
-	const G4double L = 200. * mm;
-	const G4double M = 50. * mm;
-	const G4double S = 50. * mm;
+	G4double L;
+	G4double M;
+	G4double S;
 
 	ThinNormBrick(G4LogicalVolume *world_Logical) {
+		L = 200. * mm;
+		M = 50. * mm;
+		S = 50. * mm;
+
 		G4Colour green(0., 1., 0.);
 
 		G4NistManager *nist = G4NistManager::Instance();
@@ -515,11 +551,15 @@ class ShortThinNormBrick {
 	G4double ShortThinNormBrick_long;
 
   public:
-	const G4double L = 100. * mm;
-	const G4double M = 50. * mm;
-	const G4double S = 50. * mm;
+	G4double L;
+	G4double M;
+	G4double S;
 
 	ShortThinNormBrick(G4LogicalVolume *world_Logical) {
+		L = 100. * mm;
+		M = 50. * mm;
+		S = 50. * mm;
+
 		G4Colour green(0., 1., 0.);
 
 		G4NistManager *nist = G4NistManager::Instance();
@@ -573,11 +613,15 @@ class FlatFlatThinNormBrick {
 	G4double FlatFlatThinNormBrick_long;
 
   public:
-	const G4double L = 200. * mm;
-	const G4double M = 50. * mm;
-	const G4double S = 12.5 * mm;
+	G4double L;
+	G4double M;
+	G4double S;
 
 	FlatFlatThinNormBrick(G4LogicalVolume *world_Logical) {
+		L = 200. * mm;
+		M = 50. * mm;
+		S = 12.5 * mm;
+
 		G4Colour green(0., 1., 0.);
 
 		G4NistManager *nist = G4NistManager::Instance();
@@ -632,11 +676,15 @@ class ThreeQuarterShortNormBrick {
 	G4double ThreeQuarterShortNormBrick_long;
 
   public:
-	const G4double L = 150. * mm;
-	const G4double M = 100. * mm;
-	const G4double S = 50. * mm;
+	G4double L;
+	G4double M;
+	G4double S;
 
 	ThreeQuarterShortNormBrick(G4LogicalVolume *world_Logical) {
+		L = 150. * mm;
+		M = 100. * mm;
+		S = 50. * mm;
+
 		G4Colour green(0., 1., 0.);
 
 		G4NistManager *nist = G4NistManager::Instance();
@@ -691,11 +739,15 @@ class FlatConcreteBrick {
 	G4double FlatConcreteBrick_long;
 
   public:
-	const G4double L = 390. * mm;
-	const G4double M = 190. * mm;
-	const G4double S = 95. * mm;
+	G4double L;
+	G4double M;
+	G4double S;
 
 	FlatConcreteBrick(G4LogicalVolume *world_Logical) {
+		L = 390. * mm;
+		M = 190. * mm;
+		S = 95. * mm;
+
 		G4Colour white(1., 1., 1.);
 
 		G4NistManager *nist = G4NistManager::Instance();

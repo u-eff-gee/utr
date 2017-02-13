@@ -10,6 +10,10 @@
 ParticleSD::ParticleSD(const G4String &name, const G4String &hitsCollectionName)
     : G4VSensitiveDetector(name) {
 	collectionName.insert(hitsCollectionName);
+
+	currentEventID = 0;
+	currentTrackID = 0;
+	detectorID = 0;
 }
 
 ParticleSD::~ParticleSD() {}

@@ -33,7 +33,7 @@ void Materials::ConstructMaterials() {
 	// Enriched Ti target from 2014/2015 NRF experiments
 	/******************************************************/
 
-	G4Isotope *Ti50 =
+	/*G4Isotope *Ti50 =
 	    new G4Isotope(name = "50Ti", z = 22, n = 28, a = 49.945791 * g / mole);
 	G4Isotope *Ti49 =
 	    new G4Isotope(name = "49Ti", z = 22, n = 27, a = 48.947870 * g / mole);
@@ -42,7 +42,14 @@ void Materials::ConstructMaterials() {
 	G4Isotope *Ti47 =
 	    new G4Isotope(name = "47Ti", z = 22, n = 25, a = 46.951763 * g / mole);
 	G4Isotope *Ti46 =
-	    new G4Isotope(name = "46Ti", z = 22, n = 24, a = 45.952631 * g / mole);
+	    new G4Isotope(name = "46Ti", z = 22, n = 24, a = 45.952631 * g /
+	mole);*/
+
+	G4Isotope *Ti50 = new G4Isotope(name = "50Ti", z = 22, a = 50);
+	G4Isotope *Ti49 = new G4Isotope(name = "49Ti", z = 22, a = 49);
+	G4Isotope *Ti48 = new G4Isotope(name = "48Ti", z = 22, a = 48);
+	G4Isotope *Ti47 = new G4Isotope(name = "47Ti", z = 22, a = 47);
+	G4Isotope *Ti46 = new G4Isotope(name = "46Ti", z = 22, a = 46);
 
 	G4Element *enriched_Ti =
 	    new G4Element(name = "enriched Ti", symbol = "Ti", ncomponents = 5);
@@ -52,7 +59,6 @@ void Materials::ConstructMaterials() {
 	enriched_Ti->AddIsotope(Ti48, abundance = 24.06 * perCent);
 	enriched_Ti->AddIsotope(Ti47, abundance = 2.53 * perCent);
 	enriched_Ti->AddIsotope(Ti46, abundance = 2.78 * perCent);
-
 	G4Element *nat_O = nist->FindOrBuildElement("O");
 
 	target_TiO2 = new G4Material(name = "enriched Ti", density = 4. * g / cm3,
@@ -65,7 +71,7 @@ void Materials::ConstructMaterials() {
 	// Enriched Kr gas from 2016/2017 NRF experiments
 	/*************************************************/
 
-	G4Isotope *Kr78 = new G4Isotope(name = "78Kr", z = 36, n = 42,
+	/*G4Isotope *Kr78 = new G4Isotope(name = "78Kr", z = 36, n = 42,
 	                                a = 77.920364783 * g / mole);
 	G4Isotope *Kr80 = new G4Isotope(name = "80Kr", z = 36, n = 44,
 	                                a = 79.916378965 * g / mole);
@@ -76,7 +82,14 @@ void Materials::ConstructMaterials() {
 	G4Isotope *Kr84 = new G4Isotope(name = "84Kr", z = 36, n = 48,
 	                                a = 83.811506687 * g / mole);
 	G4Isotope *Kr86 = new G4Isotope(name = "86Kr", z = 36, n = 50,
-	                                a = 85.910610729 * g / mole);
+	                                a = 85.910610729 * g / mole);*/
+
+	G4Isotope *Kr78 = new G4Isotope(name = "78Kr", z = 36, a = 78);
+	G4Isotope *Kr80 = new G4Isotope(name = "80Kr", z = 36, a = 80);
+	G4Isotope *Kr82 = new G4Isotope(name = "82Kr", z = 36, a = 82);
+	G4Isotope *Kr83 = new G4Isotope(name = "83Kr", z = 36, a = 83);
+	G4Isotope *Kr84 = new G4Isotope(name = "84Kr", z = 36, a = 84);
+	G4Isotope *Kr86 = new G4Isotope(name = "86Kr", z = 36, a = 86);
 
 	G4Element *enriched_Kr =
 	    new G4Element(name = "enriched Kr", symbol = "Kr", ncomponents = 6);
@@ -128,7 +141,7 @@ void Materials::ConstructMaterials() {
 	// Enriched Se target from 2016 NRF experiment
 	/*************************************************/
 
-	G4Isotope *Se74 = new G4Isotope(name = "74Se", z = 34, n = 40,
+	/*G4Isotope *Se74 = new G4Isotope(name = "74Se", z = 34, n = 40,
 	                                a = 73.922476436 * g / mole);
 	G4Isotope *Se76 = new G4Isotope(name = "76Se", z = 34, n = 42,
 	                                a = 75.919213597 * g / mole);
@@ -139,7 +152,15 @@ void Materials::ConstructMaterials() {
 	G4Isotope *Se80 = new G4Isotope(name = "80Se", z = 34, n = 46,
 	                                a = 79.916521271 * g / mole);
 	G4Isotope *Se82 = new G4Isotope(name = "82Se", z = 34, n = 48,
-	                                a = 81.916699401 * g / mole);
+	                                a = 81.916699401 * g / mole);*/
+
+	G4Isotope *Se74 = new G4Isotope(name = "74Se", z = 34, a = 74);
+	G4Isotope *Se76 = new G4Isotope(name = "76Se", z = 34, a = 76);
+	G4Isotope *Se77 = new G4Isotope(name = "77Se", z = 34, a = 77);
+	G4Isotope *Se78 = new G4Isotope(name = "78Se", z = 34, a = 78);
+	G4Isotope *Se80 = new G4Isotope(name = "80Se", z = 34, a = 80);
+	G4Isotope *Se82 = new G4Isotope(name = "82Se", z = 34, a = 83);
+	;
 
 	G4Element *enriched_Se =
 	    new G4Element(name = "enriched Se", symbol = "Se", ncomponents = 6);
@@ -165,8 +186,12 @@ void Materials::ConstructMaterials() {
 	// Enriched Sn target from 2016 NRF experiment (preliminary)
 	/************************************************************/
 
-	G4Isotope *Sn120 = new G4Isotope(name = "120Sn", z = 50, n = 70,
-	                                 a = 119.902201634 * g / mole);
+	// G4Isotope *Sn120 = new G4Isotope(name = "120Sn", z = 50, n = 70,
+	//                                 a = 119.902201634 * g / mole);
+	G4Isotope *Sn120 = new G4Isotope(name = "120Sn", z = 50, a = 120);
+	G4cout << "120Sn A = " << Sn120->GetA() << G4endl;
+	G4cout << "120Sn N = " << Sn120->GetN() << G4endl;
+	G4cout << "120Sn Z = " << Sn120->GetZ() << G4endl;
 
 	G4Element *enriched_Sn =
 	    new G4Element(name = "enriched Sn", symbol = "Sn", ncomponents = 1);

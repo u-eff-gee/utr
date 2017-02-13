@@ -45,7 +45,7 @@ class TargetHit : public G4VHit {
 	G4ThreeVector mom;
 };
 
-using TargetHitsCollection = G4THitsCollection<TargetHit>;
+typedef G4THitsCollection<TargetHit> TargetHitsCollection;
 
 extern G4ThreadLocal G4Allocator<TargetHit> *TargetHitAllocator;
 

@@ -64,8 +64,8 @@ void Physics::ConstructProcess() {
 	AddTransportation();
 	ConstructEMPenelope();
 	// ConstructEMLivermore();
-	// ConstructHPNeutron();
-	// ConstructChargedParticle();
+	ConstructHPNeutron();
+	ConstructChargedParticle();
 }
 
 // Penelope Models
@@ -85,7 +85,8 @@ void Physics::ConstructEMPenelope() {
 	G4PhysicsListHelper *ph = G4PhysicsListHelper::GetPhysicsListHelper();
 	G4ProcessManager *procMan = G4Gamma::Gamma()->GetProcessManager();
 
-	auto particleIterator = G4ParticleTable::GetParticleTable()->GetIterator();
+	G4ParticleTableIterator<G4String, G4ParticleDefinition *>
+	    *particleIterator = G4ParticleTable::GetParticleTable()->GetIterator();
 	particleIterator->reset();
 	while ((*particleIterator)()) {
 		G4ParticleDefinition *particle = particleIterator->value();
@@ -161,7 +162,8 @@ void Physics::ConstructEMLivermore() {
 	G4PhysicsListHelper *ph = G4PhysicsListHelper::GetPhysicsListHelper();
 	G4ProcessManager *procMan = G4Gamma::Gamma()->GetProcessManager();
 
-	auto particleIterator = G4ParticleTable::GetParticleTable()->GetIterator();
+	G4ParticleTableIterator<G4String, G4ParticleDefinition *>
+	    *particleIterator = G4ParticleTable::GetParticleTable()->GetIterator();
 	particleIterator->reset();
 	while ((*particleIterator)()) {
 		G4ParticleDefinition *particle = particleIterator->value();
@@ -243,7 +245,8 @@ void Physics::ConstructHPNeutron() {
 
 	G4PhysicsListHelper *ph = G4PhysicsListHelper::GetPhysicsListHelper();
 
-	auto particleIterator = G4ParticleTable::GetParticleTable()->GetIterator();
+	G4ParticleTableIterator<G4String, G4ParticleDefinition *>
+	    *particleIterator = G4ParticleTable::GetParticleTable()->GetIterator();
 	particleIterator->reset();
 	while ((*particleIterator)()) {
 		G4ParticleDefinition *particle = particleIterator->value();
@@ -278,7 +281,8 @@ void Physics::ConstructHPNeutron() {
 void Physics::ConstructChargedParticle() {
 	G4PhysicsListHelper *ph = G4PhysicsListHelper::GetPhysicsListHelper();
 
-	auto particleIterator = G4ParticleTable::GetParticleTable()->GetIterator();
+	G4ParticleTableIterator<G4String, G4ParticleDefinition *>
+	    *particleIterator = G4ParticleTable::GetParticleTable()->GetIterator();
 	particleIterator->reset();
 	while ((*particleIterator)()) {
 		G4ParticleDefinition *particle = particleIterator->value();

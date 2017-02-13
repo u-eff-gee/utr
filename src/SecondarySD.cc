@@ -14,6 +14,10 @@ SecondarySD::SecondarySD(const G4String &name,
                          const G4String &hitsCollectionName)
     : G4VSensitiveDetector(name), fHitsCollection(NULL) {
 	collectionName.insert(hitsCollectionName);
+
+	currentTrackID = 0;
+	currentEventID = 0;
+	detectorID = 0;
 }
 
 SecondarySD::~SecondarySD() {}

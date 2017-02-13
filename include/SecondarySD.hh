@@ -25,10 +25,9 @@ class SecondarySD : public G4VSensitiveDetector {
 
   private:
 	TargetHitsCollection *fHitsCollection;
-	unsigned int nSecondaries = 0;
-	unsigned int currentTrackID = 0;
-	unsigned int currentEventID = 0;
-	unsigned int detectorID = 0;
+	unsigned int currentTrackID;
+	unsigned int currentEventID;
+	unsigned int detectorID;
 };
 
 #endif

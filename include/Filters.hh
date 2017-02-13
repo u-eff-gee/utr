@@ -24,16 +24,25 @@ class FilterCase {
 	G4RotationMatrix *rot;
 
   public:
-	const G4double FilterCase_Length = 80. * mm;           // Estimated
-	const G4double FilterCase_Inner_Radius = 45. * mm;     // Estimated
-	const G4double FilterCase_Wall_Thickness = 2. * mm;    // Estimated
-	const G4double FilterCaseBottomHole_Radius = 40. * mm; // Estimated
-	const G4double FilterCaseBottom_Thickness = 2. * mm;   // Estimated
+	G4double FilterCase_Length;
+	G4double FilterCase_Inner_Radius;
+	G4double FilterCase_Wall_Thickness;
+	G4double FilterCaseBottomHole_Radius;
+	G4double FilterCaseBottom_Thickness;
 
-	G4double Length = FilterCase_Length;
-	G4double Radius = FilterCase_Inner_Radius + FilterCase_Wall_Thickness;
+	G4double Length;
+	G4double Radius;
 
 	FilterCase(G4LogicalVolume *world_Logical) {
+		FilterCase_Length = 80. * mm;           // Estimated
+		FilterCase_Inner_Radius = 45. * mm;     // Estimated
+		FilterCase_Wall_Thickness = 2. * mm;    // Estimated
+		FilterCaseBottomHole_Radius = 40. * mm; // Estimated
+		FilterCaseBottom_Thickness = 2. * mm;   // Estimated
+
+		Length = FilterCase_Length;
+		Radius = FilterCase_Inner_Radius + FilterCase_Wall_Thickness;
+
 		G4Colour white(1., 1., 1.);
 		// G4Colour yellow(1., 1., 0.);
 
@@ -97,14 +106,21 @@ class FilterCaseRing {
 	G4RotationMatrix *rot;
 
   public:
-	const G4double FilterCaseRing_Thickness = 2. * mm;     // Estimated
-	const G4double FilterCaseRing_Radius = 45. * mm;       // Estimated
-	const G4double FilterCaseRing_Inner_Radius = 40. * mm; // Estimated
+	G4double FilterCaseRing_Thickness;
+	G4double FilterCaseRing_Radius;
+	G4double FilterCaseRing_Inner_Radius;
 
-	G4double Thickness = FilterCaseRing_Thickness;
-	G4double Radius = FilterCaseRing_Radius;
+	G4double Thickness;
+	G4double Radius;
 
 	FilterCaseRing(G4LogicalVolume *world_Logical) {
+		FilterCaseRing_Thickness = 2. * mm;     // Estimated
+		FilterCaseRing_Radius = 45. * mm;       // Estimated
+		FilterCaseRing_Inner_Radius = 40. * mm; // Estimated
+
+		Thickness = FilterCaseRing_Thickness;
+		Radius = FilterCaseRing_Radius;
+
 		G4Colour white(1., 1., 1.);
 
 		G4NistManager *nist = G4NistManager::Instance();
@@ -152,10 +168,13 @@ class Pb_45mm_1_4in {
 	G4RotationMatrix *rot;
 
   public:
-	const G4double Thickness = 0.25 * inch; // Measured
-	const G4double Radius = 45. * mm;       // Measured
+	G4double Thickness;
+	G4double Radius;
 
 	Pb_45mm_1_4in(G4LogicalVolume *world_Logical) {
+		Thickness = 0.25 * inch; // Measured
+		Radius = 45. * mm;       // Measured
+
 		G4Colour grey(.5, .5, .5);
 
 		G4NistManager *nist = G4NistManager::Instance();
@@ -202,10 +221,13 @@ class Pb_41_5mm_3_64in {
 	G4RotationMatrix *rot;
 
   public:
-	const G4double Thickness = 3. / 64. * inch; // Measured
-	const G4double Radius = 41.5 * mm;          // Measured
+	G4double Thickness;
+	G4double Radius;
 
 	Pb_41_5mm_3_64in(G4LogicalVolume *world_Logical) {
+		Thickness = 3. / 64. * inch; // Measured
+		Radius = 41.5 * mm;          // Measured
+
 		G4Colour grey(.5, .5, .5);
 
 		G4NistManager *nist = G4NistManager::Instance();
@@ -252,10 +274,13 @@ class Pb_44mm_3_64in {
 	G4RotationMatrix *rot;
 
   public:
-	const G4double Thickness = 3. / 64. * inch; // Measured
-	const G4double Radius = 44. * mm;           // Measured
+	G4double Thickness;
+	G4double Radius;
 
 	Pb_44mm_3_64in(G4LogicalVolume *world_Logical) {
+		Thickness = 3. / 64. * inch; // Measured
+		Radius = 44. * mm;           // Measured
+
 		G4Colour grey(.5, .5, .5);
 
 		G4NistManager *nist = G4NistManager::Instance();
@@ -302,10 +327,13 @@ class Pb_45mm_5_64in {
 	G4RotationMatrix *rot;
 
   public:
-	const G4double Thickness = 5. / 64. * inch; // Measured
-	const G4double Radius = 45. * mm;           // Measured
+	G4double Thickness;
+	G4double Radius;
 
 	Pb_45mm_5_64in(G4LogicalVolume *world_Logical) {
+		Thickness = 5. / 64. * inch; // Measured
+		Radius = 45. * mm;           // Measured
+
 		G4Colour grey(.5, .5, .5);
 
 		G4NistManager *nist = G4NistManager::Instance();
@@ -352,10 +380,13 @@ class Pb_45mm_3_64in {
 	G4RotationMatrix *rot;
 
   public:
-	const G4double Thickness = 3. / 64. * inch; // Measured
-	const G4double Radius = 45. * mm;           // Measured
+	G4double Thickness;
+	G4double Radius;
 
 	Pb_45mm_3_64in(G4LogicalVolume *world_Logical) {
+		Thickness = 3. / 64. * inch; // Measured
+		Radius = 45. * mm;           // Measured
+
 		G4Colour grey(.5, .5, .5);
 
 		G4NistManager *nist = G4NistManager::Instance();
@@ -402,10 +433,13 @@ class Pb_50mm_5_64in {
 	G4RotationMatrix *rot;
 
   public:
-	const G4double Thickness = 5. / 64. * inch; // Measured
-	const G4double Radius = 50. * mm;           // Measured
+	G4double Thickness;
+	G4double Radius;
 
 	Pb_50mm_5_64in(G4LogicalVolume *world_Logical) {
+		Thickness = 5. / 64. * inch; // Measured
+		Radius = 50. * mm;           // Measured
+
 		G4Colour grey(.5, .5, .5);
 
 		G4NistManager *nist = G4NistManager::Instance();
@@ -452,10 +486,13 @@ class Pb_70mm_5mm {
 	G4RotationMatrix *rot;
 
   public:
-	const G4double Thickness = 5. * mm; // Measured
-	const G4double Radius = 70. * mm;   // Measured
+	G4double Thickness;
+	G4double Radius;
 
 	Pb_70mm_5mm(G4LogicalVolume *world_Logical) {
+		Thickness = 5. * mm; // Measured
+		Radius = 70. * mm;   // Measured
+
 		G4Colour grey(.5, .5, .5);
 
 		G4NistManager *nist = G4NistManager::Instance();
@@ -502,10 +539,12 @@ class Cu_45mm_1_8in {
 	G4RotationMatrix *rot;
 
   public:
-	const G4double Thickness = 0.125 * inch; // Measured
-	const G4double Radius = 45. * mm;        // Measured
+	G4double Thickness;
+	G4double Radius;
 
 	Cu_45mm_1_8in(G4LogicalVolume *world_Logical) {
+		Thickness = 0.125 * inch; // Measured
+		Radius = 45. * mm;        // Measured
 		G4Colour orange(1., .5, 0.);
 
 		G4NistManager *nist = G4NistManager::Instance();
@@ -552,10 +591,13 @@ class Cu_45mm_1mm {
 	G4RotationMatrix *rot;
 
   public:
-	const G4double Thickness = 1. * mm; // Measured
-	const G4double Radius = 45. * mm;   // Measured
+	G4double Thickness;
+	G4double Radius;
 
 	Cu_45mm_1mm(G4LogicalVolume *world_Logical) {
+		Thickness = 1. * mm; // Measured
+		Radius = 45. * mm;   // Measured
+
 		G4Colour orange(1., .5, 0.);
 
 		G4NistManager *nist = G4NistManager::Instance();
@@ -602,10 +644,13 @@ class Cu_50mm_1mm {
 	G4RotationMatrix *rot;
 
   public:
-	const G4double Thickness = 1. * mm; // Measured
-	const G4double Radius = 50. * mm;   // Measured
+	G4double Thickness;
+	G4double Radius;
 
 	Cu_50mm_1mm(G4LogicalVolume *world_Logical) {
+		Thickness = 1. * mm; // Measured
+		Radius = 50. * mm;   // Measured
+
 		G4Colour orange(1., .5, 0.);
 
 		G4NistManager *nist = G4NistManager::Instance();
@@ -652,10 +697,13 @@ class Cu_73mm_1_20in {
 	G4RotationMatrix *rot;
 
   public:
-	const G4double Thickness = 0.05 * inch; // Measured
-	const G4double Radius = 73.5 * mm;      // Measured
+	G4double Thickness;
+	G4double Radius;
 
 	Cu_73mm_1_20in(G4LogicalVolume *world_Logical) {
+		Thickness = 0.05 * inch; // Measured
+		Radius = 73.5 * mm;      // Measured
+
 		G4Colour orange(1., .5, 0.);
 
 		G4NistManager *nist = G4NistManager::Instance();

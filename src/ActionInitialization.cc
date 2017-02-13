@@ -12,7 +12,7 @@ void ActionInitialization::BuildForMaster() const {
 }
 
 void ActionInitialization::Build() const {
-	// SetUserAction(new GeneralParticleSource);
-	SetUserAction(new AngularDistributionGenerator);
+	SetUserAction(new GeneralParticleSource);
+	// SetUserAction(new AngularDistributionGenerator);
 	SetUserAction(new RunAction);
 }

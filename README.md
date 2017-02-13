@@ -35,7 +35,20 @@ new G4PVPlacement( ... )
 
 The name "DetectorXY_Name" is the name of the logical volume of the detector crystal which can be used to register it as a sensitive detector.
 
-*TODO List detectors here*
+At the moment, the following detectors are implemented:
+
+* Cologne LaBr, Saint Gobain BrilLanCe 380 1.5x1.5"
+* Darmstadt LaBr, Saint Gobain BrilLanCe 380, 3x3"
+* Duke 60% HPGe "1" (Ortec serial number 36-TN31061A)
+* Duke 60% HPGe "2" (Ortec serial number 36-TN30986A)
+* Duke 60% HPGe "3" (Ortec serial number 36-TN40663A)
+* Duke 60% HPGe "4" (Ortec serial number 36-TN21033A)
+* Duke 55% HPGe (Ortec serial number 4-TN21638A)
+* Duke 55% HPGe (Ortec serial number 4-TN31524A)
+* Duke 120% HPGe "Zero degree detector" (Ortec serial number 33-P40383A)
+* Darmstadt HPGe "1" (Canberra serial number 10PC473156-A)
+* Darmstadt HPGe "2" (Eurisys Mesures serial number 10PC447589-A)
+* Darmstadt Clover "Polarimeter" (Eurisys Mesures serial number 10PC447590-a)
 
 #### 1.1.2 Bricks
 For maximum flexibility, the shielding of the setup can be constructed brick by brick. To avoid the `G4Solid->G4LogicalVolume->G4PhysicalVolume` procedure each time one would like to place a standardized brick, a lot of them are predefined as classes in `Bricks.hh`.
@@ -93,7 +106,7 @@ SetSensitiveDetector("Logic_Name", xySD, true);
 
 The following examples illustrates how the different sensitive detectors work.
 
-![Interaction with sensitive detector](.media/grid.svg)
+![Interaction with sensitive detector](.media/grid.png)
 
 In the figure, a photon (orange, sinusoidal line) and several electrons (blue arrow) are shown which are part of a single event. Each hit in the sensitive detector (black circle) has a label that contains the particle number and the number of the hit. The history of the event is as follows:
 
@@ -135,15 +148,102 @@ vy_real = 1/sqrt(vx^2 + vy^2)*sin(arctan(y/x))*ekin/c
 
 ### 1.3 Event generation
 
-*TODO*
+Event generation is done by classes derived from the `G4VUserPrimaryGeneratorAction`. In the following, the existing event generators are described. To use a certain event generator in the simulation, initialize it by adding
 
+```
+ SetUserAction(new EVENTGENERATORXY)
+```
+
+ to `ActionInitialization::Build()` in `ActionInitialization.cc`. Comment out all other event generators. After that, re-compile the code.
+ 
+#### 1.3.1 GeneralParticleSource
+
+This event generator uses the G4GeneralParticleSource whose parameters can be controlled by a macro file. For further information, see the GEANT4 documentation.
+
+#### 1.3.2 AngularDistributionGenerator
+
+The AngularDistributionGenerator generates monoenergetic particles that originate in a given G4PhysicalVolume of the DetectorConstruction and have a certain angular distribution.
+
+The physical volume (the "source") and angular distribution can have arbitrary shapes. Starting positions and momentum directions are created using a Monte-Carlo method:
+Given a(n)
+
+* Cuboid in 3 dimensions that completely contains the source volume
+* Angular distribution W(θ, φ)
+
+AngularDistributionGenerator generates uniform random
+ 
+* Positions `(random_x, random_y, random_z)` 
+* Tuples `(random_θ, random_φ, random_W)`
+
+until 
+
+* The position `(random_x, random_y, random_z)` is inside the source physical volume
+* `random_W <= W(random_θ, random_φ)`
+
+If both conditions are fulfilled, a particle is emitted from `(random_x, random_y, random_z)` in the direction `(θ, φ)`.
+
+The process of finding a starting point is depicted in the figure below. The yellow star-shaped source volume is inside a dashed box which is the container volume. Random points inside the container volume are either black or red, depending on whether they are inside or outside the source volume. Only from the black points, particles are emitted (in random directions).
+
+![MC position generator](.media/MC_Position_Generator.png)
+
+Clearly, the algorithm works well if
+
+* the cuboid approximates the shape of the source well
+* the angular distribution varies smoothly in the `(θ, φ)` plane
+
+The maximum number of randomly sampled points can be set in `AngularDistributionGenerator.cc`where it says:
+
+```
+MAX_TRIES_POSITION = ...
+MAX_TRIES_MOMENTUM = ...
+```
+
+AngularDistributionGenerator can do a self-check before the actual simulation in which it creates `MAX_TRIES_XY` points and evaluates how many of the were valid. From this, the probability *p* of not hitting the source volume / angular distribution can be estimated. If `p * N >~ 1`, where N is the number of particles to be simulated, the algorithm will very probably fail once in a while, so try increasing `MAX_TRIES_XY`. A typical output of the self-check looks like:
+
+```
+G4WT0 > ========================================================================
+G4WT0 > Checking Monte-Carlo position generator with 100 3D points ...
+G4WT0 > Check finished. Of 100 random 3D points, 82 were inside volume 'Se82_Target' ( 82 % )
+G4WT0 > Probability of failure:	pow( 0.18, 100 ) = 3.36706e-73 %
+G4WT0 > ========================================================================
+```
+
+To change parameters of the AngularDistributionGenerator, edit the constructor in `AngularDistributionGenerator.cc` and the angular distribution parameters at the beginning of the `GeneratePrimaries()` method. The adjustable parameters are:
+
+* `MAX_TRIES_XY`
+* Particle type
+* Particle energy
+* Position and dimensions of the container box
+* Name of the source physical volume
+* Identifiers of the angular distribution
+
+The identifiers of the angular distribution are given to the simulation as an array of numbers called `states` whose length has to be specified by the user.
+For "real" NRF angular distributions, this array of numbers will be the spins of the excited states in a cascade, with the parity indicated by the sign of the numbers. In another array, the multipole mixing ratios between the transitions can be entered.
+
+At the moment, the following distributions are implemented:
+
+* `states == {0.1, 0.1, 0.1}`
+    Wildcard for test distributions
+* `states == {0., 0., 0.}`
+    Isotropic distribution
+* `states == {0., 1., 0.}`
+    0+ -> 1+ -> 0+
+* `states == {0., -1., 0.}`
+    0+ -> 1- -> 0+
+* `states == {0., 2., 0.}`
+    0+ -> 2+ -> 0+
+* `states == {0., 1., 2.}`
+    0+ -> 1+ -> 2+
+* `states == {0., -1., 2.}`
+    0+ -> 1- -> 2+
+        
 ### 1.4 Physics
 The physics processes are defined in `/src/Physics.cc`. In the Physics::ConstructProcess() method, physics lists for groups of particles can be activated by uncommenting the desired physics list. If you are working on a slow machine and you just want to visualize the geometry, it can be advantageous to switch off all physics.
 
 At the moment, physics processes for gammas, electrons/positrons, neutrons and other charged particles are available. Check Physics.cc to see which processes are defined.
 A description of the processes can be found in the [GEANT4 Physics Reference Manual](http://geant4.web.cern.ch/geant4/UserDocumentation/UsersGuides/PhysicsReferenceManual/fo/PhysicsReferenceManual.pdf)
 
-The physics list is largely inspired by the GEANT4 examples `TestEm7` and `Hadr04`
+The physics list is optimized for NRF applications and largely inspired by the GEANT4 examples `TestEm7` and `Hadr04`.
 
 #### 1.4.1 Transportation
 Mandatory for all particles. Without this, the simulation will do nothing.
@@ -158,6 +258,25 @@ A specialized neutron physics framework for low energies.
 
 #### 1.4.4 ChargedParticle
 Standard processes for any other charged particle that might appear in the simulation. The probability for this in NRF applications is low, so this list is not very detailed.
+
+### 1.5 Random Number Engine
+In `utr.cc`, the random number engine's seed is set by using the current CPU time, making it a "real" random generator.
+
+```
+G4Random::setTheEngine(new CLHEP::RanecuEngine);
+// 'Real' random results
+time_t timer;
+G4Random::setTheSeed(time(&timer));
+```
+
+If you want deterministic results for some reason, comment these lines out and uncomment 
+
+```
+G4Random::setTheSeed(long n);
+```
+
+Re-compile afterwards. 
+After this change, every restart of the simulation with unchanged code will yield the same results.
 
 ## 2 Getting started
 
@@ -177,10 +296,16 @@ To compile the simulation, simply execute
 
 ```bash
 $ cmake .
-$ make -j
+$ make
 ```
 
 This will create the `utr` binary in the top directory.
+In case CMake complains that it cannot find `Geant4Config.cmake` or `geant4-config.cmake`, set the *CMAKE_INSTALL_PREFIX* variable to the directory where GEANT4 has been installed:
+
+```bash
+$ cmake -DCMAKE_INSTALL_PREFIX=/PATH/TO/G4/INSTALL .
+$ make
+```
 
 ## 3 Usage
 

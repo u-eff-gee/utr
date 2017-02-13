@@ -22,9 +22,9 @@ class ParticleSD : public G4VSensitiveDetector {
 	void SetDetectorID(unsigned int detID) { detectorID = detID; };
 
   private:
-	unsigned int currentEventID = 0;
-	unsigned int currentTrackID = 0;
-	unsigned int detectorID = 0;
+	unsigned int currentEventID;
+	unsigned int currentTrackID;
+	unsigned int detectorID;
 };
 
 #endif

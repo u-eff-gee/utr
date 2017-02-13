@@ -55,10 +55,10 @@ int main(int argc, char *argv[]) {
 
 	G4Random::setTheEngine(new CLHEP::RanecuEngine);
 	// 'Real' random results
-	// 	time_t timer;
-	//  	G4Random::setTheSeed(time(&timer));
-	// Deterministic results
-	G4Random::setTheSeed(1);
+	time_t timer;
+	G4Random::setTheSeed(time(&timer));
+// Deterministic results
+// G4Random::setTheSeed(1);
 
 #ifdef G4MULTITHREADED
 	G4MTRunManager *runManager = new G4MTRunManager;

@@ -19,13 +19,17 @@ class TargetContainer {
   private:
 	G4LogicalVolume *TargetContainer_Logical;
 
-	const G4double TargetContainer_Length = 20. * mm;
-	const G4double TargetContainer_Wall_Thickness = 1. * mm;
-	const G4double TargetContainer_OuterRadius = 11. * mm;
-	const G4double TargetContainer_InnerRadius = 10. * mm;
+	G4double TargetContainer_Length;
+	G4double TargetContainer_Wall_Thickness;
+	G4double TargetContainer_OuterRadius;
+	G4double TargetContainer_InnerRadius;
 
   public:
 	TargetContainer() {
+		TargetContainer_Length = 20. * mm;        // Measured
+		TargetContainer_Wall_Thickness = 1. * mm; // Measured
+		TargetContainer_OuterRadius = 11. * mm;   // Measured
+		TargetContainer_InnerRadius = 10. * mm;   // Measured
 
 		G4Colour grey(.5, .5, .5);
 
@@ -54,11 +58,13 @@ class TargetContainerCap {
   private:
 	G4LogicalVolume *TargetContainerCap_Logical;
 
-	const G4double TargetContainerCap_Thickness = 2. * mm;
-	const G4double TargetContainerCap_Radius = 10. * mm;
+	G4double TargetContainerCap_Thickness;
+	G4double TargetContainerCap_Radius;
 
   public:
 	TargetContainerCap() {
+		TargetContainerCap_Thickness = 2. * mm;
+		TargetContainerCap_Radius = 10. * mm;
 
 		G4Colour grey(.5, .5, .5);
 

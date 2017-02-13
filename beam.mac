@@ -3,12 +3,12 @@
 /gps/particle gamma
 /gps/pos/type Beam
 /gps/pos/shape Circle
-/gps/pos/radius 1.0 cm
-/gps/pos/centre 0. 0. -300. mm
+/gps/pos/radius 9.525 mm
+/gps/pos/centre 0. 0. -4000. mm
 /gps/direction 0. 0. 1.
 
 /gps/ene/type Mono
-/gps/ene/mono 2. MeV
+/gps/ene/mono 2.98 MeV
 
-/run/printProgress 1000
-/run/beamOn 100000
+/run/printProgress 100000
+/run/beamOn 100000000

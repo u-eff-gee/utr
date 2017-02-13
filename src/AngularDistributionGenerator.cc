@@ -236,7 +236,7 @@ G4bool AngularDistributionGenerator::AngularDistribution(
 			return false;
 		}
 
-		// 0^+ -> 1^+ -> 0^+
+		// 0^+ -> 1^- -> 0^+
 		if (states[0] == 0. && states[1] == -1. && states[2] == 0.) {
 			if (rand_w <= 0.75 * (1 + pow(cos(rand_theta), 2) -
 			                      pow(sin(rand_theta), 2) * cos(2 * rand_phi)) /
