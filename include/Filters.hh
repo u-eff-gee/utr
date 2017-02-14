@@ -48,30 +48,36 @@ class FilterCase {
 
 		G4NistManager *nist = G4NistManager::Instance();
 		G4Material *PE = nist->FindOrBuildMaterial("G4_POLYETHYLENE");
+		G4Material *vacuum = nist->FindOrBuildMaterial("G4_Galactic");
 
 		World_Logical = world_Logical;
 
-		G4Tubs *FilterCase_Solid =
-		    new G4Tubs("FilterCase_Solid", FilterCase_Inner_Radius,
+		G4Tubs *FilterCaseMother_Solid = new G4Tubs("FilterCaseMother_Solid", 0., FilterCase_Inner_Radius + FilterCase_Wall_Thickness, FilterCase_Length * 0.5 , 0.*deg, 360.*deg);
+
+		FilterCase_Logical = new G4LogicalVolume(FilterCaseMother_Solid, vacuum, "FilterCase_Logical");
+		FilterCase_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());
+
+		G4Tubs *FilterCaseWall_Solid =
+		    new G4Tubs("FilterCaseWall_Solid", FilterCase_Inner_Radius,
 		               FilterCase_Inner_Radius + FilterCase_Wall_Thickness,
 		               FilterCase_Length * 0.5, 0. * deg, 360. * deg);
-		FilterCase_Logical = new G4LogicalVolume(FilterCase_Solid, PE,
-		                                         "FilterCase_Logical", 0, 0, 0);
+		G4LogicalVolume* FilterCaseWall_Logical = new G4LogicalVolume(FilterCaseWall_Solid, PE,
+		                                         "FilterCaseWall_Logical", 0, 0, 0);
 
-		FilterCase_Logical->SetVisAttributes(new G4VisAttributes(white));
+		FilterCaseWall_Logical->SetVisAttributes(new G4VisAttributes(white));
+
+		new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), FilterCaseWall_Logical, "FilterCaseWall", FilterCase_Logical, false, 0);
 
 		G4Tubs *FilterCaseBottom_Solid =
-		    new G4Tubs("FilterCaseBottom_Solid", FilterCaseBottomHole_Radius,
-		               FilterCase_Inner_Radius,
-		               FilterCaseBottom_Thickness * 0.5, 0. * deg, 360. * deg);
+		    new G4Tubs("FilterCaseBottom_Solid", FilterCaseBottomHole_Radius, FilterCase_Inner_Radius, FilterCaseBottom_Thickness * 0.5, 0. * deg, 360. * deg);
 		G4LogicalVolume *FilterCaseBottom_Logical = new G4LogicalVolume(
-		    FilterCaseBottom_Solid, PE, "FilterCaseBottom_Logical", 0, 0, 0);
+		    FilterCaseBottom_Solid, PE, "FilterCaseBottom_Logical");
 
 		FilterCaseBottom_Logical->SetVisAttributes(new G4VisAttributes(white));
 
 		new G4PVPlacement(
 		    0, G4ThreeVector(0., 0., FilterCase_Length * 0.5 -
-		                                 FilterCase_Wall_Thickness * 0.5),
+		                                 FilterCaseBottom_Thickness * 0.5),
 		    FilterCaseBottom_Logical, "FilterCaseBottom", FilterCase_Logical,
 		    false, 0);
 
@@ -97,6 +103,7 @@ class FilterCase {
 		                  "FilterCase", World_Logical, false, 0);
 	}
 };
+
 
 class FilterCaseRing {
   private:

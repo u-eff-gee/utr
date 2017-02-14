@@ -189,9 +189,6 @@ void Materials::ConstructMaterials() {
 	// G4Isotope *Sn120 = new G4Isotope(name = "120Sn", z = 50, n = 70,
 	//                                 a = 119.902201634 * g / mole);
 	G4Isotope *Sn120 = new G4Isotope(name = "120Sn", z = 50, a = 120);
-	G4cout << "120Sn A = " << Sn120->GetA() << G4endl;
-	G4cout << "120Sn N = " << Sn120->GetN() << G4endl;
-	G4cout << "120Sn Z = " << Sn120->GetZ() << G4endl;
 
 	G4Element *enriched_Sn =
 	    new G4Element(name = "enriched Sn", symbol = "Sn", ncomponents = 1);

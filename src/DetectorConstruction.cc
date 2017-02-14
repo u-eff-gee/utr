@@ -1103,14 +1103,6 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	/************************** Detectors ***************************/
 	//
-	// 0) ZERODEGREE
-	// 1) HPGE1
-	// 2) HPGE2
-	// 3) HPGE3
-	// 4) HPGE4
-	// 5) POLARIMETER
-	// 6) DETECTOR2
-	//
 	// Placement in spherical coordinate system
 	//
 	//                      y      z = beam direction
@@ -1357,6 +1349,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	        HPGe2_rt * sin(HPGe2_theta) * sin(HPGe2_phi) + HPGe2_dy,
 	        HPGe2_rt * cos(HPGe2_theta) + HPGe2_dz, HPGe2_AngleX, HPGe2_AngleY,
 	        0.);
+
 
 	/************************* HPGe3
 	 * ********************************/

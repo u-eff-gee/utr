@@ -58,8 +58,6 @@ void RunAction::BeginOfRunAction(const G4Run *) {
 			sstr << fileNamePrefix << i << ".root";
 			sstr2 << fileNamePrefix << i << "_t" << threadId << ".root";
 
-			G4cout << "Checking file " << sstr2.str() << G4endl;
-
 			if (fu->FileExists(sstr2.str())) {
 				sstr.str("");
 				sstr2.str("");

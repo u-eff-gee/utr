@@ -4,7 +4,6 @@
 /gps/pos/type Point
 /gps/pos/centre 0. 0. 0. mm
 /gps/ang/type iso
-#/gps/direction 0. -1. 0.
 
 /gps/ene/type Mono
 /gps/ene/mono 2. MeV
