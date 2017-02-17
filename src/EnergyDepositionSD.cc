@@ -1,11 +1,13 @@
 #include "EnergyDepositionSD.hh"
 #include "Analysis.hh"
 #include "G4HCofThisEvent.hh"
+#include "G4RunManager.hh"
 #include "G4SDManager.hh"
 #include "G4Step.hh"
 #include "G4ThreeVector.hh"
 #include "G4VProcess.hh"
 #include "G4ios.hh"
+#include "RunAction.hh"
 #include "TargetHit.hh"
 
 EnergyDepositionSD::EnergyDepositionSD(const G4String &name,
@@ -62,25 +64,60 @@ void EnergyDepositionSD::EndOfEvent(G4HCofThisEvent *) {
 	if (totalEnergyDeposition > 0.) {
 		G4AnalysisManager *analysisManager = G4AnalysisManager::Instance();
 
-		analysisManager->FillNtupleDColumn(
-		    0, (*hitsCollection)[0]->GetKineticEnergy());
-		analysisManager->FillNtupleDColumn(1, totalEnergyDeposition);
-		analysisManager->FillNtupleDColumn(
-		    2, (*hitsCollection)[0]->GetParticleType());
-		analysisManager->FillNtupleDColumn(3, GetDetectorID());
-		analysisManager->FillNtupleDColumn(
-		    4, (*hitsCollection)[0]->GetPosition().x());
-		analysisManager->FillNtupleDColumn(
-		    5, (*hitsCollection)[0]->GetPosition().y());
-		analysisManager->FillNtupleDColumn(
-		    6, (*hitsCollection)[0]->GetPosition().z());
-		analysisManager->FillNtupleDColumn(
-		    7, (*hitsCollection)[0]->GetMomentum().x());
-		analysisManager->FillNtupleDColumn(
-		    8, (*hitsCollection)[0]->GetMomentum().y());
-		analysisManager->FillNtupleDColumn(
-		    9, (*hitsCollection)[0]->GetMomentum().z());
+		RunAction *runAction =
+		    (RunAction *)G4RunManager::GetRunManager()->GetUserRunAction();
+		unsigned int *output_flags = runAction->GetOutputFlags();
 
+		unsigned int nentry = 0;
+
+		if (output_flags[EKIN]) {
+			analysisManager->FillNtupleDColumn(
+			    nentry, (*hitsCollection)[0]->GetKineticEnergy());
+			nentry++;
+		}
+		if (output_flags[EDEP]) {
+			analysisManager->FillNtupleDColumn(nentry, totalEnergyDeposition);
+			nentry++;
+		}
+		if (output_flags[PARTICLE]) {
+			analysisManager->FillNtupleDColumn(
+			    nentry, (*hitsCollection)[0]->GetParticleType());
+			nentry++;
+		}
+		if (output_flags[VOLUME]) {
+			analysisManager->FillNtupleDColumn(nentry, GetDetectorID());
+			nentry++;
+		}
+		if (output_flags[POSX]) {
+			analysisManager->FillNtupleDColumn(
+			    nentry, (*hitsCollection)[0]->GetPosition().x());
+			nentry++;
+		}
+		if (output_flags[POSY]) {
+			analysisManager->FillNtupleDColumn(
+			    nentry, (*hitsCollection)[0]->GetPosition().y());
+			nentry++;
+		}
+		if (output_flags[POSZ]) {
+			analysisManager->FillNtupleDColumn(
+			    nentry, (*hitsCollection)[0]->GetPosition().z());
+			nentry++;
+		}
+		if (output_flags[MOMX]) {
+			analysisManager->FillNtupleDColumn(
+			    nentry, (*hitsCollection)[0]->GetMomentum().x());
+			nentry++;
+		}
+		if (output_flags[MOMY]) {
+			analysisManager->FillNtupleDColumn(
+			    nentry, (*hitsCollection)[0]->GetMomentum().y());
+			nentry++;
+		}
+		if (output_flags[MOMZ]) {
+			analysisManager->FillNtupleDColumn(
+			    nentry, (*hitsCollection)[0]->GetMomentum().z());
+			nentry++;
+		}
 		analysisManager->AddNtupleRow();
 	}
 }

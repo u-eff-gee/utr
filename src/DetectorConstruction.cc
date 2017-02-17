@@ -1350,7 +1350,6 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	        HPGe2_rt * cos(HPGe2_theta) + HPGe2_dz, HPGe2_AngleX, HPGe2_AngleY,
 	        0.);
 
-
 	/************************* HPGe3
 	 * ********************************/
 

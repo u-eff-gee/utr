@@ -78,7 +78,7 @@ Three types of sensitive detectors are implemented at the moment:
 * **SecondarySD**
     Records the first step of any secondary particle inside the sensitive detector.
     
-No matter which type of sensitive detector is chosen, the simulation output will be a [ROOT](https://root.cern.ch/) tree with the following 10 branches:
+No matter which type of sensitive detector is chosen, the simulation output will be a [ROOT](https://root.cern.ch/) tree with a user-defined subset (see section **1.6 Output File Format**) of the following 10 branches:
 
 * **ekin**
     Kinetic energy (in MeV) of the particle at the time of its first hit of the sensitive detector.
@@ -277,6 +277,35 @@ G4Random::setTheSeed(long n);
 
 Re-compile afterwards. 
 After this change, every restart of the simulation with unchanged code will yield the same results.
+
+### 1.6 Output File Format
+In section **1.2 Sensitive Detectors** the format of the ROOT output file was already introduced. The possible branches are 
+
+* **ekin**
+* **edep**
+* **particle**
+* **volume**
+* **x/y/z**
+* **vx/vy/vz**
+
+The user can specify in `ActionInitialization.cc` which of these quantities should be written to the ROOT file, to avoid creating unnecessarily large files. When the `RunAction` is initialized in `ActionInitialization.cc`, set the value of the corresponding output flag to 0 if this quantitiy should not be written to the ROOT file.
+
+For example, the code
+
+```
+output_flags[EKIN] = 0;
+output_flags[EDEP] = 1;
+output_flags[PARTICLE] = 1;
+output_flags[VOLUME] = 1;
+output_flags[POSX] = 0;
+output_flags[POSY] = 0;
+output_flags[POSZ] = 0;
+output_flags[MOMX] = 0;
+output_flags[MOMY] = 0;
+output_flags[MOMZ] = 0;
+```
+
+would only write the energy deposition, the particle type and the senstive detector volume.
 
 ## 2 Getting started
 

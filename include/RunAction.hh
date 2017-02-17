@@ -4,6 +4,17 @@
 #include "G4UserRunAction.hh"
 #include "globals.hh"
 
+#define EKIN 0
+#define EDEP 1
+#define PARTICLE 2
+#define VOLUME 3
+#define POSX 4
+#define POSY 5
+#define POSZ 6
+#define MOMX 7
+#define MOMY 8
+#define MOMZ 9
+
 class RunAction : public G4UserRunAction {
   public:
 	RunAction();
@@ -11,6 +22,15 @@ class RunAction : public G4UserRunAction {
 
 	virtual void BeginOfRunAction(const G4Run *);
 	virtual void EndOfRunAction(const G4Run *);
+
+	void SetOutputFlags(unsigned int *o_flags);
+	unsigned int *GetOutputFlags();
+	unsigned int GetNOutputFlags() { return n_output_flags; };
+
+	static const int n_output_flags = 10;
+
+  private:
+	unsigned int output_flags[n_output_flags];
 };
 
 #endif

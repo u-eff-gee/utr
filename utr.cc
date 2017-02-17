@@ -55,8 +55,8 @@ int main(int argc, char *argv[]) {
 
 	G4Random::setTheEngine(new CLHEP::RanecuEngine);
 	// 'Real' random results
-	 time_t timer;
-	 G4Random::setTheSeed(time(&timer));
+	time_t timer;
+	G4Random::setTheSeed(time(&timer));
 // Deterministic results
 // G4Random::setTheSeed(1);
 
