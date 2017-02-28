@@ -20,8 +20,8 @@ void ActionInitialization::Build() const {
 	RunAction *runAction = new RunAction();
 
 	unsigned int output_flags[runAction->n_output_flags];
-	output_flags[EKIN] = 0;
-	output_flags[EDEP] = 1;
+	output_flags[EKIN] = 1;
+	output_flags[EDEP] = 0;
 	output_flags[PARTICLE] = 1;
 	output_flags[VOLUME] = 1;
 	output_flags[POSX] = 0;
