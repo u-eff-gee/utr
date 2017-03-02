@@ -8,7 +8,7 @@
 /gps/direction 0. 0. 1.
 
 /gps/ene/type Mono
-/gps/ene/mono 2.98 MeV
+/gps/ene/mono 7. MeV
 
-/run/printProgress 100000
+/run/printProgress 10000
 /run/beamOn 100000

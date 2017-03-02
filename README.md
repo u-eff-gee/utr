@@ -315,9 +315,13 @@ These instructions will get you a copy of the simulation running.
 
 To build and run the simulation, the following dependencies are required:
 
-* [Geant4](https://geant4.web.cern.ch/)
+* [Geant4](https://geant4.web.cern.ch/) (tested with version 10.03)
 * CMake (*build*)
 * Make (*build*)
+
+Furthermore, to use the analysis scripts:
+
+* [ROOT](https://root.cern.ch/) (tested with version 5.34/36)
 
 ### 2.2 Compilation
 
@@ -359,12 +363,102 @@ $ ./utr -t NTHREADS
 ```
 Sets the number of threads in multithreaded mode (default: 1)
 
-## 4 License
+## 4 Output Processing
+
+The directory `OutputProcessing` contains some **sample** ROOT scripts that can be used to process the simulation output.
+Executing
+```bash
+$ chmod +x compile_ROOT_scripts.sh
+$ ./compile_ROOT_scripts.sh
+```
+in this directory should compile all the scripts and either create executables in the `utr` directory or simply copy the scripts depending on whether they are standalone programs or really just scripts.
+The compilation may fail if the `ROOTSYS` environment variable is not set on your system.
+Executables can be run like
+```bash
+$ ./EXECUTABLENAME {ARGUMENTS}
+```
+Scripts have to be loaded into ROOT first:
+```bash
+$ root
+root [0] .L SCRIPTNAME.cpp
+root [1] SCRIPTNAME( {ARGUMENTS} )
+```
+### 4.1 RootToTxt.cpp (script)
+`RootToTxt` converts a ROOT output file (*TFile*) containing an n-tuple of data (a *TTree* with *TBranch* objects) to a simple text file with the same content. If you want to convert a ROOT file ROOTFILE, type
+```bash
+$ root
+root [0] .L RootToTxt.cpp
+root [1] RootToTxt( "ROOTFILE" )
+```
+The ROOT file can have a TTree with an arbitrary name and an arbitrary number of TBranch objects. The output text file has the same name as the ROOT file but with a ".txt" suffix.
+Be aware that conversion into text files increases the file size.
+
+### 4.2 getHistogram (executable)
+`getHistogram` sorts the data in an output file into a ROOT histogram and saves the histogram in a new file.
+The script can be used to merge multiple files and extract a histogram from all of them, since large-scale simulations will most probably be run on several threads. The script is used as follows:
+```bash
+$ ./getHistogram TREE PATTERN1 PATTERN2 OUTPUTFILE
+```
+With the arguments
+
+* TREE: Name of the ROOT tree ("utr" in this case)
+* PATTERN1 and 2: Two strings that uniquely identify the set of files you would like to merge
+* OUTPUTFILE: name of the output file that contains the histogram 
+
+**A short example:**
+The typical output of two different simulations on 2 threads each are the files
+```
+master.root
+utr0_t0.root
+utr0_t1.root
+utr1_t0.root
+utr1_t1.root
+```
+(The `master.root` file has to be there but it contains no data) 
+Assuming you would like to merge both threads of `utr0` and get a common histogram, you execute
+```bash
+$ ./getHistogram utr utr0 .root utr0.root
+```
+This will create an output file called `utr0.root` with the desired histogram.
+If, instead, you wanted to merge *all* ROOT files, do
+```bash
+$ ./getHistogram utr utr .root utr0.root
+```
+In this simple example, already the first pattern uniquely identifies the files you want to merge. However, imagine there was a file `utr0.txt` in the same directory, then the second pattern could be used to exclude this.
+The user has to hard-code the desired histograms in `OutputProcessing/GetHistogram.cpp`, i.e. edit the lines
+```
+	// Create histogram
+	TH1* h1 = new TH1F("h1", "Energy Deposition in ZeroDegree", 10000, 0., 10.);
+
+	// Fill histogram from TBranch in TChain with user-defined conditions
+	Double_t Edep, Volume, Particle;
+
+	utr.SetBranchAddress("edep", &Edep);
+	utr.SetBranchAddress("particle", &Particle);
+	utr.SetBranchAddress("volume", &Volume);
+
+	for(int i = 0; i < utr.GetEntries(); i++){
+		utr.GetEntry(i);
+
+		if(Edep > 0. && Volume == 5 && Particle == 22){
+			h1->Fill(Edep);
+		}
+	}
+
+	// Write histogram to a new TFile
+	TFile *of = new TFile(outputfilename, "RECREATE");
+
+	h1->Write();
+```
+The sample code above creates a histogram (0 to 10 MeV, 10^4 bins) of all energy depositions by photons (Particle ==22) in volume 5.
+The shell script `loopGetHistogram.sh` shows how to loop the script over a large number of files.
+
+## 5 License
 
 *TODO*
 
 
-## 5 References
+## 6 References
 
 <a name="ref-g4_1">[1]</a> S. Agostinelli *et al.*, “GEANT4 - a simulation toolkit”, Nucl. Inst. Meth. A **506.3**, 250 (2003). [`doi:10.1016/S0168-9002(03)01368-8`](http://dx.doi.org/10.1016/S0168-9002(03)01368-8).  
 <a name="ref-g4_2">[2]</a> J. Allison *et al.*, “GEANT4 developments and applications”, IEEE Transactions on Nuclear Science, **53.1**, 270 (2006). [`doi:10.1109/TNS.2006.869826`](https://doi.org/10.1109/TNS.2006.869826).  

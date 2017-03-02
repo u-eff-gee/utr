@@ -21,15 +21,15 @@ void ActionInitialization::Build() const {
 
 	unsigned int output_flags[runAction->n_output_flags];
 	output_flags[EKIN] = 1;
-	output_flags[EDEP] = 0;
+	output_flags[EDEP] = 1;
 	output_flags[PARTICLE] = 1;
 	output_flags[VOLUME] = 1;
-	output_flags[POSX] = 0;
-	output_flags[POSY] = 0;
-	output_flags[POSZ] = 0;
-	output_flags[MOMX] = 0;
-	output_flags[MOMY] = 0;
-	output_flags[MOMZ] = 0;
+	output_flags[POSX] = 1;
+	output_flags[POSY] = 1;
+	output_flags[POSZ] = 1;
+	output_flags[MOMX] = 1;
+	output_flags[MOMY] = 1;
+	output_flags[MOMZ] = 1;
 	runAction->SetOutputFlags(output_flags);
 
 	SetUserAction(runAction);

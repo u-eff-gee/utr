@@ -22,3 +22,6 @@ utr
 
 # GEANT4 macros for debugging
 run.mac
+
+# Text files
+*.txt
