@@ -40,7 +40,8 @@ int main(int argc, char* argv[]){
 	}
 
 	// Create histogram
-	TH1* h1 = new TH1F("h1", "Energy Deposition in ZeroDegree", 10000, 0., 10.);
+	TH1* h1 = new TH1F("h1", "Energy Deposition in ZeroDegree (only photons)", 10000, 0., 10.);
+	TH1* h2 = new TH1F("h2", "Energy Deposition in ZeroDegree", 10000, 0., 10.);
 
 	// Fill histogram from TBranch in TChain with user-defined conditions
 	Double_t Edep, Volume, Particle;
@@ -55,12 +56,14 @@ int main(int argc, char* argv[]){
 		if(Edep > 0. && Volume == 5 && Particle == 22){
 			h1->Fill(Edep);
 		}
+		h2->Fill(Edep);
 	}
 
 	// Write histogram to a new TFile
 	TFile *of = new TFile(outputfilename, "RECREATE");
 
 	h1->Write();
+	h2->Write();
 
 	of->Close();
 

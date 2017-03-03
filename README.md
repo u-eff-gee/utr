@@ -453,6 +453,9 @@ The user has to hard-code the desired histograms in `OutputProcessing/GetHistogr
 The sample code above creates a histogram (0 to 10 MeV, 10^4 bins) of all energy depositions by photons (Particle ==22) in volume 5.
 The shell script `loopGetHistogram.sh` shows how to loop the script over a large number of files.
 
+### 4.3 HistogramToTxt.cpp (script)
+A direct follow-up to `getHistogram`, `HistogramToTxt.cpp` takes a ROOT file that contains **only** 1D histograms (*TH1* objects) and converts each histogram to a single text file. The usage is completely analog to RootToTxt.cpp.
+
 ## 5 License
 
 *TODO*
