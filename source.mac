@@ -6,7 +6,7 @@
 /gps/ang/type iso
 
 /gps/ene/type Mono
-/gps/ene/mono 2. MeV
+/gps/ene/mono 3. MeV
 
-/run/printProgress 10000
-/run/beamOn 100000
+/run/printProgress 1000
+/run/beamOn 10000

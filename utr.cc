@@ -17,7 +17,7 @@
 
 using namespace std;
 
-const char *argp_program_version = "0.1.0";
+const char *argp_program_version = "1.0.0";
 const char *argp_program_bug_address = "<ugayer@ikp.tu-darmstadt.de>";
 static char doc[] = "GEANT4 simulation of the UTR at HIGS";
 static char args_doc[] = "MACROFILE";

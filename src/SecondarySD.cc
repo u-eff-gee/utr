@@ -3,13 +3,13 @@
 #include "G4Event.hh"
 #include "G4HCofThisEvent.hh"
 #include "G4RunManager.hh"
-#include "RunAction.hh"
 #include "G4SDManager.hh"
 #include "G4Step.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4ThreeVector.hh"
 #include "G4VProcess.hh"
 #include "G4ios.hh"
+#include "RunAction.hh"
 
 SecondarySD::SecondarySD(const G4String &name,
                          const G4String &hitsCollectionName)
@@ -49,50 +49,57 @@ G4bool SecondarySD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
 
 		unsigned int nentry = 0;
 
-		if (output_flags[EKIN]){
-		analysisManager->FillNtupleDColumn(nentry, track->GetKineticEnergy());
+		if (output_flags[EKIN]) {
+			analysisManager->FillNtupleDColumn(nentry,
+			                                   track->GetKineticEnergy());
 			nentry++;
 		}
-		if (output_flags[EDEP]){
-		analysisManager->FillNtupleDColumn(nentry, aStep->GetTotalEnergyDeposit());
+		if (output_flags[EDEP]) {
+			analysisManager->FillNtupleDColumn(nentry,
+			                                   aStep->GetTotalEnergyDeposit());
 			nentry++;
 		}
-		if (output_flags[PARTICLE]){
-		analysisManager->FillNtupleDColumn(
-		    nentry, track->GetDefinition()->GetPDGEncoding());
+		if (output_flags[PARTICLE]) {
+			analysisManager->FillNtupleDColumn(
+			    nentry, track->GetDefinition()->GetPDGEncoding());
 			nentry++;
 		}
-		if (output_flags[VOLUME]){
-		analysisManager->FillNtupleDColumn(nentry, getDetectorID());
+		if (output_flags[VOLUME]) {
+			analysisManager->FillNtupleDColumn(nentry, getDetectorID());
 			nentry++;
 		}
-		if (output_flags[POSX]){
-		analysisManager->FillNtupleDColumn(nentry, track->GetPosition().x());
+		if (output_flags[POSX]) {
+			analysisManager->FillNtupleDColumn(nentry,
+			                                   track->GetPosition().x());
 			nentry++;
 		}
-		if (output_flags[POSY]){
-		analysisManager->FillNtupleDColumn(nentry, track->GetPosition().y());
+		if (output_flags[POSY]) {
+			analysisManager->FillNtupleDColumn(nentry,
+			                                   track->GetPosition().y());
 			nentry++;
 		}
-		if (output_flags[POSZ]){
-		analysisManager->FillNtupleDColumn(nentry, track->GetPosition().z());
+		if (output_flags[POSZ]) {
+			analysisManager->FillNtupleDColumn(nentry,
+			                                   track->GetPosition().z());
 			nentry++;
 		}
-		if (output_flags[MOMX]){
-		analysisManager->FillNtupleDColumn(nentry, track->GetMomentum().x());
+		if (output_flags[MOMX]) {
+			analysisManager->FillNtupleDColumn(nentry,
+			                                   track->GetMomentum().x());
 			nentry++;
 		}
-		if (output_flags[MOMY]){
-		analysisManager->FillNtupleDColumn(nentry, track->GetMomentum().y());
+		if (output_flags[MOMY]) {
+			analysisManager->FillNtupleDColumn(nentry,
+			                                   track->GetMomentum().y());
 			nentry++;
 		}
-		if (output_flags[MOMZ]){
-		analysisManager->FillNtupleDColumn(nentry, track->GetMomentum().z());
+		if (output_flags[MOMZ]) {
+			analysisManager->FillNtupleDColumn(nentry,
+			                                   track->GetMomentum().z());
 			nentry++;
 		}
 
 		analysisManager->AddNtupleRow();
-
 	}
 
 	return true;

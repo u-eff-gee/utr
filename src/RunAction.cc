@@ -89,6 +89,8 @@ void RunAction::EndOfRunAction(const G4Run *) {
 
 	analysisManager->Write();
 	analysisManager->CloseFile();
+
+	delete G4AnalysisManager::Instance();
 }
 
 void RunAction::SetOutputFlags(unsigned int *o_flags) {
@@ -97,3 +99,31 @@ void RunAction::SetOutputFlags(unsigned int *o_flags) {
 }
 
 unsigned int *RunAction::GetOutputFlags() { return output_flags; }
+
+G4String RunAction::GetOutputFlagName(unsigned int n) {
+	switch (n) {
+	case EKIN:
+		return "EKIN";
+	case EDEP:
+		return "EDEP";
+	case PARTICLE:
+		return "PARTICLE";
+	case VOLUME:
+		return "VOLUME";
+	case POSX:
+		return "POSX";
+	case POSY:
+		return "POSY";
+	case POSZ:
+		return "POSZ";
+	case MOMX:
+		return "MOMX";
+	case MOMY:
+		return "MOMY";
+	case MOMZ:
+		return "MOMZ";
+	default:
+		G4cout << "RunAction: Error! Output flag index not found." << G4endl;
+		return "";
+	}
+}

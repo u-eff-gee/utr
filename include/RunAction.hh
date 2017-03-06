@@ -26,6 +26,7 @@ class RunAction : public G4UserRunAction {
 	void SetOutputFlags(unsigned int *o_flags);
 	unsigned int *GetOutputFlags();
 	unsigned int GetNOutputFlags() { return n_output_flags; };
+	G4String GetOutputFlagName(unsigned int n);
 
 	static const int n_output_flags = 10;
 
