@@ -40,8 +40,8 @@ int main(int argc, char* argv[]){
 	}
 
 	// Create histogram
-	TH1* h1 = new TH1F("h1", "Energy Deposition in ZeroDegree (only photons)", 10000, 0., 10.);
-	TH1* h2 = new TH1F("h2", "Energy Deposition in ZeroDegree", 10000, 0., 10.);
+	TH1* h1 = new TH1F("h1", "Energy Deposition in ZeroDegree (only photons)", 10000, 0.0005, 10.0005);
+	TH1* h2 = new TH1F("h2", "Energy Deposition in ZeroDegree", 10000, 0.0005, 10.0005);
 
 	// Fill histogram from TBranch in TChain with user-defined conditions
 	Double_t Edep, Volume, Particle;
