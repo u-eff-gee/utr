@@ -65,6 +65,7 @@ int main(int argc, char* argv[]){
 			if(Volume == 4)
 				h4->Fill(Edep);
 		}
+		h2->Fill(Edep);
 	}
 
 	// Write histogram to a new TFile
