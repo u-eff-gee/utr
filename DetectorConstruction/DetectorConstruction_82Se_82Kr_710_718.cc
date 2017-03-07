@@ -1134,7 +1134,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	HPGe2 *HPGe2_Instance = new HPGe2("HPGe2");
 	G4LogicalVolume *HPGe2_Logical = HPGe2_Instance->Get_Logical();
 
-	G4double HPGe2_AngleX = 90. * deg;
+	G4double HPGe2_AngleX = 270. * deg;
 	G4double HPGe2_AngleY = 0. * deg;
 
 	G4RotationMatrix *rotateHPGe2 = new G4RotationMatrix();

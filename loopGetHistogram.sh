@@ -6,5 +6,5 @@
 
 for i in `seq 0 1`
 do
-		./getHistogram utr utr"$i"_ .root utr"$i".root 
+		./getHistogram utr utr$i .root utr$i.root 
 done

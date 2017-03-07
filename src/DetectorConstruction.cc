@@ -1057,13 +1057,13 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	G4RotationMatrix *rotateG3Target = new G4RotationMatrix();
 	rotateG3Target->rotateY(180. * deg);
 
-	new G4PVPlacement(
-	    rotateG3Target,
-	    G4ThreeVector(0., 0., -BeamTube_Length_Downstream +
-	                              BeamTube_Length * 0.5 +
-	                              se82_Target->Get_Target_Center()),
-	    Se82_Target_Logical, "Se82_Target_Physical", BeamTubeVacuum_Logical,
-	    false, 0);
+//	new G4PVPlacement(
+//	    rotateG3Target,
+//	    G4ThreeVector(0., 0., -BeamTube_Length_Downstream +
+//	                              BeamTube_Length * 0.5 +
+//	                              se82_Target->Get_Target_Center()),
+//	    Se82_Target_Logical, "Se82_Target_Physical", BeamTubeVacuum_Logical,
+//	    false, 0);
 
 	/**************** Second Target/Source ***************/
 
@@ -1077,14 +1077,14 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	                                           // the TargetTube
 	rotateSecondTarget->rotateX(SecondTarget_AngleX);
 
-	new G4PVPlacement(
-	    rotateSecondTarget,
-	    G4ThreeVector(0., 20. * mm * sin(SecondTarget_AngleX),
-	                  -BeamTube_Length_Downstream + BeamTube_Length * 0.5 +
-	                      Target2_To_Target - kr82_Target->Get_Target_Center() -
-	                      20. * mm * (1 - cos(SecondTarget_AngleX))),
-	    Kr82_Target_Logical, "Kr82_Target_Physical", BeamTubeVacuum_Logical,
-	    false, 0);
+//	new G4PVPlacement(
+//	    rotateSecondTarget,
+//	    G4ThreeVector(0., 20. * mm * sin(SecondTarget_AngleX),
+//	                  -BeamTube_Length_Downstream + BeamTube_Length * 0.5 +
+//	                      Target2_To_Target - kr82_Target->Get_Target_Center() -
+//	                      20. * mm * (1 - cos(SecondTarget_AngleX))),
+//	    Kr82_Target_Logical, "Kr82_Target_Physical", BeamTubeVacuum_Logical,
+//	    false, 0);
 
 	// Box around the target/source. Inside this box, random coordinates for the
 	// AngularDistributionGenerator are sampled in order to find random points
@@ -1278,7 +1278,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	HPGe2 *HPGe2_Instance = new HPGe2("HPGe2");
 	G4LogicalVolume *HPGe2_Logical = HPGe2_Instance->Get_Logical();
 
-	G4double HPGe2_AngleX = 90. * deg;
+	G4double HPGe2_AngleX = 270. * deg;
 	G4double HPGe2_AngleY = 0. * deg;
 
 	G4RotationMatrix *rotateHPGe2 = new G4RotationMatrix();
@@ -1481,7 +1481,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	    G4ThreeVector(HPGe4_rt * sin(HPGe4_theta) * cos(HPGe4_phi),
 	                  HPGe4_rt * sin(HPGe4_theta) * sin(HPGe4_phi) + HPGe4_dy,
 	                  HPGe4_rt * cos(HPGe4_theta) + HPGe4_dz),
-	    HPGe4_Logical, "LaBr", world_log, false, 0);
+	    HPGe4_Logical, "HPGe4", world_log, false, 0);
 
 	// HPGe4 Wrapping
 
@@ -2437,14 +2437,14 @@ void DetectorConstruction::ConstructSDandField() {
 	HPGe1SD->SetDetectorID(1);
 	SetSensitiveDetector("HPGe1", HPGe1SD, true);
 
-	SecondarySD *HPGe2SD = new SecondarySD("HPGe2", "HPGe2");
+	EnergyDepositionSD *HPGe2SD = new EnergyDepositionSD("HPGe2", "HPGe2");
 	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe2SD);
 	HPGe2SD->SetDetectorID(2);
 	SetSensitiveDetector("HPGe2", HPGe2SD, true);
 
-	SecondarySD *HPGe3SD = new SecondarySD("HPGe3", "HPGe3");
+	EnergyDepositionSD *HPGe3SD = new EnergyDepositionSD("HPGe3", "HPGe3");
 	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe3SD);
-	HPGe3SD->SetDetectorID(2);
+	HPGe3SD->SetDetectorID(3);
 	SetSensitiveDetector("HPGe3", HPGe3SD, true);
 
 	EnergyDepositionSD *HPGe4SD = new EnergyDepositionSD("HPGe4", "HPGe4");
@@ -2453,55 +2453,55 @@ void DetectorConstruction::ConstructSDandField() {
 	SetSensitiveDetector("HPGe4", HPGe4SD, true);
 
 	// LaBr detectors in g3
-	EnergyDepositionSD *LaBr1SD = new EnergyDepositionSD("LaBr1", "LaBr1");
-	G4SDManager::GetSDMpointer()->AddNewDetector(LaBr1SD);
-	LaBr1SD->SetDetectorID(11);
-	SetSensitiveDetector("LaBr1", LaBr1SD, true);
-
-	EnergyDepositionSD *LaBr2SD = new EnergyDepositionSD("LaBr2", "LaBr2");
-	G4SDManager::GetSDMpointer()->AddNewDetector(LaBr2SD);
-	LaBr2SD->SetDetectorID(22);
-	SetSensitiveDetector("LaBr2", LaBr2SD, true);
-
-	EnergyDepositionSD *LaBr3SD = new EnergyDepositionSD("LaBr3", "LaBr3");
-	G4SDManager::GetSDMpointer()->AddNewDetector(LaBr3SD);
-	LaBr3SD->SetDetectorID(33);
-	SetSensitiveDetector("LaBr3", LaBr3SD, true);
-
-	EnergyDepositionSD *LaBr4SD = new EnergyDepositionSD("LaBr4", "LaBr4");
-	G4SDManager::GetSDMpointer()->AddNewDetector(LaBr4SD);
-	LaBr4SD->SetDetectorID(44);
-	SetSensitiveDetector("LaBr4", LaBr4SD, true);
+//	EnergyDepositionSD *LaBr1SD = new EnergyDepositionSD("LaBr1", "LaBr1");
+//	G4SDManager::GetSDMpointer()->AddNewDetector(LaBr1SD);
+//	LaBr1SD->SetDetectorID(11);
+//	SetSensitiveDetector("LaBr1", LaBr1SD, true);
+//
+//	EnergyDepositionSD *LaBr2SD = new EnergyDepositionSD("LaBr2", "LaBr2");
+//	G4SDManager::GetSDMpointer()->AddNewDetector(LaBr2SD);
+//	LaBr2SD->SetDetectorID(22);
+//	SetSensitiveDetector("LaBr2", LaBr2SD, true);
+//
+//	EnergyDepositionSD *LaBr3SD = new EnergyDepositionSD("LaBr3", "LaBr3");
+//	G4SDManager::GetSDMpointer()->AddNewDetector(LaBr3SD);
+//	LaBr3SD->SetDetectorID(33);
+//	SetSensitiveDetector("LaBr3", LaBr3SD, true);
+//
+//	EnergyDepositionSD *LaBr4SD = new EnergyDepositionSD("LaBr4", "LaBr4");
+//	G4SDManager::GetSDMpointer()->AddNewDetector(LaBr4SD);
+//	LaBr4SD->SetDetectorID(44);
+//	SetSensitiveDetector("LaBr4", LaBr4SD, true);
 
 	// HPGe detectors in second setup
-	EnergyDepositionSD *Germanium2_TUDSD =
-	    new EnergyDepositionSD("Germanium2_TUD", "Germanium2_TUD");
-	G4SDManager::GetSDMpointer()->AddNewDetector(Germanium2_TUDSD);
-	Germanium2_TUDSD->SetDetectorID(6);
-	SetSensitiveDetector("Germanium2_TUD", Germanium2_TUDSD, true);
-
-	EnergyDepositionSD *HPGe1_55SD =
-	    new EnergyDepositionSD("HPGe1_55", "HPGe1_55");
-	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe1_55SD);
-	HPGe1_55SD->SetDetectorID(7);
-	SetSensitiveDetector("HPGe1_55", HPGe1_55SD, true);
-
-	EnergyDepositionSD *HPGe2_55SD =
-	    new EnergyDepositionSD("HPGe2_55", "HPGe2_55");
-	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe2_55SD);
-	HPGe2_55SD->SetDetectorID(8);
-	SetSensitiveDetector("HPGe2_55", HPGe2_55SD, true);
-
-	EnergyDepositionSD *Polarimeter_TUDSD =
-	    new EnergyDepositionSD("Polarimeter_TUD", "Polarimeter_TUD");
-	G4SDManager::GetSDMpointer()->AddNewDetector(Polarimeter_TUDSD);
-	Polarimeter_TUDSD->SetDetectorID(9);
-	SetSensitiveDetector("Polarimeter_TUD", Polarimeter_TUDSD, true);
+//	EnergyDepositionSD *Germanium2_TUDSD =
+//	    new EnergyDepositionSD("Germanium2_TUD", "Germanium2_TUD");
+//	G4SDManager::GetSDMpointer()->AddNewDetector(Germanium2_TUDSD);
+//	Germanium2_TUDSD->SetDetectorID(6);
+//	SetSensitiveDetector("Germanium2_TUD", Germanium2_TUDSD, true);
+//
+//	EnergyDepositionSD *HPGe1_55SD =
+//	    new EnergyDepositionSD("HPGe1_55", "HPGe1_55");
+//	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe1_55SD);
+//	HPGe1_55SD->SetDetectorID(7);
+//	SetSensitiveDetector("HPGe1_55", HPGe1_55SD, true);
+//
+//	EnergyDepositionSD *HPGe2_55SD =
+//	    new EnergyDepositionSD("HPGe2_55", "HPGe2_55");
+//	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe2_55SD);
+//	HPGe2_55SD->SetDetectorID(8);
+//	SetSensitiveDetector("HPGe2_55", HPGe2_55SD, true);
+//
+//	EnergyDepositionSD *Polarimeter_TUDSD =
+//	    new EnergyDepositionSD("Polarimeter_TUD", "Polarimeter_TUD");
+//	G4SDManager::GetSDMpointer()->AddNewDetector(Polarimeter_TUDSD);
+//	Polarimeter_TUDSD->SetDetectorID(9);
+//	SetSensitiveDetector("Polarimeter_TUD", Polarimeter_TUDSD, true);
 
 	// ZeroDegree detector
-	EnergyDepositionSD *ZeroDegreeSD =
-	    new EnergyDepositionSD("ZeroDegree", "ZeroDegree");
-	G4SDManager::GetSDMpointer()->AddNewDetector(ZeroDegreeSD);
-	ZeroDegreeSD->SetDetectorID(5);
-	SetSensitiveDetector("ZeroDegree", ZeroDegreeSD, true);
+//	EnergyDepositionSD *ZeroDegreeSD =
+//	    new EnergyDepositionSD("ZeroDegree", "ZeroDegree");
+//	G4SDManager::GetSDMpointer()->AddNewDetector(ZeroDegreeSD);
+//	ZeroDegreeSD->SetDetectorID(5);
+//	SetSensitiveDetector("ZeroDegree", ZeroDegreeSD, true);
 }
