@@ -8,6 +8,7 @@ cp loopGetHistogram.sh ..
 # HistogramToTxt.cpp
 g++ -o histogramToTxt HistogramToTxt.cpp `root-config --cflags --glibs`
 cp histogramToTxt ..
+cp loopHistogramToTxt.sh ..
 
 # RootToTxt.cpp
 cp RootToTxt.cpp ..

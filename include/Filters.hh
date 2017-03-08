@@ -16,29 +16,25 @@
 
 #include "DetectorConstruction.hh"
 
-class FilterCase {
+class FilterCaseWall {
   private:
+	G4LogicalVolume *FilterCaseWall_Logical;
 	G4LogicalVolume *World_Logical;
 
-	G4LogicalVolume *FilterCase_Logical;
 	G4RotationMatrix *rot;
 
   public:
 	G4double FilterCase_Length;
 	G4double FilterCase_Inner_Radius;
 	G4double FilterCase_Wall_Thickness;
-	G4double FilterCaseBottomHole_Radius;
-	G4double FilterCaseBottom_Thickness;
 
 	G4double Length;
 	G4double Radius;
 
-	FilterCase(G4LogicalVolume *world_Logical) {
-		FilterCase_Length = 80. * mm;           // Estimated
-		FilterCase_Inner_Radius = 45. * mm;     // Estimated
-		FilterCase_Wall_Thickness = 2. * mm;    // Estimated
-		FilterCaseBottomHole_Radius = 40. * mm; // Estimated
-		FilterCaseBottom_Thickness = 2. * mm;   // Estimated
+	FilterCaseWall(G4LogicalVolume *world_Logical) {
+		FilterCase_Length = 80. * mm;        // Estimated
+		FilterCase_Inner_Radius = 45. * mm;  // Estimated
+		FilterCase_Wall_Thickness = 2. * mm; // Estimated
 
 		Length = FilterCase_Length;
 		Radius = FilterCase_Inner_Radius + FilterCase_Wall_Thickness;
@@ -46,55 +42,28 @@ class FilterCase {
 		G4Colour white(1., 1., 1.);
 		// G4Colour yellow(1., 1., 0.);
 
-		G4NistManager *nist = G4NistManager::Instance();
-		G4Material *PE = nist->FindOrBuildMaterial("G4_POLYETHYLENE");
-		G4Material *vacuum = nist->FindOrBuildMaterial("G4_Galactic");
-
 		World_Logical = world_Logical;
 
-		G4Tubs *FilterCaseMother_Solid =
-		    new G4Tubs("FilterCaseMother_Solid", 0.,
-		               FilterCase_Inner_Radius + FilterCase_Wall_Thickness,
-		               FilterCase_Length * 0.5, 0. * deg, 360. * deg);
-
-		FilterCase_Logical = new G4LogicalVolume(FilterCaseMother_Solid, vacuum,
-		                                         "FilterCase_Logical");
-		FilterCase_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());
+		G4NistManager *nist = G4NistManager::Instance();
+		G4Material *PE = nist->FindOrBuildMaterial("G4_POLYETHYLENE");
 
 		G4Tubs *FilterCaseWall_Solid =
 		    new G4Tubs("FilterCaseWall_Solid", FilterCase_Inner_Radius,
 		               FilterCase_Inner_Radius + FilterCase_Wall_Thickness,
 		               FilterCase_Length * 0.5, 0. * deg, 360. * deg);
-		G4LogicalVolume *FilterCaseWall_Logical = new G4LogicalVolume(
+
+		FilterCaseWall_Logical = new G4LogicalVolume(
 		    FilterCaseWall_Solid, PE, "FilterCaseWall_Logical", 0, 0, 0);
 
 		FilterCaseWall_Logical->SetVisAttributes(new G4VisAttributes(white));
 
-		new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), FilterCaseWall_Logical,
-		                  "FilterCaseWall", FilterCase_Logical, false, 0);
-
-		G4Tubs *FilterCaseBottom_Solid =
-		    new G4Tubs("FilterCaseBottom_Solid", FilterCaseBottomHole_Radius,
-		               FilterCase_Inner_Radius,
-		               FilterCaseBottom_Thickness * 0.5, 0. * deg, 360. * deg);
-		G4LogicalVolume *FilterCaseBottom_Logical = new G4LogicalVolume(
-		    FilterCaseBottom_Solid, PE, "FilterCaseBottom_Logical");
-
-		FilterCaseBottom_Logical->SetVisAttributes(new G4VisAttributes(white));
-
-		new G4PVPlacement(
-		    0, G4ThreeVector(0., 0., FilterCase_Length * 0.5 -
-		                                 FilterCaseBottom_Thickness * 0.5),
-		    FilterCaseBottom_Logical, "FilterCaseBottom", FilterCase_Logical,
-		    false, 0);
-
 		rot = new G4RotationMatrix();
 	}
 
-	~FilterCase(){};
+	~FilterCaseWall(){};
 
 	void Put(G4double x, G4double y, G4double z) {
-		new G4PVPlacement(0, G4ThreeVector(x, y, z), FilterCase_Logical,
+		new G4PVPlacement(0, G4ThreeVector(x, y, z), FilterCaseWall_Logical,
 		                  "FilterCase", World_Logical, false, 0);
 	}
 
@@ -106,8 +75,70 @@ class FilterCase {
 		rot->rotateY(angle_y);
 		rot->rotateZ(angle_z);
 
-		new G4PVPlacement(rot, G4ThreeVector(x, y, z), FilterCase_Logical,
+		new G4PVPlacement(rot, G4ThreeVector(x, y, z), FilterCaseWall_Logical,
 		                  "FilterCase", World_Logical, false, 0);
+	}
+};
+
+class FilterCaseBottom {
+  private:
+	G4LogicalVolume *World_Logical;
+
+	G4LogicalVolume *FilterCaseBottom_Logical;
+	G4RotationMatrix *rot;
+
+  public:
+	G4double FilterCaseBottom_Thickness;
+	G4double FilterCaseBottom_Radius;
+	G4double FilterCaseBottom_Inner_Radius;
+
+	G4double Thickness;
+	G4double Radius;
+
+	FilterCaseBottom(G4LogicalVolume *world_Logical) {
+		FilterCaseBottom_Thickness = 2. * mm;     // Estimated
+		FilterCaseBottom_Radius = 45. * mm;       // Estimated
+		FilterCaseBottom_Inner_Radius = 40. * mm; // Estimated
+
+		Thickness = FilterCaseBottom_Thickness;
+		Radius = FilterCaseBottom_Radius;
+
+		G4Colour white(1., 1., 1.);
+
+		G4NistManager *nist = G4NistManager::Instance();
+		G4Material *PE = nist->FindOrBuildMaterial("G4_POLYETHYLENE");
+
+		World_Logical = world_Logical;
+
+		G4Tubs *FilterCaseBottom_Solid =
+		    new G4Tubs("FilterCaseBottom_Solid", FilterCaseBottom_Inner_Radius,
+		               FilterCaseBottom_Radius,
+		               FilterCaseBottom_Thickness * 0.5, 0. * deg, 360. * deg);
+		FilterCaseBottom_Logical = new G4LogicalVolume(
+		    FilterCaseBottom_Solid, PE, "FilterCaseBottom_Logical", 0, 0, 0);
+
+		FilterCaseBottom_Logical->SetVisAttributes(new G4VisAttributes(white));
+
+		rot = new G4RotationMatrix();
+	}
+
+	~FilterCaseBottom(){};
+
+	void Put(G4double x, G4double y, G4double z) {
+		new G4PVPlacement(0, G4ThreeVector(x, y, z), FilterCaseBottom_Logical,
+		                  "FilterCaseBottom", World_Logical, false, 0);
+	}
+
+	void Put(G4double x, G4double y, G4double z, G4double angle_x,
+	         G4double angle_y, G4double angle_z) {
+
+		rot = new G4RotationMatrix();
+		rot->rotateX(angle_x);
+		rot->rotateY(angle_y);
+		rot->rotateZ(angle_z);
+
+		new G4PVPlacement(rot, G4ThreeVector(x, y, z), FilterCaseBottom_Logical,
+		                  "FilterCaseBottom", World_Logical, false, 0);
 	}
 };
 

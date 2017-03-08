@@ -5,4 +5,5 @@ rm loopGetHistogram.sh
 
 rm RootToTxt.cpp
 
-rm HistogramToTxt.cpp
+rm histogramToTxt
+rm loopHistogramToTxt.sh

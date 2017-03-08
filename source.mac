@@ -4,9 +4,10 @@
 /gps/pos/type Point
 /gps/pos/centre 0. 0. 0. mm
 /gps/ang/type iso
+#/gps/direction 1. 0. 0.
 
 /gps/ene/type Mono
-/gps/ene/mono 3. MeV
+/gps/ene/mono 0.5 MeV
 
-/run/printProgress 10000
-/run/beamOn 1000000
+/run/printProgress 5000
+/run/beamOn 50000
