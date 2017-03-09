@@ -13,8 +13,8 @@ void ActionInitialization::BuildForMaster() const {
 }
 
 void ActionInitialization::Build() const {
-	SetUserAction(new GeneralParticleSource);
-	// SetUserAction(new AngularDistributionGenerator);
+	// SetUserAction(new GeneralParticleSource);
+	SetUserAction(new AngularDistributionGenerator);
 	// SetUserAction(new SteppingAction); // Useful for debugging
 
 	RunAction *runAction = new RunAction();

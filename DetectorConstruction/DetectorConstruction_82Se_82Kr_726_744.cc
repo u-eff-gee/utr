@@ -1072,7 +1072,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	//	    G4ThreeVector(0., 20. * mm * sin(SecondTarget_AngleX),
 	//	                  -BeamTube_Length_Downstream + BeamTube_Length * 0.5 +
 	//	                      Target2_To_Target -
-	//kr82_Target->Get_Target_Center() -
+	// kr82_Target->Get_Target_Center() -
 	//	                      20. * mm * (1 - cos(SecondTarget_AngleX))),
 	//	    Kr82_Target_Logical, "Kr82_Target_Physical", BeamTubeVacuum_Logical,
 	//	    false, 0);

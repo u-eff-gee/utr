@@ -19,13 +19,13 @@ AngularDistributionGenerator::AngularDistributionGenerator()
 	// Set the limit for the number of Monte-Carlo iterations to find a starting
 	// point / initial momentum vector
 	MAX_TRIES_POSITION = 100;
-	MAX_TRIES_MOMENTUM = 5000;
+	MAX_TRIES_MOMENTUM = 100;
 
 	particleGun = new G4ParticleGun(1);
 
 	// Set particle type and energy
 
-	particleName = "geantino";
+	particleName = "gamma";
 	particleEnergy = 3. * MeV;
 
 	G4ParticleTable *particleTable = G4ParticleTable::GetParticleTable();
@@ -62,7 +62,7 @@ void AngularDistributionGenerator::GeneratePrimaries(G4Event *anEvent) {
 
 	// Enter identifiers for the angular distribution to be simulated
 	const G4int nstates = 3;
-	G4double states[nstates] = {0.1, 0.1, 0.1};
+	G4double states[nstates] = {0., 1., 2.};
 	G4double mixing_ratios[nstates - 1] = {0., 0.};
 
 	G4ThreeVector randomOrigin = G4ThreeVector(0., 0., 0.);
@@ -130,7 +130,7 @@ void AngularDistributionGenerator::GeneratePrimaries(G4Event *anEvent) {
 		for (int i = 0; i < MAX_TRIES_MOMENTUM; i++) {
 			random_theta = G4UniformRand() * 180. * deg;
 			random_phi = G4UniformRand() * 360. * deg;
-			random_w = G4UniformRand();
+			random_w = G4UniformRand() * 1.5;
 
 			if (AngularDistribution(random_theta, random_phi, random_w, states,
 			                        nstates, mixing_ratios)) {
@@ -142,9 +142,8 @@ void AngularDistributionGenerator::GeneratePrimaries(G4Event *anEvent) {
 		pnot = (double)1. - p;
 
 		G4cout << "Check finished. Of " << MAX_TRIES_MOMENTUM
-		       << " random 3D points, " << momentum_success
-		       << " were inside volume '" << Source_PV_Name << "' ( "
-		       << p / perCent << " % )" << G4endl;
+		       << " random 3D momentum vectors, " << momentum_success
+		       << " were valid ( " << p / perCent << " % )" << G4endl;
 		G4cout << "Probability of failure:\tpow( " << pnot << ", "
 		       << MAX_TRIES_MOMENTUM
 		       << " ) = " << pow(pnot, MAX_TRIES_MOMENTUM) / perCent << " %"
@@ -173,6 +172,7 @@ void AngularDistributionGenerator::GeneratePrimaries(G4Event *anEvent) {
 			randomOrigin = G4ThreeVector(random_x, random_y, random_z);
 			particleGun->SetParticlePosition(randomOrigin);
 			position_found = true;
+			break;
 		}
 	}
 
@@ -188,6 +188,7 @@ void AngularDistributionGenerator::GeneratePrimaries(G4Event *anEvent) {
 			                                cos(random_theta));
 			particleGun->SetParticleMomentumDirection(randomDirection);
 			momentum_found = true;
+			break;
 		}
 	}
 
@@ -260,14 +261,22 @@ G4bool AngularDistributionGenerator::AngularDistribution(
 		// 0^+ -> 1^- -> 2^+
 		if (states[0] == 0. && states[1] == -1. && states[2] == 2.) {
 
-			if (rand_w <= ((-2. + 3. * sqrt(5.)) *
-			               (-1 + 3 * pow(cos(rand_phi), 2) -
-			                3 * cos(2 * rand_theta) * pow(sin(rand_phi), 2))) /
-			                      (20. * (1 + pow(mixing_ratios[1], 2))) +
-			                  0.125 * (7 + 3 * pow(cos(rand_phi), 2) -
-			                           3 * cos(2 * rand_theta) *
-			                               pow(sin(rand_theta), 2)) /
-			                      1.05) {
+			if (rand_w <=
+			    1. / (1. + pow(mixing_ratios[1], 2)) *
+			        (0.975 +
+			         (-0.33541 + 0.875 * mixing_ratios[1]) * mixing_ratios[1] +
+			         (-0.075 +
+			          (-1.00623 - 0.375 * mixing_ratios[1]) *
+			              mixing_ratios[1]) *
+			             cos(2. * rand_phi) +
+			         pow(cos(rand_theta), 2) *
+			             (0.075 +
+			              (1.00623 + 0.375 * mixing_ratios[1]) *
+			                  mixing_ratios[1] +
+			              (0.075 +
+			               (1.00623 + 0.375 * mixing_ratios[1]) *
+			                   mixing_ratios[1]) *
+			                  cos(2. * rand_phi)))) {
 				return true;
 			}
 			return false;
@@ -275,29 +284,72 @@ G4bool AngularDistributionGenerator::AngularDistribution(
 
 		// 0^+ -> 1^+ -> 2^+
 		if (states[0] == 0. && states[1] == 1. && states[2] == 2.) {
-			if (rand_w <= ((-2. + 3. * sqrt(5.)) *
-			               (-1 + 3 * pow(cos(rand_phi), 2) +
-			                3 * cos(2 * rand_theta) * pow(sin(rand_phi), 2))) /
-			                      (20. * (1 + pow(mixing_ratios[1], 2))) +
-			                  0.125 * (7 + 3 * pow(cos(rand_phi), 2) +
-			                           3 * cos(2 * rand_theta) *
-			                               pow(sin(rand_theta), 2)) /
-			                      1.05) {
+
+			if (rand_w <=
+			    1. / (1. + pow(mixing_ratios[1], 2)) *
+			        (0.975 +
+			         (-0.33541 + 0.875 * mixing_ratios[1]) * mixing_ratios[1] +
+			         (0.075 +
+			          (1.00623 + 0.375 * mixing_ratios[1]) * mixing_ratios[1]) *
+			             cos(2. * rand_phi) +
+			         pow(cos(rand_theta), 2) *
+			             (0.075 +
+			              (1.00623 + 0.375 * mixing_ratios[1]) *
+			                  mixing_ratios[1] +
+			              (-0.075 +
+			               (-1.00623 - 0.375 * mixing_ratios[1]) *
+			                   mixing_ratios[1]) *
+			                  cos(2. * rand_phi)))) {
+				return true;
+			}
+			return false;
+		}
+
+		// 1.5^+ -> 2.5^- -> 1.5^+
+		if (states[0] == 1.5 && states[1] == -2.5 && states[2] == 1.5) {
+
+			if (rand_w <=
+			    1. / ((1. + pow(mixing_ratios[0], 2)) *
+			          (1. + pow(mixing_ratios[1], 2))) *
+			        ((1. + pow(mixing_ratios[0], 2)) *
+			             (1. + pow(mixing_ratios[1], 2)) -
+			         0.5 * (0.374166 -
+			                (1.89737 + 0.190901 * mixing_ratios[1]) *
+			                    mixing_ratios[1]) *
+			             ((0.374166 +
+			               (1.89737 - 0.190901 * mixing_ratios[0]) *
+			                   mixing_ratios[0]) *
+			                  (1. - 3. * pow(cos(rand_theta), 2)) +
+			              0.572703 *
+			                  (-1.96 +
+			                   mixing_ratios[0] * (3.313 + mixing_ratios[0])) *
+			                  (pow(cos(rand_theta), 2) - 1.) *
+			                  cos(2 * rand_phi)) +
+			         0.0621963 * pow(mixing_ratios[0], 2) *
+			             pow(mixing_ratios[1], 2) *
+			             (3. +
+			              pow(cos(rand_theta), 4) *
+			                  (35. - 35. * cos(2 * rand_phi)) -
+			              5. * cos(2 * rand_phi) +
+			              pow(cos(rand_theta), 2) *
+			                  (-30. + 40. * cos(2 * rand_phi))))) {
 				return true;
 			}
 			return false;
 		}
 
 	} else if (nstates == 4) {
-		G4cout << "Warning: AngularDistributionGenera:: Required spin sequence "
-		          "not found."
-		       << G4endl;
+		G4cout
+		    << "Warning: AngularDistributionGenerator:: Required spin sequence "
+		       "not found."
+		    << G4endl;
 		return false;
 
 	} else {
-		G4cout << "Warning: AngularDistributionGenera:: Required spin sequence "
-		          "not found."
-		       << G4endl;
+		G4cout
+		    << "Warning: AngularDistributionGenerator:: Required spin sequence "
+		       "not found."
+		    << G4endl;
 		return false;
 	}
 

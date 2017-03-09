@@ -11,6 +11,8 @@ CTestTestfile.cmake
 
 # Compiled binaries
 utr
+getHistogram
+histogramToTxt
 
 # Root files
 *.root
