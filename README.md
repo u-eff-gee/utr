@@ -167,7 +167,7 @@ The AngularDistributionGenerator generates monoenergetic particles that originat
 The physical volume (the "source") and angular distribution can have arbitrary shapes. Starting positions and momentum directions are created using a Monte-Carlo method:
 Given a(n)
 
-* Cuboid in 3 dimensions that completely contains the source volume
+* Cuboid in 3 dimensions ("container volume") that completely contains the source volume
 * Angular distribution W(θ, φ)
 
 AngularDistributionGenerator generates uniform random
@@ -208,17 +208,21 @@ G4WT0 > Probability of failure:	pow( 0.18, 100 ) = 3.36706e-73 %
 G4WT0 > ========================================================================
 ```
 
-To change parameters of the AngularDistributionGenerator, edit the constructor in `AngularDistributionGenerator.cc` and the angular distribution parameters at the beginning of the `GeneratePrimaries()` method. The adjustable parameters are:
+To change parameters of the AngularDistributionGenerator, an AngularDistributionMessenger has been implemented that makes the following macro commands available:
 
-* `MAX_TRIES_XY`
-* Particle type
-* Particle energy
-* Position and dimensions of the container box
-* Name of the source physical volume
-* Identifiers of the angular distribution
+* `/ang/particle NAME`
+    Set the particle type by name. See the GEANT4 documentation for a list of possible particles.
+* `/ang/energy ENERGY UNIT`
+    Set the kinetic energy of the particle
+* `/ang/nstates NSTATES`
+    Define the number of states for the angular distribution (see below) 
+* `/ang/stateN VALUE`
+    Define state number N (where N is in {1, 2, 3, 4})
+* `/ang/deltaN1N2 VALUE`
+    Define the multipole mixing ratio for the transition between states N1 and N2
 
-The identifiers of the angular distribution are given to the simulation as an array of numbers called `states` whose length has to be specified by the user.
-For "real" NRF angular distributions, this array of numbers will be the spins of the excited states in a cascade, with the parity indicated by the sign of the numbers. In another array, the multipole mixing ratios between the transitions can be entered.
+The identifiers of the angular distribution are given to the simulation as an array of numbers `states  = {state1, state2, ...}` whose length `NSTATES` can to be specified by the user.
+For "real" NRF angular distributions, this array of numbers will be the spins of the excited states in a cascade, with the parity indicated by the sign of the numbers.
 
 At the moment, the following distributions are implemented:
 
@@ -236,6 +240,10 @@ At the moment, the following distributions are implemented:
     0+ -> 1+ -> 2+
 * `states == {0., -1., 2.}`
     0+ -> 1- -> 2+
+* `states == {1.5, -2.5, 1.5}`
+    3/2+ -> 5/2- -> 3/2+
+    
+The source volume and the dimensions of its container box can be set in the constructor of the AngularDistributionGenerator in `/src/AngularDistributionGenerator.cc`. The source volume is addressed via the name of its G4PhysicalVolume.
         
 ### 1.4 Physics
 The physics processes are defined in `/src/Physics.cc`. In the Physics::ConstructProcess() method, physics lists for groups of particles can be activated by uncommenting the desired physics list. If you are working on a slow machine and you just want to visualize the geometry, it can be advantageous to switch off all physics.

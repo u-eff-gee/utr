@@ -1,0 +1,14 @@
+/run/initialize
+
+/ang/particle gamma
+/ang/energy 3.82 MeV
+
+/ang/state1 0.
+/ang/state2 1.
+/ang/state3 2.
+
+/ang/delta12 0.
+/ang/delta23 0.
+
+/run/printProgress 1000000
+/run/beamOn 10000000

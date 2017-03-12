@@ -1,4 +1,3 @@
-#include "AngularDistributionGenerator.hh"
 #include "G4Event.hh"
 #include "G4ParticleGun.hh"
 #include "G4ParticleTable.hh"
@@ -9,6 +8,9 @@
 #include "G4PhysicalConstants.hh"
 #include "G4SystemOfUnits.hh"
 
+#include "AngularDistributionGenerator.hh"
+#include "AngularDistributionMessenger.hh"
+
 #define CHECK_POSITION_GENERATOR 1
 #define CHECK_MOMENTUM_GENERATOR 1
 
@@ -16,23 +18,14 @@ AngularDistributionGenerator::AngularDistributionGenerator()
     : G4VUserPrimaryGeneratorAction(), particleGun(0),
       checked_position_generator(false) {
 
+	angDistMessenger = new AngularDistributionMessenger(this);
+
 	// Set the limit for the number of Monte-Carlo iterations to find a starting
 	// point / initial momentum vector
-	MAX_TRIES_POSITION = 100;
-	MAX_TRIES_MOMENTUM = 100;
+	MAX_TRIES_POSITION = 1000;
+	MAX_TRIES_MOMENTUM = 1000;
 
 	particleGun = new G4ParticleGun(1);
-
-	// Set particle type and energy
-
-	particleName = "gamma";
-	particleEnergy = 3. * MeV;
-
-	G4ParticleTable *particleTable = G4ParticleTable::GetParticleTable();
-	G4ParticleDefinition *particle = particleTable->FindParticle(particleName);
-	particleGun->SetParticleDefinition(particle);
-
-	particleGun->SetParticleEnergy(particleEnergy);
 
 	// Random point will be sampled inside a box located at (source_x, source_y,
 	// source_z). The box has the dimensions [ -range_xyz*0.5 , range_xyz*0.5 ].
@@ -59,11 +52,8 @@ AngularDistributionGenerator::~AngularDistributionGenerator() {
 }
 
 void AngularDistributionGenerator::GeneratePrimaries(G4Event *anEvent) {
-
-	// Enter identifiers for the angular distribution to be simulated
-	const G4int nstates = 3;
-	G4double states[nstates] = {0., 1., 2.};
-	G4double mixing_ratios[nstates - 1] = {0., 0.};
+	particleGun->SetParticleDefinition(particleDefinition);
+	particleGun->SetParticleEnergy(particleEnergy);
 
 	G4ThreeVector randomOrigin = G4ThreeVector(0., 0., 0.);
 	G4ThreeVector randomDirection = G4ThreeVector(0., 0., 1.);
@@ -130,7 +120,7 @@ void AngularDistributionGenerator::GeneratePrimaries(G4Event *anEvent) {
 		for (int i = 0; i < MAX_TRIES_MOMENTUM; i++) {
 			random_theta = G4UniformRand() * 180. * deg;
 			random_phi = G4UniformRand() * 360. * deg;
-			random_w = G4UniformRand() * 1.5;
+			random_w = G4UniformRand()*1.5;
 
 			if (AngularDistribution(random_theta, random_phi, random_w, states,
 			                        nstates, mixing_ratios)) {
@@ -179,7 +169,7 @@ void AngularDistributionGenerator::GeneratePrimaries(G4Event *anEvent) {
 	for (int i = 0; i < MAX_TRIES_MOMENTUM; i++) {
 		random_theta = G4UniformRand() * 180. * deg;
 		random_phi = G4UniformRand() * 360. * deg;
-		random_w = G4UniformRand();
+		random_w = G4UniformRand()*1.5;
 
 		if (AngularDistribution(random_theta, random_phi, random_w, states,
 		                        nstates, mixing_ratios)) {
@@ -205,13 +195,13 @@ void AngularDistributionGenerator::GeneratePrimaries(G4Event *anEvent) {
 }
 
 G4bool AngularDistributionGenerator::AngularDistribution(
-    G4double rand_theta, G4double rand_phi, G4double rand_w, G4double *states,
-    G4int nstates, G4double *mixing_ratios) {
+    G4double rand_theta, G4double rand_phi, G4double rand_w, G4double *st,
+    G4int nst, G4double *mix) {
 
-	if (nstates == 3) {
+	if (nst == 3) {
 		// 0.1^+ -> 0.1^+ -> 0.1^+
 		// Wildcard for test distributions
-		if (states[0] == 0.1 && states[1] == 0.1 && states[2] == 0.1) {
+		if (st[0] == 0.1 && st[1] == 0.1 && st[2] == 0.1) {
 			if (rand_theta >= 85. * deg && rand_theta <= 95. * deg &&
 			    ((rand_phi >= 355. * deg && rand_phi <= 360. * deg) ||
 			     (rand_phi >= 0. * deg && rand_phi <= 5. * deg))) {
@@ -223,32 +213,32 @@ G4bool AngularDistributionGenerator::AngularDistribution(
 
 		// 0^+ -> 0^+ -> 0^+
 		// Isotropic distribution
-		if (states[0] == 0. && states[1] == 0. && states[2] == 0.) {
+		if (st[0] == 0. && st[1] == 0. && st[2] == 0.) {
 			return true;
 		}
 
 		// 0^+ -> 1^+ -> 0^+
-		if (states[0] == 0. && states[1] == 1. && states[2] == 0.) {
-			if (rand_w <= 0.75 * (1 + pow(cos(rand_theta), 2) +
-			                      pow(sin(rand_theta), 2) * cos(2 * rand_phi)) /
-			                  1.5) {
+		if (st[0] == 0. && st[1] == 1. && st[2] == 0.) {
+			if (rand_w <=
+			    0.75 * (1 + pow(cos(rand_theta), 2) +
+			            pow(sin(rand_theta), 2) * cos(2 * rand_phi))) {
 				return true;
 			}
 			return false;
 		}
 
 		// 0^+ -> 1^- -> 0^+
-		if (states[0] == 0. && states[1] == -1. && states[2] == 0.) {
-			if (rand_w <= 0.75 * (1 + pow(cos(rand_theta), 2) -
-			                      pow(sin(rand_theta), 2) * cos(2 * rand_phi)) /
-			                  1.5) {
+		if (st[0] == 0. && st[1] == -1. && st[2] == 0.) {
+			if (rand_w <=
+			    0.75 * (1 + pow(cos(rand_theta), 2) -
+			            pow(sin(rand_theta), 2) * cos(2 * rand_phi))) {
 				return true;
 			}
 			return false;
 		}
 
 		// 0^+ -> 2^+ -> 0^+
-		if (states[0] == 0. && states[1] == 2. && states[2] == 0.) {
+		if (st[0] == 0. && st[1] == 2. && st[2] == 0.) {
 			if (rand_w <=
 			    0.625 * (2 + cos(2 * rand_phi) + cos(4 * rand_phi) -
 			             2 * cos(2 * rand_theta) * (1 + 2 * cos(2 * rand_phi)) *
@@ -259,23 +249,16 @@ G4bool AngularDistributionGenerator::AngularDistribution(
 		}
 
 		// 0^+ -> 1^- -> 2^+
-		if (states[0] == 0. && states[1] == -1. && states[2] == 2.) {
+		if (st[0] == 0. && st[1] == -1. && st[2] == 2.) {
 
 			if (rand_w <=
-			    1. / (1. + pow(mixing_ratios[1], 2)) *
-			        (0.975 +
-			         (-0.33541 + 0.875 * mixing_ratios[1]) * mixing_ratios[1] +
-			         (-0.075 +
-			          (-1.00623 - 0.375 * mixing_ratios[1]) *
-			              mixing_ratios[1]) *
+			    1. / (1. + pow(mix[1], 2)) *
+			        (0.975 + (-0.33541 + 0.875 * mix[1]) * mix[1] +
+			         (-0.075 + (-1.00623 - 0.375 * mix[1]) * mix[1]) *
 			             cos(2. * rand_phi) +
 			         pow(cos(rand_theta), 2) *
-			             (0.075 +
-			              (1.00623 + 0.375 * mixing_ratios[1]) *
-			                  mixing_ratios[1] +
-			              (0.075 +
-			               (1.00623 + 0.375 * mixing_ratios[1]) *
-			                   mixing_ratios[1]) *
+			             (0.075 + (1.00623 + 0.375 * mix[1]) * mix[1] +
+			              (0.075 + (1.00623 + 0.375 * mix[1]) * mix[1]) *
 			                  cos(2. * rand_phi)))) {
 				return true;
 			}
@@ -283,22 +266,16 @@ G4bool AngularDistributionGenerator::AngularDistribution(
 		}
 
 		// 0^+ -> 1^+ -> 2^+
-		if (states[0] == 0. && states[1] == 1. && states[2] == 2.) {
+		if (st[0] == 0. && st[1] == 1. && st[2] == 2.) {
 
 			if (rand_w <=
-			    1. / (1. + pow(mixing_ratios[1], 2)) *
-			        (0.975 +
-			         (-0.33541 + 0.875 * mixing_ratios[1]) * mixing_ratios[1] +
-			         (0.075 +
-			          (1.00623 + 0.375 * mixing_ratios[1]) * mixing_ratios[1]) *
+			    1. / (1. + pow(mix[1], 2)) *
+			        (0.975 + (-0.33541 + 0.875 * mix[1]) * mix[1] +
+			         (0.075 + (1.00623 + 0.375 * mix[1]) * mix[1]) *
 			             cos(2. * rand_phi) +
 			         pow(cos(rand_theta), 2) *
-			             (0.075 +
-			              (1.00623 + 0.375 * mixing_ratios[1]) *
-			                  mixing_ratios[1] +
-			              (-0.075 +
-			               (-1.00623 - 0.375 * mixing_ratios[1]) *
-			                   mixing_ratios[1]) *
+			             (0.075 + (1.00623 + 0.375 * mix[1]) * mix[1] +
+			              (-0.075 + (-1.00623 - 0.375 * mix[1]) * mix[1]) *
 			                  cos(2. * rand_phi)))) {
 				return true;
 			}
@@ -306,27 +283,18 @@ G4bool AngularDistributionGenerator::AngularDistribution(
 		}
 
 		// 1.5^+ -> 2.5^- -> 1.5^+
-		if (states[0] == 1.5 && states[1] == -2.5 && states[2] == 1.5) {
+		if (st[0] == 1.5 && st[1] == -2.5 && st[2] == 1.5) {
 
 			if (rand_w <=
-			    1. / ((1. + pow(mixing_ratios[0], 2)) *
-			          (1. + pow(mixing_ratios[1], 2))) *
-			        ((1. + pow(mixing_ratios[0], 2)) *
-			             (1. + pow(mixing_ratios[1], 2)) -
-			         0.5 * (0.374166 -
-			                (1.89737 + 0.190901 * mixing_ratios[1]) *
-			                    mixing_ratios[1]) *
-			             ((0.374166 +
-			               (1.89737 - 0.190901 * mixing_ratios[0]) *
-			                   mixing_ratios[0]) *
+			    1. / ((1. + pow(mix[0], 2)) * (1. + pow(mix[1], 2))) *
+			        ((1. + pow(mix[0], 2)) * (1. + pow(mix[1], 2)) -
+			         0.5 * (0.374166 - (1.89737 + 0.190901 * mix[1]) * mix[1]) *
+			             ((0.374166 + (1.89737 - 0.190901 * mix[0]) * mix[0]) *
 			                  (1. - 3. * pow(cos(rand_theta), 2)) +
-			              0.572703 *
-			                  (-1.96 +
-			                   mixing_ratios[0] * (3.313 + mixing_ratios[0])) *
+			              0.572703 * (-1.96 + mix[0] * (3.313 + mix[0])) *
 			                  (pow(cos(rand_theta), 2) - 1.) *
 			                  cos(2 * rand_phi)) +
-			         0.0621963 * pow(mixing_ratios[0], 2) *
-			             pow(mixing_ratios[1], 2) *
+			         0.0621963 * pow(mix[0], 2) * pow(mix[1], 2) *
 			             (3. +
 			              pow(cos(rand_theta), 4) *
 			                  (35. - 35. * cos(2 * rand_phi)) -
@@ -338,7 +306,7 @@ G4bool AngularDistributionGenerator::AngularDistribution(
 			return false;
 		}
 
-	} else if (nstates == 4) {
+	} else if (nst == 4) {
 		G4cout
 		    << "Warning: AngularDistributionGenerator:: Required spin sequence "
 		       "not found."
