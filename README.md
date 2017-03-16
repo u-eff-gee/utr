@@ -405,13 +405,14 @@ Be aware that conversion into text files increases the file size.
 `getHistogram` sorts the data in an output file into a ROOT histogram and saves the histogram in a new file.
 The script can be used to merge multiple files and extract a histogram from all of them, since large-scale simulations will most probably be run on several threads. The script is used as follows:
 ```bash
-$ ./getHistogram TREE PATTERN1 PATTERN2 OUTPUTFILE
+$ ./getHistogram TREE PATTERN1 PATTERN2 OUTPUTFILE [ENERGY]
 ```
 With the arguments
 
 * TREE: Name of the ROOT tree ("utr" in this case)
 * PATTERN1 and 2: Two strings that uniquely identify the set of files you would like to merge
-* OUTPUTFILE: name of the output file that contains the histogram 
+* OUTPUTFILE: name of the output file that contains the histogram
+* ENERGY in MeV of the histogram bin that should be printed to the screen while executing `getHistogram`. This optional parameter was introduced because often, one is only interested in the content of a special bin in the histograms (for example the full-energy peak). At the moment, the histograms are defined such that bin `3000` contains the events with an energy deposition between `2.9995 MeV` and `3.0005 MeV` and so on, so there is an easy correspondence between bin number and energy. Be aware of this when you change the binning.
 
 **A short example:**
 The typical output of two different simulations on 2 threads each are the files

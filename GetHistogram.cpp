@@ -11,16 +11,11 @@ using namespace std;
 int main(int argc, char* argv[]){
 	
 	// Command line arguments
+	cout << argc << endl;
 	TString treename = argv[1]; // Name of ROOT tree which should exist in each of the files
 	TString pattern1 = argv[2]; // File name pattern 1
 	TString pattern2 = argv[3]; // File name pattern 2
 	TString outputfilename = argv[4]; // Output file name
-
-	float energy = 0.;
-	if(argc == 6){
-		energy = atof(argv[5]);
-		cout << "Energy = " << energy*1000. << " keV." << endl;
-	}
 
 	// Find all files in the current directory that contain pattern1 and pattern1 and connect them to a TChain
 	TSystemDirectory dir(".",".");
@@ -71,18 +66,6 @@ int main(int argc, char* argv[]){
 			if(Volume == 4)
 				h4->Fill(Edep);
 		}
-	}
-
-	if(argc == 6){
-		int nbin = (int) energy * 1000.;
-		cout << "Counts in histograms at " << energy << " MeV (Reading from bin # " << nbin <<")" << endl;
-		cout << "Bin edges: [" << h1->GetBinLowEdge(nbin) << ", " << (h1->GetBinLowEdge(nbin) + h1->GetBinWidth(nbin)) << "]" << endl;
-
-		cout << "h1\t" << h1->GetBinContent(nbin) << endl;
-		cout << "h2\t" << h2->GetBinContent(nbin) << endl;
-		cout << "h3\t" << h3->GetBinContent(nbin) << endl;
-		cout << "h4\t" << h4->GetBinContent(nbin) << endl;
-
 	}
 
 	// Write histogram to a new TFile
