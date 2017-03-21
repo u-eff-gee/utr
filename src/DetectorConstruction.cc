@@ -1803,7 +1803,7 @@
 	LaBr3_rt = LaBr3_rt - LaBr3_Wrapping_Length * 0.5;
 
 	// LaBr3 Filters
-
+	
 	LaBr3_rt -= fcr->Thickness * 0.5;
 	fcr->Put(LaBr3_rt * sin(LaBr3_theta) * cos(LaBr3_phi),
 	         LaBr3_rt * sin(LaBr3_theta) * sin(LaBr3_phi) + LaBr3_dy,
@@ -1867,7 +1867,7 @@
 
 	// LaBr4 Filters
 
-	LaBr4_rt -= LaBr4_Instance->Get_Length() * 0.5;
+	//LaBr4_rt -= LaBr4_Instance->Get_Length() * 0.5;
 
 	LaBr4_rt -= fcr->Thickness * 0.5;
 	fcr->Put(LaBr4_rt * sin(LaBr4_theta) * cos(LaBr4_phi),
