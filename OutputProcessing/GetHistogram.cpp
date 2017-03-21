@@ -5,6 +5,7 @@
 #include <TFile.h>
 
 #include <iostream>
+#include <stdlib.h>
 
 using namespace std;
 
@@ -74,14 +75,16 @@ int main(int argc, char* argv[]){
 	}
 
 	if(argc == 6){
-		int nbin = (int) energy * 1000.;
+		int nbin = (int) (energy * 1000.);
 		cout << "Counts in histograms at " << energy << " MeV (Reading from bin # " << nbin <<")" << endl;
 		cout << "Bin edges: [" << h1->GetBinLowEdge(nbin) << ", " << (h1->GetBinLowEdge(nbin) + h1->GetBinWidth(nbin)) << "]" << endl;
 
-		cout << "h1\t" << h1->GetBinContent(nbin) << endl;
-		cout << "h2\t" << h2->GetBinContent(nbin) << endl;
-		cout << "h3\t" << h3->GetBinContent(nbin) << endl;
-		cout << "h4\t" << h4->GetBinContent(nbin) << endl;
+//		cout << "h1\t" << h1->GetBinContent(nbin) << endl;
+//		cout << "h2\t" << h2->GetBinContent(nbin) << endl;
+//		cout << "h3\t" << h3->GetBinContent(nbin) << endl;
+//		cout << "h4\t" << h4->GetBinContent(nbin) << endl;
+
+		cout << "[" << h1->GetBinContent(nbin) << ", " <<h2->GetBinContent(nbin) << ", " <<h3->GetBinContent(nbin) << ", " <<h4->GetBinContent(nbin) << "]" << endl;
 
 	}
 

@@ -1,1069 +1,1059 @@
-// Geometry of 82Se - 82Kr experiment
-// Valid from 29.11. 10:40 pm - 02.12. 09:00 am
-// Run 749 - Run 761
-
-#include "DetectorConstruction.hh"
-
-// Materials
-#include "G4Material.hh"
-#include "G4NistManager.hh"
-#include "Materials.hh"
-Materials *Materials::instance = NULL;
-
-// Geometry
-#include "G4Box.hh"
-#include "G4LogicalVolume.hh"
-#include "G4PVPlacement.hh"
-#include "G4RotationMatrix.hh"
-#include "G4SubtractionSolid.hh"
-#include "G4ThreeVector.hh"
-#include "G4Tubs.hh"
-#include "G4UnionSolid.hh"
-#include "G4VisAttributes.hh"
-#include "globals.hh"
-
-// Bricks
-#include "Bricks.hh"
-
-// Filters
-#include "Filters.hh"
-
-// Sensitive Detectors
-#include "EnergyDepositionSD.hh"
-#include "G4SDManager.hh"
-#include "ParticleSD.hh"
-#include "SecondarySD.hh"
-
-// Units
-#include "G4PhysicalConstants.hh"
-#include "G4SystemOfUnits.hh"
-#include "G4UnitsTable.hh"
-
-// Detectors
-#include "Germanium1_TUD.hh"
-#include "Germanium2_TUD.hh"
-#include "HPGe1.hh"
-#include "HPGe1_55.hh"
-#include "HPGe2.hh"
-#include "HPGe2_55.hh"
-#include "HPGe3.hh"
-#include "HPGe4.hh"
-#include "LaBr_Cologne.hh"
-#include "LaBr_TUD.hh"
-#include "Polarimeter_TUD.hh"
-#include "ZeroDegree.hh"
-
-// Targets
-#include "Targets.hh"
-
-#define PI 3.141592
-
-DetectorConstruction::DetectorConstruction() {}
-
-DetectorConstruction::~DetectorConstruction() {}
-
-G4VPhysicalVolume *DetectorConstruction::Construct() {
-
-	G4Colour white(1.0, 1.0, 1.0);
-	G4Colour grey(0.5, 0.5, 0.5);
-	G4Colour black(0.0, 0.0, 0.0);
-	G4Colour red(1.0, 0.0, 0.0);
-	G4Colour green(0.0, 1.0, 0.0);
-	G4Colour blue(0.0, 0.0, 1.0);
-	G4Colour cyan(0.0, 1.0, 1.0);
-	G4Colour magenta(1.0, 0.0, 1.0);
-	G4Colour yellow(1.0, 1.0, 0.0);
-	G4Colour orange(1.0, 0.5, 0.0);
-	G4Colour light_orange(1.0, 0.82, 0.36);
-
-	G4NistManager *nist = G4NistManager::Instance();
-
-	G4Material *Al = nist->FindOrBuildMaterial("G4_Al");
-	G4Material *vacuum = nist->FindOrBuildMaterial("G4_Galactic");
-	G4Material *air = nist->FindOrBuildMaterial("G4_AIR");
-	G4Material *Pb = nist->FindOrBuildMaterial("G4_Pb");
-	G4Material *Plexiglass = nist->FindOrBuildMaterial("G4_PLEXIGLASS");
-	G4Material *Fe = nist->FindOrBuildMaterial("G4_Fe");
-	G4Material *Concrete = nist->FindOrBuildMaterial("G4_CONCRETE");
-	G4Material *Scintillator_Plastic =
-	    nist->FindOrBuildMaterial("G4_PLASTIC_SC_VINYLTOLUENE");
-
-	/***************** World Volume *****************/
-
-	G4double world_x = 4000. * mm;
-	G4double world_y = 4000. * mm;
-	G4double world_z = 9000. * mm;
-
-	G4Box *world_dim =
-	    new G4Box("world_dim", world_x * 0.5, world_y * 0.5, world_z * 0.5);
-
-	G4LogicalVolume *world_log =
-	    new G4LogicalVolume(world_dim, air, "world_log", 0, 0, 0);
-
-	world_log->SetVisAttributes(G4VisAttributes::GetInvisible());
-
-	G4VPhysicalVolume *world_phys =
-	    new G4PVPlacement(0, G4ThreeVector(), world_log, "world", 0, false, 0);
-
-	/************************* g3 Wheel *****************/
-	// Consists of 7 rings with different outer diameter and thickness
-	// Numbering goes from 0 for upstream to 6 for downstream
-
-	G4double Wall6_To_Target = 250. * mm; // Measured
-
-	G4double Wheel_Inner_Radius =
-	    205 * mm; // Used in simulation by J. Isaak and B. Loeher
-
-	G4double Wheel_Outer_Radius0 = 270. * mm;  // Measured
-	G4double Wheel_Outer_Radius1 = 455 * mm;   // Used in simulation by J. Isaak
-	                                           // and B. Loeher. Measured radii
-	                                           // relative to this one.
-	G4double Wheel_Outer_Radius2 = 355. * mm;  // Measured
-	G4double Wheel_Outer_Radius3 = 254.2 * mm; // Measured
-	G4double Wheel_Outer_Radius4 = 355. * mm;  // Measured
-	G4double Wheel_Outer_Radius5 = 292. * mm;  // Measured
-	G4double Wheel_Outer_Radius6 = 312. * mm;  // Measured
-
-	G4double Wheel_Thickness0 = 20. * mm;
-	G4double Wheel_Thickness1 = 13. * mm;
-	G4double Wheel_Thickness2 = 13. * mm;
-	G4double Wheel_Thickness3 = 24. * mm;
-	G4double Wheel_Thickness4 = 13. * mm;
-	G4double Wheel_Thickness5 = 20. * mm;
-	G4double Wheel_Thickness6 = 25. * mm;
-
-	G4double Wheel_Total_Thickness = Wheel_Thickness0 + Wheel_Thickness1 +
-	                                 Wheel_Thickness2 + Wheel_Thickness3 +
-	                                 Wheel_Thickness4 + Wheel_Thickness5 +
-	                                 Wheel_Thickness6;
-
-	G4double Wheel_To_Target_Position = Wall6_To_Target - Wheel_Total_Thickness;
-	G4Material *Wheel_Material = Al;
-
-	// Ring 0
-	G4Tubs *Wheel0_Solid =
-	    new G4Tubs("Wheel0_Solid", Wheel_Inner_Radius, Wheel_Outer_Radius0,
-	               Wheel_Thickness0 * 0.5, 0 * deg, 360 * deg);
-	G4LogicalVolume *Wheel0_Logical = new G4LogicalVolume(
-	    Wheel0_Solid, Wheel_Material, "Wheel0_Logical", 0, 0, 0);
-	Wheel0_Logical->SetVisAttributes(new G4VisAttributes(grey));
-	new G4PVPlacement(0, G4ThreeVector(0., 0., Wall6_To_Target -
-	                                               Wheel_Total_Thickness +
-	                                               Wheel_Thickness0 * 0.5),
-	                  Wheel0_Logical, "Wheel0", world_log, false, 0);
-
-	// Ring 1
-	G4Tubs *Wheel1_Solid =
-	    new G4Tubs("Wheel1_Solid", Wheel_Inner_Radius, Wheel_Outer_Radius1,
-	               Wheel_Thickness1 * 0.5, 0 * deg, 360 * deg);
-	G4LogicalVolume *Wheel1_Logical = new G4LogicalVolume(
-	    Wheel1_Solid, Wheel_Material, "Wheel1_Logical", 0, 0, 0);
-	Wheel1_Logical->SetVisAttributes(new G4VisAttributes(grey));
-	new G4PVPlacement(
-	    0, G4ThreeVector(0., 0., Wall6_To_Target - Wheel_Total_Thickness +
-	                                 Wheel_Thickness0 + Wheel_Thickness1 * 0.5),
-	    Wheel1_Logical, "Wheel1", world_log, false, 0);
-
-	// Ring 2
-	G4Tubs *Wheel2_Solid =
-	    new G4Tubs("Wheel2_Solid", Wheel_Inner_Radius, Wheel_Outer_Radius2,
-	               Wheel_Thickness2 * 0.5, 0 * deg, 360 * deg);
-	G4LogicalVolume *Wheel2_Logical = new G4LogicalVolume(
-	    Wheel2_Solid, Wheel_Material, "Wheel2_Logical", 0, 0, 0);
-	Wheel2_Logical->SetVisAttributes(new G4VisAttributes(grey));
-	new G4PVPlacement(
-	    0, G4ThreeVector(0., 0., Wall6_To_Target - Wheel_Total_Thickness +
-	                                 Wheel_Thickness0 + Wheel_Thickness1 +
-	                                 Wheel_Thickness2 * 0.5),
-	    Wheel2_Logical, "Wheel2", world_log, false, 0);
-
-	// Ring 3
-	G4Tubs *Wheel3_Solid =
-	    new G4Tubs("Wheel3_Solid", Wheel_Inner_Radius, Wheel_Outer_Radius3,
-	               Wheel_Thickness3 * 0.5, 0 * deg, 360 * deg);
-	G4LogicalVolume *Wheel3_Logical = new G4LogicalVolume(
-	    Wheel3_Solid, Wheel_Material, "Wheel3_Logical", 0, 0, 0);
-	Wheel3_Logical->SetVisAttributes(new G4VisAttributes(grey));
-	new G4PVPlacement(
-	    0, G4ThreeVector(0., 0., Wall6_To_Target - Wheel_Total_Thickness +
-	                                 Wheel_Thickness0 + Wheel_Thickness1 +
-	                                 Wheel_Thickness2 + Wheel_Thickness3 * 0.5),
-	    Wheel3_Logical, "Wheel3", world_log, false, 0);
-
-	// Ring 4
-	G4Tubs *Wheel4_Solid =
-	    new G4Tubs("Wheel4_Solid", Wheel_Inner_Radius, Wheel_Outer_Radius4,
-	               Wheel_Thickness4 * 0.5, 0 * deg, 360 * deg);
-	G4LogicalVolume *Wheel4_Logical = new G4LogicalVolume(
-	    Wheel4_Solid, Wheel_Material, "Wheel4_Logical", 0, 0, 0);
-	Wheel4_Logical->SetVisAttributes(new G4VisAttributes(grey));
-	new G4PVPlacement(
-	    0, G4ThreeVector(0., 0., Wall6_To_Target - Wheel_Total_Thickness +
-	                                 Wheel_Thickness0 + Wheel_Thickness1 +
-	                                 Wheel_Thickness2 + Wheel_Thickness3 +
-	                                 Wheel_Thickness4 * 0.5),
-	    Wheel4_Logical, "Wheel4", world_log, false, 0);
-
-	// Ring 5
-	G4Tubs *Wheel5_Solid =
-	    new G4Tubs("Wheel5_Solid", Wheel_Inner_Radius, Wheel_Outer_Radius5,
-	               Wheel_Thickness5 * 0.5, 0 * deg, 360 * deg);
-	G4LogicalVolume *Wheel5_Logical = new G4LogicalVolume(
-	    Wheel5_Solid, Wheel_Material, "Wheel5_Logical", 0, 0, 0);
-	Wheel5_Logical->SetVisAttributes(new G4VisAttributes(grey));
-	new G4PVPlacement(
-	    0, G4ThreeVector(0., 0., Wall6_To_Target - Wheel_Total_Thickness +
-	                                 Wheel_Thickness0 + Wheel_Thickness1 +
-	                                 Wheel_Thickness2 + Wheel_Thickness3 +
-	                                 Wheel_Thickness4 + Wheel_Thickness5 * 0.5),
-	    Wheel5_Logical, "Wheel5", world_log, false, 0);
-
-	// Ring 6
-	G4Tubs *Wheel6_Solid =
-	    new G4Tubs("Wheel6_Solid", Wheel_Inner_Radius, Wheel_Outer_Radius6,
-	               Wheel_Thickness6 * 0.5, 0 * deg, 360 * deg);
-	G4LogicalVolume *Wheel6_Logical = new G4LogicalVolume(
-	    Wheel6_Solid, Wheel_Material, "Wheel6_Logical", 0, 0, 0);
-	Wheel6_Logical->SetVisAttributes(new G4VisAttributes(grey));
-	new G4PVPlacement(
-	    0, G4ThreeVector(0., 0., Wall6_To_Target - Wheel_Total_Thickness +
-	                                 Wheel_Thickness0 + Wheel_Thickness1 +
-	                                 Wheel_Thickness2 + Wheel_Thickness3 +
-	                                 Wheel_Thickness4 + Wheel_Thickness5 +
-	                                 Wheel_Thickness6 * 0.5),
-	    Wheel6_Logical, "Wheel6", world_log, false, 0);
-
-	/************************* Beam Tube  *****************/
-
-	// Tube
-
-	G4double BeamTube_Outer_Radius = 1. * inch;     // Measured
-	G4double BeamTube_Length_Upstream = 2600. * mm; // Estimated
-	G4double BeamTube_Length_Downstream =
-	    2526.5 * mm - 15. * inch; // Measured, 2526.5*mm is ZeroDegree_Z. This
-	                              // variable will be defined later, but for
-	                              // readability reasons, used only the
-	                              // numerical value here.
-	G4double BeamTube_Length =
-	    BeamTube_Length_Upstream + BeamTube_Length_Downstream;
-	G4double BeamTube_Thickness = 3 * mm; // Estimated
-
-	G4Tubs *BeamTube_Solid = new G4Tubs(
-	    "BeamTube_Solid", BeamTube_Outer_Radius - BeamTube_Thickness,
-	    BeamTube_Outer_Radius, BeamTube_Length / 2., 0. * deg, 360. * deg);
-
-	G4LogicalVolume *BeamTube_Logical = new G4LogicalVolume(
-	    BeamTube_Solid, Plexiglass, "BeamTube_Logial", 0, 0, 0);
-
-	BeamTube_Logical->SetVisAttributes(new G4VisAttributes(white));
-
-	new G4PVPlacement(0, G4ThreeVector(0., 0., BeamTube_Length_Downstream -
-	                                               BeamTube_Length / 2.),
-	                  BeamTube_Logical, "BeamTube", world_log, false, 0);
-
-	// End cap on upstream side
-
-	G4double BeamTubeEndCap_Outer_Radius = 1.3 * inch; // Estimated
-	G4double BeamTubeEndCap_Length = 30. * mm;         // Estimated
-
-	G4Tubs *BeamTubeEndCap_Solid =
-	    new G4Tubs("BeamTubeEndCap_Solid", BeamTube_Outer_Radius,
-	               BeamTubeEndCap_Outer_Radius, BeamTubeEndCap_Length / 2.,
-	               0. * deg, 360. * deg);
-	G4LogicalVolume *BeamTubeEndCap_Logical = new G4LogicalVolume(
-	    BeamTubeEndCap_Solid, Plexiglass, "BeamTubeEndCap_Logical", 0, 0, 0);
-
-	BeamTubeEndCap_Logical->SetVisAttributes(new G4VisAttributes(white));
-
-	new G4PVPlacement(0, G4ThreeVector(0., 0., -BeamTube_Length_Upstream +
-	                                               BeamTubeEndCap_Length / 2.),
-	                  BeamTubeEndCap_Logical, "BeamTubeEndCap", world_log,
-	                  false, 0);
-
-	G4double BeamTubeEndCapWindow_Thickness = 2. * mm; // Estimated
-
-	G4Tubs *BeamTubeEndCapWindow_Solid = new G4Tubs(
-	    "BeamTubeEndCapWindow_Solid", 0., BeamTubeEndCap_Outer_Radius,
-	    BeamTubeEndCapWindow_Thickness / 2., 0. * deg, 360. * deg);
-	G4LogicalVolume *BeamTubeEndCapWindow_Logical =
-	    new G4LogicalVolume(BeamTubeEndCapWindow_Solid, Plexiglass,
-	                        "BeamTubeEndCapWindow_Logical", 0, 0, 0);
-
-	BeamTubeEndCapWindow_Logical->SetVisAttributes(new G4VisAttributes(white));
-
-	new G4PVPlacement(
-	    0, G4ThreeVector(0., 0., -BeamTube_Length_Upstream -
-	                                 BeamTubeEndCapWindow_Thickness / 2.),
-	    BeamTubeEndCapWindow_Logical, "BeamTubeEndCapWindow", world_log, false,
-	    0);
-
-	// Vacuum inside beam tube
-
-	G4Tubs *BeamTubeVacuum_Solid =
-	    new G4Tubs("BeamTubeVacuum_Solid", 0. * mm,
-	               BeamTube_Outer_Radius - BeamTube_Thickness,
-	               BeamTube_Length / 2., 0. * deg, 360. * deg);
-	G4LogicalVolume *BeamTubeVacuum_Logical = new G4LogicalVolume(
-	    BeamTubeVacuum_Solid, vacuum, "BeamTubeVacuum_Logical", 0, 0, 0);
-
-	BeamTubeVacuum_Logical->SetVisAttributes(new G4VisAttributes(cyan));
-
-	new G4PVPlacement(0, G4ThreeVector(0., 0., BeamTube_Length_Downstream -
-	                                               BeamTube_Length / 2.),
-	                  BeamTubeVacuum_Logical, "BeamTubeVacuum", world_log,
-	                  false, 0);
-
-	/******************** Target Holder Tube without cap ***********/
-
-	G4double TargetTube_Outer_Radius =
-	    BeamTube_Outer_Radius - BeamTube_Thickness;
-	G4double TargetTubeBack_Length = 500. * mm;  // Estimated
-	G4double TargetTubeBack_Thickness = 2. * mm; // Measured
-
-	G4double TargetTubeFront_Length = 50. * mm;   // Measured
-	G4double TargetTubeFront_Thickness = 1. * mm; // Measured
-
-	G4double TargetTube_Total_Length =
-	    TargetTubeFront_Length + TargetTubeBack_Length;
-
-	G4Tubs *TargetTubeBack_Solid =
-	    new G4Tubs("TargetTubeback_Solid",
-	               TargetTube_Outer_Radius - TargetTubeBack_Thickness,
-	               TargetTube_Outer_Radius, TargetTubeBack_Length * 0.5,
-	               0. * deg, 360. * deg);
-	G4Tubs *TargetTubeFront_Solid =
-	    new G4Tubs("TargetTubeFront_Solid",
-	               TargetTube_Outer_Radius - TargetTubeFront_Thickness,
-	               TargetTube_Outer_Radius, TargetTubeFront_Length * 0.5,
-	               0. * deg, 360. * deg);
-
-	G4UnionSolid *TargetTube_Solid = new G4UnionSolid(
-	    "TargetTube_Solid", TargetTubeBack_Solid, TargetTubeFront_Solid, 0,
-	    G4ThreeVector(0., 0., -TargetTubeBack_Length * 0.5 -
-	                              TargetTubeFront_Length * 0.5));
-
-	G4LogicalVolume *TargetTube_Logical = new G4LogicalVolume(
-	    TargetTube_Solid, Plexiglass, "TargetTube_Logical", 0, 0, 0);
-
-	TargetTube_Logical->SetVisAttributes(new G4VisAttributes(orange));
-
-	new G4PVPlacement(0, G4ThreeVector(0., 0., TargetTube_Total_Length * 0.5),
-	                  TargetTube_Logical, "TargetTube", world_log, false, 0);
-
-	/********************* Target holder ring *********************/
-
-	G4double TargetRingWall_Thickness = 2. * mm; // Measured
-	G4double TargetRing_Length = 20. * mm;       // Measured
-
-	G4Tubs *TargetRing_Solid =
-	    new G4Tubs("TargetRing_Solid",
-	               TargetTube_Outer_Radius - TargetTubeFront_Thickness -
-	                   TargetRingWall_Thickness,
-	               TargetTube_Outer_Radius - TargetTubeFront_Thickness,
-	               TargetRing_Length * 0.5, 0. * deg, 360. * deg);
-
-	G4LogicalVolume *TargetRing_Logical = new G4LogicalVolume(
-	    TargetRing_Solid, Plexiglass, "TargetRing_Logical", 0, 0, 0);
-
-	TargetRing_Logical->SetVisAttributes(new G4VisAttributes(red));
-
-	new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), TargetRing_Logical,
-	                  "TargetRing", world_log, false, 0);
-
-	/******************* Walls and shielding ************************/
-	//                   2
-	//             00  11233 44  55       66   77
-	// ----=== --- 00--11233-44--55---o---66---77---o-----> beam
-	//      |      00| 11233 44  55   |   66   77   |
-	//      |        |   2            |             |
-	//      |        |                |             |
-	//  collimator  paddle            g3        2nd setup
-	//
-	// Jump to the implementations in the source code by searching for "WALL*"
-	//
-	// WALL0: Lead wall after collimator (permanent)
-	// WALL1: Lead wall after paddle (permanent)
-	// WALL2: Concrete wall between collimator room and UTR (permanent)
-	// WALL3: Lead wall after concrete wall (permanent)
-	// WALL4: Second lead wall after concrete wall (permanent)
-	// WALL5: Lead shielding in front of g3 setup (nonexistent here)
-	// WALL6: Lead shielding after g3 setup (since 82Se/82Kr experiment)
-	// WALL7: Lead + concrete shielding of 2nd setup (82Se/82Kr experiment runs
-	// 710 - 760)
-	//
-
-	// Load Bricks
-	NormBrick *nb = new NormBrick(world_log);
-	NormBrickWithHole *nbh = new NormBrickWithHole(world_log);
-	ShortNormBrick *snb = new ShortNormBrick(world_log);
-	// ShortBrickWithHole* sbh = new ShortBrickWithHole(world_log);
-	HalfShortBrickWithHole *hsbh = new HalfShortBrickWithHole(world_log);
-	ConcreteBrick *cb = new ConcreteBrick(world_log);
-	FlatConcreteBrick *fcb = new FlatConcreteBrick(world_log);
-	BridgeBrick *bb = new BridgeBrick(world_log);
-	ThinNormBrick *tb = new ThinNormBrick(world_log);
-	// ShortThinNormBrick *stb = new ShortThinNormBrick(world_log);
-	FlatFlatThinNormBrick *fftb = new FlatFlatThinNormBrick(world_log);
-	ThreeQuarterShortNormBrick *tqsb =
-	    new ThreeQuarterShortNormBrick(world_log);
-
-	G4double Wall5_To_Target = 420. * mm; // Measured
-	G4double Wall4_To_Target =
-	    Wall5_To_Target + 3.5 * nb->M + 615. * mm; // Measured
-	G4double Wall3_To_Target =
-	    Wall4_To_Target + 3. * nb->M + 100. * mm;                  // Measured
-	G4double ConcreteWall_To_Target = Wall3_To_Target + 4 * nb->S; // Measured
-	G4double ConcreteWall_Thickness = 140. * mm;                   // Measured
-	G4double Wall1_To_Target =
-	    Wall3_To_Target + 4 * nb->S + ConcreteWall_Thickness; // Measured
-	G4double Wall0_To_Target = Wall3_To_Target + 4 * nb->S +
-	                           ConcreteWall_Thickness + 8 * nb->S +
-	                           320. * mm; // Measured
-
-	/**************** WALL0 Lead wall after collimator
-	 * *************************/
-
-	for (int ny = -2; ny <= 2; ny++) {
-		for (int nx = -1; nx <= 1; nx++) {
-			for (int nz = 0; nz < 8; nz++) {
-				if (ny == 0 && nx == 0) {
-					nbh->Put(nb->L * nx, nb->M * ny,
-					         -Wall0_To_Target - nb->S * (nz + 0.5), 0. * deg,
-					         90. * deg, 90. * deg);
-					continue;
+	// Geometry of 82Se - 82Kr experiment
+	// Valid from 20.11. 11:37 am - 29.11. 01:37
+	// Run 726 - Run 747
+
+	#include "DetectorConstruction.hh"
+
+	// Materials
+	#include "G4Material.hh"
+	#include "G4NistManager.hh"
+	#include "Materials.hh"
+	Materials *Materials::instance = NULL;
+
+	// Geometry
+	#include "G4Box.hh"
+	#include "G4LogicalVolume.hh"
+	#include "G4PVPlacement.hh"
+	#include "G4RotationMatrix.hh"
+	#include "G4SubtractionSolid.hh"
+	#include "G4ThreeVector.hh"
+	#include "G4Tubs.hh"
+	#include "G4UnionSolid.hh"
+	#include "G4VisAttributes.hh"
+	#include "globals.hh"
+
+	// Bricks
+	#include "Bricks.hh"
+
+	// Filters
+	#include "Filters.hh"
+
+	// Sensitive Detectors
+	#include "EnergyDepositionSD.hh"
+	#include "G4SDManager.hh"
+	#include "ParticleSD.hh"
+	#include "SecondarySD.hh"
+
+	// Units
+	#include "G4PhysicalConstants.hh"
+	#include "G4SystemOfUnits.hh"
+	#include "G4UnitsTable.hh"
+
+	// Detectors
+	#include "Germanium1_TUD.hh"
+	#include "Germanium2_TUD.hh"
+	#include "HPGe1.hh"
+	#include "HPGe1_55.hh"
+	#include "HPGe2.hh"
+	#include "HPGe2_55.hh"
+	#include "HPGe3.hh"
+	#include "HPGe4.hh"
+	#include "LaBr_Cologne.hh"
+	#include "LaBr_TUD.hh"
+	#include "Polarimeter_TUD.hh"
+	#include "ZeroDegree.hh"
+
+	// Targets
+	#include "Targets.hh"
+
+	#define PI 3.141592
+
+	DetectorConstruction::DetectorConstruction() {}
+
+	DetectorConstruction::~DetectorConstruction() {}
+
+	G4VPhysicalVolume *DetectorConstruction::Construct() {
+
+		G4Colour white(1.0, 1.0, 1.0);
+		G4Colour grey(0.5, 0.5, 0.5);
+		G4Colour black(0.0, 0.0, 0.0);
+		G4Colour red(1.0, 0.0, 0.0);
+		G4Colour green(0.0, 1.0, 0.0);
+		G4Colour blue(0.0, 0.0, 1.0);
+		G4Colour cyan(0.0, 1.0, 1.0);
+		G4Colour magenta(1.0, 0.0, 1.0);
+		G4Colour yellow(1.0, 1.0, 0.0);
+		G4Colour orange(1.0, 0.5, 0.0);
+		G4Colour light_orange(1.0, 0.82, 0.36);
+
+		G4NistManager *nist = G4NistManager::Instance();
+
+		G4Material *Al = nist->FindOrBuildMaterial("G4_Al");
+		G4Material *vacuum = nist->FindOrBuildMaterial("G4_Galactic");
+		G4Material *air = nist->FindOrBuildMaterial("G4_AIR");
+		G4Material *Pb = nist->FindOrBuildMaterial("G4_Pb");
+		G4Material *Plexiglass = nist->FindOrBuildMaterial("G4_PLEXIGLASS");
+		G4Material *Fe = nist->FindOrBuildMaterial("G4_Fe");
+		G4Material *Concrete = nist->FindOrBuildMaterial("G4_CONCRETE");
+		G4Material *Scintillator_Plastic =
+		    nist->FindOrBuildMaterial("G4_PLASTIC_SC_VINYLTOLUENE");
+
+		/***************** World Volume *****************/
+
+		G4double world_x = 4000. * mm;
+		G4double world_y = 4000. * mm;
+		G4double world_z = 9000. * mm;
+
+		G4Box *world_dim =
+		    new G4Box("world_dim", world_x * 0.5, world_y * 0.5, world_z * 0.5);
+
+		G4LogicalVolume *world_log =
+		    new G4LogicalVolume(world_dim, air, "world_log", 0, 0, 0);
+
+		world_log->SetVisAttributes(G4VisAttributes::GetInvisible());
+
+		G4VPhysicalVolume *world_phys =
+		    new G4PVPlacement(0, G4ThreeVector(), world_log, "world", 0, false, 0);
+
+		/************************* g3 Wheel *****************/
+		// Consists of 7 rings with different outer diameter and thickness
+		// Numbering goes from 0 for upstream to 6 for downstream
+
+		G4double Wall6_To_Target = 250. * mm; // Measured
+
+		G4double Wheel_Inner_Radius =
+		    205 * mm; // Used in simulation by J. Isaak and B. Loeher
+
+		G4double Wheel_Outer_Radius0 = 270. * mm;  // Measured
+		G4double Wheel_Outer_Radius1 = 455 * mm;   // Used in simulation by J. Isaak
+							   // and B. Loeher. Measured radii
+							   // relative to this one.
+		G4double Wheel_Outer_Radius2 = 355. * mm;  // Measured
+		G4double Wheel_Outer_Radius3 = 254.2 * mm; // Measured
+		G4double Wheel_Outer_Radius4 = 355. * mm;  // Measured
+		G4double Wheel_Outer_Radius5 = 292. * mm;  // Measured
+		G4double Wheel_Outer_Radius6 = 312. * mm;  // Measured
+
+		G4double Wheel_Thickness0 = 20. * mm;
+		G4double Wheel_Thickness1 = 13. * mm;
+		G4double Wheel_Thickness2 = 13. * mm;
+		G4double Wheel_Thickness3 = 24. * mm;
+		G4double Wheel_Thickness4 = 13. * mm;
+		G4double Wheel_Thickness5 = 20. * mm;
+		G4double Wheel_Thickness6 = 25. * mm;
+
+		G4double Wheel_Total_Thickness = Wheel_Thickness0 + Wheel_Thickness1 +
+						 Wheel_Thickness2 + Wheel_Thickness3 +
+						 Wheel_Thickness4 + Wheel_Thickness5 +
+						 Wheel_Thickness6;
+
+		G4double Wheel_To_Target_Position = Wall6_To_Target - Wheel_Total_Thickness;
+		G4Material *Wheel_Material = Al;
+
+		// Ring 0
+		G4Tubs *Wheel0_Solid =
+		    new G4Tubs("Wheel0_Solid", Wheel_Inner_Radius, Wheel_Outer_Radius0,
+			       Wheel_Thickness0 * 0.5, 0 * deg, 360 * deg);
+		G4LogicalVolume *Wheel0_Logical = new G4LogicalVolume(
+		    Wheel0_Solid, Wheel_Material, "Wheel0_Logical", 0, 0, 0);
+		Wheel0_Logical->SetVisAttributes(new G4VisAttributes(grey));
+		new G4PVPlacement(0, G4ThreeVector(0., 0., Wall6_To_Target -
+							       Wheel_Total_Thickness +
+							       Wheel_Thickness0 * 0.5),
+				  Wheel0_Logical, "Wheel0", world_log, false, 0);
+
+		// Ring 1
+		G4Tubs *Wheel1_Solid =
+		    new G4Tubs("Wheel1_Solid", Wheel_Inner_Radius, Wheel_Outer_Radius1,
+			       Wheel_Thickness1 * 0.5, 0 * deg, 360 * deg);
+		G4LogicalVolume *Wheel1_Logical = new G4LogicalVolume(
+		    Wheel1_Solid, Wheel_Material, "Wheel1_Logical", 0, 0, 0);
+		Wheel1_Logical->SetVisAttributes(new G4VisAttributes(grey));
+		new G4PVPlacement(
+		    0, G4ThreeVector(0., 0., Wall6_To_Target - Wheel_Total_Thickness +
+						 Wheel_Thickness0 + Wheel_Thickness1 * 0.5),
+		    Wheel1_Logical, "Wheel1", world_log, false, 0);
+
+		// Ring 2
+		G4Tubs *Wheel2_Solid =
+		    new G4Tubs("Wheel2_Solid", Wheel_Inner_Radius, Wheel_Outer_Radius2,
+			       Wheel_Thickness2 * 0.5, 0 * deg, 360 * deg);
+		G4LogicalVolume *Wheel2_Logical = new G4LogicalVolume(
+		    Wheel2_Solid, Wheel_Material, "Wheel2_Logical", 0, 0, 0);
+		Wheel2_Logical->SetVisAttributes(new G4VisAttributes(grey));
+		new G4PVPlacement(
+		    0, G4ThreeVector(0., 0., Wall6_To_Target - Wheel_Total_Thickness +
+						 Wheel_Thickness0 + Wheel_Thickness1 +
+						 Wheel_Thickness2 * 0.5),
+		    Wheel2_Logical, "Wheel2", world_log, false, 0);
+
+		// Ring 3
+		G4Tubs *Wheel3_Solid =
+		    new G4Tubs("Wheel3_Solid", Wheel_Inner_Radius, Wheel_Outer_Radius3,
+			       Wheel_Thickness3 * 0.5, 0 * deg, 360 * deg);
+		G4LogicalVolume *Wheel3_Logical = new G4LogicalVolume(
+		    Wheel3_Solid, Wheel_Material, "Wheel3_Logical", 0, 0, 0);
+		Wheel3_Logical->SetVisAttributes(new G4VisAttributes(grey));
+		new G4PVPlacement(
+		    0, G4ThreeVector(0., 0., Wall6_To_Target - Wheel_Total_Thickness +
+						 Wheel_Thickness0 + Wheel_Thickness1 +
+						 Wheel_Thickness2 + Wheel_Thickness3 * 0.5),
+		    Wheel3_Logical, "Wheel3", world_log, false, 0);
+
+		// Ring 4
+		G4Tubs *Wheel4_Solid =
+		    new G4Tubs("Wheel4_Solid", Wheel_Inner_Radius, Wheel_Outer_Radius4,
+			       Wheel_Thickness4 * 0.5, 0 * deg, 360 * deg);
+		G4LogicalVolume *Wheel4_Logical = new G4LogicalVolume(
+		    Wheel4_Solid, Wheel_Material, "Wheel4_Logical", 0, 0, 0);
+		Wheel4_Logical->SetVisAttributes(new G4VisAttributes(grey));
+		new G4PVPlacement(
+		    0, G4ThreeVector(0., 0., Wall6_To_Target - Wheel_Total_Thickness +
+						 Wheel_Thickness0 + Wheel_Thickness1 +
+						 Wheel_Thickness2 + Wheel_Thickness3 +
+						 Wheel_Thickness4 * 0.5),
+		    Wheel4_Logical, "Wheel4", world_log, false, 0);
+
+		// Ring 5
+		G4Tubs *Wheel5_Solid =
+		    new G4Tubs("Wheel5_Solid", Wheel_Inner_Radius, Wheel_Outer_Radius5,
+			       Wheel_Thickness5 * 0.5, 0 * deg, 360 * deg);
+		G4LogicalVolume *Wheel5_Logical = new G4LogicalVolume(
+		    Wheel5_Solid, Wheel_Material, "Wheel5_Logical", 0, 0, 0);
+		Wheel5_Logical->SetVisAttributes(new G4VisAttributes(grey));
+		new G4PVPlacement(
+		    0, G4ThreeVector(0., 0., Wall6_To_Target - Wheel_Total_Thickness +
+						 Wheel_Thickness0 + Wheel_Thickness1 +
+						 Wheel_Thickness2 + Wheel_Thickness3 +
+						 Wheel_Thickness4 + Wheel_Thickness5 * 0.5),
+		    Wheel5_Logical, "Wheel5", world_log, false, 0);
+
+		// Ring 6
+		G4Tubs *Wheel6_Solid =
+		    new G4Tubs("Wheel6_Solid", Wheel_Inner_Radius, Wheel_Outer_Radius6,
+			       Wheel_Thickness6 * 0.5, 0 * deg, 360 * deg);
+		G4LogicalVolume *Wheel6_Logical = new G4LogicalVolume(
+		    Wheel6_Solid, Wheel_Material, "Wheel6_Logical", 0, 0, 0);
+		Wheel6_Logical->SetVisAttributes(new G4VisAttributes(grey));
+		new G4PVPlacement(
+		    0, G4ThreeVector(0., 0., Wall6_To_Target - Wheel_Total_Thickness +
+						 Wheel_Thickness0 + Wheel_Thickness1 +
+						 Wheel_Thickness2 + Wheel_Thickness3 +
+						 Wheel_Thickness4 + Wheel_Thickness5 +
+						 Wheel_Thickness6 * 0.5),
+		    Wheel6_Logical, "Wheel6", world_log, false, 0);
+
+		/************************* Beam Tube  *****************/
+
+		// Tube
+
+		G4double BeamTube_Outer_Radius = 1. * inch;     // Measured
+		G4double BeamTube_Length_Upstream = 2600. * mm; // Estimated
+		G4double BeamTube_Length_Downstream =
+		    2526.5 * mm - 15. * inch; // Measured, 2526.5*mm is ZeroDegree_Z. This
+					      // variable will be defined later, but for
+					      // readability reasons, used only the
+					      // numerical value here.
+		G4double BeamTube_Length =
+		    BeamTube_Length_Upstream + BeamTube_Length_Downstream;
+		G4double BeamTube_Thickness = 3 * mm; // Estimated
+
+		G4Tubs *BeamTube_Solid = new G4Tubs(
+		    "BeamTube_Solid", BeamTube_Outer_Radius - BeamTube_Thickness,
+		    BeamTube_Outer_Radius, BeamTube_Length / 2., 0. * deg, 360. * deg);
+
+		G4LogicalVolume *BeamTube_Logical = new G4LogicalVolume(
+		    BeamTube_Solid, Plexiglass, "BeamTube_Logial", 0, 0, 0);
+
+		BeamTube_Logical->SetVisAttributes(new G4VisAttributes(white));
+
+		new G4PVPlacement(0, G4ThreeVector(0., 0., BeamTube_Length_Downstream -
+							       BeamTube_Length / 2.),
+				  BeamTube_Logical, "BeamTube", world_log, false, 0);
+
+		// End cap on upstream side
+
+		G4double BeamTubeEndCap_Outer_Radius = 1.3 * inch; // Estimated
+		G4double BeamTubeEndCap_Length = 30. * mm;         // Estimated
+
+		G4Tubs *BeamTubeEndCap_Solid =
+		    new G4Tubs("BeamTubeEndCap_Solid", BeamTube_Outer_Radius,
+			       BeamTubeEndCap_Outer_Radius, BeamTubeEndCap_Length / 2.,
+			       0. * deg, 360. * deg);
+		G4LogicalVolume *BeamTubeEndCap_Logical = new G4LogicalVolume(
+		    BeamTubeEndCap_Solid, Plexiglass, "BeamTubeEndCap_Logical", 0, 0, 0);
+
+		BeamTubeEndCap_Logical->SetVisAttributes(new G4VisAttributes(white));
+
+		new G4PVPlacement(0, G4ThreeVector(0., 0., -BeamTube_Length_Upstream +
+							       BeamTubeEndCap_Length / 2.),
+				  BeamTubeEndCap_Logical, "BeamTubeEndCap", world_log,
+				  false, 0);
+
+		G4double BeamTubeEndCapWindow_Thickness = 2. * mm; // Estimated
+
+		G4Tubs *BeamTubeEndCapWindow_Solid = new G4Tubs(
+		    "BeamTubeEndCapWindow_Solid", 0., BeamTubeEndCap_Outer_Radius,
+		    BeamTubeEndCapWindow_Thickness / 2., 0. * deg, 360. * deg);
+		G4LogicalVolume *BeamTubeEndCapWindow_Logical =
+		    new G4LogicalVolume(BeamTubeEndCapWindow_Solid, Plexiglass,
+					"BeamTubeEndCapWindow_Logical", 0, 0, 0);
+
+		BeamTubeEndCapWindow_Logical->SetVisAttributes(new G4VisAttributes(white));
+
+		new G4PVPlacement(
+		    0, G4ThreeVector(0., 0., -BeamTube_Length_Upstream -
+						 BeamTubeEndCapWindow_Thickness / 2.),
+		    BeamTubeEndCapWindow_Logical, "BeamTubeEndCapWindow", world_log, false,
+		    0);
+
+		// Vacuum inside beam tube
+
+		G4Tubs *BeamTubeVacuum_Solid =
+		    new G4Tubs("BeamTubeVacuum_Solid", 0. * mm,
+			       BeamTube_Outer_Radius - BeamTube_Thickness,
+			       BeamTube_Length / 2., 0. * deg, 360. * deg);
+		G4LogicalVolume *BeamTubeVacuum_Logical = new G4LogicalVolume(
+		    BeamTubeVacuum_Solid, vacuum, "BeamTubeVacuum_Logical", 0, 0, 0);
+
+		BeamTubeVacuum_Logical->SetVisAttributes(new G4VisAttributes(cyan));
+
+		new G4PVPlacement(0, G4ThreeVector(0., 0., BeamTube_Length_Downstream -
+							       BeamTube_Length / 2.),
+				  BeamTubeVacuum_Logical, "BeamTubeVacuum", world_log,
+				  false, 0);
+
+		/******************** Target Holder Tube without cap ***********/
+
+		G4double TargetTube_Outer_Radius =
+		    BeamTube_Outer_Radius - BeamTube_Thickness;
+		G4double TargetTubeBack_Length = 500. * mm;  // Estimated
+		G4double TargetTubeBack_Thickness = 2. * mm; // Measured
+
+		G4double TargetTubeFront_Length = 50. * mm;   // Measured
+		G4double TargetTubeFront_Thickness = 1. * mm; // Measured
+
+		G4double TargetTube_Total_Length =
+		    TargetTubeFront_Length + TargetTubeBack_Length;
+
+		G4Tubs *TargetTubeBack_Solid =
+		    new G4Tubs("TargetTubeback_Solid",
+			       TargetTube_Outer_Radius - TargetTubeBack_Thickness,
+			       TargetTube_Outer_Radius, TargetTubeBack_Length * 0.5,
+			       0. * deg, 360. * deg);
+		G4Tubs *TargetTubeFront_Solid =
+		    new G4Tubs("TargetTubeFront_Solid",
+			       TargetTube_Outer_Radius - TargetTubeFront_Thickness,
+			       TargetTube_Outer_Radius, TargetTubeFront_Length * 0.5,
+			       0. * deg, 360. * deg);
+
+		G4UnionSolid *TargetTube_Solid = new G4UnionSolid(
+		    "TargetTube_Solid", TargetTubeBack_Solid, TargetTubeFront_Solid, 0,
+		    G4ThreeVector(0., 0., -TargetTubeBack_Length * 0.5 -
+					      TargetTubeFront_Length * 0.5));
+
+		G4LogicalVolume *TargetTube_Logical = new G4LogicalVolume(
+		    TargetTube_Solid, Plexiglass, "TargetTube_Logical", 0, 0, 0);
+
+		TargetTube_Logical->SetVisAttributes(new G4VisAttributes(orange));
+
+		new G4PVPlacement(0, G4ThreeVector(0., 0., TargetTube_Total_Length * 0.5),
+				  TargetTube_Logical, "TargetTube", world_log, false, 0);
+
+		/********************* Target holder ring *********************/
+
+		G4double TargetRingWall_Thickness = 2. * mm; // Measured
+		G4double TargetRing_Length = 20. * mm;       // Measured
+
+		G4Tubs *TargetRing_Solid =
+		    new G4Tubs("TargetRing_Solid",
+			       TargetTube_Outer_Radius - TargetTubeFront_Thickness -
+				   TargetRingWall_Thickness,
+			       TargetTube_Outer_Radius - TargetTubeFront_Thickness,
+			       TargetRing_Length * 0.5, 0. * deg, 360. * deg);
+
+		G4LogicalVolume *TargetRing_Logical = new G4LogicalVolume(
+		    TargetRing_Solid, Plexiglass, "TargetRing_Logical", 0, 0, 0);
+
+		TargetRing_Logical->SetVisAttributes(new G4VisAttributes(red));
+
+		new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), TargetRing_Logical,
+				  "TargetRing", world_log, false, 0);
+
+		/******************* Walls and shielding ************************/
+		//                   2
+		//             00  11233 44  55       66   77
+		// ----=== --- 00--11233-44--55---o---66---77---o-----> beam
+		//      |      00| 11233 44  55   |   66   77   |
+		//      |        |   2            |             |
+		//      |        |                |             |
+		//  collimator  paddle            g3        2nd setup
+		//
+		// Jump to the implementations in the source code by searching for "WALL*"
+		//
+		// WALL0: Lead wall after collimator (permanent)
+		// WALL1: Lead wall after paddle (permanent)
+		// WALL2: Concrete wall between collimator room and UTR (permanent)
+		// WALL3: Lead wall after concrete wall (permanent)
+		// WALL4: Second lead wall after concrete wall (permanent)
+		// WALL5: Lead shielding in front of g3 setup (nonexistent here)
+		// WALL6: Lead shielding after g3 setup (since 82Se/82Kr experiment)
+		// WALL7: Lead + concrete shielding of 2nd setup (82Se/82Kr experiment runs
+		// 710 - 760)
+		//
+
+		// Load Bricks
+		NormBrick *nb = new NormBrick(world_log);
+		NormBrickWithHole *nbh = new NormBrickWithHole(world_log);
+		ShortNormBrick *snb = new ShortNormBrick(world_log);
+		// ShortBrickWithHole* sbh = new ShortBrickWithHole(world_log);
+		HalfShortBrickWithHole *hsbh = new HalfShortBrickWithHole(world_log);
+		ConcreteBrick *cb = new ConcreteBrick(world_log);
+		FlatConcreteBrick *fcb = new FlatConcreteBrick(world_log);
+		BridgeBrick *bb = new BridgeBrick(world_log);
+		ThinNormBrick *tb = new ThinNormBrick(world_log);
+		// ShortThinNormBrick *stb = new ShortThinNormBrick(world_log);
+		FlatFlatThinNormBrick *fftb = new FlatFlatThinNormBrick(world_log);
+		ThreeQuarterShortNormBrick *tqsb =
+		    new ThreeQuarterShortNormBrick(world_log);
+
+		G4double Wall5_To_Target = 420. * mm; // Measured
+		G4double Wall4_To_Target =
+		    Wall5_To_Target + 3.5 * nb->M + 615. * mm; // Measured
+		G4double Wall3_To_Target =
+		    Wall4_To_Target + 3. * nb->M + 100. * mm;                  // Measured
+		G4double ConcreteWall_To_Target = Wall3_To_Target + 4 * nb->S; // Measured
+		G4double ConcreteWall_Thickness = 140. * mm;                   // Measured
+		G4double Wall1_To_Target =
+		    Wall3_To_Target + 4 * nb->S + ConcreteWall_Thickness; // Measured
+		G4double Wall0_To_Target = Wall3_To_Target + 4 * nb->S +
+					   ConcreteWall_Thickness + 8 * nb->S +
+					   320. * mm; // Measured
+
+		/**************** WALL0 Lead wall after collimator
+		 * *************************/
+
+		for (int ny = -2; ny <= 2; ny++) {
+			for (int nx = -1; nx <= 1; nx++) {
+				for (int nz = 0; nz < 8; nz++) {
+					if (ny == 0 && nx == 0) {
+						nbh->Put(nb->L * nx, nb->M * ny,
+							 -Wall0_To_Target - nb->S * (nz + 0.5), 0. * deg,
+							 90. * deg, 90. * deg);
+						continue;
+					}
+
+					nb->Put(nb->L * nx, nb->M * ny,
+						-Wall0_To_Target - nb->S * (nz + 0.5), 0. * deg,
+						90. * deg, 90. * deg);
 				}
-
-				nb->Put(nb->L * nx, nb->M * ny,
-				        -Wall0_To_Target - nb->S * (nz + 0.5), 0. * deg,
-				        90. * deg, 90. * deg);
 			}
 		}
-	}
 
-	/**************** Paddle (Scintillator
-	 * Detector)****************************/
+		/**************** Paddle (Scintillator
+		 * Detector)****************************/
 
-	G4double Paddle_Thickness = 2. * mm; // Estimated
-	G4double Paddle_X = 150. * mm;       // Estimated
-	G4double Paddle_Y = 50. * mm;        // Estimated
+		G4double Paddle_Thickness = 2. * mm; // Estimated
+		G4double Paddle_X = 150. * mm;       // Estimated
+		G4double Paddle_Y = 50. * mm;        // Estimated
 
-	G4Box *Paddle_Solid =
-	    new G4Box("Paddle_Solid", Paddle_X, Paddle_Y, Paddle_Thickness);
-	G4LogicalVolume *Paddle_Logical = new G4LogicalVolume(
-	    Paddle_Solid, Scintillator_Plastic, "Paddle_Logical", 0, 0, 0);
+		G4Box *Paddle_Solid =
+		    new G4Box("Paddle_Solid", Paddle_X, Paddle_Y, Paddle_Thickness);
+		G4LogicalVolume *Paddle_Logical = new G4LogicalVolume(
+		    Paddle_Solid, Scintillator_Plastic, "Paddle_Logical", 0, 0, 0);
 
-	Paddle_Logical->SetVisAttributes(new G4VisAttributes(red));
+		Paddle_Logical->SetVisAttributes(new G4VisAttributes(red));
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., -Wall0_To_Target + 150. * mm),
-	                  Paddle_Logical, "Paddle", world_log, false,
-	                  0); // Position estimated
+		new G4PVPlacement(0, G4ThreeVector(0., 0., -Wall0_To_Target + 150. * mm),
+				  Paddle_Logical, "Paddle", world_log, false,
+				  0); // Position estimated
 
-	/**************** WALL1 Lead wall after paddle
-	 * *****************************/
+		/**************** WALL1 Lead wall after paddle
+		 * *****************************/
 
-	for (int ny = -2; ny <= 2; ny++) {
-		for (int nx = -1; nx <= 1; nx++) {
-			for (int nz = 0; nz < 8; nz++) {
-				if (ny == 0 && nx == 0) {
-					nbh->Put(nb->L * nx, nb->M * ny,
-					         -Wall1_To_Target - nb->S * (nz + 0.5), 0. * deg,
-					         90. * deg, 90. * deg);
-					continue;
+		for (int ny = -2; ny <= 2; ny++) {
+			for (int nx = -1; nx <= 1; nx++) {
+				for (int nz = 0; nz < 8; nz++) {
+					if (ny == 0 && nx == 0) {
+						nbh->Put(nb->L * nx, nb->M * ny,
+							 -Wall1_To_Target - nb->S * (nz + 0.5), 0. * deg,
+							 90. * deg, 90. * deg);
+						continue;
+					}
+
+					nb->Put(nb->L * nx, nb->M * ny,
+						-Wall1_To_Target - nb->S * (nz + 0.5), 0. * deg,
+						90. * deg, 90. * deg);
 				}
-
-				nb->Put(nb->L * nx, nb->M * ny,
-				        -Wall1_To_Target - nb->S * (nz + 0.5), 0. * deg,
-				        90. * deg, 90. * deg);
 			}
 		}
-	}
 
-	/**************** WALL2 Concrete wall between collimator room and UTR
-	 * ******/
+		/**************** WALL2 Concrete wall between collimator room and UTR
+		 * ******/
 
-	G4double ConcreteWall_X = world_x;
-	G4double ConcreteWall_Y = world_y;
+		G4double ConcreteWall_X = world_x;
+		G4double ConcreteWall_Y = world_y;
 
-	G4double ConcreteWallHole_Radius = 50. * mm; // Estimated
+		G4double ConcreteWallHole_Radius = 50. * mm; // Estimated
 
-	G4Box *ConcreteWall_Solid =
-	    new G4Box("ConcreteWall_Solid", ConcreteWall_X / 2.,
-	              ConcreteWall_Y / 2., ConcreteWall_Thickness / 2.);
-	G4Tubs *ConcreteWallHole_Solid =
-	    new G4Tubs("ConcreteWallHole_Solid", 0., ConcreteWallHole_Radius,
-	               ConcreteWall_Thickness / 2., 0. * deg, 360. * deg);
+		G4Box *ConcreteWall_Solid =
+		    new G4Box("ConcreteWall_Solid", ConcreteWall_X / 2.,
+			      ConcreteWall_Y / 2., ConcreteWall_Thickness / 2.);
+		G4Tubs *ConcreteWallHole_Solid =
+		    new G4Tubs("ConcreteWallHole_Solid", 0., ConcreteWallHole_Radius,
+			       ConcreteWall_Thickness / 2., 0. * deg, 360. * deg);
 
-	G4SubtractionSolid *ConcreteWallWithHole_Solid =
-	    new G4SubtractionSolid("ConcreteWallWithHole_Solid", ConcreteWall_Solid,
-	                           ConcreteWallHole_Solid);
+		G4SubtractionSolid *ConcreteWallWithHole_Solid =
+		    new G4SubtractionSolid("ConcreteWallWithHole_Solid", ConcreteWall_Solid,
+					   ConcreteWallHole_Solid);
 
-	G4LogicalVolume *ConcreteWallWithHole_Logical =
-	    new G4LogicalVolume(ConcreteWallWithHole_Solid, Concrete,
-	                        "ConcreteWallWithHole_Logical", 0, 0, 0);
+		G4LogicalVolume *ConcreteWallWithHole_Logical =
+		    new G4LogicalVolume(ConcreteWallWithHole_Solid, Concrete,
+					"ConcreteWallWithHole_Logical", 0, 0, 0);
 
-	ConcreteWallWithHole_Logical->SetVisAttributes(new G4VisAttributes(white));
+		ConcreteWallWithHole_Logical->SetVisAttributes(new G4VisAttributes(white));
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., -ConcreteWall_To_Target -
-	                                               ConcreteWall_Thickness / 2.),
-	                  ConcreteWallWithHole_Logical, "ConcreteWallWithHole",
-	                  world_log, false, 0);
+		new G4PVPlacement(0, G4ThreeVector(0., 0., -ConcreteWall_To_Target -
+							       ConcreteWall_Thickness / 2.),
+				  ConcreteWallWithHole_Logical, "ConcreteWallWithHole",
+				  world_log, false, 0);
 
-	/**************** WALL3 Lead wall after concrete wall
-	 * ***********************/
+		/**************** WALL3 Lead wall after concrete wall
+		 * ***********************/
 
-	for (int ny = -2; ny <= 2; ny++) {
-		for (int nx = -1; nx <= 1; nx++) {
+		for (int ny = -2; ny <= 2; ny++) {
+			for (int nx = -1; nx <= 1; nx++) {
+				for (int nz = 0; nz < 4; nz++) {
+					if (ny == 0 && nx == 0) {
+						nbh->Put(nb->L * nx, nb->M * ny,
+							 -Wall3_To_Target - nb->S * (nz + 0.5), 0. * deg,
+							 90. * deg, 90. * deg);
+						continue;
+					}
+
+					nb->Put(nb->L * nx, nb->M * ny,
+						-Wall3_To_Target - nb->S * (nz + 0.5), 0. * deg,
+						90. * deg, 90. * deg);
+				}
+			}
+		}
+
+		/**************** WALL4 Second wall after concrete wall
+		 * ********************/
+
+		for (int ny = -2; ny <= 2; ny++) {
 			for (int nz = 0; nz < 4; nz++) {
-				if (ny == 0 && nx == 0) {
-					nbh->Put(nb->L * nx, nb->M * ny,
-					         -Wall3_To_Target - nb->S * (nz + 0.5), 0. * deg,
-					         90. * deg, 90. * deg);
-					continue;
+				for (int nx = 0; nx < 1; nx++) {
+					if (ny == 0 && nx == 0) {
+						nbh->Put(0., 0., -Wall4_To_Target - nb->S * (nz + 0.5),
+							 0. * deg, 90. * deg, 90. * deg);
+						tqsb->Put(nb->L * 0.5 + tqsb->L * 0.5, 0.,
+							  -Wall4_To_Target - nb->S * (nz + 0.5), 0. * deg,
+							  90. * deg, 90. * deg);
+						tqsb->Put(-nb->L * 0.5 - tqsb->L * 0.5, 0.,
+							  -Wall4_To_Target - nb->S * (nz + 0.5), 0. * deg,
+							  90. * deg, 90. * deg);
+						continue;
+					}
+					nb->Put(0., nb->M * ny, -Wall4_To_Target - nb->S * (nz + 0.5),
+						0. * deg, 90. * deg, 90. * deg);
+					tqsb->Put(nb->L * 0.5 + tqsb->L * 0.5, nb->M * ny,
+						  -Wall4_To_Target - nb->S * (nz + 0.5), 0. * deg,
+						  90. * deg, 90. * deg);
+					tqsb->Put(-nb->L * 0.5 - tqsb->L * 0.5, nb->M * ny,
+						  -Wall4_To_Target - nb->S * (nz + 0.5), 0. * deg,
+						  90. * deg, 90. * deg);
 				}
-
-				nb->Put(nb->L * nx, nb->M * ny,
-				        -Wall3_To_Target - nb->S * (nz + 0.5), 0. * deg,
-				        90. * deg, 90. * deg);
 			}
 		}
-	}
 
-	/**************** WALL4 Second wall after concrete wall
-	 * ********************/
+		/**************** WALL5 Lead wall in front of g3 setup
+		 * *********************/
 
-	for (int ny = -2; ny <= 2; ny++) {
-		for (int nz = 0; nz < 4; nz++) {
-			for (int nx = 0; nx < 1; nx++) {
-				if (ny == 0 && nx == 0) {
-					nbh->Put(0., 0., -Wall4_To_Target - nb->S * (nz + 0.5),
-					         0. * deg, 90. * deg, 90. * deg);
-					tqsb->Put(nb->L * 0.5 + tqsb->L * 0.5, 0.,
-					          -Wall4_To_Target - nb->S * (nz + 0.5), 0. * deg,
-					          90. * deg, 90. * deg);
-					tqsb->Put(-nb->L * 0.5 - tqsb->L * 0.5, 0.,
-					          -Wall4_To_Target - nb->S * (nz + 0.5), 0. * deg,
-					          90. * deg, 90. * deg);
-					continue;
-				}
-				nb->Put(0., nb->M * ny, -Wall4_To_Target - nb->S * (nz + 0.5),
-				        0. * deg, 90. * deg, 90. * deg);
-				tqsb->Put(nb->L * 0.5 + tqsb->L * 0.5, nb->M * ny,
-				          -Wall4_To_Target - nb->S * (nz + 0.5), 0. * deg,
-				          90. * deg, 90. * deg);
-				tqsb->Put(-nb->L * 0.5 - tqsb->L * 0.5, nb->M * ny,
-				          -Wall4_To_Target - nb->S * (nz + 0.5), 0. * deg,
-				          90. * deg, 90. * deg);
-			}
+		for (int i = 0; i < 3; i++) {
+			nb->Put(-nb->L / 2., -BeamTube_Outer_Radius + nb->S * 3.5,
+				-Wall5_To_Target - nb->M * (i + 0.5), 0., 90. * deg, 0.);
+			nb->Put(nb->L / 2., -BeamTube_Outer_Radius + nb->S * 3.5,
+				-Wall5_To_Target - nb->M * (i + 0.5), 0., 90. * deg, 0.);
+			nb->Put(-nb->L / 2., -BeamTube_Outer_Radius + nb->S * 2.5,
+				-Wall5_To_Target - nb->M * (i + 0.5), 0., 90. * deg, 0.);
+			nb->Put(nb->L / 2., -BeamTube_Outer_Radius + nb->S * 2.5,
+				-Wall5_To_Target - nb->M * (i + 0.5), 0., 90. * deg, 0.);
+			nb->Put(-nb->L / 2. - BeamTube_Outer_Radius,
+				-BeamTube_Outer_Radius + nb->S * 1.5,
+				-Wall5_To_Target - nb->M * (i + 0.5), 0., 90. * deg, 0.);
+			nb->Put(nb->L / 2. + BeamTube_Outer_Radius,
+				-BeamTube_Outer_Radius + nb->S * 1.5,
+				-Wall5_To_Target - nb->M * (i + 0.5), 0., 90. * deg, 0.);
+			nb->Put(-nb->L / 2. - BeamTube_Outer_Radius,
+				-BeamTube_Outer_Radius + nb->S * 0.5,
+				-Wall5_To_Target - nb->M * (i + 0.5), 0., 90. * deg, 0.);
+			nb->Put(nb->L / 2. + BeamTube_Outer_Radius,
+				-BeamTube_Outer_Radius + nb->S * 0.5,
+				-Wall5_To_Target - nb->M * (i + 0.5), 0., 90. * deg, 0.);
+			nb->Put(-nb->L / 2., -BeamTube_Outer_Radius - nb->S * 0.5,
+				-Wall5_To_Target - nb->M * (i + 0.5), 0., 90. * deg, 0.);
+			nb->Put(nb->L / 2., -BeamTube_Outer_Radius - nb->S * 0.5,
+				-Wall5_To_Target - nb->M * (i + 0.5), 0., 90. * deg, 0.);
+			nb->Put(-nb->L / 2., -BeamTube_Outer_Radius - nb->S * 1.5,
+				-Wall5_To_Target - nb->M * (i + 0.5), 0., 90. * deg, 0.);
+			nb->Put(nb->L / 2., -BeamTube_Outer_Radius - nb->S * 1.5,
+				-Wall5_To_Target - nb->M * (i + 0.5), 0., 90. * deg, 0.);
+			nb->Put(-nb->L / 2., -BeamTube_Outer_Radius - nb->S * 2.5,
+				-Wall5_To_Target - nb->M * (i + 0.5), 0., 90. * deg, 0.);
+			nb->Put(nb->L / 2., -BeamTube_Outer_Radius - nb->S * 2.5,
+				-Wall5_To_Target - nb->M * (i + 0.5), 0., 90. * deg, 0.);
 		}
-	}
-
-	/**************** WALL5 Lead wall in front of g3 setup
-	 * *********************/
-
-	for (int i = 0; i < 3; i++) {
-		nb->Put(-nb->L / 2., -BeamTube_Outer_Radius + nb->S * 3.5,
-		        -Wall5_To_Target - nb->M * (i + 0.5), 0., 90. * deg, 0.);
-		nb->Put(nb->L / 2., -BeamTube_Outer_Radius + nb->S * 3.5,
-		        -Wall5_To_Target - nb->M * (i + 0.5), 0., 90. * deg, 0.);
-		nb->Put(-nb->L / 2., -BeamTube_Outer_Radius + nb->S * 2.5,
-		        -Wall5_To_Target - nb->M * (i + 0.5), 0., 90. * deg, 0.);
-		nb->Put(nb->L / 2., -BeamTube_Outer_Radius + nb->S * 2.5,
-		        -Wall5_To_Target - nb->M * (i + 0.5), 0., 90. * deg, 0.);
-		nb->Put(-nb->L / 2. - BeamTube_Outer_Radius,
-		        -BeamTube_Outer_Radius + nb->S * 1.5,
-		        -Wall5_To_Target - nb->M * (i + 0.5), 0., 90. * deg, 0.);
-		nb->Put(nb->L / 2. + BeamTube_Outer_Radius,
-		        -BeamTube_Outer_Radius + nb->S * 1.5,
-		        -Wall5_To_Target - nb->M * (i + 0.5), 0., 90. * deg, 0.);
-		nb->Put(-nb->L / 2. - BeamTube_Outer_Radius,
-		        -BeamTube_Outer_Radius + nb->S * 0.5,
-		        -Wall5_To_Target - nb->M * (i + 0.5), 0., 90. * deg, 0.);
-		nb->Put(nb->L / 2. + BeamTube_Outer_Radius,
-		        -BeamTube_Outer_Radius + nb->S * 0.5,
-		        -Wall5_To_Target - nb->M * (i + 0.5), 0., 90. * deg, 0.);
-		nb->Put(-nb->L / 2., -BeamTube_Outer_Radius - nb->S * 0.5,
-		        -Wall5_To_Target - nb->M * (i + 0.5), 0., 90. * deg, 0.);
-		nb->Put(nb->L / 2., -BeamTube_Outer_Radius - nb->S * 0.5,
-		        -Wall5_To_Target - nb->M * (i + 0.5), 0., 90. * deg, 0.);
-		nb->Put(-nb->L / 2., -BeamTube_Outer_Radius - nb->S * 1.5,
-		        -Wall5_To_Target - nb->M * (i + 0.5), 0., 90. * deg, 0.);
-		nb->Put(nb->L / 2., -BeamTube_Outer_Radius - nb->S * 1.5,
-		        -Wall5_To_Target - nb->M * (i + 0.5), 0., 90. * deg, 0.);
-		nb->Put(-nb->L / 2., -BeamTube_Outer_Radius - nb->S * 2.5,
-		        -Wall5_To_Target - nb->M * (i + 0.5), 0., 90. * deg, 0.);
-		nb->Put(nb->L / 2., -BeamTube_Outer_Radius - nb->S * 2.5,
-		        -Wall5_To_Target - nb->M * (i + 0.5), 0., 90. * deg, 0.);
-	}
-
-	// Fill the gap between beam pipe and wall by stuffing in flat stripes of
-	// lead
-
-	fftb->Put(0., BeamTube_Outer_Radius + fftb->S * 0.5,
-	          -Wall5_To_Target - nb->M * 3. + fftb->L * 0.5);
-	fftb->Put(0., BeamTube_Outer_Radius + fftb->S * 1.5,
-	          -Wall5_To_Target - nb->M * 3. + fftb->L * 0.5);
-	fftb->Put(0., BeamTube_Outer_Radius + fftb->S * 2.5,
-	          -Wall5_To_Target - nb->M * 3. + fftb->L * 0.5);
-
-	// Brick with hole in front of wall
-
-	hsbh->Put(0., hsbh->M * 0.5, -Wall5_To_Target - nb->M * 3. - hsbh->M * 0.5,
-	          -90. * deg, 90. * deg, 0.);
-	hsbh->Put(0., -hsbh->M * 0.5, -Wall5_To_Target - nb->M * 3. - hsbh->M * 0.5,
-	          90. * deg, 90. * deg, 0.);
-
-	// Concrete blocks below Wall3
-
-	cb->Put(0., -BeamTube_Outer_Radius - nb->S * 3. - cb->M * 0.5,
-	        -Wall5_To_Target - nb->M * 3. + cb->M, 0., 90. * deg, 0.);
-	fcb->Put(0., -BeamTube_Outer_Radius - nb->S * 3. - cb->M * 0.5,
-	         -Wall5_To_Target - nb->M * 3. + fcb->S * 0.5, 0., 90. * deg,
-	         90. * deg);
-
-	// Aluminium plate below Wall3
-
-	G4double AlPlate_X = 460. * mm; // Measured
-	G4double AlPlate_Y = 20. * mm;  // Measured
-	G4double AlPlate_Z = 405. * mm; // Measured
-
-	G4Box *AlPlate_Solid = new G4Box("AlPlate_Solid", AlPlate_X * 0.5,
-	                                 AlPlate_Y * 0.5, AlPlate_Z * 0.5);
-	G4LogicalVolume *AlPlate_Logical =
-	    new G4LogicalVolume(AlPlate_Solid, Al, "AlPlate_Logical", 0, 0, 0);
-
-	AlPlate_Logical->SetVisAttributes(new G4VisAttributes(grey));
-
-	new G4PVPlacement(
-	    0, G4ThreeVector(0., -BeamTube_Outer_Radius - nb->S * 3. - cb->M -
-	                             AlPlate_Y * 0.5,
-	                     -Wall5_To_Target - nb->M * 3 + AlPlate_Z * 0.5),
-	    AlPlate_Logical, "AlPlate", world_log, false, 0);
-
-	// Concrete Blocks below aluminium plate
-
-	fcb->Put(0., -BeamTube_Outer_Radius - nb->S * 3. - cb->M - AlPlate_Y -
-	                 fcb->M * 0.5,
-	         -Wall5_To_Target - nb->M * 3 + fcb->L * 0.5, 0., 0., 90. * deg);
-	cb->Put(-fcb->S * 0.5 - cb->M * 0.5, -BeamTube_Outer_Radius - nb->S * 3. -
-	                                         cb->M - AlPlate_Y - cb->M * 0.5,
-	        -Wall5_To_Target - nb->M * 3. + cb->L * 0.5);
-	cb->Put(fcb->S * 0.5 + cb->M * 0.5, -BeamTube_Outer_Radius - nb->S * 3. -
-	                                        cb->M - AlPlate_Y - cb->M * 0.5,
-	        -Wall5_To_Target - nb->M * 3. + cb->L * 0.5);
-
-	/**************** WALL6 Lead shielding after g3 setup
-	 * *************************/
-
-	G4double FirstLayer_OffsetY = -8. * mm; // Measured
-
-	// First layer in beam direction
-	nb->Put(0., -BeamTube_Outer_Radius + nb->S * 5.5 + FirstLayer_OffsetY,
-	        Wall6_To_Target + nb->M * 0.5, 0., 90. * deg, 0.);
-	nb->Put(0., -BeamTube_Outer_Radius + nb->S * 4.5 + FirstLayer_OffsetY,
-	        Wall6_To_Target + nb->M * 0.5, 0., 90. * deg, 0.);
-	nb->Put(-nb->L * 0.5,
-	        -BeamTube_Outer_Radius + nb->S * 3.5 + FirstLayer_OffsetY,
-	        Wall6_To_Target + nb->M * 0.5, 0., 90. * deg, 0.);
-	nb->Put(nb->L * 0.5,
-	        -BeamTube_Outer_Radius + nb->S * 3.5 + FirstLayer_OffsetY,
-	        Wall6_To_Target + nb->M * 0.5, 0., 90. * deg, 0.);
-	nb->Put(-nb->L * 0.5,
-	        -BeamTube_Outer_Radius + nb->S * 2.5 + FirstLayer_OffsetY,
-	        Wall6_To_Target + nb->M * 0.5, 0., 90. * deg, 0.);
-	nb->Put(nb->L * 0.5,
-	        -BeamTube_Outer_Radius + nb->S * 2.5 + FirstLayer_OffsetY,
-	        Wall6_To_Target + nb->M * 0.5, 0., 90. * deg, 0.);
-	nb->Put(-nb->L * 0.5 - BeamTube_Outer_Radius,
-	        -BeamTube_Outer_Radius + nb->S * 1.5 + FirstLayer_OffsetY,
-	        Wall6_To_Target + nb->M * 0.5, 0., 90. * deg, 0.);
-	nb->Put(nb->L * 0.5 + BeamTube_Outer_Radius,
-	        -BeamTube_Outer_Radius + nb->S * 1.5 + FirstLayer_OffsetY,
-	        Wall6_To_Target + nb->M * 0.5, 0., 90. * deg, 0.);
-	nb->Put(-nb->L * 0.5 - BeamTube_Outer_Radius,
-	        -BeamTube_Outer_Radius + nb->S * 0.5 + FirstLayer_OffsetY,
-	        Wall6_To_Target + nb->M * 0.5, 0., 90. * deg, 0.);
-	nb->Put(nb->L * 0.5 + BeamTube_Outer_Radius,
-	        -BeamTube_Outer_Radius + nb->S * 0.5 + FirstLayer_OffsetY,
-	        Wall6_To_Target + nb->M * 0.5, 0., 90. * deg, 0.);
-	nb->Put(-nb->L * 0.5,
-	        -BeamTube_Outer_Radius - nb->S * 0.5 + FirstLayer_OffsetY,
-	        Wall6_To_Target + nb->M * 0.5, 0., 90. * deg, 0.);
-	nb->Put(nb->L * 0.5,
-	        -BeamTube_Outer_Radius - nb->S * 0.5 + FirstLayer_OffsetY,
-	        Wall6_To_Target + nb->M * 0.5, 0., 90. * deg, 0.);
-	nb->Put(-nb->L * 0.5,
-	        -BeamTube_Outer_Radius - nb->S * 1.5 + FirstLayer_OffsetY,
-	        Wall6_To_Target + nb->M * 0.5, 0., 90. * deg, 0.);
-	nb->Put(nb->L * 0.5,
-	        -BeamTube_Outer_Radius - nb->S * 1.5 + FirstLayer_OffsetY,
-	        Wall6_To_Target + nb->M * 0.5, 0., 90. * deg, 0.);
-	nb->Put(-nb->L * 0.5,
-	        -BeamTube_Outer_Radius - nb->S * 2.5 + FirstLayer_OffsetY,
-	        Wall6_To_Target + nb->M * 0.5, 0., 90. * deg, 0.);
-	nb->Put(nb->L * 0.5,
-	        -BeamTube_Outer_Radius - nb->S * 2.5 + FirstLayer_OffsetY,
-	        Wall6_To_Target + nb->M * 0.5, 0., 90. * deg, 0.);
-	nb->Put(-nb->L * 0.5,
-	        -BeamTube_Outer_Radius - nb->S * 3.5 + FirstLayer_OffsetY,
-	        Wall6_To_Target + nb->M * 0.5, 0., 90. * deg, 0.);
-	nb->Put(nb->L * 0.5,
-	        -BeamTube_Outer_Radius - nb->S * 3.5 + FirstLayer_OffsetY,
-	        Wall6_To_Target + nb->M * 0.5, 0., 90. * deg, 0.);
-	nb->Put(-nb->L * 0.5,
-	        -BeamTube_Outer_Radius - nb->S * 4.5 + FirstLayer_OffsetY,
-	        Wall6_To_Target + nb->M * 0.5, 0., 90. * deg, 0.);
-	nb->Put(nb->L * 0.5,
-	        -BeamTube_Outer_Radius - nb->S * 4.5 + FirstLayer_OffsetY,
-	        Wall6_To_Target + nb->M * 0.5, 0., 90. * deg, 0.);
-
-	// Second layer in beam direction
-
-	nb->Put(-BeamTube_Outer_Radius - nb->M * 0.5,
-	        -BeamTube_Outer_Radius - nb->S * 3. + nb->L * 0.5,
-	        Wall6_To_Target + nb->M + nb->S * 0.5, 90. * deg, 0. * deg,
-	        0. * deg);
-	nb->Put(BeamTube_Outer_Radius + nb->M * 0.5,
-	        -BeamTube_Outer_Radius - nb->S * 3. + nb->L * 0.5,
-	        Wall6_To_Target + nb->M + nb->S * 0.5, 90. * deg, 0. * deg,
-	        0. * deg);
-	nb->Put(0., BeamTube_Outer_Radius + nb->S * 0.5,
-	        Wall6_To_Target + nb->M + nb->M * 0.5, 0., 90. * deg, 0.);
-	nb->Put(-nb->L * 0.5, -BeamTube_Outer_Radius - nb->S * 3.5,
-	        Wall6_To_Target + nb->M + nb->M * 0.5, 0., 90. * deg, 0.);
-	nb->Put(nb->L * 0.5, -BeamTube_Outer_Radius - nb->S * 3.5,
-	        Wall6_To_Target + nb->M + nb->M * 0.5, 0., 90. * deg, 0.);
-	nb->Put(-nb->L * 0.5, -BeamTube_Outer_Radius - nb->S * 4.5,
-	        Wall6_To_Target + nb->M + nb->M * 0.5, 0., 90. * deg, 0.);
-	nb->Put(nb->L * 0.5, -BeamTube_Outer_Radius - nb->S * 4.5,
-	        Wall6_To_Target + nb->M + nb->M * 0.5, 0., 90. * deg, 0.);
-
-	// Third layer in beam direction
-
-	nb->Put(0., -BeamTube_Outer_Radius - nb->S * 0.5,
-	        Wall6_To_Target + nb->M * 2., 0., 90. * deg, 0.);
-	nb->Put(0., -BeamTube_Outer_Radius - nb->S * 1.5,
-	        Wall6_To_Target + nb->M * 2., 0., 90. * deg, 0.);
-	nb->Put(0., -BeamTube_Outer_Radius - nb->S * 2.5,
-	        Wall6_To_Target + nb->M * 2., 0., 90. * deg, 0.);
-	nb->Put(0., -BeamTube_Outer_Radius - nb->S * 3. - nb->M * 0.5,
-	        Wall6_To_Target + nb->M * 2. + nb->S * 0.5, 0., 90. * deg,
-	        90. * deg);
-	snb->Put(-BeamTube_Outer_Radius - nb->M * 0.5,
-	         -BeamTube_Outer_Radius + nb->S * 0.5,
-	         Wall6_To_Target + nb->M * 2.);
-	snb->Put(BeamTube_Outer_Radius + nb->M * 0.5,
-	         -BeamTube_Outer_Radius + nb->S * 0.5,
-	         Wall6_To_Target + nb->M * 2.);
-
-	/********************* Table Plate ******************/
-
-	G4double TablePlate_Width = 21. * inch;   // Measured
-	G4double TablePlate_Length = 36.5 * inch; // Measured
-	G4double TablePlate_Thickness = 20. * mm; // Estimated
-
-	G4double TablePlate_Height =
-	    -BeamTube_Outer_Radius - nb->S * 5. - 25. * mm; // Measured
-
-	G4Material *TablePlate_Material = Fe; // Actually, it's made of steel
-
-	G4Box *TablePlate_Solid =
-	    new G4Box("TablePlate_Solid", TablePlate_Width / 2.,
-	              TablePlate_Thickness / 2., TablePlate_Length / 2.);
-	G4LogicalVolume *TablePlate_Logical = new G4LogicalVolume(
-	    TablePlate_Solid, TablePlate_Material, "TablePlate_Logical", 0, 0, 0);
-
-	TablePlate_Logical->SetVisAttributes(new G4VisAttributes(grey));
-
-	new G4PVPlacement(
-	    0, G4ThreeVector(0., TablePlate_Height - TablePlate_Thickness / 2.,
-	                     Wheel_To_Target_Position + Wheel_Total_Thickness +
-	                         TablePlate_Length * 0.5),
-	    TablePlate_Logical, "TablePlate", world_log, false, 0);
-
-	/**************** WALL7 *****************/
-
-	G4double Wall7_To_Target = Wheel_To_Target_Position +
-	                           Wheel_Total_Thickness + TablePlate_Length -
-	                           75. * mm - 3. * nb->S; // Measured
-
-	// Table for second setup
-
-	G4double Target2_To_Target = Wheel_To_Target_Position +
-	                             Wheel_Total_Thickness + TablePlate_Length +
-	                             435. * mm; // Measured
-
-	G4double Table2_OuterRadius = 435. * mm; // Measured
-	G4double Table2_InnerRadius = 230. * mm; // Measured
-	G4double Table2_Thickness = 20. * mm;    // Estimated
-	G4double Table2_Y = -cb->M;
-
-	G4double PipeHolderTube_OuterRadius = 75. * mm;       // Measured
-	G4double PipeHolderTube_InnerRadius = 68. * mm;       // Measured
-	G4double PipeHolderTubeDownStream_Length = 250. * mm; // Measured
-	G4double PipeHolderTubeUpStream_Length = 160. * mm;   // Measured
-
-	G4Material *PipeHolderTube_Material = Al;
-
-	// Downstream pipe holder
-	G4Tubs *PipeHolderTubeDownStream_Solid =
-	    new G4Tubs("PipeHolderTubeDownStream_Solid", PipeHolderTube_InnerRadius,
-	               PipeHolderTube_OuterRadius,
-	               PipeHolderTubeDownStream_Length / 2., 0. * deg, 360. * deg);
-	G4LogicalVolume *PipeHolderTubeDownStream_Logical = new G4LogicalVolume(
-	    PipeHolderTubeDownStream_Solid, PipeHolderTube_Material,
-	    "PipeHolderTubeDownStream_Logical", 0, 0, 0);
-
-	PipeHolderTubeDownStream_Logical->SetVisAttributes(
-	    new G4VisAttributes(white));
-
-	new G4PVPlacement(
-	    0, G4ThreeVector(0., 0., Target2_To_Target + Table2_InnerRadius +
-	                                 50. * mm +
-	                                 PipeHolderTubeDownStream_Length * 0.5),
-	    PipeHolderTubeDownStream_Logical, "PipeHolderTubeDownStream", world_log,
-	    false, 0); // Measured
-
-	// Upstream pipe holder
-	G4Tubs *PipeHolderTubeUpStream_Solid =
-	    new G4Tubs("PipeHolderTubeUpStream_Solid", PipeHolderTube_InnerRadius,
-	               PipeHolderTube_OuterRadius,
-	               PipeHolderTubeUpStream_Length / 2., 0. * deg, 360. * deg);
-	G4LogicalVolume *PipeHolderTubeUpStream_Logical = new G4LogicalVolume(
-	    PipeHolderTubeUpStream_Solid, PipeHolderTube_Material,
-	    "PipeHolderTubeUpStream_Logical", 0, 0, 0);
-
-	PipeHolderTubeUpStream_Logical->SetVisAttributes(
-	    new G4VisAttributes(white));
-
-	new G4PVPlacement(
-	    0, G4ThreeVector(0., 0., Wall7_To_Target + nb->S * 3. +
-	                                 PipeHolderTubeUpStream_Length * 0.5),
-	    PipeHolderTubeUpStream_Logical, "PipeHolderTubeUpStream", world_log,
-	    false, 0);
-
-	G4Material *Table2_Material = Al;
-
-	G4Tubs *Table2Plate_Solid =
-	    new G4Tubs("Table2Plate_Solid", Table2_InnerRadius, Table2_OuterRadius,
-	               Table2_Thickness * 0.5, 0. * deg, 360. * deg);
-	G4LogicalVolume *Table2Plate_Logical = new G4LogicalVolume(
-	    Table2Plate_Solid, Table2_Material, "Table2Plate_Logical", 0, 0, 0);
-
-	Table2Plate_Logical->SetVisAttributes(new G4VisAttributes(white));
-
-	G4RotationMatrix *rotateTable2Plate = new G4RotationMatrix();
-	rotateTable2Plate->rotateX(90. * deg);
-
-	new G4PVPlacement(
-	    rotateTable2Plate,
-	    G4ThreeVector(0., Table2_Y - Table2_Thickness * 0.5, Target2_To_Target),
-	    Table2Plate_Logical, "Table2Plate", world_log, false, 0);
-
-	/************************ WALL7 Part on the second setup table ********/
-
-	cb->Put(PipeHolderTube_OuterRadius + cb->M * 0.5 - 7. * mm, -cb->M * 0.5,
-	        Wall7_To_Target + nb->S * 3. + cb->L * 0.5, 0., 10. * deg, 0.);
-	cb->Put(-PipeHolderTube_OuterRadius - cb->M * 0.5 + 7. * mm, -cb->M * 0.5,
-	        Wall7_To_Target + nb->S * 3. + cb->L * 0.5, 0., -10. * deg, 0.);
-	// Concrete blocks were slightly rotated in the setup. The 10.*deg are
-	// estimated. The 7.*mm are chosen such that the concrete blocks barely
-	// touch the PipeHolderTube.
-
-	bb->Put(0., bb->M * 0.5, Wall7_To_Target + nb->S * 3. +
-	                             PipeHolderTubeUpStream_Length + bb->S * 0.5,
-	        -90. * deg, 90. * deg, 0.);
-	bb->Put(0., bb->M * 0.5, Wall7_To_Target + nb->S * 3. +
-	                             PipeHolderTubeUpStream_Length + bb->S * 1.5,
-	        -90. * deg, 90. * deg, 0.);
-
-	nb->Put(0., bb->M + nb->S * 0.5,
-	        Wall7_To_Target + nb->S * 3. + PipeHolderTubeUpStream_Length +
-	            bb->S * 2. - nb->M * 0.5,
-	        0., 90. * deg, 0.);
-	nb->Put(0., bb->M + nb->S * 1.5,
-	        Wall7_To_Target + nb->S * 3. + PipeHolderTubeUpStream_Length +
-	            bb->S * 2. - nb->M * 0.5,
-	        0., 90. * deg, 0.);
-	nb->Put(0., bb->M + nb->S * 2.5,
-	        Wall7_To_Target + nb->S * 3. + PipeHolderTubeUpStream_Length +
-	            bb->S * 2. - nb->M * 0.5,
-	        0., 90. * deg, 0.);
-
-	nb->Put(bb->L * 0.5 + nb->M * 0.5, nb->S * 0.5,
-	        Wall7_To_Target + nb->S * 3. + PipeHolderTubeUpStream_Length +
-	            bb->S * 2. - nb->L * 0.5);
-	tb->Put(bb->L * 0.5 + tb->M * 0.5, nb->S * 1.5,
-	        Wall7_To_Target + nb->S * 3. + PipeHolderTubeUpStream_Length +
-	            bb->S * 2. - tb->L * 0.5);
-
-	nb->Put(-bb->L * 0.5 - nb->M * 0.5, nb->S * 0.5,
-	        Wall7_To_Target + nb->S * 3. + PipeHolderTubeUpStream_Length +
-	            bb->S * 2. - nb->L * 0.5);
-	nb->Put(-bb->L * 0.5 - nb->M * 0.5, nb->S * 1.5,
-	        Wall7_To_Target + nb->S * 3. + PipeHolderTubeUpStream_Length +
-	            bb->S * 2. - nb->L * 0.5);
-
-	/******************** Target Holder Tube with cap ***********/
-
-	// Tube
-	G4double TargetTubeWithCapFront_Length = 50. * mm; // Measured
-	G4double TargetTubeWithCapBack_Length =
-	    BeamTube_Length_Downstream - Target2_To_Target -
-	    TargetTubeWithCapFront_Length * 0.5; // Measured
-
-	G4Tubs *TargetTubeWithCapBack_Solid =
-	    new G4Tubs("TargetTubeWithCapBack_Solid",
-	               TargetTube_Outer_Radius - TargetTubeBack_Thickness,
-	               TargetTube_Outer_Radius, TargetTubeWithCapBack_Length * 0.5,
-	               0. * deg, 360. * deg);
-	G4Tubs *TargetTubeWithCapFront_Solid =
-	    new G4Tubs("TargetTubeWithCapFront_Solid",
-	               TargetTube_Outer_Radius - TargetTubeFront_Thickness,
-	               TargetTube_Outer_Radius, TargetTubeWithCapFront_Length * 0.5,
-	               0. * deg, 360. * deg);
-
-	G4UnionSolid *TargetTubeWithCap_Solid = new G4UnionSolid(
-	    "TargetTubeWithCap_Solid", TargetTubeWithCapBack_Solid,
-	    TargetTubeWithCapFront_Solid, 0,
-	    G4ThreeVector(0., 0., -TargetTubeWithCapBack_Length * 0.5 -
-	                              TargetTubeWithCapFront_Length * 0.5));
-
-	G4LogicalVolume *TargetTubeWithCap_Logical =
-	    new G4LogicalVolume(TargetTubeWithCap_Solid, Plexiglass,
-	                        "TargetTubeWithCap_Logical", 0, 0, 0);
-
-	TargetTubeWithCap_Logical->SetVisAttributes(new G4VisAttributes(orange));
-
-	new G4PVPlacement(
-	    0, G4ThreeVector(0., 0., BeamTube_Length_Downstream -
-	                                 TargetTubeWithCapBack_Length / 2.),
-	    TargetTubeWithCap_Logical, "TargetTubeWithCap", world_log, false, 0);
-
-	// Target holder ring 2
-	new G4PVPlacement(0, G4ThreeVector(0., 0., Target2_To_Target),
-	                  TargetRing_Logical, "TargetRing", world_log, false, 0);
-
-	// Cap
-	G4double TargetTubeCap_Thickness = 2. * mm;
-	G4double TargetTubeCap_Outer_Radius = 1.1 * inch;
-
-	G4Tubs *TargetTubeCap_Solid =
-	    new G4Tubs("TargetTubeCap_Solid", 0., TargetTubeCap_Outer_Radius,
-	               TargetTubeCap_Thickness / 2., 0. * deg, 360. * deg);
-
-	G4LogicalVolume *TargetTubeCap_Logical = new G4LogicalVolume(
-	    TargetTubeCap_Solid, Plexiglass, "TargetTubeCap_Logical", 0, 0, 0);
-
-	TargetTubeCap_Logical->SetVisAttributes(new G4VisAttributes(orange));
-
-	new G4PVPlacement(
-	    0, G4ThreeVector(0., 0., BeamTube_Length_Downstream +
-	                                 TargetTubeCap_Thickness / 2.),
-	    TargetTubeCap_Logical, "TargetTubeCap", world_log, false, 0);
-
-	/**************** Collimator *************************/
-
-	G4double Collimator_Length = 270. * mm;            // Measured
-	G4double Collimator_XY = 60. * mm;                 // Measured
-	G4double CollimatorHole_Radius = 0.75 * inch / 2.; // Measured
-	G4Material *Collimator_Material = Pb;
-
-	G4double Collimator_To_Target = Wall0_To_Target + nb->S * 8. + 200. * mm +
-	                                Collimator_Length * 0.5; // Estimated
-
-	G4Box *CollimatorBox_Solid =
-	    new G4Box("CollimatorBox_Solid", Collimator_XY / 2., Collimator_XY / 2.,
-	              Collimator_Length / 2.);
-	G4Tubs *CollimatorHole_Solid =
-	    new G4Tubs("CollimatorHole_Solid", 0., CollimatorHole_Radius,
-	               Collimator_Length / 2., 0. * deg, 360. * deg);
-
-	G4SubtractionSolid *Collimator_Solid = new G4SubtractionSolid(
-	    "Collimator_Solid", CollimatorBox_Solid, CollimatorHole_Solid);
-	G4LogicalVolume *Collimator_Logical = new G4LogicalVolume(
-	    Collimator_Solid, Collimator_Material, "Collimator_Solid", 0, 0, 0);
-
-	Collimator_Logical->SetVisAttributes(new G4VisAttributes(grey));
-
-	G4RotationMatrix *rotateCollimator = new G4RotationMatrix();
-	rotateCollimator->rotateY(0. * deg);
-
-	new G4PVPlacement(
-	    rotateCollimator,
-	    G4ThreeVector(0., 0., -Collimator_To_Target - Collimator_Length / 2.),
-	    Collimator_Logical, "Collimator", world_log, false, 0);
-
-	/************* Lead wrapping around beam pipe ************/
-
-	G4double LeadFoil_Thickness = 1.8 * mm; // Measured
-	G4double LeadFoil_Width = 140. * mm;    // Measured
-
-	G4Tubs *LeadWrap_Solid =
-	    new G4Tubs("LeadWrap_Solid", BeamTube_Outer_Radius,
-	               BeamTube_Outer_Radius + LeadFoil_Thickness,
-	               LeadFoil_Width * 0.5, 0. * deg, 360. * deg);
-	G4LogicalVolume *LeadWrap_Logical =
-	    new G4LogicalVolume(LeadWrap_Solid, Pb, "LeadWrap_Logical", 0, 0, 0);
-
-	LeadWrap_Logical->SetVisAttributes(new G4VisAttributes(grey));
-
-	G4Tubs *DoubleLeadWrap_Solid =
-	    new G4Tubs("DoubleLeadWrap_Solid", BeamTube_Outer_Radius,
-	               BeamTube_Outer_Radius + 2 * LeadFoil_Thickness,
-	               LeadFoil_Width * 0.25, 0. * deg, 360. * deg);
-	G4LogicalVolume *DoubleLeadWrap_Logical = new G4LogicalVolume(
-	    DoubleLeadWrap_Solid, Pb, "DoubleLeadWrap_Logical", 0, 0, 0);
-
-	DoubleLeadWrap_Logical->SetVisAttributes(new G4VisAttributes(grey));
-
-	G4Tubs *QuadrupleLeadWrap_Solid =
-	    new G4Tubs("QuadrupleLeadWrap_Solid", BeamTube_Outer_Radius,
-	               BeamTube_Outer_Radius + 4 * LeadFoil_Thickness,
-	               LeadFoil_Width * 0.5, 0. * deg, 360. * deg);
-	G4LogicalVolume *QuadrupleLeadWrap_Logical = new G4LogicalVolume(
-	    QuadrupleLeadWrap_Solid, Pb, "QuadrupleLeadWrap_Logical", 0, 0, 0);
-
-	QuadrupleLeadWrap_Logical->SetVisAttributes(new G4VisAttributes(grey));
-
-	// Wrapping at g3 target position
-
-	new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), LeadWrap_Logical,
-	                  "LeadWrap", world_log, false, 0);
-
-	// Wrapping at second target position
-
-	new G4PVPlacement(0, G4ThreeVector(0., 0., Target2_To_Target),
-	                  LeadWrap_Logical, "LeadWrap", world_log, false, 0);
-
-	// Wrapping between Wall4 and Wall5
-
-	new G4PVPlacement(0,
-	                  G4ThreeVector(0., 0., -Wall5_To_Target - nb->M * 3. -
-	                                            hsbh->S - LeadFoil_Width * 0.5),
-	                  LeadWrap_Logical, "LeadWrap", world_log, false, 0);
-
-	// Wrapping upstream of g3 setup
-
-	new G4PVPlacement(
-	    0, G4ThreeVector(0., 0., -Wall5_To_Target + LeadFoil_Width * 0.5),
-	    LeadWrap_Logical, "LeadWrap", world_log, false, 0);
-
-	/**************** g3 Target/Source ******************/
-
-	Se82_Target *se82_Target = new Se82_Target();
+
+		// Fill the gap between beam pipe and wall by stuffing in flat stripes of
+		// lead
+
+		fftb->Put(0., BeamTube_Outer_Radius + fftb->S * 0.5,
+			  -Wall5_To_Target - nb->M * 3. + fftb->L * 0.5);
+		fftb->Put(0., BeamTube_Outer_Radius + fftb->S * 1.5,
+			  -Wall5_To_Target - nb->M * 3. + fftb->L * 0.5);
+		fftb->Put(0., BeamTube_Outer_Radius + fftb->S * 2.5,
+			  -Wall5_To_Target - nb->M * 3. + fftb->L * 0.5);
+
+		// Brick with hole in front of wall
+
+		hsbh->Put(0., hsbh->M * 0.5, -Wall5_To_Target - nb->M * 3. - hsbh->M * 0.5,
+			  -90. * deg, 90. * deg, 0.);
+		hsbh->Put(0., -hsbh->M * 0.5, -Wall5_To_Target - nb->M * 3. - hsbh->M * 0.5,
+			  90. * deg, 90. * deg, 0.);
+
+		// Concrete blocks below Wall3
+
+		cb->Put(0., -BeamTube_Outer_Radius - nb->S * 3. - cb->M * 0.5,
+			-Wall5_To_Target - nb->M * 3. + cb->M, 0., 90. * deg, 0.);
+		fcb->Put(0., -BeamTube_Outer_Radius - nb->S * 3. - cb->M * 0.5,
+			 -Wall5_To_Target - nb->M * 3. + fcb->S * 0.5, 0., 90. * deg,
+			 90. * deg);
+
+		// Aluminium plate below Wall3
+
+		G4double AlPlate_X = 460. * mm; // Measured
+		G4double AlPlate_Y = 20. * mm;  // Measured
+		G4double AlPlate_Z = 405. * mm; // Measured
+
+		G4Box *AlPlate_Solid = new G4Box("AlPlate_Solid", AlPlate_X * 0.5,
+						 AlPlate_Y * 0.5, AlPlate_Z * 0.5);
+		G4LogicalVolume *AlPlate_Logical =
+		    new G4LogicalVolume(AlPlate_Solid, Al, "AlPlate_Logical", 0, 0, 0);
+
+		AlPlate_Logical->SetVisAttributes(new G4VisAttributes(grey));
+
+		new G4PVPlacement(
+		    0, G4ThreeVector(0., -BeamTube_Outer_Radius - nb->S * 3. - cb->M -
+					     AlPlate_Y * 0.5,
+				     -Wall5_To_Target - nb->M * 3 + AlPlate_Z * 0.5),
+		    AlPlate_Logical, "AlPlate", world_log, false, 0);
+
+		// Concrete Blocks below aluminium plate
+
+		fcb->Put(0., -BeamTube_Outer_Radius - nb->S * 3. - cb->M - AlPlate_Y -
+				 fcb->M * 0.5,
+			 -Wall5_To_Target - nb->M * 3 + fcb->L * 0.5, 0., 0., 90. * deg);
+		cb->Put(-fcb->S * 0.5 - cb->M * 0.5, -BeamTube_Outer_Radius - nb->S * 3. -
+							 cb->M - AlPlate_Y - cb->M * 0.5,
+			-Wall5_To_Target - nb->M * 3. + cb->L * 0.5);
+		cb->Put(fcb->S * 0.5 + cb->M * 0.5, -BeamTube_Outer_Radius - nb->S * 3. -
+							cb->M - AlPlate_Y - cb->M * 0.5,
+			-Wall5_To_Target - nb->M * 3. + cb->L * 0.5);
+
+		/**************** WALL6 Lead shielding after g3 setup
+		 * *************************/
+
+		G4double FirstLayer_OffsetY = -8. * mm; // Measured
+
+		// First layer in beam direction
+		nb->Put(0., -BeamTube_Outer_Radius + nb->S * 5.5 + FirstLayer_OffsetY,
+			Wall6_To_Target + nb->M * 0.5, 0., 90. * deg, 0.);
+		nb->Put(0., -BeamTube_Outer_Radius + nb->S * 4.5 + FirstLayer_OffsetY,
+			Wall6_To_Target + nb->M * 0.5, 0., 90. * deg, 0.);
+		nb->Put(-nb->L * 0.5,
+			-BeamTube_Outer_Radius + nb->S * 3.5 + FirstLayer_OffsetY,
+			Wall6_To_Target + nb->M * 0.5, 0., 90. * deg, 0.);
+		nb->Put(nb->L * 0.5,
+			-BeamTube_Outer_Radius + nb->S * 3.5 + FirstLayer_OffsetY,
+			Wall6_To_Target + nb->M * 0.5, 0., 90. * deg, 0.);
+		nb->Put(-nb->L * 0.5,
+			-BeamTube_Outer_Radius + nb->S * 2.5 + FirstLayer_OffsetY,
+			Wall6_To_Target + nb->M * 0.5, 0., 90. * deg, 0.);
+		nb->Put(nb->L * 0.5,
+			-BeamTube_Outer_Radius + nb->S * 2.5 + FirstLayer_OffsetY,
+			Wall6_To_Target + nb->M * 0.5, 0., 90. * deg, 0.);
+		nb->Put(-nb->L * 0.5 - BeamTube_Outer_Radius,
+			-BeamTube_Outer_Radius + nb->S * 1.5 + FirstLayer_OffsetY,
+			Wall6_To_Target + nb->M * 0.5, 0., 90. * deg, 0.);
+		nb->Put(nb->L * 0.5 + BeamTube_Outer_Radius,
+			-BeamTube_Outer_Radius + nb->S * 1.5 + FirstLayer_OffsetY,
+			Wall6_To_Target + nb->M * 0.5, 0., 90. * deg, 0.);
+		nb->Put(-nb->L * 0.5 - BeamTube_Outer_Radius,
+			-BeamTube_Outer_Radius + nb->S * 0.5 + FirstLayer_OffsetY,
+			Wall6_To_Target + nb->M * 0.5, 0., 90. * deg, 0.);
+		nb->Put(nb->L * 0.5 + BeamTube_Outer_Radius,
+			-BeamTube_Outer_Radius + nb->S * 0.5 + FirstLayer_OffsetY,
+			Wall6_To_Target + nb->M * 0.5, 0., 90. * deg, 0.);
+		nb->Put(-nb->L * 0.5,
+			-BeamTube_Outer_Radius - nb->S * 0.5 + FirstLayer_OffsetY,
+			Wall6_To_Target + nb->M * 0.5, 0., 90. * deg, 0.);
+		nb->Put(nb->L * 0.5,
+			-BeamTube_Outer_Radius - nb->S * 0.5 + FirstLayer_OffsetY,
+			Wall6_To_Target + nb->M * 0.5, 0., 90. * deg, 0.);
+		nb->Put(-nb->L * 0.5,
+			-BeamTube_Outer_Radius - nb->S * 1.5 + FirstLayer_OffsetY,
+			Wall6_To_Target + nb->M * 0.5, 0., 90. * deg, 0.);
+		nb->Put(nb->L * 0.5,
+			-BeamTube_Outer_Radius - nb->S * 1.5 + FirstLayer_OffsetY,
+			Wall6_To_Target + nb->M * 0.5, 0., 90. * deg, 0.);
+		nb->Put(-nb->L * 0.5,
+			-BeamTube_Outer_Radius - nb->S * 2.5 + FirstLayer_OffsetY,
+			Wall6_To_Target + nb->M * 0.5, 0., 90. * deg, 0.);
+		nb->Put(nb->L * 0.5,
+			-BeamTube_Outer_Radius - nb->S * 2.5 + FirstLayer_OffsetY,
+			Wall6_To_Target + nb->M * 0.5, 0., 90. * deg, 0.);
+		nb->Put(-nb->L * 0.5,
+			-BeamTube_Outer_Radius - nb->S * 3.5 + FirstLayer_OffsetY,
+			Wall6_To_Target + nb->M * 0.5, 0., 90. * deg, 0.);
+		nb->Put(nb->L * 0.5,
+			-BeamTube_Outer_Radius - nb->S * 3.5 + FirstLayer_OffsetY,
+			Wall6_To_Target + nb->M * 0.5, 0., 90. * deg, 0.);
+		nb->Put(-nb->L * 0.5,
+			-BeamTube_Outer_Radius - nb->S * 4.5 + FirstLayer_OffsetY,
+			Wall6_To_Target + nb->M * 0.5, 0., 90. * deg, 0.);
+		nb->Put(nb->L * 0.5,
+			-BeamTube_Outer_Radius - nb->S * 4.5 + FirstLayer_OffsetY,
+			Wall6_To_Target + nb->M * 0.5, 0., 90. * deg, 0.);
+
+		// Second layer in beam direction
+
+		nb->Put(-BeamTube_Outer_Radius - nb->M * 0.5,
+			-BeamTube_Outer_Radius - nb->S * 3. + nb->L * 0.5,
+			Wall6_To_Target + nb->M + nb->S * 0.5, 90. * deg, 0. * deg,
+			0. * deg);
+		nb->Put(BeamTube_Outer_Radius + nb->M * 0.5,
+			-BeamTube_Outer_Radius - nb->S * 3. + nb->L * 0.5,
+			Wall6_To_Target + nb->M + nb->S * 0.5, 90. * deg, 0. * deg,
+			0. * deg);
+		nb->Put(0., BeamTube_Outer_Radius + nb->S * 0.5,
+			Wall6_To_Target + nb->M + nb->M * 0.5, 0., 90. * deg, 0.);
+		nb->Put(-nb->L * 0.5, -BeamTube_Outer_Radius - nb->S * 3.5,
+			Wall6_To_Target + nb->M + nb->M * 0.5, 0., 90. * deg, 0.);
+		nb->Put(nb->L * 0.5, -BeamTube_Outer_Radius - nb->S * 3.5,
+			Wall6_To_Target + nb->M + nb->M * 0.5, 0., 90. * deg, 0.);
+		nb->Put(-nb->L * 0.5, -BeamTube_Outer_Radius - nb->S * 4.5,
+			Wall6_To_Target + nb->M + nb->M * 0.5, 0., 90. * deg, 0.);
+		nb->Put(nb->L * 0.5, -BeamTube_Outer_Radius - nb->S * 4.5,
+			Wall6_To_Target + nb->M + nb->M * 0.5, 0., 90. * deg, 0.);
+
+		// Third layer in beam direction
+
+		nb->Put(0., -BeamTube_Outer_Radius - nb->S * 0.5,
+			Wall6_To_Target + nb->M * 2., 0., 90. * deg, 0.);
+		nb->Put(0., -BeamTube_Outer_Radius - nb->S * 1.5,
+			Wall6_To_Target + nb->M * 2., 0., 90. * deg, 0.);
+		nb->Put(0., -BeamTube_Outer_Radius - nb->S * 2.5,
+			Wall6_To_Target + nb->M * 2., 0., 90. * deg, 0.);
+		nb->Put(0., -BeamTube_Outer_Radius - nb->S * 3. - nb->M * 0.5,
+			Wall6_To_Target + nb->M * 2. + nb->S * 0.5, 0., 90. * deg,
+			90. * deg);
+		snb->Put(-BeamTube_Outer_Radius - nb->M * 0.5,
+			 -BeamTube_Outer_Radius + nb->S * 0.5,
+			 Wall6_To_Target + nb->M * 2.);
+		snb->Put(BeamTube_Outer_Radius + nb->M * 0.5,
+			 -BeamTube_Outer_Radius + nb->S * 0.5,
+			 Wall6_To_Target + nb->M * 2.);
+
+		/********************* Table Plate ******************/
+
+		G4double TablePlate_Width = 21. * inch;   // Measured
+		G4double TablePlate_Length = 36.5 * inch; // Measured
+		G4double TablePlate_Thickness = 20. * mm; // Estimated
+
+		G4double TablePlate_Height =
+		    -BeamTube_Outer_Radius - nb->S * 5. - 25. * mm; // Measured
+
+		G4Material *TablePlate_Material = Fe; // Actually, it's made of steel
+
+		G4Box *TablePlate_Solid =
+		    new G4Box("TablePlate_Solid", TablePlate_Width / 2.,
+			      TablePlate_Thickness / 2., TablePlate_Length / 2.);
+		G4LogicalVolume *TablePlate_Logical = new G4LogicalVolume(
+		    TablePlate_Solid, TablePlate_Material, "TablePlate_Logical", 0, 0, 0);
+
+		TablePlate_Logical->SetVisAttributes(new G4VisAttributes(grey));
+
+		new G4PVPlacement(
+		    0, G4ThreeVector(0., TablePlate_Height - TablePlate_Thickness / 2.,
+				     Wheel_To_Target_Position + Wheel_Total_Thickness +
+					 TablePlate_Length * 0.5),
+		    TablePlate_Logical, "TablePlate", world_log, false, 0);
+
+		/**************** WALL7 *****************/
+
+		G4double Wall7_To_Target = Wheel_To_Target_Position +
+					   Wheel_Total_Thickness + TablePlate_Length -
+					   75. * mm - 3. * nb->S; // Measured
+
+		// Table for second setup
+
+		G4double Target2_To_Target = Wheel_To_Target_Position +
+					     Wheel_Total_Thickness + TablePlate_Length +
+					     435. * mm; // Measured
+
+		G4double Table2_OuterRadius = 435. * mm; // Measured
+		G4double Table2_InnerRadius = 230. * mm; // Measured
+		G4double Table2_Thickness = 20. * mm;    // Estimated
+		G4double Table2_Y = -cb->M;
+
+		G4double PipeHolderTube_OuterRadius = 75. * mm;       // Measured
+		G4double PipeHolderTube_InnerRadius = 68. * mm;       // Measured
+		G4double PipeHolderTubeDownStream_Length = 250. * mm; // Measured
+		G4double PipeHolderTubeUpStream_Length = 160. * mm;   // Measured
+
+		G4Material *PipeHolderTube_Material = Al;
+
+		// Downstream pipe holder
+		G4Tubs *PipeHolderTubeDownStream_Solid =
+		    new G4Tubs("PipeHolderTubeDownStream_Solid", PipeHolderTube_InnerRadius,
+			       PipeHolderTube_OuterRadius,
+			       PipeHolderTubeDownStream_Length / 2., 0. * deg, 360. * deg);
+		G4LogicalVolume *PipeHolderTubeDownStream_Logical = new G4LogicalVolume(
+		    PipeHolderTubeDownStream_Solid, PipeHolderTube_Material,
+		    "PipeHolderTubeDownStream_Logical", 0, 0, 0);
+
+		PipeHolderTubeDownStream_Logical->SetVisAttributes(
+		    new G4VisAttributes(white));
+
+		new G4PVPlacement(
+		    0, G4ThreeVector(0., 0., Target2_To_Target + Table2_InnerRadius +
+						 50. * mm +
+						 PipeHolderTubeDownStream_Length * 0.5),
+		    PipeHolderTubeDownStream_Logical, "PipeHolderTubeDownStream", world_log,
+		    false, 0); // Measured
+
+		// Upstream pipe holder
+		G4Tubs *PipeHolderTubeUpStream_Solid =
+		    new G4Tubs("PipeHolderTubeUpStream_Solid", PipeHolderTube_InnerRadius,
+			       PipeHolderTube_OuterRadius,
+			       PipeHolderTubeUpStream_Length / 2., 0. * deg, 360. * deg);
+		G4LogicalVolume *PipeHolderTubeUpStream_Logical = new G4LogicalVolume(
+		    PipeHolderTubeUpStream_Solid, PipeHolderTube_Material,
+		    "PipeHolderTubeUpStream_Logical", 0, 0, 0);
+
+		PipeHolderTubeUpStream_Logical->SetVisAttributes(
+		    new G4VisAttributes(white));
+
+		new G4PVPlacement(
+		    0, G4ThreeVector(0., 0., Wall7_To_Target + nb->S * 3. +
+						 PipeHolderTubeUpStream_Length * 0.5),
+		    PipeHolderTubeUpStream_Logical, "PipeHolderTubeUpStream", world_log,
+		    false, 0);
+
+		G4Material *Table2_Material = Al;
+
+		G4Tubs *Table2Plate_Solid =
+		    new G4Tubs("Table2Plate_Solid", Table2_InnerRadius, Table2_OuterRadius,
+			       Table2_Thickness * 0.5, 0. * deg, 360. * deg);
+		G4LogicalVolume *Table2Plate_Logical = new G4LogicalVolume(
+		    Table2Plate_Solid, Table2_Material, "Table2Plate_Logical", 0, 0, 0);
+
+		Table2Plate_Logical->SetVisAttributes(new G4VisAttributes(white));
+
+		G4RotationMatrix *rotateTable2Plate = new G4RotationMatrix();
+		rotateTable2Plate->rotateX(90. * deg);
+
+		new G4PVPlacement(
+		    rotateTable2Plate,
+		    G4ThreeVector(0., Table2_Y - Table2_Thickness * 0.5, Target2_To_Target),
+		    Table2Plate_Logical, "Table2Plate", world_log, false, 0);
+
+		/************************ WALL7 Part on the second setup table ********/
+
+		cb->Put(PipeHolderTube_OuterRadius + cb->M * 0.5 - 7. * mm, -cb->M * 0.5,
+			Wall7_To_Target + nb->S * 3. + cb->L * 0.5, 0., 10. * deg, 0.);
+		cb->Put(-PipeHolderTube_OuterRadius - cb->M * 0.5 + 7. * mm, -cb->M * 0.5,
+			Wall7_To_Target + nb->S * 3. + cb->L * 0.5, 0., -10. * deg, 0.);
+		// Concrete blocks were slightly rotated in the setup. The 10.*deg are
+		// estimated. The 7.*mm are chosen such that the concrete blocks barely
+		// touch the PipeHolderTube.
+
+		bb->Put(0., bb->M * 0.5, Wall7_To_Target + nb->S * 3. +
+					     PipeHolderTubeUpStream_Length + bb->S * 0.5,
+			-90. * deg, 90. * deg, 0.);
+		bb->Put(0., bb->M * 0.5, Wall7_To_Target + nb->S * 3. +
+					     PipeHolderTubeUpStream_Length + bb->S * 1.5,
+			-90. * deg, 90. * deg, 0.);
+
+		nb->Put(0., bb->M + nb->S * 0.5,
+			Wall7_To_Target + nb->S * 3. + PipeHolderTubeUpStream_Length +
+			    bb->S * 2. - nb->M * 0.5,
+			0., 90. * deg, 0.);
+		nb->Put(0., bb->M + nb->S * 1.5,
+			Wall7_To_Target + nb->S * 3. + PipeHolderTubeUpStream_Length +
+			    bb->S * 2. - nb->M * 0.5,
+			0., 90. * deg, 0.);
+		nb->Put(0., bb->M + nb->S * 2.5,
+			Wall7_To_Target + nb->S * 3. + PipeHolderTubeUpStream_Length +
+			    bb->S * 2. - nb->M * 0.5,
+			0., 90. * deg, 0.);
+
+		nb->Put(bb->L * 0.5 + nb->M * 0.5, nb->S * 0.5,
+			Wall7_To_Target + nb->S * 3. + PipeHolderTubeUpStream_Length +
+			    bb->S * 2. - nb->L * 0.5);
+		tb->Put(bb->L * 0.5 + tb->M * 0.5, nb->S * 1.5,
+			Wall7_To_Target + nb->S * 3. + PipeHolderTubeUpStream_Length +
+			    bb->S * 2. - tb->L * 0.5);
+
+		nb->Put(-bb->L * 0.5 - nb->M * 0.5, nb->S * 0.5,
+			Wall7_To_Target + nb->S * 3. + PipeHolderTubeUpStream_Length +
+			    bb->S * 2. - nb->L * 0.5);
+		nb->Put(-bb->L * 0.5 - nb->M * 0.5, nb->S * 1.5,
+			Wall7_To_Target + nb->S * 3. + PipeHolderTubeUpStream_Length +
+			    bb->S * 2. - nb->L * 0.5);
+
+		/******************** Target Holder Tube with cap ***********/
+
+		// Tube
+		G4double TargetTubeWithCapFront_Length = 50. * mm; // Measured
+		G4double TargetTubeWithCapBack_Length =
+		    BeamTube_Length_Downstream - Target2_To_Target -
+		    TargetTubeWithCapFront_Length * 0.5; // Measured
+
+		G4Tubs *TargetTubeWithCapBack_Solid =
+		    new G4Tubs("TargetTubeWithCapBack_Solid",
+			       TargetTube_Outer_Radius - TargetTubeBack_Thickness,
+			       TargetTube_Outer_Radius, TargetTubeWithCapBack_Length * 0.5,
+			       0. * deg, 360. * deg);
+		G4Tubs *TargetTubeWithCapFront_Solid =
+		    new G4Tubs("TargetTubeWithCapFront_Solid",
+			       TargetTube_Outer_Radius - TargetTubeFront_Thickness,
+			       TargetTube_Outer_Radius, TargetTubeWithCapFront_Length * 0.5,
+			       0. * deg, 360. * deg);
+
+		G4UnionSolid *TargetTubeWithCap_Solid = new G4UnionSolid(
+		    "TargetTubeWithCap_Solid", TargetTubeWithCapBack_Solid,
+		    TargetTubeWithCapFront_Solid, 0,
+		    G4ThreeVector(0., 0., -TargetTubeWithCapBack_Length * 0.5 -
+					      TargetTubeWithCapFront_Length * 0.5));
+
+		G4LogicalVolume *TargetTubeWithCap_Logical =
+		    new G4LogicalVolume(TargetTubeWithCap_Solid, Plexiglass,
+					"TargetTubeWithCap_Logical", 0, 0, 0);
+
+		TargetTubeWithCap_Logical->SetVisAttributes(new G4VisAttributes(orange));
+
+		new G4PVPlacement(
+		    0, G4ThreeVector(0., 0., BeamTube_Length_Downstream -
+						 TargetTubeWithCapBack_Length / 2.),
+		    TargetTubeWithCap_Logical, "TargetTubeWithCap", world_log, false, 0);
+
+		// Target holder ring 2
+		new G4PVPlacement(0, G4ThreeVector(0., 0., Target2_To_Target),
+				  TargetRing_Logical, "TargetRing", world_log, false, 0);
+
+		// Cap
+		G4double TargetTubeCap_Thickness = 2. * mm;
+		G4double TargetTubeCap_Outer_Radius = 1.1 * inch;
+
+		G4Tubs *TargetTubeCap_Solid =
+		    new G4Tubs("TargetTubeCap_Solid", 0., TargetTubeCap_Outer_Radius,
+			       TargetTubeCap_Thickness / 2., 0. * deg, 360. * deg);
+
+		G4LogicalVolume *TargetTubeCap_Logical = new G4LogicalVolume(
+		    TargetTubeCap_Solid, Plexiglass, "TargetTubeCap_Logical", 0, 0, 0);
+
+		TargetTubeCap_Logical->SetVisAttributes(new G4VisAttributes(orange));
+
+		new G4PVPlacement(
+		    0, G4ThreeVector(0., 0., BeamTube_Length_Downstream +
+						 TargetTubeCap_Thickness / 2.),
+		    TargetTubeCap_Logical, "TargetTubeCap", world_log, false, 0);
+
+		/**************** Collimator *************************/
+
+		G4double Collimator_Length = 270. * mm;            // Measured
+		G4double Collimator_XY = 60. * mm;                 // Measured
+		G4double CollimatorHole_Radius = 0.75 * inch / 2.; // Measured
+		G4Material *Collimator_Material = Pb;
+
+		G4double Collimator_To_Target = Wall0_To_Target + nb->S * 8. + 200. * mm +
+						Collimator_Length * 0.5; // Estimated
+
+		G4Box *CollimatorBox_Solid =
+		    new G4Box("CollimatorBox_Solid", Collimator_XY / 2., Collimator_XY / 2.,
+			      Collimator_Length / 2.);
+		G4Tubs *CollimatorHole_Solid =
+		    new G4Tubs("CollimatorHole_Solid", 0., CollimatorHole_Radius,
+			       Collimator_Length / 2., 0. * deg, 360. * deg);
+
+		G4SubtractionSolid *Collimator_Solid = new G4SubtractionSolid(
+		    "Collimator_Solid", CollimatorBox_Solid, CollimatorHole_Solid);
+		G4LogicalVolume *Collimator_Logical = new G4LogicalVolume(
+		    Collimator_Solid, Collimator_Material, "Collimator_Solid", 0, 0, 0);
+
+		Collimator_Logical->SetVisAttributes(new G4VisAttributes(grey));
+
+		G4RotationMatrix *rotateCollimator = new G4RotationMatrix();
+		rotateCollimator->rotateY(0. * deg);
+
+		new G4PVPlacement(
+		    rotateCollimator,
+		    G4ThreeVector(0., 0., -Collimator_To_Target - Collimator_Length / 2.),
+		    Collimator_Logical, "Collimator", world_log, false, 0);
+
+		/************* Lead and Cadmium wrapping around beam pipe ************/
+
+		G4double LeadFoil_Thickness = 1.8 * mm; // Measured
+		G4double LeadFoil_Width = 140. * mm;    // Measured
+
+		G4Tubs *LeadWrap_Solid =
+		    new G4Tubs("LeadWrap_Solid", BeamTube_Outer_Radius,
+			       BeamTube_Outer_Radius + LeadFoil_Thickness,
+			       LeadFoil_Width * 0.5, 0. * deg, 360. * deg);
+		G4LogicalVolume *LeadWrap_Logical =
+		    new G4LogicalVolume(LeadWrap_Solid, Pb, "LeadWrap_Logical", 0, 0, 0);
+
+		LeadWrap_Logical->SetVisAttributes(new G4VisAttributes(grey));
+
+		G4Tubs *DoubleLeadWrap_Solid =
+		    new G4Tubs("DoubleLeadWrap_Solid", BeamTube_Outer_Radius,
+			       BeamTube_Outer_Radius + 2 * LeadFoil_Thickness,
+			       LeadFoil_Width * 0.25, 0. * deg, 360. * deg);
+		G4LogicalVolume *DoubleLeadWrap_Logical = new G4LogicalVolume(
+		    DoubleLeadWrap_Solid, Pb, "DoubleLeadWrap_Logical", 0, 0, 0);
+
+		DoubleLeadWrap_Logical->SetVisAttributes(new G4VisAttributes(grey));
+
+		G4Tubs *QuadrupleLeadWrap_Solid =
+		    new G4Tubs("QuadrupleLeadWrap_Solid", BeamTube_Outer_Radius,
+			       BeamTube_Outer_Radius + 4 * LeadFoil_Thickness,
+			       LeadFoil_Width * 0.5, 0. * deg, 360. * deg);
+		G4LogicalVolume *QuadrupleLeadWrap_Logical = new G4LogicalVolume(
+		    QuadrupleLeadWrap_Solid, Pb, "QuadrupleLeadWrap_Logical", 0, 0, 0);
+
+		QuadrupleLeadWrap_Logical->SetVisAttributes(new G4VisAttributes(grey));
+
+		// Wrapping between Wall4 and Wall5
+
+		new G4PVPlacement(0,
+				  G4ThreeVector(0., 0., -Wall5_To_Target - nb->M * 3. -
+							    hsbh->S - LeadFoil_Width * 0.5),
+				  LeadWrap_Logical, "LeadWrap", world_log, false, 0);
+
+		// Wrapping upstream of g3 setup
+
+		new G4PVPlacement(
+		    0, G4ThreeVector(0., 0., -Wall5_To_Target + LeadFoil_Width * 0.5),
+		    LeadWrap_Logical, "LeadWrap", world_log, false, 0);
+
+		/**************** g3 Target/Source ******************/
+
+		Se82_Target *se82_Target = new Se82_Target();
 
 	G4LogicalVolume *Se82_Target_Logical = se82_Target->Get_Logical();
 
 	G4RotationMatrix *rotateG3Target = new G4RotationMatrix();
 	rotateG3Target->rotateY(180. * deg);
 
-	new G4PVPlacement(
-	    rotateG3Target,
-	    G4ThreeVector(0., 0., -BeamTube_Length_Downstream +
-	                              BeamTube_Length * 0.5 +
-	                              se82_Target->Get_Target_Center()),
-	    Se82_Target_Logical, "Se82_Target_Physical", BeamTubeVacuum_Logical,
-	    false, 0);
+		new G4PVPlacement(
+		    rotateG3Target,
+		    G4ThreeVector(0., 0., -BeamTube_Length_Downstream +
+		                              BeamTube_Length * 0.5 +
+		                              se82_Target->Get_Target_Center()),
+		    Se82_Target_Logical, "Se82_Target_Physical", BeamTubeVacuum_Logical,
+		    false, 0);
 
 	/**************** Second Target/Source ***************/
 
@@ -1077,36 +1067,37 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	                                           // the TargetTube
 	rotateSecondTarget->rotateX(SecondTarget_AngleX);
 
-	new G4PVPlacement(
-	    rotateSecondTarget,
-	    G4ThreeVector(0., 20. * mm * sin(SecondTarget_AngleX),
-	                  -BeamTube_Length_Downstream + BeamTube_Length * 0.5 +
-	                      Target2_To_Target - kr82_Target->Get_Target_Center() -
-	                      20. * mm * (1 - cos(SecondTarget_AngleX))),
-	    Kr82_Target_Logical, "Kr82_Target_Physical", BeamTubeVacuum_Logical,
-	    false, 0);
+		new G4PVPlacement(
+		    rotateSecondTarget,
+		    G4ThreeVector(0., 20. * mm * sin(SecondTarget_AngleX),
+		                  -BeamTube_Length_Downstream + BeamTube_Length * 0.5 +
+		                      Target2_To_Target -
+	 kr82_Target->Get_Target_Center() -
+		                      20. * mm * (1 - cos(SecondTarget_AngleX))),
+		    Kr82_Target_Logical, "Kr82_Target_Physical", BeamTubeVacuum_Logical,
+		    false, 0);
 
 	// Box around the target/source. Inside this box, random coordinates for the
 	// AngularDistributionGenerator are sampled in order to find random points
 	// inside the target/source. The box should wrap the target/source volume as
 	// tightly as possible. Remove the box when doing an actual simulation.
 
-	//		G4double AuxBox_LengthX = 20. * mm;
-	//		G4double AuxBox_LengthY = 20. * mm;
-	//		G4double AuxBox_LengthZ = 4. * mm;
+	//	G4double AuxBox_LengthX = 20. * mm;
+	//	G4double AuxBox_LengthY = 20. * mm;
+	//	G4double AuxBox_LengthZ = 4. * mm;
 	//
-	//		G4double AuxBox_X = 0. * mm;
-	//		G4double AuxBox_Y = 0. * mm;
-	//		G4double AuxBox_Z = 0. * mm;
+	//	G4double AuxBox_X = 0. * mm;
+	//	G4double AuxBox_Y = 0. * mm;
+	//	G4double AuxBox_Z = 0. * mm;
 	//
-	//		G4Box *AuxiliaryBox_Solid =
-	//		    new G4Box("AuxiliaryBox_Solid", AuxBox_LengthX * 0.5,
-	//		              AuxBox_LengthY * 0.5, AuxBox_LengthZ * 0.5);
-	//		G4LogicalVolume *AuxiliaryBox_Logical =
-	//		    new G4LogicalVolume(AuxiliaryBox_Solid, vacuum,
-	//	"AuxiliaryBox_Logical");
+	//	G4Box *AuxiliaryBox_Solid =
+	//	    new G4Box("AuxiliaryBox_Solid", AuxBox_LengthX * 0.5,
+	//	              AuxBox_LengthY * 0.5, AuxBox_LengthZ * 0.5);
+	//	G4LogicalVolume *AuxiliaryBox_Logical =
+	//	    new G4LogicalVolume(AuxiliaryBox_Solid, vacuum,
+	//"AuxiliaryBox_Logical");
 	//
-	//		AuxiliaryBox_Logical->SetVisAttributes(new G4VisAttributes(white));
+	//	AuxiliaryBox_Logical->SetVisAttributes(new G4VisAttributes(white));
 
 	// new G4PVPlacement(0, G4ThreeVector(AuxBox_X, AuxBox_Y, AuxBox_Z),
 	// AuxiliaryBox_Logical, "AuxiliaryBox", world_log, false, 0);
@@ -1506,7 +1497,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	    G4ThreeVector(HPGe4_rt * sin(HPGe4_theta) * cos(HPGe4_phi),
 	                  HPGe4_rt * sin(HPGe4_theta) * sin(HPGe4_phi) + HPGe4_dy,
 	                  HPGe4_rt * cos(HPGe4_theta) + HPGe4_dz),
-	    HPGe4_Logical, "HPGe4", world_log, false, 0);
+	    HPGe4_Logical, "LaBr", world_log, false, 0);
 
 	// HPGe4 Wrapping
 
@@ -1874,32 +1865,6 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	                  LaBr4_rt * cos(LaBr4_theta) + LaBr4_dz),
 	    LaBr4_TUD_Logical, "LaBr_TUD", world_log, false, 0);
 
-	// LaBr4 Wrapping
-
-	G4double LaBr4_Wrapping_Thickness = 2 * 0.050 * inch;
-	// Measured
-	G4double LaBr4_Wrapping_Length = LaBr4_Instance->Get_Length();
-	// Estimated
-
-	G4Tubs *LaBr4_Wrapping_Solid =
-	    new G4Tubs("LaBr4_Wrapping_Solid", LaBr4_Instance->Get_Radius(),
-	               LaBr4_Instance->Get_Radius() + LaBr4_Wrapping_Thickness,
-	               LaBr4_Wrapping_Length * 0.5, 0. * deg, 360. * deg);
-	G4LogicalVolume *LaBr4_Wrapping_Logical = new G4LogicalVolume(
-	    LaBr4_Wrapping_Solid, Pb, "LaBr4_Wrapping_Logical", 0, 0, 0);
-
-	LaBr4_Wrapping_Logical->SetVisAttributes(new G4VisAttributes(grey));
-
-	LaBr4_rt = LaBr4_rt + LaBr4_Wrapping_Length * 0.5 -
-	           LaBr4_Instance->Get_Length() * 0.5;
-	new G4PVPlacement(
-	    rotateLaBr4,
-	    G4ThreeVector(LaBr4_rt * sin(LaBr4_theta) * cos(LaBr4_phi),
-	                  LaBr4_rt * sin(LaBr4_theta) * sin(LaBr4_phi) + LaBr4_dy,
-	                  LaBr4_rt * cos(LaBr4_theta) + LaBr4_dz),
-	    LaBr4_Wrapping_Logical, "LaBr4_Wrapping", world_log, false, 0);
-	LaBr4_rt = LaBr4_rt - LaBr4_Wrapping_Length * 0.5;
-
 	// LaBr4 Filters
 
 	LaBr4_rt -= LaBr4_Instance->Get_Length() * 0.5;
@@ -1932,10 +1897,36 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	          LaBr4_AngleY, 0.);
 	LaBr4_rt -= fcbo->Thickness * 0.5;
 
+	// LaBr4 Wrapping
+
+	G4double LaBr4_Wrapping_Thickness = 2 * 0.050 * inch;
+	// Measured
+	G4double LaBr4_Wrapping_Length = LaBr4_Instance->Get_Length();
+	// Estimated
+
+	G4Tubs *LaBr4_Wrapping_Solid =
+	    new G4Tubs("LaBr4_Wrapping_Solid", LaBr4_Instance->Get_Radius(),
+	               LaBr4_Instance->Get_Radius() + LaBr4_Wrapping_Thickness,
+	               LaBr4_Wrapping_Length * 0.5, 0. * deg, 360. * deg);
+	G4LogicalVolume *LaBr4_Wrapping_Logical = new G4LogicalVolume(
+	    LaBr4_Wrapping_Solid, Pb, "LaBr4_Wrapping_Logical", 0, 0, 0);
+
+	LaBr4_Wrapping_Logical->SetVisAttributes(new G4VisAttributes(grey));
+
+	LaBr4_rt = LaBr4_rt + LaBr4_Wrapping_Length * 0.5 -
+	           LaBr4_Instance->Get_Length() * 0.5;
+	new G4PVPlacement(
+	    rotateLaBr4,
+	    G4ThreeVector(LaBr4_rt * sin(LaBr4_theta) * cos(LaBr4_phi),
+	                  LaBr4_rt * sin(LaBr4_theta) * sin(LaBr4_phi) + LaBr4_dy,
+	                  LaBr4_rt * cos(LaBr4_theta) + LaBr4_dz),
+	    LaBr4_Wrapping_Logical, "LaBr4_Wrapping", world_log, false, 0);
+	LaBr4_rt = LaBr4_rt - LaBr4_Wrapping_Length * 0.5;
+
 	/************************* HPGe6 (Germanium2_TUD)
 	 *********************************/
 
-	G4double Germanium2_TUD_rt = 110. * mm;
+	G4double Germanium2_TUD_rt = 90. * mm;
 	G4double Germanium2_TUD_dy = 0. * mm;
 	G4double Germanium2_TUD_dz = 3.5 * mm;
 	G4double Germanium2_TUD_phi = 90. * deg;
@@ -2081,22 +2072,10 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	    Germanium2_TUD_AngleX, Germanium2_TUD_AngleY, 0.);
 	Germanium2_TUD_rt -= pbmedium->Thickness * 0.5;
 
-	// pbmedium
-	Germanium2_TUD_rt -= pbmedium->Thickness * 0.5;
-	pbmedium->Put(
-	    Germanium2_TUD_rt * sin(Germanium2_TUD_theta) * cos(Germanium2_TUD_phi),
-	    Germanium2_TUD_rt * sin(Germanium2_TUD_theta) *
-	            sin(Germanium2_TUD_phi) +
-	        Germanium2_TUD_dy,
-	    Target2_To_Target + Germanium2_TUD_rt * cos(Germanium2_TUD_theta) +
-	        Germanium2_TUD_dz,
-	    Germanium2_TUD_AngleX, Germanium2_TUD_AngleY, 0.);
-	Germanium2_TUD_rt -= pbmedium->Thickness * 0.5;
-
 	/************************* HPGe7 (HPGe1_55)
 	 *********************************/
 
-	G4double HPGe1_55_rt = 87. * mm;
+	G4double HPGe1_55_rt = 47. * mm;
 	G4double HPGe1_55_dy = 18. * mm;
 	G4double HPGe1_55_dz = 4. * mm;
 	G4double HPGe1_55_phi = 0. * deg;
@@ -2209,19 +2188,10 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	    HPGe1_55_AngleX, HPGe1_55_AngleY, 0.);
 	HPGe1_55_rt -= fcbo->Thickness * 0.5;
 
-	// Medium lead plate taped on top of filter case
-	HPGe1_55_rt -= pbmedium->Thickness * 0.5;
-	pbmedium->Put(
-	    HPGe1_55_rt * sin(HPGe1_55_theta) * cos(HPGe1_55_phi),
-	    HPGe1_55_rt * sin(HPGe1_55_theta) * sin(HPGe1_55_phi) + HPGe1_55_dy,
-	    Target2_To_Target + HPGe1_55_rt * cos(HPGe1_55_theta) + HPGe1_55_dz,
-	    HPGe1_55_AngleX, HPGe1_55_AngleY, 0.);
-	HPGe1_55_rt -= pbmedium->Thickness * 0.5;
-
 	/************************* HPGe8 (HPGe2_55)
 	 * ********************************/
 
-	G4double HPGe2_55_rt = 77. * mm;
+	G4double HPGe2_55_rt = 57. * mm;
 	G4double HPGe2_55_dy = 16. * mm;
 	G4double HPGe2_55_dz = 3. * mm;
 	G4double HPGe2_55_phi = 180. * deg;
@@ -2333,15 +2303,6 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	    Target2_To_Target + HPGe2_55_rt * cos(HPGe2_55_theta) + HPGe2_55_dz,
 	    HPGe2_55_AngleX, HPGe2_55_AngleY, 0.);
 	HPGe2_55_rt -= fcbo->Thickness * 0.5;
-
-	// Medium lead plate taped on top of filter case
-	HPGe2_55_rt -= pbmedium->Thickness * 0.5;
-	pbmedium->Put(
-	    HPGe2_55_rt * sin(HPGe2_55_theta) * cos(HPGe2_55_phi),
-	    HPGe2_55_rt * sin(HPGe2_55_theta) * sin(HPGe2_55_phi) + HPGe2_55_dy,
-	    Target2_To_Target + HPGe2_55_rt * cos(HPGe2_55_theta) + HPGe2_55_dz,
-	    HPGe2_55_AngleX, HPGe2_55_AngleY, 0.);
-	HPGe2_55_rt -= pbmedium->Thickness * 0.5;
 
 	/************************* HPGe9 (Polarimeter_TUD)
 	 *********************************/
@@ -2498,19 +2459,6 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	              Polarimeter_TUD_AngleX, Polarimeter_TUD_AngleY, 0.);
 	Polarimeter_TUD_rt -= pbmedium->Thickness * 0.5;
 
-	// pbmedium
-	Polarimeter_TUD_rt -= pbmedium->Thickness * 0.5;
-	pbmedium->Put(Polarimeter_TUD_rt * sin(Polarimeter_TUD_theta) *
-	                  cos(Polarimeter_TUD_phi),
-	              Polarimeter_TUD_rt * sin(Polarimeter_TUD_theta) *
-	                      sin(Polarimeter_TUD_phi) +
-	                  Polarimeter_TUD_dy,
-	              Target2_To_Target +
-	                  Polarimeter_TUD_rt * cos(Polarimeter_TUD_theta) +
-	                  Polarimeter_TUD_dz,
-	              Polarimeter_TUD_AngleX, Polarimeter_TUD_AngleY, 0.);
-	Polarimeter_TUD_rt -= pbmedium->Thickness * 0.5;
-
 	return world_phys;
 }
 
@@ -2538,54 +2486,51 @@ void DetectorConstruction::ConstructSDandField() {
 	SetSensitiveDetector("HPGe4", HPGe4SD, true);
 
 	// LaBr detectors in g3
-	//	EnergyDepositionSD *LaBr1SD = new EnergyDepositionSD("LaBr1", "LaBr1");
+	//	ParticleSD *LaBr1SD = new ParticleSD("LaBr1", "LaBr1");
 	//	G4SDManager::GetSDMpointer()->AddNewDetector(LaBr1SD);
 	//	LaBr1SD->SetDetectorID(11);
 	//	SetSensitiveDetector("LaBr1", LaBr1SD, true);
 	//
-	//	EnergyDepositionSD *LaBr2SD = new EnergyDepositionSD("LaBr2", "LaBr2");
+	//	ParticleSD *LaBr2SD = new ParticleSD("LaBr2", "LaBr2");
 	//	G4SDManager::GetSDMpointer()->AddNewDetector(LaBr2SD);
 	//	LaBr2SD->SetDetectorID(22);
 	//	SetSensitiveDetector("LaBr2", LaBr2SD, true);
 	//
-	//	EnergyDepositionSD *LaBr3SD = new EnergyDepositionSD("LaBr3", "LaBr3");
+	//	ParticleSD *LaBr3SD = new ParticleSD("LaBr3", "LaBr3");
 	//	G4SDManager::GetSDMpointer()->AddNewDetector(LaBr3SD);
 	//	LaBr3SD->SetDetectorID(33);
 	//	SetSensitiveDetector("LaBr3", LaBr3SD, true);
 	//
-	//	EnergyDepositionSD *LaBr4SD = new EnergyDepositionSD("LaBr4", "LaBr4");
+	//	ParticleSD *LaBr4SD = new ParticleSD("LaBr4", "LaBr4");
 	//	G4SDManager::GetSDMpointer()->AddNewDetector(LaBr4SD);
 	//	LaBr4SD->SetDetectorID(44);
 	//	SetSensitiveDetector("LaBr4", LaBr4SD, true);
-
-	// HPGe detectors in second setup
-	//	EnergyDepositionSD *Germanium2_TUDSD =
-	//	    new EnergyDepositionSD("Germanium2_TUD", "Germanium2_TUD");
+	//
+	//	// HPGe detectors in second setup
+	//	ParticleSD *Germanium2_TUDSD =
+	//	    new ParticleSD("Germanium2_TUD", "Germanium2_TUD");
 	//	G4SDManager::GetSDMpointer()->AddNewDetector(Germanium2_TUDSD);
 	//	Germanium2_TUDSD->SetDetectorID(6);
 	//	SetSensitiveDetector("Germanium2_TUD", Germanium2_TUDSD, true);
 	//
-	//	EnergyDepositionSD *HPGe1_55SD =
-	//	    new EnergyDepositionSD("HPGe1_55", "HPGe1_55");
+	//	ParticleSD *HPGe1_55SD = new ParticleSD("HPGe1_55", "HPGe1_55");
 	//	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe1_55SD);
 	//	HPGe1_55SD->SetDetectorID(7);
 	//	SetSensitiveDetector("HPGe1_55", HPGe1_55SD, true);
 	//
-	//	EnergyDepositionSD *HPGe2_55SD =
-	//	    new EnergyDepositionSD("HPGe2_55", "HPGe2_55");
+	//	ParticleSD *HPGe2_55SD = new ParticleSD("HPGe2_55", "HPGe2_55");
 	//	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe2_55SD);
 	//	HPGe2_55SD->SetDetectorID(8);
 	//	SetSensitiveDetector("HPGe2_55", HPGe2_55SD, true);
 	//
-	//	EnergyDepositionSD *Polarimeter_TUDSD =
-	//	    new EnergyDepositionSD("Polarimeter_TUD", "Polarimeter_TUD");
+	//	ParticleSD *Polarimeter_TUDSD =
+	//	    new ParticleSD("Polarimeter_TUD", "Polarimeter_TUD");
 	//	G4SDManager::GetSDMpointer()->AddNewDetector(Polarimeter_TUDSD);
 	//	Polarimeter_TUDSD->SetDetectorID(9);
 	//	SetSensitiveDetector("Polarimeter_TUD", Polarimeter_TUDSD, true);
-
-	// ZeroDegree detector
-	//	EnergyDepositionSD *ZeroDegreeSD =
-	//	    new EnergyDepositionSD("ZeroDegree", "ZeroDegree");
+	//
+	//	// ZeroDegree detector
+	//	ParticleSD *ZeroDegreeSD = new ParticleSD("ZeroDegree", "ZeroDegree");
 	//	G4SDManager::GetSDMpointer()->AddNewDetector(ZeroDegreeSD);
 	//	ZeroDegreeSD->SetDetectorID(5);
 	//	SetSensitiveDetector("ZeroDegree", ZeroDegreeSD, true);

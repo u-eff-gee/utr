@@ -1,1 +1,1 @@
-/control/loop source.mac E 0.4 4.2 0.2
+/control/loop angdist.mac D -0.5 0.5 0.1

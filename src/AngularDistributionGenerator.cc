@@ -306,6 +306,30 @@ G4bool AngularDistributionGenerator::AngularDistribution(
 			return false;
 		}
 
+		// 1.5^+ -> 2.5^+ -> 1.5^+
+		if (st[0] == 1.5 && st[1] == 2.5 && st[2] == 1.5) {
+
+			if (rand_w <=
+			    1. / ((1. + pow(mix[0], 2)) * (1. + pow(mix[1], 2))) *
+			        ((1. + pow(mix[0], 2)) * (1. + pow(mix[1], 2)) -
+			         0.5 * (0.374166 - (1.89737 + 0.190901 * mix[1]) * mix[1]) *
+			             ((0.374166 + (1.89737 - 0.190901 * mix[0]) * mix[0]) *
+			                  (1. - 3. * pow(cos(rand_theta), 2)) -
+			              0.572703 * (-1.96 + mix[0] * (3.313 + mix[0])) *
+			                  (pow(cos(rand_theta), 2) - 1.) *
+			                  cos(2 * rand_phi)) +
+			         0.0621963 * pow(mix[0], 2) * pow(mix[1], 2) *
+			             (3. +
+			              pow(cos(rand_theta), 2) *
+			                  (-30. - 40. * cos(2 * rand_phi)) +
+			              5. * cos(2 * rand_phi) +
+			              pow(cos(rand_theta), 4) *
+			                  (35. + 35. * cos(2 * rand_phi))))) {
+				return true;
+			}
+			return false;
+		}
+
 	} else if (nst == 4) {
 		G4cout
 		    << "Warning: AngularDistributionGenerator:: Required spin sequence "
