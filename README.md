@@ -1,6 +1,6 @@
 # Geant4 simulation of the UTR at HIγS
 
-![Geometry of the UTR Geant4 simulation](.media/geometry.png)
+![Geometry of the UTR Geant4 simulation](.media/blender.png)
 
 This is a [Geant4](https://geant4.web.cern.ch/) [[1]](#ref-g4_1) [[2]](#ref-g4_2) [[3]](#ref-g4_3) simulation of the Upstream Target Room (UTR) at the High Intensity γ-ray Source (HIγS) facility [[4]](#ref-higs), located at the Duke Free Electron Laser Laboratory (DFELL) of the Triangle University Nuclear Laboratory (TUNL) at Duke University, Durham, NC, USA.
 
@@ -242,8 +242,10 @@ At the moment, the following distributions are implemented:
     0+ -> 1- -> 2+
 * `states == {1.5, -2.5, 1.5}`
     3/2+ -> 5/2- -> 3/2+
+* `states == {1.5, 2.5, 1.5}`
+    3/2+ -> 5/2+ -> 3/2+
     
-The source volume and the dimensions of its container box can be set in the constructor of the AngularDistributionGenerator in `/src/AngularDistributionGenerator.cc`. The source volume is addressed via the name of its G4PhysicalVolume.
+The source volume and the dimensions of its container box can be set in the constructor of the AngularDistributionGenerator in `/src/AngularDistributionGenerator.cc`. The source volume is addressed via the name of its **G4PhysicalVolume**.
         
 ### 1.4 Physics
 The physics processes are defined in `/src/Physics.cc`. In the Physics::ConstructProcess() method, physics lists for groups of particles can be activated by uncommenting the desired physics list. If you are working on a slow machine and you just want to visualize the geometry, it can be advantageous to switch off all physics.
@@ -323,13 +325,17 @@ These instructions will get you a copy of the simulation running.
 
 To build and run the simulation, the following dependencies are required:
 
-* [Geant4](https://geant4.web.cern.ch/) (tested with version 10.03)
+* [Geant4](https://geant4.web.cern.ch/) (tested with version 10.03 patch 01)
 * CMake (*build*)
 * Make (*build*)
 
 Furthermore, to use the analysis scripts:
 
 * [ROOT](https://root.cern.ch/) (tested with version 5.34/36)
+
+Optional components:
+
+* [Qt](https://www.qt.io/) as a visualization driver. Compile Geant4 with the `GEANT4_USE_QT` option (tested with Qt4)
 
 ### 2.2 Compilation
 
@@ -360,7 +366,10 @@ Running `utr` without any argument will launch a UI session of the simulation wh
 ```
 /control/execute init_vis.mac
 ```
-
+It is also possible to create 3D visualization files that can be viewed by an external viewer like [Blender](https://www.blender.org/) (the title picture was made in Blender, for example). The macro `vrml.mac` shows how to create a `.wrl` file. Run it in UI mode with
+```
+/control/execute vrml.mac
+```
 Important optional arguments besides `--help` are:
 ```bash
 $ ./utr -m MACROFILE
@@ -370,6 +379,14 @@ Executes macro file MACROFILE
 $ ./utr -t NTHREADS
 ```
 Sets the number of threads in multithreaded mode (default: 1)
+
+### 3.1 Visualization
+
+As shown above, the prompt visualization which is initiated by 
+```
+$ ./utr
+```
+, the macro `vrml.mac` shows how to create a `.wrl` file that can be viewed with 3D viewers like [Blender](https://www.blender.org/). To use the macro, type
 
 ## 4 Output Processing
 

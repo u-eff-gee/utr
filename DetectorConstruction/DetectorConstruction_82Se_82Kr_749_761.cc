@@ -8,7 +8,8 @@
 #include "G4Material.hh"
 #include "G4NistManager.hh"
 #include "Materials.hh"
-Materials *Materials::instance = NULL;
+	Materials *Materials::instance = NULL;
+	Materials *materials = Materials::Instance();
 
 // Geometry
 #include "G4Box.hh"
@@ -79,7 +80,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	G4NistManager *nist = G4NistManager::Instance();
 
 	G4Material *Al = nist->FindOrBuildMaterial("G4_Al");
-	G4Material *vacuum = nist->FindOrBuildMaterial("G4_Galactic");
+//	G4Material *vacuum = nist->FindOrBuildMaterial("G4_Galactic");
 	G4Material *air = nist->FindOrBuildMaterial("G4_AIR");
 	G4Material *Pb = nist->FindOrBuildMaterial("G4_Pb");
 	G4Material *Plexiglass = nist->FindOrBuildMaterial("G4_PLEXIGLASS");
@@ -87,6 +88,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	G4Material *Concrete = nist->FindOrBuildMaterial("G4_CONCRETE");
 	G4Material *Scintillator_Plastic =
 	    nist->FindOrBuildMaterial("G4_PLASTIC_SC_VINYLTOLUENE");
+		G4Material *pump_vacuum = materials->Get_Pump_Vacuum();
 
 	/***************** World Volume *****************/
 
@@ -304,7 +306,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	               BeamTube_Outer_Radius - BeamTube_Thickness,
 	               BeamTube_Length / 2., 0. * deg, 360. * deg);
 	G4LogicalVolume *BeamTubeVacuum_Logical = new G4LogicalVolume(
-	    BeamTubeVacuum_Solid, vacuum, "BeamTubeVacuum_Logical", 0, 0, 0);
+	    BeamTubeVacuum_Solid, pump_vacuum, "BeamTubeVacuum_Logical", 0, 0, 0);
 
 	BeamTubeVacuum_Logical->SetVisAttributes(new G4VisAttributes(cyan));
 
@@ -1057,13 +1059,13 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	G4RotationMatrix *rotateG3Target = new G4RotationMatrix();
 	rotateG3Target->rotateY(180. * deg);
 
-	//	new G4PVPlacement(
-	//	    rotateG3Target,
-	//	    G4ThreeVector(0., 0., -BeamTube_Length_Downstream +
-	//	                              BeamTube_Length * 0.5 +
-	//	                              se82_Target->Get_Target_Center()),
-	//	    Se82_Target_Logical, "Se82_Target_Physical", BeamTubeVacuum_Logical,
-	//	    false, 0);
+		new G4PVPlacement(
+		    rotateG3Target,
+		    G4ThreeVector(0., 0., -BeamTube_Length_Downstream +
+		                              BeamTube_Length * 0.5 +
+		                              se82_Target->Get_Target_Center()),
+		    Se82_Target_Logical, "Se82_Target_Physical", BeamTubeVacuum_Logical,
+		    false, 0);
 
 	/**************** Second Target/Source ***************/
 
@@ -1077,15 +1079,15 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	                                           // the TargetTube
 	rotateSecondTarget->rotateX(SecondTarget_AngleX);
 
-	//	new G4PVPlacement(
-	//	    rotateSecondTarget,
-	//	    G4ThreeVector(0., 20. * mm * sin(SecondTarget_AngleX),
-	//	                  -BeamTube_Length_Downstream + BeamTube_Length * 0.5 +
-	//	                      Target2_To_Target -
-	// kr82_Target->Get_Target_Center() -
-	//	                      20. * mm * (1 - cos(SecondTarget_AngleX))),
-	//	    Kr82_Target_Logical, "Kr82_Target_Physical", BeamTubeVacuum_Logical,
-	//	    false, 0);
+		new G4PVPlacement(
+		    rotateSecondTarget,
+		    G4ThreeVector(0., 20. * mm * sin(SecondTarget_AngleX),
+		                  -BeamTube_Length_Downstream + BeamTube_Length * 0.5 +
+		                      Target2_To_Target -
+	 kr82_Target->Get_Target_Center() -
+		                      20. * mm * (1 - cos(SecondTarget_AngleX))),
+		    Kr82_Target_Logical, "Kr82_Target_Physical", BeamTubeVacuum_Logical,
+		    false, 0);
 
 	// Box around the target/source. Inside this box, random coordinates for the
 	// AngularDistributionGenerator are sampled in order to find random points
@@ -1899,7 +1901,6 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	                  LaBr4_rt * sin(LaBr4_theta) * sin(LaBr4_phi) + LaBr4_dy,
 	                  LaBr4_rt * cos(LaBr4_theta) + LaBr4_dz),
 	    LaBr4_Wrapping_Logical, "LaBr4_Wrapping", world_log, false, 0);
-	LaBr4_rt = LaBr4_rt - LaBr4_Wrapping_Length * 0.5;
 
 	// LaBr4 Filters
 

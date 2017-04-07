@@ -27,3 +27,6 @@ run.mac
 
 # Text files
 *.txt
+
+# VRML visualization output
+*.wrl

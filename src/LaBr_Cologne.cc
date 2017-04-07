@@ -36,7 +36,6 @@ LaBr_Cologne::LaBr_Cologne(G4String Detector_Name)
 	G4Colour light_orange(1.0, 0.82, 0.36);
 
 	G4NistManager *nist = G4NistManager::Instance();
-	// Materials *mat = new Materials();
 	Materials *mat = Materials::Instance();
 
 	G4Material *vacuum = nist->FindOrBuildMaterial("G4_Galactic");

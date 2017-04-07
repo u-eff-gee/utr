@@ -24,7 +24,7 @@ void Materials::ConstructMaterials() {
 	G4Element *nat_Ce = nist->FindOrBuildElement("Ce");
 	G4Element *nat_Cl = nist->FindOrBuildElement("Cl");
 
-	G4double z, a, n;
+	G4double z, a;
 	G4double density, abundance, fractionmass;
 	G4String name, symbol;
 	G4int ncomponents, natoms;
@@ -229,4 +229,19 @@ void Materials::ConstructMaterials() {
 	LaCl3Ce->AddElement(nat_La, fractionmass = 53.804 * perCent);
 	LaCl3Ce->AddElement(nat_Cl, fractionmass = 41.196 * perCent);
 	LaCl3Ce->AddElement(nat_Ce, fractionmass = 5.0 * perCent);
+
+	/***********************************/
+	//       Beam tube vacuum
+	/***********************************/
+
+	G4Element *nat_N = nist->FindOrBuildElement("N");
+	G4Element *nat_C = nist->FindOrBuildElement("C");
+	G4Element *nat_Ar = nist->FindOrBuildElement("Ar");
+
+	density = 0.00120479*g/cm3 * 1.e-3; // Estimated as one thousandth of the normal density of air as given in the Geant4 material database
+	pump_vacuum = new G4Material(name = "pump_vacuum", density, ncomponents = 4);
+	pump_vacuum->AddElement(nat_O, fractionmass = 23.1781*perCent);
+	pump_vacuum->AddElement(nat_N, fractionmass = 75.5268*perCent);
+	pump_vacuum->AddElement(nat_C, fractionmass = 0.0124*perCent);
+	pump_vacuum->AddElement(nat_Ar, fractionmass = 1.2827*perCent);
 }

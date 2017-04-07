@@ -1,6 +1,6 @@
 // Geometry of 82Se - 82Kr experiment
-// Valid from 20.11. 11:37 am - 29.11. 01:37
-// Run 726 - Run 747
+// Valid from 28.11. 8:33 pm - 29.11. 4:05 pm
+// Run 744 - Run 747
 
 #include "DetectorConstruction.hh"
 
@@ -8,7 +8,8 @@
 #include "G4Material.hh"
 #include "G4NistManager.hh"
 #include "Materials.hh"
-Materials *Materials::instance = NULL;
+	Materials *Materials::instance = NULL;
+	Materials *materials = Materials::Instance();
 
 // Geometry
 #include "G4Box.hh"
@@ -79,7 +80,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	G4NistManager *nist = G4NistManager::Instance();
 
 	G4Material *Al = nist->FindOrBuildMaterial("G4_Al");
-	G4Material *vacuum = nist->FindOrBuildMaterial("G4_Galactic");
+//	G4Material *vacuum = nist->FindOrBuildMaterial("G4_Galactic");
 	G4Material *air = nist->FindOrBuildMaterial("G4_AIR");
 	G4Material *Pb = nist->FindOrBuildMaterial("G4_Pb");
 	G4Material *Plexiglass = nist->FindOrBuildMaterial("G4_PLEXIGLASS");
@@ -87,6 +88,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	G4Material *Concrete = nist->FindOrBuildMaterial("G4_CONCRETE");
 	G4Material *Scintillator_Plastic =
 	    nist->FindOrBuildMaterial("G4_PLASTIC_SC_VINYLTOLUENE");
+		G4Material *pump_vacuum = materials->Get_Pump_Vacuum();
 
 	/***************** World Volume *****************/
 
@@ -304,7 +306,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	               BeamTube_Outer_Radius - BeamTube_Thickness,
 	               BeamTube_Length / 2., 0. * deg, 360. * deg);
 	G4LogicalVolume *BeamTubeVacuum_Logical = new G4LogicalVolume(
-	    BeamTubeVacuum_Solid, vacuum, "BeamTubeVacuum_Logical", 0, 0, 0);
+	    BeamTubeVacuum_Solid, pump_vacuum, "BeamTubeVacuum_Logical", 0, 0, 0);
 
 	BeamTubeVacuum_Logical->SetVisAttributes(new G4VisAttributes(cyan));
 
@@ -1047,13 +1049,13 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	G4RotationMatrix *rotateG3Target = new G4RotationMatrix();
 	rotateG3Target->rotateY(180. * deg);
 
-	//	new G4PVPlacement(
-	//	    rotateG3Target,
-	//	    G4ThreeVector(0., 0., -BeamTube_Length_Downstream +
-	//	                              BeamTube_Length * 0.5 +
-	//	                              se82_Target->Get_Target_Center()),
-	//	    Se82_Target_Logical, "Se82_Target_Physical", BeamTubeVacuum_Logical,
-	//	    false, 0);
+	new G4PVPlacement(
+	    rotateG3Target,
+	    G4ThreeVector(0., 0., -BeamTube_Length_Downstream +
+	                              BeamTube_Length * 0.5 +
+	                              se82_Target->Get_Target_Center()),
+	    Se82_Target_Logical, "Se82_Target_Physical", BeamTubeVacuum_Logical,
+	    false, 0);
 
 	/**************** Second Target/Source ***************/
 
@@ -1067,15 +1069,14 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	                                           // the TargetTube
 	rotateSecondTarget->rotateX(SecondTarget_AngleX);
 
-	//	new G4PVPlacement(
-	//	    rotateSecondTarget,
-	//	    G4ThreeVector(0., 20. * mm * sin(SecondTarget_AngleX),
-	//	                  -BeamTube_Length_Downstream + BeamTube_Length * 0.5 +
-	//	                      Target2_To_Target -
-	// kr82_Target->Get_Target_Center() -
-	//	                      20. * mm * (1 - cos(SecondTarget_AngleX))),
-	//	    Kr82_Target_Logical, "Kr82_Target_Physical", BeamTubeVacuum_Logical,
-	//	    false, 0);
+	new G4PVPlacement(
+	    rotateSecondTarget,
+	    G4ThreeVector(0., 20. * mm * sin(SecondTarget_AngleX),
+	                  -BeamTube_Length_Downstream + BeamTube_Length * 0.5 +
+	                      Target2_To_Target - kr82_Target->Get_Target_Center() -
+	                      20. * mm * (1 - cos(SecondTarget_AngleX))),
+	    Kr82_Target_Logical, "Kr82_Target_Physical", BeamTubeVacuum_Logical,
+	    false, 0);
 
 	// Box around the target/source. Inside this box, random coordinates for the
 	// AngularDistributionGenerator are sampled in order to find random points
@@ -1267,6 +1268,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	          HPGe1_AngleY, 0.);
 	HPGe1_rt -= fcbo->Thickness * 0.5;
 
+
 	/************************* HPGe2 ********************************/
 
 	G4double HPGe2_rt = 78.4 * mm;
@@ -1374,7 +1376,6 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	          HPGe2_rt * sin(HPGe2_theta) * sin(HPGe2_phi) + HPGe2_dy,
 	          HPGe2_rt * cos(HPGe2_theta) + HPGe2_dz, HPGe2_AngleX,
 	          HPGe2_AngleY, 0.);
-	HPGe2_rt -= fcbo->Thickness * 0.5;
 
 	/************************* HPGe3
 	 * ********************************/
@@ -1865,6 +1866,31 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	                  LaBr4_rt * cos(LaBr4_theta) + LaBr4_dz),
 	    LaBr4_TUD_Logical, "LaBr_TUD", world_log, false, 0);
 
+	// LaBr4 Wrapping
+
+	G4double LaBr4_Wrapping_Thickness = 2 * 0.050 * inch;
+	// Measured
+	G4double LaBr4_Wrapping_Length = LaBr4_Instance->Get_Length();
+	// Estimated
+
+	G4Tubs *LaBr4_Wrapping_Solid =
+	    new G4Tubs("LaBr4_Wrapping_Solid", LaBr4_Instance->Get_Radius(),
+	               LaBr4_Instance->Get_Radius() + LaBr4_Wrapping_Thickness,
+	               LaBr4_Wrapping_Length * 0.5, 0. * deg, 360. * deg);
+	G4LogicalVolume *LaBr4_Wrapping_Logical = new G4LogicalVolume(
+	    LaBr4_Wrapping_Solid, Pb, "LaBr4_Wrapping_Logical", 0, 0, 0);
+
+	LaBr4_Wrapping_Logical->SetVisAttributes(new G4VisAttributes(grey));
+
+	LaBr4_rt = LaBr4_rt + LaBr4_Wrapping_Length * 0.5 -
+	           LaBr4_Instance->Get_Length() * 0.5;
+	new G4PVPlacement(
+	    rotateLaBr4,
+	    G4ThreeVector(LaBr4_rt * sin(LaBr4_theta) * cos(LaBr4_phi),
+	                  LaBr4_rt * sin(LaBr4_theta) * sin(LaBr4_phi) + LaBr4_dy,
+	                  LaBr4_rt * cos(LaBr4_theta) + LaBr4_dz),
+	    LaBr4_Wrapping_Logical, "LaBr4_Wrapping", world_log, false, 0);
+
 	// LaBr4 Filters
 
 	LaBr4_rt -= LaBr4_Instance->Get_Length() * 0.5;
@@ -1896,32 +1922,6 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	          LaBr4_rt * cos(LaBr4_theta) + LaBr4_dz, LaBr4_AngleX,
 	          LaBr4_AngleY, 0.);
 	LaBr4_rt -= fcbo->Thickness * 0.5;
-
-	// LaBr4 Wrapping
-
-	G4double LaBr4_Wrapping_Thickness = 2 * 0.050 * inch;
-	// Measured
-	G4double LaBr4_Wrapping_Length = LaBr4_Instance->Get_Length();
-	// Estimated
-
-	G4Tubs *LaBr4_Wrapping_Solid =
-	    new G4Tubs("LaBr4_Wrapping_Solid", LaBr4_Instance->Get_Radius(),
-	               LaBr4_Instance->Get_Radius() + LaBr4_Wrapping_Thickness,
-	               LaBr4_Wrapping_Length * 0.5, 0. * deg, 360. * deg);
-	G4LogicalVolume *LaBr4_Wrapping_Logical = new G4LogicalVolume(
-	    LaBr4_Wrapping_Solid, Pb, "LaBr4_Wrapping_Logical", 0, 0, 0);
-
-	LaBr4_Wrapping_Logical->SetVisAttributes(new G4VisAttributes(grey));
-
-	LaBr4_rt = LaBr4_rt + LaBr4_Wrapping_Length * 0.5 -
-	           LaBr4_Instance->Get_Length() * 0.5;
-	new G4PVPlacement(
-	    rotateLaBr4,
-	    G4ThreeVector(LaBr4_rt * sin(LaBr4_theta) * cos(LaBr4_phi),
-	                  LaBr4_rt * sin(LaBr4_theta) * sin(LaBr4_phi) + LaBr4_dy,
-	                  LaBr4_rt * cos(LaBr4_theta) + LaBr4_dz),
-	    LaBr4_Wrapping_Logical, "LaBr4_Wrapping", world_log, false, 0);
-	LaBr4_rt = LaBr4_rt - LaBr4_Wrapping_Length * 0.5;
 
 	/************************* HPGe6 (Germanium2_TUD)
 	 *********************************/
@@ -2075,7 +2075,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	/************************* HPGe7 (HPGe1_55)
 	 *********************************/
 
-	G4double HPGe1_55_rt = 47. * mm;
+	G4double HPGe1_55_rt = 67. * mm;
 	G4double HPGe1_55_dy = 18. * mm;
 	G4double HPGe1_55_dz = 4. * mm;
 	G4double HPGe1_55_phi = 0. * deg;
@@ -2302,7 +2302,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	    HPGe2_55_rt * sin(HPGe2_55_theta) * sin(HPGe2_55_phi) + HPGe2_55_dy,
 	    Target2_To_Target + HPGe2_55_rt * cos(HPGe2_55_theta) + HPGe2_55_dz,
 	    HPGe2_55_AngleX, HPGe2_55_AngleY, 0.);
-	HPGe2_55_rt -= fcbo->Thickness * 0.5;
+	HPGe2_55_rt -= fcbo->Thickness * 0.5;;
 
 	/************************* HPGe9 (Polarimeter_TUD)
 	 *********************************/
@@ -2465,73 +2465,73 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 void DetectorConstruction::ConstructSDandField() {
 
 	// HPGe detectors in g3
-	EnergyDepositionSD *HPGe1SD = new EnergyDepositionSD("HPGe1", "HPGe1");
+	ParticleSD *HPGe1SD = new ParticleSD("HPGe1", "HPGe1");
 	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe1SD);
 	HPGe1SD->SetDetectorID(1);
 	SetSensitiveDetector("HPGe1", HPGe1SD, true);
 
-	EnergyDepositionSD *HPGe2SD = new EnergyDepositionSD("HPGe2", "HPGe2");
+	SecondarySD *HPGe2SD = new SecondarySD("HPGe2", "HPGe2");
 	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe2SD);
 	HPGe2SD->SetDetectorID(2);
 	SetSensitiveDetector("HPGe2", HPGe2SD, true);
 
-	EnergyDepositionSD *HPGe3SD = new EnergyDepositionSD("HPGe3", "HPGe3");
+	SecondarySD *HPGe3SD = new SecondarySD("HPGe3", "HPGe3");
 	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe3SD);
 	HPGe3SD->SetDetectorID(3);
 	SetSensitiveDetector("HPGe3", HPGe3SD, true);
 
-	EnergyDepositionSD *HPGe4SD = new EnergyDepositionSD("HPGe4", "HPGe4");
+	ParticleSD *HPGe4SD = new ParticleSD("HPGe4", "HPGe4");
 	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe4SD);
 	HPGe4SD->SetDetectorID(4);
 	SetSensitiveDetector("HPGe4", HPGe4SD, true);
 
 	// LaBr detectors in g3
-	//	ParticleSD *LaBr1SD = new ParticleSD("LaBr1", "LaBr1");
-	//	G4SDManager::GetSDMpointer()->AddNewDetector(LaBr1SD);
-	//	LaBr1SD->SetDetectorID(11);
-	//	SetSensitiveDetector("LaBr1", LaBr1SD, true);
-	//
-	//	ParticleSD *LaBr2SD = new ParticleSD("LaBr2", "LaBr2");
-	//	G4SDManager::GetSDMpointer()->AddNewDetector(LaBr2SD);
-	//	LaBr2SD->SetDetectorID(22);
-	//	SetSensitiveDetector("LaBr2", LaBr2SD, true);
-	//
-	//	ParticleSD *LaBr3SD = new ParticleSD("LaBr3", "LaBr3");
-	//	G4SDManager::GetSDMpointer()->AddNewDetector(LaBr3SD);
-	//	LaBr3SD->SetDetectorID(33);
-	//	SetSensitiveDetector("LaBr3", LaBr3SD, true);
-	//
-	//	ParticleSD *LaBr4SD = new ParticleSD("LaBr4", "LaBr4");
-	//	G4SDManager::GetSDMpointer()->AddNewDetector(LaBr4SD);
-	//	LaBr4SD->SetDetectorID(44);
-	//	SetSensitiveDetector("LaBr4", LaBr4SD, true);
-	//
-	//	// HPGe detectors in second setup
-	//	ParticleSD *Germanium2_TUDSD =
-	//	    new ParticleSD("Germanium2_TUD", "Germanium2_TUD");
-	//	G4SDManager::GetSDMpointer()->AddNewDetector(Germanium2_TUDSD);
-	//	Germanium2_TUDSD->SetDetectorID(6);
-	//	SetSensitiveDetector("Germanium2_TUD", Germanium2_TUDSD, true);
-	//
-	//	ParticleSD *HPGe1_55SD = new ParticleSD("HPGe1_55", "HPGe1_55");
-	//	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe1_55SD);
-	//	HPGe1_55SD->SetDetectorID(7);
-	//	SetSensitiveDetector("HPGe1_55", HPGe1_55SD, true);
-	//
-	//	ParticleSD *HPGe2_55SD = new ParticleSD("HPGe2_55", "HPGe2_55");
-	//	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe2_55SD);
-	//	HPGe2_55SD->SetDetectorID(8);
-	//	SetSensitiveDetector("HPGe2_55", HPGe2_55SD, true);
-	//
-	//	ParticleSD *Polarimeter_TUDSD =
-	//	    new ParticleSD("Polarimeter_TUD", "Polarimeter_TUD");
-	//	G4SDManager::GetSDMpointer()->AddNewDetector(Polarimeter_TUDSD);
-	//	Polarimeter_TUDSD->SetDetectorID(9);
-	//	SetSensitiveDetector("Polarimeter_TUD", Polarimeter_TUDSD, true);
-	//
-	//	// ZeroDegree detector
-	//	ParticleSD *ZeroDegreeSD = new ParticleSD("ZeroDegree", "ZeroDegree");
-	//	G4SDManager::GetSDMpointer()->AddNewDetector(ZeroDegreeSD);
-	//	ZeroDegreeSD->SetDetectorID(5);
-	//	SetSensitiveDetector("ZeroDegree", ZeroDegreeSD, true);
+	ParticleSD *LaBr1SD = new ParticleSD("LaBr1", "LaBr1");
+	G4SDManager::GetSDMpointer()->AddNewDetector(LaBr1SD);
+	LaBr1SD->SetDetectorID(11);
+	SetSensitiveDetector("LaBr1", LaBr1SD, true);
+
+	ParticleSD *LaBr2SD = new ParticleSD("LaBr2", "LaBr2");
+	G4SDManager::GetSDMpointer()->AddNewDetector(LaBr2SD);
+	LaBr2SD->SetDetectorID(22);
+	SetSensitiveDetector("LaBr2", LaBr2SD, true);
+
+	ParticleSD *LaBr3SD = new ParticleSD("LaBr3", "LaBr3");
+	G4SDManager::GetSDMpointer()->AddNewDetector(LaBr3SD);
+	LaBr3SD->SetDetectorID(33);
+	SetSensitiveDetector("LaBr3", LaBr3SD, true);
+
+	ParticleSD *LaBr4SD = new ParticleSD("LaBr4", "LaBr4");
+	G4SDManager::GetSDMpointer()->AddNewDetector(LaBr4SD);
+	LaBr4SD->SetDetectorID(44);
+	SetSensitiveDetector("LaBr4", LaBr4SD, true);
+
+	// HPGe detectors in second setup
+	ParticleSD *Germanium2_TUDSD =
+	    new ParticleSD("Germanium2_TUD", "Germanium2_TUD");
+	G4SDManager::GetSDMpointer()->AddNewDetector(Germanium2_TUDSD);
+	Germanium2_TUDSD->SetDetectorID(6);
+	SetSensitiveDetector("Germanium2_TUD", Germanium2_TUDSD, true);
+
+	ParticleSD *HPGe1_55SD = new ParticleSD("HPGe1_55", "HPGe1_55");
+	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe1_55SD);
+	HPGe1_55SD->SetDetectorID(7);
+	SetSensitiveDetector("HPGe1_55", HPGe1_55SD, true);
+
+	ParticleSD *HPGe2_55SD = new ParticleSD("HPGe2_55", "HPGe2_55");
+	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe2_55SD);
+	HPGe2_55SD->SetDetectorID(8);
+	SetSensitiveDetector("HPGe2_55", HPGe2_55SD, true);
+
+	ParticleSD *Polarimeter_TUDSD =
+	    new ParticleSD("Polarimeter_TUD", "Polarimeter_TUD");
+	G4SDManager::GetSDMpointer()->AddNewDetector(Polarimeter_TUDSD);
+	Polarimeter_TUDSD->SetDetectorID(9);
+	SetSensitiveDetector("Polarimeter_TUD", Polarimeter_TUDSD, true);
+
+	// ZeroDegree detector
+	ParticleSD *ZeroDegreeSD = new ParticleSD("ZeroDegree", "ZeroDegree");
+	G4SDManager::GetSDMpointer()->AddNewDetector(ZeroDegreeSD);
+	ZeroDegreeSD->SetDetectorID(5);
+	SetSensitiveDetector("ZeroDegree", ZeroDegreeSD, true);
 }

@@ -33,6 +33,8 @@ class Materials {
 	G4Material *Get_LaBr3Ce() { return LaBr3Ce; }
 	G4Material *Get_LaCl3Ce() { return LaCl3Ce; }
 
+	G4Material *Get_Pump_Vacuum() { return pump_vacuum; }
+
   private:
 	G4Material *target_TiO2;
 	G4Material *target_Se;
@@ -44,6 +46,8 @@ class Materials {
 	G4Material *LaBr3;
 	G4Material *LaBr3Ce;
 	G4Material *LaCl3Ce;
+
+	G4Material *pump_vacuum;
 };
 
 #endif
