@@ -1,3 +1,23 @@
+/*
+utr - Geant4 simulation of the UTR at HIGS
+Copyright (C) 2017 the developing team (see README.md)
+
+This file is part of utr.
+
+utr is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+utr is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with utr.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 // Geometry of 82Se - 82Kr experiment
 // Valid from 29.11. 04:05 pm - 29.11. 10:11 pm
 // Run 748
@@ -8,8 +28,8 @@
 #include "G4Material.hh"
 #include "G4NistManager.hh"
 #include "Materials.hh"
-	Materials *Materials::instance = NULL;
-	Materials *materials = Materials::Instance();
+Materials *Materials::instance = NULL;
+Materials *materials = Materials::Instance();
 
 // Geometry
 #include "G4Box.hh"
@@ -80,7 +100,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	G4NistManager *nist = G4NistManager::Instance();
 
 	G4Material *Al = nist->FindOrBuildMaterial("G4_Al");
-//	G4Material *vacuum = nist->FindOrBuildMaterial("G4_Galactic");
+	//	G4Material *vacuum = nist->FindOrBuildMaterial("G4_Galactic");
 	G4Material *air = nist->FindOrBuildMaterial("G4_AIR");
 	G4Material *Pb = nist->FindOrBuildMaterial("G4_Pb");
 	G4Material *Plexiglass = nist->FindOrBuildMaterial("G4_PLEXIGLASS");
@@ -88,7 +108,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	G4Material *Concrete = nist->FindOrBuildMaterial("G4_CONCRETE");
 	G4Material *Scintillator_Plastic =
 	    nist->FindOrBuildMaterial("G4_PLASTIC_SC_VINYLTOLUENE");
-		G4Material *pump_vacuum = materials->Get_Pump_Vacuum();
+	G4Material *pump_vacuum = materials->Get_Pump_Vacuum();
 
 	/***************** World Volume *****************/
 

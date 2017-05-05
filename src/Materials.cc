@@ -1,3 +1,23 @@
+/*
+utr - Geant4 simulation of the UTR at HIGS
+Copyright (C) 2017 the developing team (see README.md)
+
+This file is part of utr.
+
+utr is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+utr is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with utr.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include "Materials.hh"
 
 #include "G4NistManager.hh"
@@ -238,10 +258,14 @@ void Materials::ConstructMaterials() {
 	G4Element *nat_C = nist->FindOrBuildElement("C");
 	G4Element *nat_Ar = nist->FindOrBuildElement("Ar");
 
-	density = 0.00120479*g/cm3 * 1.e-3; // Estimated as one thousandth of the normal density of air as given in the Geant4 material database
-	pump_vacuum = new G4Material(name = "pump_vacuum", density, ncomponents = 4);
-	pump_vacuum->AddElement(nat_O, fractionmass = 23.1781*perCent);
-	pump_vacuum->AddElement(nat_N, fractionmass = 75.5268*perCent);
-	pump_vacuum->AddElement(nat_C, fractionmass = 0.0124*perCent);
-	pump_vacuum->AddElement(nat_Ar, fractionmass = 1.2827*perCent);
+	density = 0.00120479 * g / cm3 * 1.e-3; // Estimated as one thousandth of
+	                                        // the normal density of air as
+	                                        // given in the Geant4 material
+	                                        // database
+	pump_vacuum =
+	    new G4Material(name = "pump_vacuum", density, ncomponents = 4);
+	pump_vacuum->AddElement(nat_O, fractionmass = 23.1781 * perCent);
+	pump_vacuum->AddElement(nat_N, fractionmass = 75.5268 * perCent);
+	pump_vacuum->AddElement(nat_C, fractionmass = 0.0124 * perCent);
+	pump_vacuum->AddElement(nat_Ar, fractionmass = 1.2827 * perCent);
 }

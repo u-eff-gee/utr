@@ -1,3 +1,23 @@
+/*
+utr - Geant4 simulation of the UTR at HIGS
+Copyright (C) 2017 the developing team (see README.md)
+
+This file is part of utr.
+
+utr is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+utr is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with utr.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 // Geometry of 120Sn - 82Kr experiment
 // Valid for entire experiment
 
@@ -7,8 +27,8 @@
 #include "G4Material.hh"
 #include "G4NistManager.hh"
 #include "Materials.hh"
-	Materials *Materials::instance = NULL;
-	Materials *materials = Materials::Instance();
+Materials *Materials::instance = NULL;
+Materials *materials = Materials::Instance();
 
 // Geometry
 #include "G4Box.hh"
@@ -81,7 +101,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	// G4Material* Cu = nist->FindOrBuildMaterial("G4_Cu");
 	// G4Material* Au = nist->FindOrBuildMaterial("G4_Au");
 	G4Material *Al = nist->FindOrBuildMaterial("G4_Al");
-//	G4Material *vacuum = nist->FindOrBuildMaterial("G4_Galactic");
+	//	G4Material *vacuum = nist->FindOrBuildMaterial("G4_Galactic");
 	G4Material *air = nist->FindOrBuildMaterial("G4_AIR");
 	G4Material *Pb = nist->FindOrBuildMaterial("G4_Pb");
 	G4Material *Plexiglass = nist->FindOrBuildMaterial("G4_PLEXIGLASS");
@@ -89,7 +109,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	G4Material *Concrete = nist->FindOrBuildMaterial("G4_CONCRETE");
 	G4Material *Scintillator_Plastic =
 	    nist->FindOrBuildMaterial("G4_PLASTIC_SC_VINYLTOLUENE");
-		G4Material *pump_vacuum = materials->Get_Pump_Vacuum();
+	G4Material *pump_vacuum = materials->Get_Pump_Vacuum();
 
 	/***************** World Volume *****************/
 
@@ -1168,21 +1188,22 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	// inside the target/source. The box should wrap the target/source volume as
 	// tightly as possible. Remove the box when doing an actual simulation.
 
-/*	G4double AuxBox_LengthX = 20. * mm;
-	G4double AuxBox_LengthY = 20. * mm;
-	G4double AuxBox_LengthZ = 4. * mm;
+	/*	G4double AuxBox_LengthX = 20. * mm;
+	    G4double AuxBox_LengthY = 20. * mm;
+	    G4double AuxBox_LengthZ = 4. * mm;
 
-	G4double AuxBox_X = 0. * mm;
-	G4double AuxBox_Y = 0. * mm;
-	G4double AuxBox_Z = 0. * mm;
+	    G4double AuxBox_X = 0. * mm;
+	    G4double AuxBox_Y = 0. * mm;
+	    G4double AuxBox_Z = 0. * mm;
 
-	G4Box *AuxiliaryBox_Solid =
-	    new G4Box("AuxiliaryBox_Solid", AuxBox_LengthX * 0.5,
-	              AuxBox_LengthY * 0.5, AuxBox_LengthZ * 0.5);
-	G4LogicalVolume *AuxiliaryBox_Logical =
-	    new G4LogicalVolume(AuxiliaryBox_Solid, vacuum, "AuxiliaryBox_Logical");
+	    G4Box *AuxiliaryBox_Solid =
+	        new G4Box("AuxiliaryBox_Solid", AuxBox_LengthX * 0.5,
+	                  AuxBox_LengthY * 0.5, AuxBox_LengthZ * 0.5);
+	    G4LogicalVolume *AuxiliaryBox_Logical =
+	        new G4LogicalVolume(AuxiliaryBox_Solid, vacuum,
+	   "AuxiliaryBox_Logical");
 
-	AuxiliaryBox_Logical->SetVisAttributes(new G4VisAttributes(white));*/
+	    AuxiliaryBox_Logical->SetVisAttributes(new G4VisAttributes(white));*/
 
 	// new G4PVPlacement(0, G4ThreeVector(AuxBox_X, AuxBox_Y, AuxBox_Z),
 	// AuxiliaryBox_Logical, "AuxiliaryBox", world_log, false, 0);
@@ -1955,7 +1976,6 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	          LaBr3_AngleY, 0.);
 	LaBr3_rt -= fcbo->Thickness * 0.5;
 
-
 	/************************* LaBr4 (LaBr_TUD)
 	 * ********************************/
 
@@ -2011,7 +2031,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	                  LaBr4_rt * sin(LaBr4_theta) * sin(LaBr4_phi) + LaBr4_dy,
 	                  LaBr4_rt * cos(LaBr4_theta) + LaBr4_dz),
 	    LaBr4_Wrapping_Logical, "LaBr4_Wrapping", world_log, false, 0);
-	LaBr4_rt -= LaBr4_Wrapping_Length*0.5;
+	LaBr4_rt -= LaBr4_Wrapping_Length * 0.5;
 
 	// LaBr4 Filters
 

@@ -354,7 +354,7 @@ $ cmake -DCMAKE_INSTALL_PREFIX=/PATH/TO/G4/INSTALL .
 $ make
 ```
 
-## 3 Usage
+## 3 Usage and Visualization
 
 The compiled `utr` binary can be run with different arguments. To get an overview, type
 
@@ -379,14 +379,6 @@ Executes macro file MACROFILE
 $ ./utr -t NTHREADS
 ```
 Sets the number of threads in multithreaded mode (default: 1)
-
-### 3.1 Visualization
-
-As shown above, the prompt visualization which is initiated by 
-```
-$ ./utr
-```
-, the macro `vrml.mac` shows how to create a `.wrl` file that can be viewed with 3D viewers like [Blender](https://www.blender.org/). To use the macro, type
 
 ## 4 Output Processing
 
@@ -497,8 +489,11 @@ The shell script `loopHistogramToTxt.sh` shows how to loop the script over a lar
 
 ## 5 License
 
-*TODO*
+Copyright (C) 2017
+U. Gayer (ugayer@ikp.tu-darmstadt.de)
+O. Papst
 
+This code is distributed under the terms of the GNU General Public License. See the LICENSE file for more information.
 
 ## 6 References
 
