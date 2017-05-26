@@ -493,7 +493,7 @@ Copyright (C) 2017
 U. Gayer (ugayer@ikp.tu-darmstadt.de)
 O. Papst
 
-This code is distributed under the terms of the GNU General Public License. See the LICENSE file for more information.
+This code is distributed under the terms of the GNU General Public License. See the COPYING file for more information.
 
 ## 6 References
 
