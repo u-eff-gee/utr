@@ -43,11 +43,34 @@ void Materials::ConstructMaterials() {
 	G4Element *nat_Br = nist->FindOrBuildElement("Br");
 	G4Element *nat_Ce = nist->FindOrBuildElement("Ce");
 	G4Element *nat_Cl = nist->FindOrBuildElement("Cl");
+	G4Element *nat_O = nist->FindOrBuildElement("O");
 
 	G4double z, a;
 	G4double density, abundance, fractionmass;
 	G4String name, symbol;
 	G4int ncomponents, natoms;
+
+	/******************************************************/
+	// Enriched Cr54 target from 2014/2015 NRF experiments
+	/******************************************************/
+
+	G4double density54Cr2O3 = 5.35346 * g / cm3;
+	target_Cr54_2O3 = new G4Material(name = "54Cr2O3", density54Cr2O3, ncomponents = 2);
+
+	G4Isotope *Cr54 = new G4Isotope(name = "54Cr", z = 24, a = 54);
+	G4Isotope *Cr53 = new G4Isotope(name = "53Cr", z = 24, a = 53);
+	G4Isotope *Cr52 = new G4Isotope(name = "52Cr", z = 24, a = 52);
+	G4Isotope *Cr50 = new G4Isotope(name = "50Cr", z = 24, a = 50);
+
+	G4Element *enriched_Cr = new G4Element(name = "enriched Cr", symbol = "Cr", ncomponents = 4);
+
+	enriched_Cr->AddIsotope(Cr54, abundance = 95.58 * perCent);
+	enriched_Cr->AddIsotope(Cr54, abundance = 1.29 * perCent);
+	enriched_Cr->AddIsotope(Cr54, abundance = 3.05 * perCent);
+	enriched_Cr->AddIsotope(Cr54, abundance = 0.08 * perCent);
+
+	target_Cr54_2O3->AddElement(enriched_Cr, natoms = 2);
+	target_Cr54_2O3->AddElement(nat_O, natoms = 3);
 
 	/******************************************************/
 	// Enriched Ti target from 2014/2015 NRF experiments
@@ -79,7 +102,6 @@ void Materials::ConstructMaterials() {
 	enriched_Ti->AddIsotope(Ti48, abundance = 24.06 * perCent);
 	enriched_Ti->AddIsotope(Ti47, abundance = 2.53 * perCent);
 	enriched_Ti->AddIsotope(Ti46, abundance = 2.78 * perCent);
-	G4Element *nat_O = nist->FindOrBuildElement("O");
 
 	target_TiO2 = new G4Material(name = "enriched Ti", density = 4. * g / cm3,
 	                             ncomponents = 2);

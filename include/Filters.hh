@@ -7,8 +7,7 @@ This file is part of utr.
 utr is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
+(at your option) any later version.)
 utr is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -806,6 +805,60 @@ class Pb_50mm_36_64in {
 		                  "Pb_50mm_36_64in", World_Logical, false, 0);
 	}
 };
+
+class Pb_50mm_36_64in_1mm {
+  private:
+	G4LogicalVolume *World_Logical;
+
+	G4LogicalVolume *Pb_50mm_36_64in_1mm_Logical;
+	G4RotationMatrix *rot;
+
+  public:
+	G4double Thickness;
+	G4double Radius;
+
+	Pb_50mm_36_64in_1mm(G4LogicalVolume *world_Logical) {
+		Thickness = 36. / 64. * inch-1 *mm; // Measured
+		Radius = 50. * mm;           // Measured
+
+		G4Colour grey(.5, .5, .5);
+
+		G4NistManager *nist = G4NistManager::Instance();
+		G4Material *Pb = nist->FindOrBuildMaterial("G4_Pb");
+
+		World_Logical = world_Logical;
+
+		G4Tubs *Pb_50mm_36_64in_1mm_Solid =
+		    new G4Tubs("Pb_50mm_36_64in_1mm_Solid", 0., Radius, Thickness * 0.5,
+		               0. * deg, 360. * deg);
+		Pb_50mm_36_64in_1mm_Logical = new G4LogicalVolume(
+		    Pb_50mm_36_64in_1mm_Solid, Pb, "Pb_50mm_36_64in_1mm_Logical", 0, 0, 0);
+
+		Pb_50mm_36_64in_1mm_Logical->SetVisAttributes(new G4VisAttributes(grey));
+
+		rot = new G4RotationMatrix();
+	}
+
+	~Pb_50mm_36_64in_1mm(){};
+
+	void Put(G4double x, G4double y, G4double z) {
+		new G4PVPlacement(0, G4ThreeVector(x, y, z), Pb_50mm_36_64in_1mm_Logical,
+		                  "Pb_50mm_36_64in_1mm", World_Logical, false, 0);
+	}
+
+	void Put(G4double x, G4double y, G4double z, G4double angle_x,
+	         G4double angle_y, G4double angle_z) {
+
+		rot = new G4RotationMatrix();
+		rot->rotateX(angle_x);
+		rot->rotateY(angle_y);
+		rot->rotateZ(angle_z);
+
+		new G4PVPlacement(rot, G4ThreeVector(x, y, z), Pb_50mm_36_64in_1mm_Logical,
+		                  "Pb_50mm_36_64in_1mm", World_Logical, false, 0);
+	}
+};
+
 
 class Pb_70mm_5mm {
   private:

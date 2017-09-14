@@ -46,6 +46,7 @@ class Materials {
 	G4Material *Get_target_Se() { return target_Se; }
 	G4Material *Get_target_Sn() { return target_Sn; }
 	G4Material *Get_target_Kr() { return target_Kr; }
+	G4Material *Get_target_Cr54_2O3() { return target_Cr54_2O3; }
 
 	G4Material *Get_Stainless_Steel() { return stainlessSteel; }
 
@@ -60,6 +61,7 @@ class Materials {
 	G4Material *target_Se;
 	G4Material *target_Sn;
 	G4Material *target_Kr;
+	G4Material *target_Cr54_2O3;
 
 	G4Material *stainlessSteel;
 

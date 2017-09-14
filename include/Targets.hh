@@ -107,6 +107,101 @@ class TargetContainerCap {
 	G4LogicalVolume *Get_Logical() { return TargetContainerCap_Logical; };
 };
 
+class Cr54_Target {
+  private:
+	G4LogicalVolume *Cr54_Target_Logical;
+
+	G4double Length;
+	G4double Radius;
+	G4double Target_Center;
+
+  public:
+	Cr54_Target() {
+
+		G4Colour yellow(1.0, 1.0, 0.0);
+
+		G4NistManager *nist = G4NistManager::Instance();
+		G4Material *air = nist->FindOrBuildMaterial("G4_AIR");
+		Materials *mat = Materials::Instance();
+
+		// Mother volume
+		TargetContainer *targetContainer = new TargetContainer();
+		TargetContainerCap *targetContainerCap = new TargetContainerCap();
+		TargetContainerCap *targetContainerBottom = new TargetContainerCap();
+
+		Length = targetContainer->Get_Length();
+		Radius = targetContainer->Get_Outer_Radius();
+		G4double Cr54_Target_Thickness = 4.04824 * mm;
+		G4double Cr54_Target_Radius = targetContainer->Get_Inner_Radius();
+
+		G4Tubs *Cr54_Target_Solid =
+		    new G4Tubs("Cr54_Target_Solid", 0. * mm, Radius, Length * 0.5,
+		               0. * deg, 360. * deg);
+
+		Cr54_Target_Logical =
+		    new G4LogicalVolume(Cr54_Target_Solid, air, "Cr54_Target_Logical");
+		Cr54_Target_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());
+
+		// Target Container
+
+		G4LogicalVolume *TargetContainer_Logical =
+		    targetContainer->Get_Logical();
+
+		new G4PVPlacement(0, G4ThreeVector(), TargetContainer_Logical,
+		                  "TargetContainer", Cr54_Target_Logical, false, 0);
+
+		G4LogicalVolume *TargetContainerBottom_Logical =
+		    targetContainerBottom->Get_Logical();
+
+		new G4PVPlacement(
+		    0, G4ThreeVector(0., 0.,
+		                     targetContainer->Get_Length() * 0.5 -
+		                         targetContainerBottom->Get_Thickness() * 0.5),
+		    TargetContainerBottom_Logical, "TargetContainerBottom",
+		    Cr54_Target_Logical, false, 0);
+
+		G4LogicalVolume *TargetContainerCap_Logical =
+		    targetContainerCap->Get_Logical();
+
+		new G4PVPlacement(
+		    0, G4ThreeVector(0., 0.,
+		                     targetContainer->Get_Length() * 0.5 -
+		                         targetContainerCap->Get_Thickness() -
+		                         Cr54_Target_Thickness -
+		                         targetContainerBottom->Get_Thickness() * 0.5),
+		    TargetContainerCap_Logical, "TargetContainerCap",
+		    Cr54_Target_Logical, false, 0);
+
+		// Cr54 Target Material
+
+		G4Tubs *Cr54_Solid =
+		    new G4Tubs("Cr54_Solid", 0. * mm, Cr54_Target_Radius,
+		               Cr54_Target_Thickness * 0.5, 0. * deg, 360. * deg);
+
+		G4LogicalVolume *Cr54_Logical = new G4LogicalVolume(
+		    Cr54_Solid, mat->Get_target_Cr54_2O3(), "Cr54_Logical");
+		Cr54_Logical->SetVisAttributes(new G4VisAttributes(yellow));
+
+		new G4PVPlacement(
+		    0,
+		    G4ThreeVector(0., 0., Length * 0.5 -
+		                              targetContainerBottom->Get_Thickness() -
+		                              Cr54_Target_Thickness * 0.5),
+		    Cr54_Logical, "Cr54_Target", Cr54_Target_Logical, false, 0);
+
+		Target_Center = Length * 0.5 - targetContainerBottom->Get_Thickness() -
+		                Cr54_Target_Thickness * 0.5;
+	};
+
+	~Cr54_Target(){};
+
+	G4double Get_Thickness() { return Length; };
+	G4double Get_Radius() { return Radius; };
+	G4double Get_Target_Center() { return Target_Center; };
+
+	G4LogicalVolume *Get_Logical() { return Cr54_Target_Logical; };
+};
+
 class Se82_Target {
   private:
 	G4LogicalVolume *Se82_Target_Logical;

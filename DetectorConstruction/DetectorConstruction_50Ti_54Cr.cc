@@ -818,6 +818,8 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	                             Wheel_Total_Thickness + TablePlate_Length +
 	                             435. * mm; // Measured
 
+//	G4cout<<"Target2_To_Target="<<Target2_To_Target<<G4endl;
+
 	G4double Table2_OuterRadius = 435. * mm; // Measured
 	G4double Table2_InnerRadius = 230. * mm; // Measured
 	G4double Table2_Thickness = 20. * mm;    // Estimated
@@ -1083,15 +1085,15 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	/**************** Second Target/Source ***************/
 
-//g	Kr82_Target *kr82_Target = new Kr82_Target();
-//g
-//g	G4LogicalVolume *Kr82_Target_Logical = kr82_Target->Get_Logical();
-//g
-//g	G4RotationMatrix *rotateSecondTarget = new G4RotationMatrix();
-//g	G4double SecondTarget_AngleX = -22. * deg; // Rotation angle to have the
-//g	                                           // valve rest on the inside of
-//g	                                           // the TargetTube
-//g	rotateSecondTarget->rotateX(SecondTarget_AngleX);
+//	Kr82_Target *kr82_Target = new Kr82_Target();
+
+//	G4LogicalVolume *Kr82_Target_Logical = kr82_Target->Get_Logical();
+
+//	G4RotationMatrix *rotateSecondTarget = new G4RotationMatrix();
+//	G4double SecondTarget_AngleX = -22. * deg; // Rotation angle to have the
+//	                                           // valve rest on the inside of
+//	                                           // the TargetTube
+//	rotateSecondTarget->rotateX(SecondTarget_AngleX);
 
 //	new G4PVPlacement(
 //	    rotateSecondTarget,
@@ -1101,6 +1103,22 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 //	                      20. * mm * (1 - cos(SecondTarget_AngleX))),
 //	    Kr82_Target_Logical, "Kr82_Target_Physical", BeamTubeVacuum_Logical,
 //	    false, 0);
+
+	/**************** Cr2O3 Target **********************/
+
+	Cr54_Target *cr2o3_Target = new Cr54_Target();
+
+	G4LogicalVolume *Cr2O3_Target_Logical = cr2o3_Target->Get_Logical();
+
+	G4RotationMatrix *rotateCr2O3_Target = new G4RotationMatrix();
+	G4double Cr2O3_Target_AngleX = 180 * deg;
+	rotateCr2O3_Target->rotateX(Cr2O3_Target_AngleX);
+
+	new G4PVPlacement(
+		rotateCr2O3_Target, G4ThreeVector(0., 0., -BeamTube_Length_Downstream + BeamTube_Length * 0.5 + Target2_To_Target + cr2o3_Target->Get_Target_Center()), 
+		Cr2O3_Target_Logical, "Cr2O3_Target_Physical", BeamTubeVacuum_Logical, false ,0);
+
+	G4cout<<"Absolute Target Position"<<-BeamTube_Length_Downstream + BeamTube_Length * 0.5 + Target2_To_Target + cr2o3_Target->Get_Target_Center()<<G4endl;
 
 	// Box around the target/source. Inside this box, random coordinates for the
 	// AngularDistributionGenerator are sampled in order to find random points
@@ -1178,6 +1196,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	Pb_45mm_3_64in *pbthin = new Pb_45mm_3_64in(world_log);
 	//Pb_50mm_5_64in *pbmedium50 = new Pb_50mm_5_64in(world_log);
 	Pb_50mm_36_64in *pb36_64_50 = new Pb_50mm_36_64in(world_log);
+	Pb_50mm_36_64in_1mm *pb36_64_50_1mm = new Pb_50mm_36_64in_1mm(world_log);
 	// Pb_70mm_5mm* pb70 = new Pb_70mm_5mm(world_log);
 
 	Cu_45mm_1_8in *cumedium = new Cu_45mm_1_8in(world_log);
@@ -1944,7 +1963,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	/************************* HPGe1_55 (HPGe6) ********************************/
 
-	G4double HPGe1_55_rt = 73. * mm + pb36_64_50->Thickness;
+	G4double HPGe1_55_rt = 73. * mm + pb36_64_50_1mm->Thickness;
 	G4double HPGe1_55_dy = 0. * mm;
 	G4double HPGe1_55_dz = 0. * mm;
 	G4double HPGe1_55_phi = 180. * deg;
@@ -2008,8 +2027,8 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	//HPGe1_55_rt -= cuthin50->Thickness * 0.5;
 
 	// Pb 50mm, 36/64in
-	HPGe1_55_rt -= pb36_64_50->Thickness * 0.5;
-	pb36_64_50->Put(
+	HPGe1_55_rt -= pb36_64_50_1mm->Thickness * 0.5;
+	pb36_64_50_1mm->Put(
 	    HPGe1_55_rt * sin(HPGe1_55_theta) * cos(HPGe1_55_phi),
 	    HPGe1_55_rt * sin(HPGe1_55_theta) *
 	            sin(HPGe1_55_phi) +
@@ -2017,7 +2036,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	    Target2_To_Target + HPGe1_55_rt * cos(HPGe1_55_theta) +
 	        HPGe1_55_dz,
 	    HPGe1_55_AngleX, HPGe1_55_AngleY, 0.);
-	HPGe1_55_rt -= pb36_64_50->Thickness * 0.5;
+	HPGe1_55_rt -= pb36_64_50_1mm->Thickness * 0.5;
 
 	/************************* HPGe2_55 (HPGe7) ********************************/
 
@@ -2353,7 +2372,7 @@ void DetectorConstruction::ConstructSDandField() {
 	EnergyDepositionSD *Polarimeter_TUDSD =
 	    new EnergyDepositionSD("Polarimeter_TUD", "Polarimeter_TUD");
 	G4SDManager::GetSDMpointer()->AddNewDetector(Polarimeter_TUDSD);
-	Polarimeter_TUDSD->SetDetectorID(7);
+	Polarimeter_TUDSD->SetDetectorID(9);
 	SetSensitiveDetector("Polarimeter_TUD", Polarimeter_TUDSD, true);
 
 	// ZeroDegree detector
