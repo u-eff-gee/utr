@@ -113,7 +113,13 @@ int main(int argc, char *argv[]) {
 	} else {
 		G4cout << "Starting UI mode..." << G4endl;
 		G4UIExecutive *ui = 0;
-		ui = new G4UIExecutive(argc, argv);
+
+#ifdef G4UI_USE_QT
+                ui = new G4UIExecutive(argc, argv, "qt");
+#else
+                ui = new G4UIExecutive(argc, argv);
+#endif
+
 		ui->SessionStart();
 		delete ui;
 	}
