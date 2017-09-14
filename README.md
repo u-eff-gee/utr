@@ -15,7 +15,7 @@ To use the geometry named "DetectorConstructionXY" in the simulation, rename the
 ```bash
 $ cd DetectorConstruction/
 $ cp DetectorConstructionXY.hh ../include/DetectorConstruction.hh
-$ cp DetectorConstructionXY.cc ../include/DetectorConstruction.cc
+$ cp DetectorConstructionXY.cc ../src/DetectorConstruction.cc
 $ cd ..
 $ make
 ```
