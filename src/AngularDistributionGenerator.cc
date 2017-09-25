@@ -349,6 +349,42 @@ G4bool AngularDistributionGenerator::AngularDistribution(
 			}
 			return false;
 		}
+		
+		// 1.5^+ -> 1.5^+ -> 1.5^+
+		if (st[0] == 1.5 && st[1] == 1.5 && st[2] == 1.5) {
+
+			if (rand_w <= 1./(2.*(1. + mix[0]*mix[0])*(1. + mix[1]*mix[1]))*
+				(
+					2.*(1. + mix[0]*mix[0])*(1. + mix[1]*mix[1]) - 
+					(0.4 + 1.54919*mix[1])*
+					(
+						(0.4 - 1.54919*mix[0])*(1. - 3.*pow(cos(rand_theta), 2)) + 
+						(-1.2 - 1.54919*mix[0])*cos(2.*rand_phi)*pow(sin(rand_theta), 2)		
+					)
+				)
+			                  ) {
+				return true;
+			}
+			return false;
+		}
+		
+		// 1.5^+ -> 1.5^- -> 1.5^+
+		if (st[0] == 1.5 && st[1] == -1.5 && st[2] == 1.5) {
+
+			if (rand_w <= 1./(2.*(1. + mix[0]*mix[0])*(1. + mix[1]*mix[1]))*
+				(
+					2.*(1. + mix[0]*mix[0])*(1. + mix[1]*mix[1]) - 
+					(0.4 + 1.54919*mix[1])*
+					(
+						(0.4 - 1.54919*mix[0])*(1. - 3.*pow(cos(rand_theta), 2)) + 
+						(1.2 + 1.54919*mix[0])*cos(2.*rand_phi)*pow(sin(rand_theta), 2)		
+					)
+				)
+			                  ) {
+				return true;
+			}
+			return false;
+		}
 
 	} else if (nst == 4) {
 		G4cout
