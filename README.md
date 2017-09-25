@@ -244,6 +244,10 @@ At the moment, the following distributions are implemented:
     3/2+ -> 5/2- -> 3/2+
 * `states == {1.5, 2.5, 1.5}`
     3/2+ -> 5/2+ -> 3/2+
+* `states == {1.5, 1.5, 1.5}`
+    3/2+ -> 3/2+ -> 3/2+
+* `states == {1.5, 1.5, 1.5}`
+    3/2+ -> 3/2+ -> 3/2+
     
 The source volume and the dimensions of its container box can be set in the constructor of the AngularDistributionGenerator in `/src/AngularDistributionGenerator.cc`. The source volume is addressed via the name of its **G4PhysicalVolume**.
         
