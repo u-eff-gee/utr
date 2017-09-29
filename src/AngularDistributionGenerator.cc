@@ -270,7 +270,7 @@ G4bool AngularDistributionGenerator::AngularDistribution(
 		}
 
 		// 0^+ -> 2^+ -> 2^+
-		if (st[0] == 0. && st[1] == 2. && st[2] == 0.) {
+		if (st[0] == 0. && st[1] == 2. && st[2] == 2.) {
 			if (rand_w <= 1./((1. + mix[0]*mix[0])*(1. + mix[1]*mix[1]))*(
 			1.16071 + 
 			mix[1]*(0.298807 + mix[1]) + 
