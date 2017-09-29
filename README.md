@@ -236,6 +236,8 @@ At the moment, the following distributions are implemented:
     0+ -> 1- -> 0+
 * `states == {0., 2., 0.}`
     0+ -> 2+ -> 0+
+* `states == {0., 2., 2.}`
+    0+ -> 2+ -> 2+
 * `states == {0., 1., 2.}`
     0+ -> 1+ -> 2+
 * `states == {0., -1., 2.}`
