@@ -50,6 +50,35 @@ void Materials::ConstructMaterials() {
 	G4String name, symbol;
 	G4int ncomponents, natoms;
 
+    /******************************************************/
+	// Enriched Dy164 targets from 2013 NRF experiments
+	/******************************************************/
+
+    // 164Dy metallic from Cologne
+	G4double density164Dy = 8.559 * g / cm3;
+	target_Dy164 = new G4Material(name = "164Dy", density164Dy, ncomponents = 1);
+
+	G4Isotope *Dy164 = new G4Isotope(name = "164Dy", z = 66, a = 164);
+	G4Isotope *Dy163 = new G4Isotope(name = "163Dy", z = 66, a = 163);
+	G4Isotope *Dy162 = new G4Isotope(name = "162Dy", z = 66, a = 162);
+	G4Isotope *Dy161 = new G4Isotope(name = "161Dy", z = 66, a = 161);
+
+	G4Element *enriched_Dy = new G4Element(name = "enriched Dy", symbol = "Dy", ncomponents = 4);
+
+	enriched_Dy->AddIsotope(Dy164, abundance = 98 * perCent);
+	enriched_Dy->AddIsotope(Dy163, abundance = 2 * 24.9 /(18.9+25.5+24.9) * perCent);
+	enriched_Dy->AddIsotope(Dy162, abundance = 2 * 25.5 /(18.9+25.5+24.9) * perCent);
+	enriched_Dy->AddIsotope(Dy161, abundance = 2 * 18.9 /(18.9+25.5+24.9) * perCent);
+
+    target_Dy164->AddElement(enriched_Dy, natoms = 1);
+
+    // 164Dy2O3 from Yale
+    G4double density164Dy2O3 = 7.8 * g / cm3;
+	target_Dy164_2O3 = new G4Material(name = "164Dy2O3", density164Dy2O3, ncomponents = 2);
+	target_Dy164_2O3->AddElement(enriched_Dy, natoms = 2);
+	target_Dy164_2O3->AddElement(nat_O, natoms = 3);
+
+
 	/******************************************************/
 	// Enriched Cr54 target from 2014/2015 NRF experiments
 	/******************************************************/
