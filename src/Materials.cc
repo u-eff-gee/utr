@@ -65,9 +65,9 @@ void Materials::ConstructMaterials() {
 	G4Element *enriched_Cr = new G4Element(name = "enriched Cr", symbol = "Cr", ncomponents = 4);
 
 	enriched_Cr->AddIsotope(Cr54, abundance = 95.58 * perCent);
-	enriched_Cr->AddIsotope(Cr54, abundance = 1.29 * perCent);
-	enriched_Cr->AddIsotope(Cr54, abundance = 3.05 * perCent);
-	enriched_Cr->AddIsotope(Cr54, abundance = 0.08 * perCent);
+	enriched_Cr->AddIsotope(Cr53, abundance = 1.29 * perCent);
+	enriched_Cr->AddIsotope(Cr52, abundance = 3.05 * perCent);
+	enriched_Cr->AddIsotope(Cr50, abundance = 0.08 * perCent);
 
 	target_Cr54_2O3->AddElement(enriched_Cr, natoms = 2);
 	target_Cr54_2O3->AddElement(nat_O, natoms = 3);
