@@ -57,10 +57,11 @@ AngularDistributionGenerator::AngularDistributionGenerator()
 
 	range_x = 20. * mm;
 	range_y = 20. * mm;
-	range_z = 4. * mm;
+	range_z = 20. * mm;
 
 	// Enter name of the G4PhysicalVolume from which the radiation should be
 	// emitted
+	// Source_PV_Name = "Krypton";
 	Source_PV_Name = "Se82_Target";
 
 	navi = G4TransportationManager::GetTransportationManager()
@@ -233,12 +234,12 @@ G4bool AngularDistributionGenerator::AngularDistribution(
 
 		// 0^+ -> 0^+ -> 0^+
 		// Isotropic distribution
-		if (st[0] == 0. && st[1] == 0. && st[2] == 0.) {
+		if ((st[0] == 0. && st[1] == 0. && st[2] == 0.) || (st[0] == -0.1 && st[1] == -0.1 && st[2] == -0.1)) {
 			return true;
 		}
 
-		// 0^+ -> 1^+ -> 0^+
-		if (st[0] == 0. && st[1] == 1. && st[2] == 0.) {
+		// 0^+ -> 1^+ -> 0^+ or 0^- -> 1^- -> 0^-
+		if ((st[0] == 0. && st[1] == 1. && st[2] == 0.) || (st[0] == -0.1 && st[1] == -1. && st[2] == -2.)) {
 			if (rand_w <=
 			    0.75 * (1 + pow(cos(rand_theta), 2) +
 			            pow(sin(rand_theta), 2) * cos(2 * rand_phi))) {
@@ -247,8 +248,8 @@ G4bool AngularDistributionGenerator::AngularDistribution(
 			return false;
 		}
 
-		// 0^+ -> 1^- -> 0^+
-		if (st[0] == 0. && st[1] == -1. && st[2] == 0.) {
+		// 0^+ -> 1^- -> 0^+ or 0^- -> 1^- -> 0^-
+		if ((st[0] == 0. && st[1] == -1. && st[2] == 0.) || (st[0] == -0.1 && st[1] == 1. && st[2] == -0.1)) {
 			if (rand_w <=
 			    0.75 * (1 + pow(cos(rand_theta), 2) -
 			            pow(sin(rand_theta), 2) * cos(2 * rand_phi))) {
@@ -257,8 +258,8 @@ G4bool AngularDistributionGenerator::AngularDistribution(
 			return false;
 		}
 
-		// 0^+ -> 2^+ -> 0^+
-		if (st[0] == 0. && st[1] == 2. && st[2] == 0.) {
+		// 0^+ -> 2^+ -> 0^+ or 0^- -> 2^- -> 0^-
+		if ((st[0] == 0. && st[1] == 2. && st[2] == 0.) || (st[0] == -0.1 && st[1] == -2. && st[2] == -0.1)) {
 			if (rand_w <=
 			    0.625 * (2 + cos(2 * rand_phi) + cos(4 * rand_phi) -
 			             2 * cos(2 * rand_theta) * (1 + 2 * cos(2 * rand_phi)) *
@@ -268,8 +269,25 @@ G4bool AngularDistributionGenerator::AngularDistribution(
 			return false;
 		}
 
-		// 0^+ -> 1^- -> 2^+
-		if (st[0] == 0. && st[1] == -1. && st[2] == 2.) {
+		// 0^+ -> 2^+ -> 2^+ or 0^- -> 2^- -> 2^-
+		if ((st[0] == 0. && st[1] == 2. && st[2] == 2.) || (st[0] == -0.1 && st[1] == -2. && st[2] == -2.)) {
+			if (rand_w <= 1./((1. + mix[0]*mix[0])*(1. + mix[1]*mix[1]))*(
+			1.16071 + 
+			mix[1]*(0.298807 + mix[1]) + 
+			(0.0892857 + (2.09165 + 0.25*mix[1])*mix[1])*cos(2.*rand_phi) +
+			pow(cos(rand_theta), 2)*(-1.33929 + (-5.37853 - 0.375*mix[1])*mix[1] + (-1.51786 + (-9.56183 - 0.875*mix[1])*mix[1]*cos(2.*rand_phi))) +
+			pow(cos(rand_theta), 4)*(1.42857 + (7.47018 + 0.625*mix[1])*mix[1] + (1.42857 + (7.47018 + 0.625*mix[1])*mix[1])*cos(2.*rand_phi))
+		)  
+
+			) {
+				return true;
+			}
+			return false;
+		}
+
+
+		// 0^+ -> 1^- -> 2^+ or 0^- -> 1^+ -> 2^-
+		if ((st[0] == 0. && st[1] == -1. && st[2] == 2.) || (st[0] == -0.1 && st[1] == 1. && st[2] == -2.)) {
 
 			if (rand_w <=
 			    1. / (1. + pow(mix[1], 2)) *
@@ -285,8 +303,8 @@ G4bool AngularDistributionGenerator::AngularDistribution(
 			return false;
 		}
 
-		// 0^+ -> 1^+ -> 2^+
-		if (st[0] == 0. && st[1] == 1. && st[2] == 2.) {
+		// 0^+ -> 1^+ -> 2^+ or 0^- -> 1^- -> 2^-
+		if ((st[0] == 0. && st[1] == 1. && st[2] == 2.) || (st[0] == -0.1 && st[1] == -1. && st[2] == -2.)) {
 
 			if (rand_w <=
 			    1. / (1. + pow(mix[1], 2)) *
@@ -302,8 +320,8 @@ G4bool AngularDistributionGenerator::AngularDistribution(
 			return false;
 		}
 
-		// 1.5^+ -> 2.5^- -> 1.5^+
-		if (st[0] == 1.5 && st[1] == -2.5 && st[2] == 1.5) {
+		// 1.5^+ -> 2.5^- -> 1.5^+ or 1.5^- -> 2.5^+ -> 1.5^-
+		if ((st[0] == 1.5 && st[1] == -2.5 && st[2] == 1.5) || (st[0] == -1.5 && st[1] == 1.5 && st[2] == -1.5)) {
 
 			if (rand_w <=
 			    1. / ((1. + pow(mix[0], 2)) * (1. + pow(mix[1], 2))) *
@@ -326,8 +344,8 @@ G4bool AngularDistributionGenerator::AngularDistribution(
 			return false;
 		}
 
-		// 1.5^+ -> 2.5^+ -> 1.5^+
-		if (st[0] == 1.5 && st[1] == 2.5 && st[2] == 1.5) {
+		// 1.5^+ -> 2.5^+ -> 1.5^+ or 1.5^- -> 2.5^- -> 1.5^-
+		if ((st[0] == 1.5 && st[1] == 2.5 && st[2] == 1.5) || (st[0] == -1.5 && st[1] == -2.5 && st[2] == -1.5)) {
 
 			if (rand_w <=
 			    1. / ((1. + pow(mix[0], 2)) * (1. + pow(mix[1], 2))) *
@@ -345,6 +363,72 @@ G4bool AngularDistributionGenerator::AngularDistribution(
 			              5. * cos(2 * rand_phi) +
 			              pow(cos(rand_theta), 4) *
 			                  (35. + 35. * cos(2 * rand_phi))))) {
+				return true;
+			}
+			return false;
+		}
+		
+		// 1.5^+ -> 1.5^+ -> 1.5^+ or 1.5^- -> 1.5^- -> 1.5^-
+		if ((st[0] == 1.5 && st[1] == 1.5 && st[2] == 1.5) || (st[0] == -1.5 && st[1] == -1.5 && st[2] == -1.5)) {
+
+			if (rand_w <= 1./(2.*(1. + mix[0]*mix[0])*(1. + mix[1]*mix[1]))*
+				(
+					2.*(1. + mix[0]*mix[0])*(1. + mix[1]*mix[1]) - 
+					(0.4 + 1.54919*mix[1])*
+					(
+						(0.4 - 1.54919*mix[0])*(1. - 3.*pow(cos(rand_theta), 2)) + 
+						(-1.2 - 1.54919*mix[0])*cos(2.*rand_phi)*pow(sin(rand_theta), 2)		
+					)
+				)
+			                  ) {
+				return true;
+			}
+			return false;
+		}
+		
+		// 1.5^+ -> 1.5^- -> 1.5^+ or 1.5^- -> 1.5^+ -> 1.5^-
+		if ((st[0] == 1.5 && st[1] == -1.5 && st[2] == 1.5) || (st[0] == -1.5 && st[1] == 1.5 && st[2] == -1.5)) {
+
+			if (rand_w <= 1./(2.*(1. + mix[0]*mix[0])*(1. + mix[1]*mix[1]))*
+				(
+					2.*(1. + mix[0]*mix[0])*(1. + mix[1]*mix[1]) - 
+					(0.4 + 1.54919*mix[1])*
+					(
+						(0.4 - 1.54919*mix[0])*(1. - 3.*pow(cos(rand_theta), 2)) + 
+						(1.2 + 1.54919*mix[0])*cos(2.*rand_phi)*pow(sin(rand_theta), 2)		
+					)
+				)
+			                  ) {
+				return true;
+			}
+			return false;
+		}
+		
+		// 0.5^- -> 1.5^- -> 0.5^- or 0.5^+ -> 1.5^+ -> 0.5^+
+		if ((st[0] == -0.5 && st[1] == -1.5 && st[2] == -0.5) || (st[0] == 0.5 && st[1] == 1.5 && st[2] == 0.5)) {
+
+			if (rand_w <= 1./(2.*(1. + mix[0]*mix[0])*(1. + mix[1]*mix[1]))*
+				(
+					2.*(1. + mix[0]*mix[0])*(1. + mix[1]*mix[1]) - (0.5 + (-1.73205 - 0.5*mix[1])*mix[1])*(
+							(0.5 + (1.73205 - 0.5*mix[0])*mix[0])*(1.-3.*pow(cos(rand_theta), 2)) + 1.5*(-1. + mix[0]*(1.1547 + mix[0]))*(-1. + pow(cos(rand_theta),2))*cos(2.*rand_phi)
+					)
+				)
+			        ) {
+				return true;
+			}
+			return false;
+		}
+		
+		// 0.5^- -> 1.5^+ -> 0.5^- or 0.5^+ -> 1.5^- -> 0.5^+
+		if ((st[0] == -0.5 && st[1] == 1.5 && st[2] == -0.5) || (st[0] == 0.5 && st[1] == -1.5 && st[2] == 0.5) ) {
+
+			if (rand_w <= 1./(2.*(1. + mix[0]*mix[0])*(1. + mix[1]*mix[1]))*
+				(
+					2.*(1. + mix[0]*mix[0])*(1. + mix[1]*mix[1]) - (0.5 + (-1.73205 - 0.5*mix[1])*mix[1])*(
+							(0.5 + (1.73205 - 0.5*mix[0])*mix[0])*(1.-3.*pow(cos(rand_theta), 2)) - 1.5*(-1. + mix[0]*(1.1547 + mix[0]))*(-1. + pow(cos(rand_theta),2))*cos(2.*rand_phi)
+					)
+				)
+			        ) {
 				return true;
 			}
 			return false;

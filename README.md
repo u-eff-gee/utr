@@ -224,26 +224,40 @@ To change parameters of the AngularDistributionGenerator, an AngularDistribution
 The identifiers of the angular distribution are given to the simulation as an array of numbers `states  = {state1, state2, ...}` whose length `NSTATES` can to be specified by the user.
 For "real" NRF angular distributions, this array of numbers will be the spins of the excited states in a cascade, with the parity indicated by the sign of the numbers.
 
+Due to parity symmetry, an inversion of all the parities in a cascade will result in the same angular distribution. For example, the transition 0+ -> 1- -> 0+ has the same angular distribution as 0- -> 1+ -> 0-. This is indicated by the notation "+-" and "-+" in the list below (the example is listed as "0+- -> 1-+ -> 0+-").
+
+It was chosen to represent the parity of a state as the sign of the spin quantum number. Unfortunately, this makes it impossible to represent 0- states, because the number "-0" is the same as "+0". Therefore, the value "-0.1" represents a 0- state.
+
 At the moment, the following distributions are implemented:
 
 * `states == {0.1, 0.1, 0.1}`
     Wildcard for test distributions
 * `states == {0., 0., 0.}`
     Isotropic distribution
-* `states == {0., 1., 0.}`
-    0+ -> 1+ -> 0+
-* `states == {0., -1., 0.}`
-    0+ -> 1- -> 0+
-* `states == {0., 2., 0.}`
-    0+ -> 2+ -> 0+
-* `states == {0., 1., 2.}`
-    0+ -> 1+ -> 2+
-* `states == {0., -1., 2.}`
-    0+ -> 1- -> 2+
-* `states == {1.5, -2.5, 1.5}`
-    3/2+ -> 5/2- -> 3/2+
-* `states == {1.5, 2.5, 1.5}`
-    3/2+ -> 5/2+ -> 3/2+
+* `states == {0., 1., 0.} or {-0.1, -1., -0.1}`
+    0+- -> 1+- -> 0+-
+* `states == {0., -1., 0.} or {-0.1, 1., -0.1}`
+    0+- -> 1-+ -> 0+-
+* `states == {0., 2., 0.} or {-0.1, -2., -0.1}`
+    0+- -> 2+- -> 0+-
+* `states == {0., 2., 2.} or {-0.1, -2., -2.}`
+    0+- -> 2+- -> 2+-
+* `states == {0., 1., 2.} or {-0.1, -1., -2.}`
+    0+- -> 1+- -> 2+-
+* `states == {0., -1., 2.} or {-0.1, 1., -2.}`
+    0+- -> 1-+ -> 2+-
+* `states == {1.5, -2.5, 1.5} or {-1.5, 2.5, -1.5}`
+    3/2+- -> 5/2-+ -> 3/2+-
+* `states == {1.5, 2.5, 1.5} or {-1.5, -2.5, -1.5}`
+    3/2+- -> 5/2+- -> 3/2+-
+* `states == {1.5, 1.5, 1.5} or {-1.5, -1.5, -1.5}`
+    3/2+- -> 3/2+- -> 3/2+-
+* `states == {1.5, -1.5, 1.5} or {-1.5, 1.5, -1.5}`
+    3/2+- -> 3/2-+ -> 3/2+-
+* `states == {0.5, 1.5, 0.5} or {-0.5, -1.5, -0.5}`
+    1/2+- -> 3/2+- -> 1/2+-
+* `states == {0.5, -1.5, 0.5} or {-0.5, 1.5, -0.5}`
+    1/2+- -> 3/2-+ -> 1/2+-
     
 The source volume and the dimensions of its container box can be set in the constructor of the AngularDistributionGenerator in `/src/AngularDistributionGenerator.cc`. The source volume is addressed via the name of its **G4PhysicalVolume**.
         

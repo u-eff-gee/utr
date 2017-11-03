@@ -42,8 +42,8 @@ const char *argp_program_bug_address = "<ugayer@ikp.tu-darmstadt.de>";
 static char doc[] = "GEANT4 simulation of the UTR at HIGS";
 static char args_doc[] = "MACROFILE";
 static struct argp_option options[] = {
-    {"macrofile", 'm', "MACRO", 0, "Macro file"},
-    {"nthreads", 't', "THREAD", 0, "Number of threads"},
+    {"macrofile", 'm', "MACRO", 0, "Macro file", 0},
+    {"nthreads", 't', "THREAD", 0, "Number of threads", 0},
     {0, 0, 0, 0, 0, 0}};
 
 struct arguments {
@@ -113,7 +113,13 @@ int main(int argc, char *argv[]) {
 	} else {
 		G4cout << "Starting UI mode..." << G4endl;
 		G4UIExecutive *ui = 0;
-		ui = new G4UIExecutive(argc, argv);
+
+#ifdef G4UI_USE_QT
+                ui = new G4UIExecutive(argc, argv, "qt");
+#else
+                ui = new G4UIExecutive(argc, argv);
+#endif
+
 		ui->SessionStart();
 		delete ui;
 	}
