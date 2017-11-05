@@ -375,15 +375,6 @@ The compiled `utr` binary can be run with different arguments. To get an overvie
 ```bash
 $ ./utr --help
 ```
-
-Running `utr` without any argument will launch a UI session of the simulation where macro commands can be entered. To visualize the geometry in the UI session, execute the macro file `init_vis.mac`
-```
-/control/execute init_vis.mac
-```
-It is also possible to create 3D visualization files that can be viewed by an external viewer like [Blender](https://www.blender.org/) (the title picture was made in Blender, for example). The macro `vrml.mac` shows how to create a `.wrl` file. Run it in UI mode with
-```
-/control/execute vrml.mac
-```
 Important optional arguments besides `--help` are:
 ```bash
 $ ./utr -m MACROFILE
@@ -393,6 +384,35 @@ Executes macro file MACROFILE
 $ ./utr -t NTHREADS
 ```
 Sets the number of threads in multithreaded mode (default: 1)
+
+Running `utr` without any argument will launch a UI session where macro commands can be entered. It should also automatically execute the macro file `init_vis.mac`, which visualizes the geometry.
+
+If this does not work, or to execute any other macro file MACROFILE, type 
+```
+/control/execute MACROFILE
+```
+in the UI session. In this mode, it is important to know how the angles are defined, to be able to set the view using the `/vis/viewer/set/viewpointThetaPhi` command:
+```
+/vis/viewer/set/viewpointThetaPhi 180 0 deg
+```
+views the setup in beam direction,
+```
+/vis/viewer/set/viewpointThetaPhi 0 0 deg
+```
+views it against the beam direction. To view the geometry from above and below, use
+```
+/vis/viewer/set/viewpointThetaPhi 270 270 deg
+```
+and
+```
+/vis/viewer/set/viewpointThetaPhi 270 90 deg
+```
+respectively.
+
+It is also possible to create 3D visualization files that can be viewed by an external viewer like [Blender](https://www.blender.org/) (the title picture was made in Blender, for example). The macro `vrml.mac` shows how to create a `.wrl` file. Run it in UI mode with
+```
+/control/execute vrml.mac
+``
 
 ## 4 Output Processing
 

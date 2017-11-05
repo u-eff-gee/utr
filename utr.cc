@@ -120,6 +120,8 @@ int main(int argc, char *argv[]) {
                 ui = new G4UIExecutive(argc, argv);
 #endif
 
+		UImanager->ApplyCommand("/control/execute init_vis.mac");
+
 		ui->SessionStart();
 		delete ui;
 	}
