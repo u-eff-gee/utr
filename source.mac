@@ -9,4 +9,4 @@
 /gps/ene/mono 1. MeV
 
 /run/printProgress 5000
-/run/beamOn 50
+/run/beamOn 10

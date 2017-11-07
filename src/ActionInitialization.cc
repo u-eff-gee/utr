@@ -19,8 +19,13 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "ActionInitialization.hh"
-#include "AngularDistributionGenerator.hh"
+
+#ifdef USE_GPS
 #include "GeneralParticleSource.hh"
+#else
+#include "AngularDistributionGenerator.hh"
+#endif
+
 #include "RunAction.hh"
 #include "SteppingAction.hh"
 
@@ -33,8 +38,13 @@ void ActionInitialization::BuildForMaster() const {
 }
 
 void ActionInitialization::Build() const {
+#if USE_GPS
+	G4cout << "Building GeneralParticleSource" << G4endl;
 	SetUserAction(new GeneralParticleSource);
-	// SetUserAction(new AngularDistributionGenerator);
+#else
+	G4cout << "Building AngularDistributionGenerator" << G4endl;
+	SetUserAction(new AngularDistributionGenerator);
+#endif
 	// SetUserAction(new SteppingAction); // Useful for debugging
 
 	RunAction *runAction = new RunAction();

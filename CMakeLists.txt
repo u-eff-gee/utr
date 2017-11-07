@@ -1,10 +1,15 @@
-# $Id: CMakeLists.txt 86065 2014-11-07 08:51:15Z gcosmo $
-
 #----------------------------------------------------------------------------
 # Setup the project
 #
 cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 project(utr)
+
+#----------------------------------------------------------------------------
+# Enable configuration of the source code by cmake
+configure_file(
+	"${PROJECT_SOURCE_DIR}/utrConfig.h.in"
+	"${PROJECT_SOURCE_DIR}/include/utrConfig.h"
+)
 
 #----------------------------------------------------------------------------
 # Find Geant4 package, activating all available UI and Vis drivers by default
@@ -19,22 +24,29 @@ else()
 endif()
 
 #----------------------------------------------------------------------------
+
+# Build options
+# Choose geometry
+set(DETECTOR_CONSTRUCTION "82Se_82Kr_726_743" CACHE STRING "Select detector construction from directory DetectorConstruction/")
+# Choose primary generator
+option(USE_GPS "Use G4GeneralParticleSource as primary generator" ON)
+
+#----------------------------------------------------------------------------
 # Setup Geant4 include directories and compile definitions
-# Setup include directory for this project
 #
 include(${Geant4_USE_FILE})
 include_directories(${PROJECT_SOURCE_DIR}/include)
+include_directories(${PROJECT_SOURCE_DIR}/DetectorConstruction/${DETECTOR_CONSTRUCTION})
 
 #----------------------------------------------------------------------------
 # Locate sources and headers for this project
-# NB: headers are included so they will show up in IDEs
-#
-file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
-file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
+
+file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc ${PROJECT_SOURCE_DIR}/DetectorConstruction/${DETECTOR_CONSTRUCTION}/*.cc)
+file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh ${PROJECT_SOURCE_DIR}/DetectorConstruction/$(DETECTOR_CONSTRUCTION)/*.hh)
 
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
-#
+
 add_executable(utr utr.cc ${sources} ${headers})
 target_link_libraries(utr ${Geant4_LIBRARIES})
 

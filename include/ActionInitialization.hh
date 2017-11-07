@@ -22,6 +22,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #define ActionInitialization_h 1
 
 #include "G4VUserActionInitialization.hh"
+#include "utrConfig.h"
 
 // Custom class definition
 class ActionInitialization : public G4VUserActionInitialization {
