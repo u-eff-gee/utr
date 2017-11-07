@@ -1,23 +1,36 @@
 #include <TROOT.h>
+#include <TFile.h>
+#include <TTree.h>
+
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 #include <time.h>
+#include <stdlib.h>
+#include <sstream>
 
-using namespace std;
+using std::cout;
+using std::endl;
+using std::string;
+using std::stringstream;
+using std::setprecision;
 
 #define MAXNBRANCHES 20
 
-void RootToTxt(string filename){
+int main(int argc, char* argv[]){
+//void RootToTxt(string filename){
 
 	// Open ROOT file
-	TFile *f = new TFile(filename.c_str());
+	string filename = argv[1];
+
+	TFile *f = new TFile(argv[1]);
 	cout << "Opened ROOT file " << filename << endl;
 
 	// Get number of TTree objects in the TFile (hopefully only one)
 	Int_t nkeys = f->GetNkeys();
 	if(nkeys < 1){
 		cout << "Error: File does not contain any object to read from." << endl;
-		exit();
+		abort();
 	}
 	if(nkeys > 1)
 		cout << "Warning: File contains more than one object. This is not expected for a normal simulation output." << endl;

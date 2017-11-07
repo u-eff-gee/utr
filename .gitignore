@@ -1,6 +1,6 @@
 # CMake-specific files
 CMakeCache.txt
-Makefile
+/Makefile
 CMakeFiles/*
 cmake_install.cmake
 include/utrConfig.h
@@ -9,6 +9,7 @@ include/utrConfig.h
 utr
 getHistogram
 histogramToTxt
+rootToTxt
 
 # Root files
 *.root
@@ -17,9 +18,6 @@ histogramToTxt
 *~
 *.swp
 *.swo
-
-# GEANT4 macros for debugging
-run.mac
 
 # Text files
 *.txt
