@@ -21,8 +21,12 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef ActionInitialization_h
 #define ActionInitialization_h 1
 
+#include <string>
+
 #include "G4VUserActionInitialization.hh"
 #include "utrConfig.h"
+
+using std::string;
 
 // Custom class definition
 class ActionInitialization : public G4VUserActionInitialization {
@@ -32,6 +36,10 @@ class ActionInitialization : public G4VUserActionInitialization {
 
 	virtual void BuildForMaster() const;
 	virtual void Build() const;
+
+	void setOutputDir(string output){ outputdir = output; };
+  private:
+	string outputdir;
 };
 
 #endif

@@ -72,6 +72,13 @@ void RunAction::BeginOfRunAction(const G4Run *) {
 	//
 	// where the filename is given by the user in analysisManager->OpenFile()
 
+	std::stringstream directory;
+	directory.str("");
+
+	if(outputdir != "."){
+		directory << outputdir << "/";
+	}
+
 	G4FileUtilities *fu = new G4FileUtilities();
 	std::stringstream sstr;
 	std::stringstream sstr2;
@@ -83,8 +90,8 @@ void RunAction::BeginOfRunAction(const G4Run *) {
 	    -1) { // threadId == -1 is the master thread which contains no data
 		for (int i = 0; i <= 100; i++) {
 			sstr.str("");
-			sstr << fileNamePrefix << i << ".root";
-			sstr2 << fileNamePrefix << i << "_t" << threadId << ".root";
+			sstr << directory.str() << fileNamePrefix << i << ".root";
+			sstr2 << directory.str() << fileNamePrefix << i << "_t" << threadId << ".root";
 
 			if (fu->FileExists(sstr2.str())) {
 				sstr.str("");

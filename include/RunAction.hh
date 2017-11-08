@@ -24,6 +24,10 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4UserRunAction.hh"
 #include "globals.hh"
 
+#include <string>
+
+using std::string;
+
 #define EKIN 0
 #define EDEP 1
 #define PARTICLE 2
@@ -49,9 +53,11 @@ class RunAction : public G4UserRunAction {
 	G4String GetOutputFlagName(unsigned int n);
 
 	static const int n_output_flags = 10;
+	void setOutputDir(string output){outputdir = output;};
 
   private:
 	unsigned int output_flags[n_output_flags];
+	string outputdir;
 };
 
 #endif

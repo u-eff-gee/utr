@@ -34,6 +34,9 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <argp.h>
 #include <time.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <dirent.h>
 
 using namespace std;
 
@@ -44,11 +47,13 @@ static char args_doc[] = "MACROFILE";
 static struct argp_option options[] = {
     {"macrofile", 'm', "MACRO", 0, "Macro file", 0},
     {"nthreads", 't', "THREAD", 0, "Number of threads", 0},
+    {"outputdir", 'o', "OUTPUTDIR", 0, "Output directory", 0},
     {0, 0, 0, 0, 0, 0}};
 
 struct arguments {
 	int nthreads = 1;
 	char *macrofile = 0;
+	char *outputdir = 0;
 };
 
 static error_t parse_opt(int key, char *arg, struct argp_state *state) {
@@ -59,6 +64,9 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state) {
 		break;
 	case 'm':
 		arguments->macrofile = arg;
+		break;
+	case 'o':
+		arguments->outputdir= arg;
 		break;
 	default:
 		return ARGP_ERR_UNKNOWN;
@@ -96,6 +104,22 @@ int main(int argc, char *argv[]) {
 
 	G4cout << "ActionInitialization..." << G4endl;
 	ActionInitialization *actionInitialization = new ActionInitialization();
+	// Pass output directory to RunAction via ActionInitialization
+	if(arguments.outputdir){
+		actionInitialization->setOutputDir(arguments.outputdir);
+		if(!opendir(arguments.outputdir)){
+			stringstream command;
+			const int dir_err = mkdir(arguments.outputdir, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+			if(dir_err == -1){
+				G4cout << "Error creating output directory" << G4endl;
+				abort();
+			}
+		} else{
+			G4cout << __FILE__ << ": main(): Warning: Output directory '" << arguments.outputdir << "' already exists" << G4endl;
+		}
+	} else{
+		actionInitialization->setOutputDir(".");
+	}
 	runManager->SetUserInitialization(actionInitialization);
 
 	if (!arguments.macrofile) {

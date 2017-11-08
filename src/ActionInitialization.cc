@@ -39,15 +39,14 @@ void ActionInitialization::BuildForMaster() const {
 
 void ActionInitialization::Build() const {
 #if USE_GPS
-	G4cout << "Building GeneralParticleSource" << G4endl;
 	SetUserAction(new GeneralParticleSource);
 #else
-	G4cout << "Building AngularDistributionGenerator" << G4endl;
 	SetUserAction(new AngularDistributionGenerator);
 #endif
 	// SetUserAction(new SteppingAction); // Useful for debugging
 
 	RunAction *runAction = new RunAction();
+	runAction->setOutputDir(outputdir);
 
 	unsigned int output_flags[runAction->n_output_flags];
 	output_flags[EKIN] = 0;
