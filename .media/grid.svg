@@ -11,11 +11,14 @@
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    sodipodi:docname="grid.svg"
    width="85.646378mm"
-   height="81.241821mm"
-   viewBox="0 0 303.47142 287.86472"
+   height="85.475151mm"
+   viewBox="0 0 303.47142 302.86471"
    id="svg2"
    version="1.1"
-   inkscape:version="0.91 r13725">
+   inkscape:version="0.91 r13725"
+   inkscape:export-filename="/home/udo/Documents/Work/GEANT4/utr/.media/grid.svg.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
   <sodipodi:namedview
      inkscape:bbox-nodes="true"
      inkscape:snap-bbox="true"
@@ -25,15 +28,15 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.9121398"
-     inkscape:cx="29.019549"
-     inkscape:cy="133.27678"
+     inkscape:zoom="2.704174"
+     inkscape:cx="66.874942"
+     inkscape:cy="139.41298"
      inkscape:document-units="px"
      inkscape:current-layer="svg2"
      showgrid="true"
      inkscape:window-width="1280"
      inkscape:window-height="1000"
-     inkscape:window-x="46"
+     inkscape:window-x="1280"
      inkscape:window-y="24"
      inkscape:window-maximized="1"
      showguides="false"
@@ -45,7 +48,7 @@
        id="grid4136"
        type="xygrid"
        originx="-144.68458"
-       originy="-552.28346" />
+       originy="-537.28347" />
   </sodipodi:namedview>
   <defs
      id="defs4">
@@ -484,8 +487,8 @@
      id="path10776"
      inkscape:connector-curvature="0" />
   <path
-     style="fill:none;fill-rule:evenodd;stroke:#0000ff;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker10784-6)"
-     d="m 174.87059,220.63928 c -37.1201,37.11182 -37.1201,37.11182 -37.1201,37.11182"
+     style="fill:none;fill-rule:evenodd;stroke:#0000ff;stroke-width:2.98916245;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker10784-6)"
+     d="M 174.5213,220.98944 C 119.02572,276.4395 119.02572,276.4395 119.02572,276.4395"
      id="path10776-0"
      inkscape:connector-curvature="0" />
   <path
@@ -640,8 +643,8 @@
   <ellipse
      style="fill:none;fill-opacity:0.38367345;stroke:#000000;stroke-width:0.90909129;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0"
      id="path12431-5-8"
-     cx="135.31543"
-     cy="260.14816"
+     cx="115.31543"
+     cy="280.14816"
      rx="4.5454545"
      ry="4.5454526" />
   <text

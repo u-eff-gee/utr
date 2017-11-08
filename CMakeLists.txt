@@ -58,10 +58,9 @@ target_link_libraries(utr ${Geant4_LIBRARIES})
 set(UTR_SCRIPTS
   beam.mac
   source.mac
+  angdist.mac
   init_vis.mac
   vis.mac
-  cleanup.sh
-  opensourcecode.sh
   )
 
 foreach(_script ${UTR_SCRIPTS})

@@ -38,7 +38,7 @@ void ActionInitialization::BuildForMaster() const {
 }
 
 void ActionInitialization::Build() const {
-#if USE_GPS
+#ifdef USE_GPS
 	SetUserAction(new GeneralParticleSource);
 #else
 	SetUserAction(new AngularDistributionGenerator);

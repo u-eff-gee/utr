@@ -1,7 +1,7 @@
 #include <TROOT.h>
 #include <TH1.h>
 #include <TFile.h>
-#include <TApplication.h>
+//#include <TApplication.h>
 
 #include <iostream>
 #include <fstream>
@@ -11,7 +11,7 @@ using namespace std;
 
 int main(int argc, char* argv[]){
 
-	TApplication *app = new TApplication("app", 0, 0);
+	//TApplication *app = new TApplication("app", 0, 0);
 
 	TString filename = argv[1];
 

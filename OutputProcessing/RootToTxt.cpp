@@ -14,6 +14,7 @@ using std::endl;
 using std::string;
 using std::stringstream;
 using std::setprecision;
+using std::ofstream;
 
 #define MAXNBRANCHES 20
 

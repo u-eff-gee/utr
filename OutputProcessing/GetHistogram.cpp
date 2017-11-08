@@ -17,7 +17,7 @@ int main(int argc, char* argv[]){
 	TString pattern2 = argv[3]; // File name pattern 2
 	TString outputfilename = argv[4]; // Output file name
 
-	float energy = 0.;
+	double energy = 0.;
 	if(argc == 6){
 		energy = atof(argv[5]);
 		cout << "Energy = " << energy*1000. << " keV." << endl;
@@ -36,13 +36,15 @@ int main(int argc, char* argv[]){
 		TString fname;
 
 		TIter next(files);
-		while (file=(TSystemFile*) next()){
+		file = (TSystemFile*) next();
+		while (file){
 
 			fname = file->GetName();
 			if(!file->IsDirectory() && fname.Contains(pattern1) && fname.Contains(pattern2)){
 				cout << fname << endl;
 				utr.Add(fname);
 			}
+			file = (TSystemFile*) next();
 		}
 	}
 
