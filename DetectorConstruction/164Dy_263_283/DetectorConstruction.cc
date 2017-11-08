@@ -18,14 +18,8 @@ You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// Geometry of 54Fe - 50Cr experiment
-// Valid from 12.12.2014 - 13.2.2015 (?)
-// ELOG entry 724 (run 455) - 814 (run 562)
-// This is just a modified geometry of the 82Se - 82Kr experiment from winter 2016. The only things that were adapted to the 54Fe - 52Cr - runs are the detector positions and the shielding in the second setup.
-// TODO:
-// 1) Find correct detector positions in terms of angles. At the moment, assume arbitrary angles, since for an efficiency simulation, this does not matter.
-// 2) Clarify the shielding. Philipp's and Haridas' values differ. Also, don't know whether the detectors were wrapped or not (this should not affect the efficiency simulation too much)
-// 3) Clarify the detector numbering. At the moment, found in the ELOG that there are detectors 6 and 7, and that they are called Polarimeter and Detector 2. However, it is not clear which is which.By now, assume that the Polarimeter is HPGe7
+// Geometry of 164Dy experiment in 2013, high energies (5.0–7.4 MeV).
+// Relevant for Runs 263–283. The second setup was not used/present.
 
 #include "DetectorConstruction.hh"
 
@@ -829,7 +823,6 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	    rotateG3Target1,
 	    G4ThreeVector(0., 0., -BeamTube_Length_Downstream +
 	                              BeamTube_Length * 0.5 +
-	                              dy164_Target->Get_Target_Center() +
                                   dy164_Target->Get_Thickness()/2.),
 	    Dy164_Target_Logical, "Dy164_Target_Physical", BeamTubeVacuum_Logical,
 	    false, 0);
@@ -845,8 +838,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	new G4PVPlacement(
 	    rotateG3Target2,
 	    G4ThreeVector(0., 0., -BeamTube_Length_Downstream +
-	                              BeamTube_Length * 0.5 +
-	                              dy164_2O3_Target->Get_Target_Center() -
+	                              BeamTube_Length * 0.5 -
                                   dy164_2O3_Target->Get_Thickness()/2.),
 	    Dy164_2O3_Target_Logical, "Dy164_2O3_Target_Physical", BeamTubeVacuum_Logical,
 	    false, 0);

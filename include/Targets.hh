@@ -425,8 +425,6 @@ class Dy164_Target {
 
 		// Mother volume
 		TargetContainer *targetContainer = new TargetContainer();
-		TargetContainerCap *targetContainerCap = new TargetContainerCap();
-		TargetContainerCap *targetContainerBottom = new TargetContainerCap();
 
 		Length = targetContainer->Get_Length();
 		Radius = targetContainer->Get_Outer_Radius();
@@ -441,38 +439,6 @@ class Dy164_Target {
 		    new G4LogicalVolume(Dy164_Target_Solid, air, "Dy164_Target_Logical");
 		Dy164_Target_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());
 
-		// Target Container
-
-		G4LogicalVolume *TargetContainer_Logical =
-		    targetContainer->Get_Logical();
-
-		new G4PVPlacement(0, G4ThreeVector(), TargetContainer_Logical,
-		                  "TargetContainer", Dy164_Target_Logical, false, 0);
-
-		G4LogicalVolume *TargetContainerBottom_Logical =
-		    targetContainerBottom->Get_Logical();
-
-		new G4PVPlacement(
-		    0, G4ThreeVector(0., 0.,
-		                     targetContainer->Get_Length() * 0.5 -
-		                         targetContainerBottom->Get_Thickness() * 0.5),
-		    TargetContainerBottom_Logical, "TargetContainerBottom",
-		    Dy164_Target_Logical, false, 0);
-
-		G4LogicalVolume *TargetContainerCap_Logical =
-		    targetContainerCap->Get_Logical();
-
-		new G4PVPlacement(
-		    0, G4ThreeVector(0., 0.,
-		                     targetContainer->Get_Length() * 0.5 -
-		                         targetContainerCap->Get_Thickness() -
-		                         Dy164_Target_Thickness -
-		                         targetContainerBottom->Get_Thickness() * 0.5),
-		    TargetContainerCap_Logical, "TargetContainerCap",
-		    Dy164_Target_Logical, false, 0);
-
-		// Dy164 Target Material
-
         // Dy164 metallic Target
 		G4Tubs *Dy164_Solid =
 		    new G4Tubs("Dy164_Solid", 0. * mm, Dy164_Target_Radius,
@@ -484,13 +450,10 @@ class Dy164_Target {
 
 		new G4PVPlacement(
 		    0,
-		    G4ThreeVector(0., 0., Length * 0.5 -
-		                              targetContainerBottom->Get_Thickness() -
-		                              Dy164_Target_Thickness * 0.5),
+		    G4ThreeVector(0., 0., Length * 0.5 - Dy164_Target_Thickness * 0.5),
 		    Dy164_Logical, "Dy164_Target", Dy164_Target_Logical, false, 0);
 
-		Target_Center = Length * 0.5 - targetContainerBottom->Get_Thickness() -
-		                Dy164_Target_Thickness * 0.5;
+		Target_Center = Length * 0.5 - Dy164_Target_Thickness * 0.5;
 	};
 
 	~Dy164_Target(){};
