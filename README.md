@@ -8,15 +8,25 @@ This is a [Geant4](https://geant4.web.cern.ch/) [[1]](#ref-g4_1) [[2]](#ref-g4_2
 
  1. [Quick Start](#quickstart)
  2. [Features](#features)
+ 
     2.1 [Geometry](#geometry)
+    
     2.2 [Sensitive Detectors](#sensitivedetectors)
+    
     2.3 [Event Generation](#eventgeneration)
+    
     2.4 [Physics](#physics)
+    
     2.5 [Random Number Engine](#random)
+    
     2.6 [Output File Format](#outputfileformat)
+    
  3. [Installation](#installation)
+ 
     3.1 [Dependencies](#dependencies)
+    
     3.2 [Compilation](#compilation)
+    
  4. [Usage and Visualization](#usage)
  5. [Output Processing](#outputprocessing)
  6. [License](#license)
@@ -611,7 +621,9 @@ The shell script `loopHistogramToTxt.sh` shows how to loop the script over a lar
 ## 6 License <a name="license"></a>
 
 Copyright (C) 2017
+
 U. Gayer (ugayer@ikp.tu-darmstadt.de)
+
 O. Papst
 
 This code is distributed under the terms of the GNU General Public License. See the COPYING file for more information.
