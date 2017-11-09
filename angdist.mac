@@ -17,10 +17,10 @@
 
 /ang/sourceDX 20. mm
 /ang/sourceDY 20. mm
-/ang/sourceDZ 20. mm
+/ang/sourceDZ 10. mm
 
 /ang/sourcePV Dy164_Target
-/ang/sourcePV Dy164_2O3_Target
+#/ang/sourcePV Dy164_2O3_Target
 
 /run/printProgress 100000
 /run/beamOn 20

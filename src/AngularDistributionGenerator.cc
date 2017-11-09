@@ -42,8 +42,8 @@ AngularDistributionGenerator::AngularDistributionGenerator()
 
 	// Set the limit for the number of Monte-Carlo iterations to find a starting
 	// point / initial momentum vector
-	MAX_TRIES_POSITION = 1000;
-	MAX_TRIES_MOMENTUM = 1000;
+	MAX_TRIES_POSITION = 1e4;
+	MAX_TRIES_MOMENTUM = 1e4;
 
 	particleGun = new G4ParticleGun(1);
 
@@ -66,54 +66,50 @@ void AngularDistributionGenerator::GeneratePrimaries(G4Event *anEvent) {
 
 #ifdef CHECK_POSITION_GENERATOR
 
-	if (!checked_position_generator) {
+	G4int position_success = 0;
 
-		G4int position_success = 0;
+	for(unsigned int j = 0; j < source_PV_names.size(); ++j){
+		if (!checked_position_generator) {
 
-		G4cout << "============================================================"
-		          "============"
-		       << G4endl;
-		G4cout << "Checking Monte-Carlo position generator with "
-		       << MAX_TRIES_POSITION << " 3D points ..." << G4endl;
+			position_success = 0;
 
-		for (int i = 0; i < MAX_TRIES_POSITION; i++) {
-			random_x = (G4UniformRand() - 0.5) * range_x + source_x;
-			random_y = (G4UniformRand() - 0.5) * range_y + source_y;
-			random_z = (G4UniformRand() - 0.5) * range_z + source_z;
+			G4cout << "============================================================"
+				  "============"
+			       << G4endl;
+			G4cout << "Checking Monte-Carlo position generator with "
+			       << MAX_TRIES_POSITION << " 3D points for volume " << source_PV_names[j] << " ..." << G4endl;
 
-			pv = navi->LocateGlobalPointAndSetup(
-			             G4ThreeVector(random_x, random_y, random_z))
-			         ->GetName();
+			for (int i = 0; i < MAX_TRIES_POSITION; i++) {
+				random_x = (G4UniformRand() - 0.5) * range_x + source_x;
+				random_y = (G4UniformRand() - 0.5) * range_y + source_y;
+				random_z = (G4UniformRand() - 0.5) * range_z + source_z;
 
-			for(unsigned int j = 0; j < source_PV_names.size(); ++j){
+				pv = navi->LocateGlobalPointAndSetup(
+					     G4ThreeVector(random_x, random_y, random_z))
+					 ->GetName();
+
 				if (pv == source_PV_names[j]) {
 					position_success++;
 				}
 			}
+
+			p = (double)position_success / MAX_TRIES_POSITION;
+			pnot = (double) 1. - p;
+
+			G4cout << "Check finished. Of " << MAX_TRIES_POSITION
+			       << " random 3D points, " << position_success
+			       << " were inside volume " << source_PV_names[j] << " ( " <<  p / perCent << " % )" << G4endl;
+			G4cout << "Probability of failure:\tpow( " << pnot << ", "
+			       << MAX_TRIES_POSITION
+			       << " ) = " << pow(pnot, MAX_TRIES_POSITION) / perCent << " %"
+			       << G4endl;
+			G4cout << "============================================================"
+				  "============"
+			       << G4endl << G4endl;
+
 		}
-
-		p = (double)position_success / MAX_TRIES_POSITION;
-		pnot = (double) 1. - p;
-
-		G4cout << "Check finished. Of " << MAX_TRIES_POSITION
-		       << " random 3D points, " << position_success
-		       << " were inside one of the volumes {  "; 
-
-		for(unsigned int j = 0; j < source_PV_names.size(); ++j){
-			G4cout << source_PV_names[j] << " ";
-		}
-		G4cout << " }" << G4endl;
-		G4cout << p / perCent << " % )" << G4endl;
-		G4cout << "Probability of failure:\tpow( " << pnot << ", "
-		       << MAX_TRIES_POSITION
-		       << " ) = " << pow(pnot, MAX_TRIES_POSITION) / perCent << " %"
-		       << G4endl;
-		G4cout << "============================================================"
-		          "============"
-		       << G4endl << G4endl;
-
-		checked_position_generator = true;
 	}
+	checked_position_generator = true;
 
 #endif
 
@@ -201,7 +197,7 @@ void AngularDistributionGenerator::GeneratePrimaries(G4Event *anEvent) {
 		       << MAX_TRIES_POSITION << " iterations" << G4endl;
 	if (!momentum_found)
 		G4cout << "Warning: AngularDistributionGenerator: Monte-Carlo method "
-		          "could not determine a starting vector after "
+		          "could not determine a starting velocity vector after "
 		       << MAX_TRIES_MOMENTUM << " iterations" << G4endl;
 
 	particleGun->GeneratePrimaryVertex(anEvent);

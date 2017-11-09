@@ -54,14 +54,10 @@ See section [4 Usage and Visualization](#usage)
 
  1. In `DetectorConstruction.cc`, set volumes as sensitive detectors. There is the choice between 3 different detector types that record different information about particles (see section [2.2 Sensitive Detectors](#sensitivedetectors)).
  2. In `src/ActionInitialization.cc`, set the quantities that should be written to the output file (see section [2.2 Sensitive Detectors](#sensitivedetectors)).
- 
+
 ### 1.5 Choose a primary source
 
 Configure `utr` to use either the `G4GeneralParticleSource` or the `AngularDistributionGenerator` using the CMake build option (see sections [2.3 Event Generation](#eventgeneration) or [3 Installation](#installation))
-
-#### 1.5.1 (optional) Configure AngularDistributionGenerator
-
-In `src/AngularDistributionGenerator.cc`, define a volume that contains the source volume and enter the name of the physical volume of the source (see section [2.3 Event Generation](#eventgeneration)).
 
 ### 1.6 Choose the physics processes
 
@@ -243,9 +239,9 @@ This event generator uses the G4GeneralParticleSource (GPS) whose parameters can
 
 #### 2.3.2 AngularDistributionGenerator
 
-The AngularDistributionGenerator generates monoenergetic particles that originate in a given G4PhysicalVolume of the DetectorConstruction and have a certain angular distribution.
+The AngularDistributionGenerator generates monoenergetic particles that originate in a set of G4PhysicalVolumes of the DetectorConstruction and have a certain angular distribution.
 
-The physical volume (the "source") and angular distribution can have arbitrary shapes. Starting positions and momentum directions are created using a Monte-Carlo method:
+The physical volumes (the "sources") and angular distribution can have arbitrary shapes. Starting positions and momentum directions are created using a Monte-Carlo method:
 Given a(n)
 
 * Cuboid in 3 dimensions ("container volume") that completely contains the source volume
@@ -258,28 +254,28 @@ AngularDistributionGenerator generates uniform random
 
 until 
 
-* The position `(random_x, random_y, random_z)` is inside the source physical volume
+* The position `(random_x, random_y, random_z)` is inside one of the source physical volumes
 * `random_W <= W(random_θ, random_φ)`
 
 If both conditions are fulfilled, a particle is emitted from `(random_x, random_y, random_z)` in the direction `(θ, φ)`.
 
-The process of finding a starting point is depicted in the figure below. The yellow star-shaped source volume is inside a dashed box which is the container volume. Random points inside the container volume are either black or red, depending on whether they are inside or outside the source volume. Only from the black points, particles are emitted (in random directions).
+The process of finding a starting point is depicted in 2 dimensions in the figure below. The yellow source volume consists of two disconnected parts. It is placed inside a dashed box which is the container volume. Random points inside the container volume are either black or red, depending on whether they are inside or outside the source volumes. Only from the black points, particles are emitted (in random directions).
 
 ![MC position generator](.media/MC_Position_Generator.png)
 
 Clearly, the algorithm works well if
 
-* the cuboid approximates the shape of the source well
+* the cuboid approximates the shape of the sources well
 * the angular distribution varies smoothly in the `(θ, φ)` plane
 
 The maximum number of randomly sampled points is hard-coded `AngularDistributionGenerator.cc` where it says:
 
 ```
-MAX_TRIES_POSITION = 1000
-MAX_TRIES_MOMENTUM = 1000
+MAX_TRIES_POSITION = 10000
+MAX_TRIES_MOMENTUM = 10000
 ```
 
-AngularDistributionGenerator can do a self-check before the actual simulation in which it creates `MAX_TRIES_XY` points and evaluates how many of the were valid. From this, the probability *p* of not hitting the source volume / angular distribution can be estimated. If `p * N >~ 1`, where N is the number of particles to be simulated, the algorithm will very probably fail once in a while, so try increasing `MAX_TRIES_XY`. A typical output of the self-check looks like:
+AngularDistributionGenerator can do a self-check before the actual simulation in which it creates `MAX_TRIES_XY` points and evaluates how many of the were valid. From this, the probability *p* of not hitting one of the source volumes / angular distribution can be estimated. An individual check is done for each source volume. If `p * N >~ 1`, where N is the number of particles to be simulated, the algorithm will very probably fail once in a while so try increasing `MAX_TRIES_XY`. A typical output of the self-check looks like:
 
 ```
 G4WT0 > ========================================================================
@@ -301,6 +297,14 @@ To change parameters of the AngularDistributionGenerator, an AngularDistribution
     Define state number N (where N is in {1, 2, 3, 4})
 * `/ang/deltaN1N2 VALUE`
     Define the multipole mixing ratio for the transition between states N1 and N2
+* `/ang/sourceX VALUE UNIT`
+    Along with `sourceY` and `sourceZ`, defines the position of the container box
+* `/ang/sourceDX VALUE UNIT`
+    Along with `sourceDY` and `sourceDZ`, defines the dimensions of the container box.
+* `/ang/sourcePV VALUE`
+    Enter the name of a physical volume that should act as a source. To add more physical volumes, call `/ang/sourcePV` multiple times with different arguments (about using multiple sources, see also the [caveat](#multiplesources) at the end of this section).
+    
+According to the Geant4 conventions for the placement of volumes, the container volume's inside will be the interval [X - DX, X + DX], [Y - DY, Y + DY] and [Z - DZ, Z + DZ].
 
 The identifiers of the angular distribution are given to the simulation as an array of numbers `states  = {state1, state2, ...}` whose length `NSTATES` can to be specified by the user.
 For "real" NRF angular distributions, this array of numbers will be the spins of the excited states in a cascade, with the parity indicated by the sign of the numbers.
@@ -339,11 +343,15 @@ At the moment, the following distributions are implemented:
     1/2+- -> 3/2+- -> 1/2+-
 * `states == {0.5, -1.5, 0.5} or {-0.5, 1.5, -0.5}`
     1/2+- -> 3/2-+ -> 1/2+-
-    
-The source volume and the dimensions of its container box can be set in the constructor of the AngularDistributionGenerator in `/src/AngularDistributionGenerator.cc`. The source volume is addressed via the name of its **G4PhysicalVolume**.
 
 Finding the correct dimensions of the container box might need visualization. Try placing a `G4Box` with the desired dimensions at the desired position in the geometry and see whether it encloses the source volume completely and as close as possible. In fact, most of the predefined geometries have such a `G4Box` called `AuxBox` which is commented out. After using it to determine the size and position of the container box, remember to comment out the code again.
-        
+
+#### 2.3.1 Caveat: Multiple sources <a name="multiplesources"></a>
+
+When using multiple sources, be aware that `AngularDistributionGenerator` samples the points with a uniform random distribution inside the container volume. How many particles are emitted from a certain part of the source will only depend on its volume. 
+
+This is not always desirable. Imagine the following example: The goal is to simulate a beam on two disconnected targets. The first target has twice the volume of the second target, but the second target has a four times larger density. That means, the reaction would occur approximately twice as often in the second target than in the first. Implementing the targets like this in `AngularDistributionGenerator` would not give realistic results because of the weighting by volume. In a case like this, one would rather simulate the individual parts of the target and compute a weighted sum of the results.
+
 ### 2.4 Physics <a name="physics"></a>
 The physics processes are defined in `/src/Physics.cc`. In the Physics::ConstructProcess() method, physics lists for groups of particles can be activated by uncommenting the desired physics list. If you are working on a slow machine and you just want to visualize the geometry, it can be advantageous to switch off all physics.
 
