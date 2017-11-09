@@ -18,7 +18,7 @@ rootToTxt: RootToTxt.cpp
 	$(CPP) -o $@ $< $(CFLAGS) $(ROOTFLAGS)
 	mv $@ ..
 
-.PHONY: clean
+.PHONY: all clean
 
 clean:
 	rm ../getHistogram
