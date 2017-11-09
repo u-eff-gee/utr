@@ -59,6 +59,16 @@ class AngularDistributionMessenger : public G4UImessenger {
 	G4UIcmdWithADouble *delta12Cmd;
 	G4UIcmdWithADouble *delta23Cmd;
 	G4UIcmdWithADouble *delta34Cmd;
+
+	G4UIcmdWithADoubleAndUnit *sourceXCmd;
+	G4UIcmdWithADoubleAndUnit *sourceYCmd;
+	G4UIcmdWithADoubleAndUnit *sourceZCmd;
+
+	G4UIcmdWithADoubleAndUnit *sourceDXCmd;
+	G4UIcmdWithADoubleAndUnit *sourceDYCmd;
+	G4UIcmdWithADoubleAndUnit *sourceDZCmd;
+
+	G4UIcmdWithAString *sourcePVCmd;
 };
 
 #endif

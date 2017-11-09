@@ -92,6 +92,47 @@ AngularDistributionMessenger::AngularDistributionMessenger(
 	delta34Cmd->SetParameterName("delta34", true);
 	delta34Cmd->SetDefaultValue(0.);
 
+	sourceXCmd = new G4UIcmdWithADoubleAndUnit("/ang/sourceX", this);
+	sourceXCmd->SetGuidance("Set X position of source container volume");
+	sourceXCmd->SetGuidance("Default: 0.");
+	sourceXCmd->SetParameterName("sourceX", true);
+	sourceXCmd->SetDefaultValue(0.);
+
+	sourceYCmd = new G4UIcmdWithADoubleAndUnit("/ang/sourceY", this);
+	sourceYCmd->SetGuidance("Set Y position of source container volume");
+	sourceYCmd->SetGuidance("Default: 0.");
+	sourceYCmd->SetParameterName("sourceY", true);
+	sourceYCmd->SetDefaultValue(0.);
+
+	sourceZCmd = new G4UIcmdWithADoubleAndUnit("/ang/sourceZ", this);
+	sourceZCmd->SetGuidance("Set Z position of source container volume");
+	sourceZCmd->SetGuidance("Default: 0.");
+	sourceZCmd->SetParameterName("sourceZ", true);
+	sourceZCmd->SetDefaultValue(0.);
+
+	sourceDXCmd = new G4UIcmdWithADoubleAndUnit("/ang/sourceDX", this);
+	sourceDXCmd->SetGuidance("Set X dimension of source container volume");
+	sourceDXCmd->SetGuidance("Default: 10. * mm");
+	sourceDXCmd->SetParameterName("sourceDX", true);
+	sourceDXCmd->SetDefaultValue(10. * mm);
+
+	sourceDYCmd = new G4UIcmdWithADoubleAndUnit("/ang/sourceDY", this);
+	sourceDYCmd->SetGuidance("Set Y dimension of source container volume");
+	sourceDYCmd->SetGuidance("Default: 10. * mm");
+	sourceDYCmd->SetParameterName("sourceDY", true);
+	sourceDYCmd->SetDefaultValue(10. * mm);
+
+	sourceDZCmd = new G4UIcmdWithADoubleAndUnit("/ang/sourceDZ", this);
+	sourceDZCmd->SetGuidance("Set Z dimension of source container volume");
+	sourceDZCmd->SetGuidance("Default: 10. * mm");
+	sourceDZCmd->SetParameterName("sourceDZ", true);
+	sourceDZCmd->SetDefaultValue(10. * mm);
+
+	sourcePVCmd = new G4UIcmdWithAString("/ang/sourcePV", this);
+	sourcePVCmd->SetGuidance("Add physical volume as a particle source.");
+	sourcePVCmd->SetParameterName("sourcePV", true);
+	sourcePVCmd->SetDefaultValue("");
+
 	energyCmd = new G4UIcmdWithADoubleAndUnit("/ang/energy", this);
 
 	angularDistributionGenerator->SetParticleDefinition(
@@ -106,6 +147,14 @@ AngularDistributionMessenger::AngularDistributionMessenger(
 	angularDistributionGenerator->SetDelta(0, 0.);
 	angularDistributionGenerator->SetDelta(1, 0.);
 	angularDistributionGenerator->SetDelta(2, 0.);
+
+	angularDistributionGenerator->SetSourceX(0.);
+	angularDistributionGenerator->SetSourceY(0.);
+	angularDistributionGenerator->SetSourceZ(0.);
+
+	angularDistributionGenerator->SetSourceDX(10. * mm);
+	angularDistributionGenerator->SetSourceDY(10. * mm);
+	angularDistributionGenerator->SetSourceDZ(10. * mm);
 }
 
 AngularDistributionMessenger::~AngularDistributionMessenger() {
@@ -166,6 +215,28 @@ void AngularDistributionMessenger::SetNewValue(G4UIcommand *command,
 		angularDistributionGenerator->SetDelta(
 		    2, delta34Cmd->GetNewDoubleValue(newValues));
 	}
+
+	if(command == sourceXCmd){
+		angularDistributionGenerator->SetSourceX(sourceXCmd->GetNewDoubleValue(newValues));
+	}
+	if(command == sourceYCmd){
+		angularDistributionGenerator->SetSourceY(sourceYCmd->GetNewDoubleValue(newValues));
+	}
+	if(command == sourceZCmd){
+		angularDistributionGenerator->SetSourceZ(sourceZCmd->GetNewDoubleValue(newValues));
+	}
+	if(command == sourceDXCmd){
+		angularDistributionGenerator->SetSourceDX(sourceDXCmd->GetNewDoubleValue(newValues));
+	}
+	if(command == sourceDYCmd){
+		angularDistributionGenerator->SetSourceDY(sourceDYCmd->GetNewDoubleValue(newValues));
+	}
+	if(command == sourceDZCmd){
+		angularDistributionGenerator->SetSourceDZ(sourceDZCmd->GetNewDoubleValue(newValues));
+	}
+	if(command == sourcePVCmd){
+		angularDistributionGenerator->AddSourcePV(newValues);
+	}
 }
 
 G4String AngularDistributionMessenger::GetCurrentValue(G4UIcommand *command) {
@@ -220,6 +291,24 @@ G4String AngularDistributionMessenger::GetCurrentValue(G4UIcommand *command) {
 	if (command == delta34Cmd) {
 		return delta34Cmd->ConvertToString(
 		    angularDistributionGenerator->GetDelta(2));
+	}
+	if(command == sourceXCmd) {
+		return sourceXCmd->ConvertToString(angularDistributionGenerator->GetSourceX());
+	}
+	if(command == sourceYCmd) {
+		return sourceYCmd->ConvertToString(angularDistributionGenerator->GetSourceY());
+	}
+	if(command == sourceZCmd) {
+		return sourceZCmd->ConvertToString(angularDistributionGenerator->GetSourceZ());
+	}
+	if(command == sourceDXCmd) {
+		return sourceDXCmd->ConvertToString(angularDistributionGenerator->GetSourceDX());
+	}
+	if(command == sourceDYCmd) {
+		return sourceDYCmd->ConvertToString(angularDistributionGenerator->GetSourceDY());
+	}
+	if(command == sourceDZCmd) {
+		return sourceDZCmd->ConvertToString(angularDistributionGenerator->GetSourceDZ());
 	}
 
 	return cv;
