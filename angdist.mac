@@ -4,9 +4,9 @@
 /ang/energy 3.002 MeV
 
 /ang/nstates 3
-/ang/state1 0.1
-/ang/state2 0.1
-/ang/state3 0.1
+/ang/state1 0.
+/ang/state2 1.
+/ang/state3 0.
 
 /ang/delta12 0.
 /ang/delta23 0.
@@ -19,7 +19,8 @@
 /ang/sourceDY 20. mm
 /ang/sourceDZ 20. mm
 
-/ang/sourcePV Se82_Target
+/ang/sourcePV Dy164_Target
+/ang/sourcePV Dy164_2O3_Target
 
 /run/printProgress 100000
-/run/beamOn 10
+/run/beamOn 20

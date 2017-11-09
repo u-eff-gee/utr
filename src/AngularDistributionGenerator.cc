@@ -47,23 +47,6 @@ AngularDistributionGenerator::AngularDistributionGenerator()
 
 	particleGun = new G4ParticleGun(1);
 
-	// Random point will be sampled inside a box located at (source_x, source_y,
-	// source_z). The box has the dimensions [ -range_xyz*0.5 , range_xyz*0.5 ].
-	// Check with the auxiliary volume AuxBox in DetectorConstruction.cc whether
-	// this box completely contains the desired source.
-	source_x = 0. * mm;
-	source_y = 0. * mm;
-	source_z = 0. * mm;
-
-	range_x = 20. * mm;
-	range_y = 20. * mm;
-	range_z = 20. * mm;
-
-	// Enter name of the G4PhysicalVolume from which the radiation should be
-	// emitted
-	// Source_PV_Name = "Krypton";
-	// Source_PV_Name = "Se82_Target";
-
 	navi = G4TransportationManager::GetTransportationManager()
 	           ->GetNavigatorForTracking();
 }
@@ -101,7 +84,6 @@ void AngularDistributionGenerator::GeneratePrimaries(G4Event *anEvent) {
 			pv = navi->LocateGlobalPointAndSetup(
 			             G4ThreeVector(random_x, random_y, random_z))
 			         ->GetName();
-			G4cout << pv << G4endl;
 
 			for(unsigned int j = 0; j < source_PV_names.size(); ++j){
 				if (pv == source_PV_names[j]) {

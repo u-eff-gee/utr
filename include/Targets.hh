@@ -544,7 +544,7 @@ class Dy164_2O3_Target {
 		    G4ThreeVector(0., 0., Length * 0.5 -
 		                              targetContainerBottom->Get_Thickness() -
 		                              Dy164_2O3_Target_Thickness * 0.5),
-		    Dy164_2O3_Logical, "Dy164_Target", Dy164_2O3_Target_Logical, false, 0);
+		    Dy164_2O3_Logical, "Dy164_2O3_Target", Dy164_2O3_Target_Logical, false, 0);
 
 		Target_Center = Length * 0.5 - targetContainerBottom->Get_Thickness() -
 		                Dy164_2O3_Target_Thickness * 0.5;
