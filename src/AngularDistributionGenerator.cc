@@ -62,7 +62,7 @@ AngularDistributionGenerator::AngularDistributionGenerator()
 	// Enter name of the G4PhysicalVolume from which the radiation should be
 	// emitted
 	// Source_PV_Name = "Krypton";
-	Source_PV_Name = "Se82_Target";
+	// Source_PV_Name = "Se82_Target";
 
 	navi = G4TransportationManager::GetTransportationManager()
 	           ->GetNavigatorForTracking();
@@ -101,19 +101,27 @@ void AngularDistributionGenerator::GeneratePrimaries(G4Event *anEvent) {
 			pv = navi->LocateGlobalPointAndSetup(
 			             G4ThreeVector(random_x, random_y, random_z))
 			         ->GetName();
+			G4cout << pv << G4endl;
 
-			if (pv == Source_PV_Name) {
-				position_success++;
+			for(unsigned int j = 0; j < source_PV_names.size(); ++j){
+				if (pv == source_PV_names[j]) {
+					position_success++;
+				}
 			}
 		}
 
 		p = (double)position_success / MAX_TRIES_POSITION;
-		pnot = (double)1. - p;
+		pnot = (double) 1. - p;
 
 		G4cout << "Check finished. Of " << MAX_TRIES_POSITION
 		       << " random 3D points, " << position_success
-		       << " were inside volume '" << Source_PV_Name << "' ( "
-		       << p / perCent << " % )" << G4endl;
+		       << " were inside one of the volumes {  "; 
+
+		for(unsigned int j = 0; j < source_PV_names.size(); ++j){
+			G4cout << source_PV_names[j] << " ";
+		}
+		G4cout << " }" << G4endl;
+		G4cout << p / perCent << " % )" << G4endl;
 		G4cout << "Probability of failure:\tpow( " << pnot << ", "
 		       << MAX_TRIES_POSITION
 		       << " ) = " << pow(pnot, MAX_TRIES_POSITION) / perCent << " %"
@@ -179,11 +187,13 @@ void AngularDistributionGenerator::GeneratePrimaries(G4Event *anEvent) {
 		             G4ThreeVector(random_x, random_y, random_z))
 		         ->GetName();
 
-		if (pv == Source_PV_Name) {
-			randomOrigin = G4ThreeVector(random_x, random_y, random_z);
-			particleGun->SetParticlePosition(randomOrigin);
-			position_found = true;
-			break;
+		for(unsigned int j = 0; j < source_PV_names.size(); ++j){
+			if (pv == source_PV_names[j]) {
+				randomOrigin = G4ThreeVector(random_x, random_y, random_z);
+				particleGun->SetParticlePosition(randomOrigin);
+				position_found = true;
+				break;
+			}
 		}
 	}
 
