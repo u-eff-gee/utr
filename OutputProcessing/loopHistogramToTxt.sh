@@ -1,10 +1,20 @@
 #!/bin/bash
 
-# Executes the histogramToTxt script in a loop. The code below would do
-# ./histogramToTxt utr0.root
-# ./histogramToTxt utr1.root
+# loopHistogramToTxt.sh <start> <end> <prefix>
+# Executes the histogramToTxt script in a loop.
 
-for i in `seq 0 1`
+if [ "$#" -ne 3 ]; then
+    echo "Illegal number of parameters"
+    echo "usage: $0 <start> <end> <prefix>"
+    echo "This would do"
+    echo "./histogramToTxt <prefix><start>.root"
+    echo "..."
+    echo "./histogramToTxt <prefix><end>.root"
+    exit 1
+fi
+
+for i in `seq $1 $2`
 do
-	./histogramToTxt utr"$i".root
+    echo ./histogramToTxt $3"$i".root
+    #./histogramToTxt $3"$i".root
 done
