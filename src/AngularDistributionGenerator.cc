@@ -173,6 +173,10 @@ void AngularDistributionGenerator::GeneratePrimaries(G4Event *anEvent) {
 				break;
 			}
 		}
+
+		if(position_found){
+			break;
+		}
 	}
 
 	for (int i = 0; i < MAX_TRIES_MOMENTUM; i++) {
