@@ -1614,10 +1614,10 @@ void DetectorConstruction::ConstructSDandField() {
 	SetSensitiveDetector("LaBr4", LaBr4SD, true);
 
 	// ZeroDegree detector
-//	EnergyDepositionSD *ZeroDegreeSD =
-//	    new EnergyDepositionSD("ZeroDegree", "ZeroDegree");
-//	G4SDManager::GetSDMpointer()->AddNewDetector(ZeroDegreeSD);
-//	ZeroDegreeSD->SetDetectorID(5);
-//	SetSensitiveDetector("ZeroDegree", ZeroDegreeSD, true);
+	EnergyDepositionSD *ZeroDegreeSD =
+	    new EnergyDepositionSD("ZeroDegree", "ZeroDegree");
+	G4SDManager::GetSDMpointer()->AddNewDetector(ZeroDegreeSD);
+	ZeroDegreeSD->SetDetectorID(5);
+	SetSensitiveDetector("ZeroDegree", ZeroDegreeSD, true);
 }
 

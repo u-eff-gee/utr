@@ -18,6 +18,7 @@ You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <limits.h>
 #include "RunAction.hh"
 #include "Analysis.hh"
 
@@ -88,7 +89,7 @@ void RunAction::BeginOfRunAction(const G4Run *) {
 
 	if (threadId !=
 	    -1) { // threadId == -1 is the master thread which contains no data
-		for (int i = 0; i <= 100; i++) {
+		for (int i = 0; i <= INT_MAX; i++) {
 			sstr.str("");
 			sstr << directory.str() << fileNamePrefix << i << ".root";
 			sstr2 << directory.str() << fileNamePrefix << i << "_t" << threadId << ".root";
