@@ -1,27 +1,77 @@
+#include <iostream>
+#include <stdlib.h>
+#include <argp.h>
+
 #include <TROOT.h>
 #include <TSystemDirectory.h>
 #include <TChain.h>
 #include <TH1.h>
 #include <TFile.h>
 
-#include <iostream>
-#include <stdlib.h>
+static char doc[] = "GetHistogram";
+static char args_doc[] = "Create histograms from a list of events";
+
+struct arguments{
+	const char* tree;
+	const char* p1;
+	const char* p2;
+	const char* outputfilename;
+
+	int bin;
+	unsigned int multiplicity;
+	
+	arguments() : tree("utr"), p1("utr"), p2(".root"), outputfilename("hist.root"), bin(-1), multiplicity(1) {};
+};
+
+static struct argp_option options[] = {
+{ 0, 't', "TREENAME", 0, "Name of tree" },
+{ 0, 'p', "PATTERN1", 0, "File name pattern 1" },
+{ 0, 'q', "PATTERN2", 0, "File name pattern 2" },
+{ 0, 'o', "OUTPUTFILENAME", 0, "Output file name" },
+{ 0, 'e', "BIN", 0, "Number of energy bin whose value should be displayed" },
+{ 0, 'm', "MULTIPLICITY", 0, "Particle multiplicity" },
+{ 0, 0, 0, 0, 0 }
+};
+
+static error_t parse_opt(int key, char *arg, struct argp_state *state) {
+
+	struct arguments *args = (struct arguments *) state->input;
+
+switch (key) {
+	case ARGP_KEY_ARG: break;
+	case 't': args->tree = arg; break;
+	case 'a': args->p1 = arg; break;
+	case 'b': args->p2 = arg; break;
+	case 'o': args->outputfilename = arg; break;
+	case 'e': args->bin = atoi(arg); break;
+	case 'm': args->multiplicity = (unsigned int) atoi(arg); break;
+	case ARGP_KEY_END: break;
+	default: return ARGP_ERR_UNKNOWN;
+	}
+
+	return 0;
+}
+
+static struct argp argp = { options, parse_opt, args_doc, doc, 0, 0, 0 };
+
 
 using namespace std;
 
 int main(int argc, char* argv[]){
 	
-	// Command line arguments
-	TString treename = argv[1]; // Name of ROOT tree which should exist in each of the files
-	TString pattern1 = argv[2]; // File name pattern 1
-	TString pattern2 = argv[3]; // File name pattern 2
-	TString outputfilename = argv[4]; // Output file name
+	struct arguments args;
+	argp_parse(&argp, argc, argv, 0, 0, &args);
 
-	double energy = 0.;
-	if(argc == 6){
-		energy = atof(argv[5]);
-		cout << "Energy = " << energy*1000. << " keV." << endl;
+	cout << "#############################################" << endl;
+	cout << "> GetHistogram" << endl;
+	cout << "> TREENAME     : " << args.tree << endl;
+	cout << "> FILES        : " << "*" << args.p1 << "*" << args.p2 << "*" << endl;
+	cout << "> OUTPUTFILE   : " << args.outputfilename << endl;
+	cout << "> MULTIPLICITY : " << args.multiplicity << endl;
+	if(args.bin != -1){
+		cout << "> BIN          : " << args.bin << endl;
 	}
+	cout << "#############################################" << endl;
 
 	// Find all files in the current directory that contain pattern1 and pattern1 and connect them to a TChain
 	TSystemDirectory dir(".",".");
@@ -29,7 +79,7 @@ int main(int argc, char* argv[]){
 	TList *files = dir.GetListOfFiles();
 	TChain utr("utr");
 
-	cout << "Joining files that contain the patterns '" << pattern1 << "' and '" << pattern2 << "':" << endl;
+	cout << "> Joining all files that contain '" << args.p1 << "' and '" << args.p2 << "':" << endl;
 	
 	if(files){
 		TSystemFile *file;
@@ -38,9 +88,8 @@ int main(int argc, char* argv[]){
 		TIter next(files);
 		file = (TSystemFile*) next();
 		while (file){
-
 			fname = file->GetName();
-			if(!file->IsDirectory() && fname.Contains(pattern1) && fname.Contains(pattern2)){
+			if(!file->IsDirectory() && fname.Contains(args.p1) && fname.Contains(args.p2)){
 				cout << fname << endl;
 				utr.Add(fname);
 			}
@@ -48,14 +97,33 @@ int main(int argc, char* argv[]){
 		}
 	}
 
-	// Create histogram
-	TH1* h1 = new TH1F("h1", "Energy Deposition in HPGe1 (only photons)", 10000, 0.0005, 10.0005);
-	TH1* h2 = new TH1F("h2", "Energy Deposition in HPGe2 (only photons)", 10000, 0.0005, 10.0005);
-	TH1* h3 = new TH1F("h3", "Energy Deposition in HPGe3 (only photons)", 10000, 0.0005, 10.0005);
-	TH1* h4 = new TH1F("h4", "Energy Deposition in HPGe4 (only photons)", 10000, 0.0005, 10.0005);
+	//
+	//	START OF USER-DEFINED OUTPUT
+	//
+
+	// Create histograms
+	
+	const Int_t nhistograms = 9;
+
+	TH1* hist[nhistograms];
+
+	hist[0] = new TH1F("h1", "Energy Deposition in HPGe1 (only photons)", 10000, 0.0005, 10.0005);
+	hist[1] = new TH1F("h2", "Energy Deposition in HPGe2 (only photons)", 10000, 0.0005, 10.0005);
+	hist[2] = new TH1F("h3", "Energy Deposition in HPGe3 (only photons)", 10000, 0.0005, 10.0005);
+	hist[3] = new TH1F("h4", "Energy Deposition in HPGe4 (only photons)", 10000, 0.0005, 10.0005);
+	hist[4] = new TH1F("h5", "Energy Deposition in ZeroDegree (only photons)", 10000, 0.0005, 10.0005);
+	hist[5] = new TH1F("h6", "Energy Deposition in HPGe6 (only photons)", 10000, 0.0005, 10.0005);
+	hist[6] = new TH1F("h7", "Energy Deposition in HPGe7 (only photons)", 10000, 0.0005, 10.0005);
+	hist[7] = new TH1F("h8", "Energy Deposition in HPGe8 (only photons)", 10000, 0.0005, 10.0005);
+	hist[8] = new TH1F("h9", "Energy Deposition in HPGe9 (only photons)", 10000, 0.0005, 10.0005);
+
+	UInt_t multiplicity_counter[nhistograms] = {0};
 
 	// Fill histogram from TBranch in TChain with user-defined conditions
+	// Define variables and read their values from the tree using the GetEntry() method
 	Double_t Edep, Volume, Particle;
+	Double_t Edep_hist[nhistograms] = {0.};
+
 
 	utr.SetBranchAddress("edep", &Edep);
 	utr.SetBranchAddress("particle", &Particle);
@@ -65,40 +133,110 @@ int main(int argc, char* argv[]){
 		utr.GetEntry(i);
 
 		if(Edep > 0. && Particle == 22){
-			if(Volume == 1)
-				h1->Fill(Edep);
-			if(Volume == 2)
-				h2->Fill(Edep);
-			if(Volume == 3)
-				h3->Fill(Edep);
-			if(Volume == 4)
-				h4->Fill(Edep);
+			
+			if(Volume == 1){
+				Edep_hist[0] += Edep;
+				++multiplicity_counter[0];
+				if(multiplicity_counter[0] == args.multiplicity){
+					hist[0]->Fill(Edep_hist[0]);
+					Edep_hist[0] = 0.;
+					multiplicity_counter[0] = 0;
+				}
+			}
+			if(Volume == 2){
+				Edep_hist[1] += Edep;
+				++multiplicity_counter[1];
+				if(multiplicity_counter[1] == args.multiplicity){
+					hist[1]->Fill(Edep_hist[1]);
+					Edep_hist[1] = 0.;
+					multiplicity_counter[1] = 0;
+				}
+			}
+			if(Volume == 3){
+				Edep_hist[2] += Edep;
+				++multiplicity_counter[2];
+				if(multiplicity_counter[2] == args.multiplicity){
+					hist[2]->Fill(Edep_hist[2]);
+					Edep_hist[2] = 0.;
+					multiplicity_counter[2] = 0;
+				}
+			}
+			if(Volume == 4){
+				Edep_hist[3] += Edep;
+				++multiplicity_counter[3];
+				if(multiplicity_counter[3] == args.multiplicity){
+					hist[3]->Fill(Edep_hist[3]);
+					Edep_hist[3] = 0.;
+					multiplicity_counter[3] = 0;
+				}
+			}
+			if(Volume == 5){
+				Edep_hist[4] += Edep;
+				++multiplicity_counter[4];
+				if(multiplicity_counter[4] == args.multiplicity){
+					hist[4]->Fill(Edep_hist[4]);
+					Edep_hist[4] = 0.;
+					multiplicity_counter[4] = 0;
+				}
+			}
+			if(Volume == 6){
+				Edep_hist[5] += Edep;
+				++multiplicity_counter[5];
+				if(multiplicity_counter[5] == args.multiplicity){
+					hist[5]->Fill(Edep_hist[5]);
+					Edep_hist[5] = 0.;
+					multiplicity_counter[5] = 0;
+				}
+			}
+			if(Volume == 7){
+				Edep_hist[6] += Edep;
+				++multiplicity_counter[6];
+				if(multiplicity_counter[6] == args.multiplicity){
+					hist[6]->Fill(Edep_hist[6]);
+					Edep_hist[6] = 0.;
+					multiplicity_counter[6] = 0;
+				}
+			}
+			if(Volume == 8){
+				Edep_hist[7] += Edep;
+				++multiplicity_counter[7];
+				if(multiplicity_counter[7] == args.multiplicity){
+					hist[7]->Fill(Edep_hist[7]);
+					Edep_hist[7] = 0.;
+					multiplicity_counter[7] = 0;
+				}
+			}
+			if(Volume == 9){
+				Edep_hist[8] += Edep;
+				++multiplicity_counter[8];
+				if(multiplicity_counter[8] == args.multiplicity){
+					hist[8]->Fill(Edep_hist[8]);
+					Edep_hist[8] = 0.;
+					multiplicity_counter[8] = 0;
+				}
+			}
+		}
+	}
+	
+	//
+	//	END OF USER-DEFINED OUTPUT
+	//
+
+	if(args.bin != -1){
+		cout << "> Content of bin #" << args.bin << ":" << endl;
+		for(auto h: hist){
+			cout << h->GetName() << " : " << h->GetBinContent(args.bin) << endl;
 		}
 	}
 
-	if(argc == 6){
-		int nbin = (int) (energy * 1000.);
-		cout << "Counts in histograms at " << energy << " MeV (Reading from bin # " << nbin <<")" << endl;
-		cout << "Bin edges: [" << h1->GetBinLowEdge(nbin) << ", " << (h1->GetBinLowEdge(nbin) + h1->GetBinWidth(nbin)) << "]" << endl;
-
-//		cout << "h1\t" << h1->GetBinContent(nbin) << endl;
-//		cout << "h2\t" << h2->GetBinContent(nbin) << endl;
-//		cout << "h3\t" << h3->GetBinContent(nbin) << endl;
-//		cout << "h4\t" << h4->GetBinContent(nbin) << endl;
-
-		cout << "[" << h1->GetBinContent(nbin) << ", " <<h2->GetBinContent(nbin) << ", " <<h3->GetBinContent(nbin) << ", " <<h4->GetBinContent(nbin) << "]" << endl;
-
-	}
-
 	// Write histogram to a new TFile
-	TFile *of = new TFile(outputfilename, "RECREATE");
+	TFile *of = new TFile(args.outputfilename, "RECREATE");
 
-	h1->Write();
-	h2->Write();
-	h3->Write();
-	h4->Write();
+		for(auto h: hist){
+			h->Write();
+		}
 
 	of->Close();
 
-	cout << "Created output file " << outputfilename << endl;
+	cout << "> Created output file " << args.outputfilename << endl;
 }	

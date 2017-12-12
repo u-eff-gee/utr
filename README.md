@@ -430,7 +430,7 @@ These instructions will get you a copy of the simulation running.
 
 To build and run the simulation, the following dependencies are required:
 
-* [Geant4](https://geant4.web.cern.ch/) (tested with version 10.03 patch 01)
+* [Geant4](https://geant4.web.cern.ch/) (tested with version 10.04)
 * CMake (*build*)
 * Make (*build*)
 
@@ -527,6 +527,7 @@ It is also possible to create 3D visualization files that can be viewed by an ex
 ## 5 Output Processing <a name="outputprocessing"></a>
 
 The directory `OutputProcessing` contains some **sample** ROOT scripts that can be adapted by the user to process their simulation output. Executing
+
 ```bash
 $ cd OutputProcessing/
 $ make
@@ -535,11 +536,16 @@ in this directory should compile all the scripts and move the executables to the
 The compilation may fail if the `ROOTSYS` environment variable is not set on your system.
 
 Executables can be run like
+
 ```bash
 $ ./EXECUTABLENAME {ARGUMENTS}
 ```
+The executables can be removed using the command
 
-The executables can be removed using the 
+```bash
+$ make clean
+```
+in `OutputProcessing`
 
 ### 5.1 RootToTxt.cpp
 `RootToTxt` converts a ROOT output file (*TFile*) containing an n-tuple of data (a *TTree* with *TBranch* objects) to a simple text file with the same content. If you want to convert a ROOT file ROOTFILE, type
@@ -550,21 +556,37 @@ The ROOT file can have a TTree with an arbitrary name and an arbitrary number of
 Be aware that conversion into text files increases the file size.
 
 ### 5.2 getHistogram
-`getHistogram` sorts the data in an output file into a ROOT histogram and saves the histogram in a new file.
-The script can be used to merge multiple files and extract a histogram from all of them, since large-scale simulations will most probably be run on several threads. The script is used as follows:
-```bash
-$ ./getHistogram TREE PATTERN1 PATTERN2 OUTPUTFILE [ENERGY]
-```
-With the arguments
+`getHistogram` sorts the data from multiple output files (for example, several threads of the same simulation) into a ROOT histogram and saves the histogram to a new file.
+Executing
 
-* TREE: Name of the ROOT tree ("utr" in this case)
-* PATTERN1 and 2: Two strings that uniquely identify the set of files you would like to merge
-* OUTPUTFILE: name of the output file that contains the histogram
-* ENERGY in MeV of the histogram bin that should be printed to the screen while executing `getHistogram`. This optional parameter was introduced because often, one is only interested in the content of a special bin in the histograms (for example the full-energy peak). At the moment, the histograms are defined such that bin `3000` contains the events with an energy deposition between `2.9995 MeV` and `3.0005 MeV` and so on, so there is an easy correspondence between bin number and energy. Be aware of this when you change the binning.
+```bash
+$ ./getHistogram --help
+Usage: getHistogram [OPTION...] Create histograms from a list of events
+GetHistogram
+
+  -e BIN                     Number of energy bin whose value should be
+                             displayed
+  -m MULTIPLICITY            Particle multiplicity
+  -o OUTPUTFILENAME          Output file name
+  -p PATTERN1                File name pattern 1
+  -q PATTERN2                File name pattern 2
+  -t TREENAME                Name of tree
+  -?, --help                 Give this help list
+      --usage                Give a short usage message
+```
+
+shows how to use the script. The meaning of the arguments to the options is:
+
+* TREE: Name of the ROOT tree (Default: TREE=="utr") in all of the output files.
+* PATTERN1 and 2: Two strings that identify the set of files to be merged. See also the example below. (Default: PATTERN1=="utr", PATTERN2==".root")
+* OUTPUTFILE: Name of the output file that contains the histograms. (Default: OUTPUTFILENAME=="hist.root")
+* MULTIPLICITY: Determines how many events should be accumulated before adding information to the histogram. This can be used, for example, to simulate higher multiplicity events in a detector: Imagine two photons with energies of 511 keV hit a detector and deposit all their energy. However, the two events cannot be distinguished by the detector due to pileup, so a single event with an energy of 1022 will be added to the spectrum. Similarly, Geant4 simulates events by event. In order to simulate pileup of n events, set MULTIPLICITY==n. (Default: MULTIPLICITY==1)
+* BIN: Number of the histogram bin that should be printed to the screen while executing `getHistogram`. This option was introduced because often, one is only interested in the content of a special bin in the histograms (for example the full-energy peak). If the histograms are defined such that bin `3000` contains the events with an energy deposition between `2.9995 MeV` and `3.0005 MeV` and so on, so there is an easy correspondence between bin number and energy. (Default: BIN==-1)
 
 **A short example:**
 The typical output of two different simulations on 2 threads each are the files
 ```
+$ ls
 master.root
 utr0_t0.root
 utr0_t1.root
@@ -572,43 +594,38 @@ utr1_t0.root
 utr1_t1.root
 ```
 (The `master.root` file may be there but it contains no data. It is just an artifact of the multithreaded mode.) 
-Assuming you would like to merge both threads of `utr0` and get a common histogram, you execute
+Assuming you would like to merge both threads of `utr0` and write the accumulated histogram to `hist.root`, you execute
 ```bash
-$ ./getHistogram utr utr0 .root utr0.root
+$ ./getHistogram -t utr -p utr0 -q .root -o hist.root
 ```
-This will create an output file called `utr0.root` with the desired histogram.
+This will create an output file called `hist.root` with the desired histogram.
 If, instead, you wanted to merge *all* ROOT files, do
 ```bash
-$ ./getHistogram utr utr .root utr0.root
+$ ./getHistogram -t utr -p utr -q .root -o hist.root
 ```
 In this simple example, already the first pattern uniquely identifies the files you want to merge. However, imagine there was a file `utr0.txt` in the same directory, then the second pattern could be used to exclude this.
-The user has to hard-code the desired histograms in `OutputProcessing/GetHistogram.cpp`, i.e. edit the lines
+
+Yet another possibility is that you would like to merge both threads of `utr0` into one histogram, and both threads of `utr1` into another one. The shell script `loopGetHistogram.sh` can be used for this task. Executing
+```bash
+$ ./loopGetHistogram 0 1 utr utr
 ```
-	// Create histogram
-	TH1* h1 = new TH1F("h1", "Energy Deposition in ZeroDegree", 10000, 0., 10.);
+would do just what is described above, creating the output files `utr0.root` and `utr1.root`.
 
-	// Fill histogram from TBranch in TChain with user-defined conditions
-	Double_t Edep, Volume, Particle;
+The user has to hard-code the desired histograms in `OutputProcessing/GetHistogram.cpp`, i.e. edit the lines from
 
-	utr.SetBranchAddress("edep", &Edep);
-	utr.SetBranchAddress("particle", &Particle);
-	utr.SetBranchAddress("volume", &Volume);
-
-	for(int i = 0; i < utr.GetEntries(); i++){
-		utr.GetEntry(i);
-
-		if(Edep > 0. && Volume == 5 && Particle == 22){
-			h1->Fill(Edep);
-		}
-	}
-
-	// Write histogram to a new TFile
-	TFile *of = new TFile(outputfilename, "RECREATE");
-
-	h1->Write();
+```bash
+//
+//      START OF USER-DEFINED OUTPUT
+//
 ```
-The sample code above creates a histogram (0 to 10 MeV, 10^4 bins) of all energy depositions by photons (Particle ==22) in volume 5 (the number of the volume is set in `DetectorConstruction` where the detector volumes are defined, see also [2.2 Sensitive Detectors](#sensitivedetectors)).
-The shell script `loopGetHistogram.sh` shows how to loop the script over a large number of files.
+and
+```bash
+//
+//      END OF USER-DEFINED OUTPUT
+//
+```
+
+The standard `getHistogram` script that is included in this repository creates histograms (0 to 10 MeV, 10^4 bins) for the energy deposition by photons in the volumes with numbers 1 to 9 (about setting the number of a sensitive volume, see [2.2 Sensitive Detectors](#sensitivedetectors)). Setting a higher multiplicity means that the energy deposition of several simulated events is summed up.
 
 ### 5.3 histogramToTxt (executable)
 A direct follow-up to `getHistogram`, `HistogramToTxt.cpp` takes a ROOT file that contains **only** 1D histograms (*TH1* objects) and converts each histogram to a single text file. The script is used as follows:

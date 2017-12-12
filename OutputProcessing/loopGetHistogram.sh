@@ -15,6 +15,6 @@ fi
 
 for i in `seq $1 $2`
 do
-    echo ./getHistogram $3 $4"$i"_ .root $4"$i".root
-    #./getHistogram $3 $4"$i"_ .root $4"$i".root
+    echo ./getHistogram -t $3 -p $4"$i"_ -q .root -o $4"$i".root
+    ./getHistogram -t $3 -p $4"$i"_ -q .root -o $4"$i".root
 done
