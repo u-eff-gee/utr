@@ -253,6 +253,70 @@ void Materials::ConstructMaterials() {
 	target_Se = new G4Material(name = "target_Se", Se_Density, ncomponents = 1);
 	target_Se->AddElement(enriched_Se, natoms = 1);
 
+	/*************************************************/
+	// Enriched Nd target from 2016 NRF experiment
+	/*************************************************/
+
+	G4Isotope *Nd74 = new G4Isotope(name = "74Nd", z = 34, a = 74);
+	G4Isotope *Nd76 = new G4Isotope(name = "76Nd", z = 34, a = 76);
+	G4Isotope *Nd77 = new G4Isotope(name = "77Nd", z = 34, a = 77);
+	G4Isotope *Nd78 = new G4Isotope(name = "78Nd", z = 34, a = 78);
+	G4Isotope *Nd80 = new G4Isotope(name = "80Nd", z = 34, a = 80);
+	G4Isotope *Nd82 = new G4Isotope(name = "82Nd", z = 34, a = 82);
+	;
+
+	G4Element *enriched_Nd =
+	    new G4Element(name = "enriched Nd", symbol = "Nd", ncomponents = 6);
+
+	enriched_Nd->AddIsotope(Nd74, abundance = 0.01 * perCent);
+	enriched_Nd->AddIsotope(Nd76, abundance = 0.01 * perCent);
+	enriched_Nd->AddIsotope(Nd77, abundance = 0.01 * perCent);
+	enriched_Nd->AddIsotope(Nd78, abundance = 0.02 * perCent);
+	enriched_Nd->AddIsotope(Nd80, abundance = 0.02 * perCent);
+	enriched_Nd->AddIsotope(Nd82, abundance = 99.93 * perCent);
+
+	G4double Nd_Mass = 1.99845 * g;
+	G4double TargetContainer_Inner_Radius = 10. * mm;
+	G4double TargetContainer_Inner_Length = 4. * mm; // Estimated
+
+	G4double Nd_Density = Nd_Mass / (2. * PI * TargetContainer_Inner_Length *
+	                                 TargetContainer_Inner_Radius);
+
+	target_Nd = new G4Material(name = "target_Nd", Nd_Density, ncomponents = 1);
+	target_Nd->AddElement(enriched_Nd, natoms = 1);
+
+	/*************************************************/
+	// Enriched Sm target from 2016 NRF experiment
+	/*************************************************/
+
+	G4Isotope *Sm74 = new G4Isotope(name = "74Sm", z = 34, a = 74);
+	G4Isotope *Sm76 = new G4Isotope(name = "76Sm", z = 34, a = 76);
+	G4Isotope *Sm77 = new G4Isotope(name = "77Sm", z = 34, a = 77);
+	G4Isotope *Sm78 = new G4Isotope(name = "78Sm", z = 34, a = 78);
+	G4Isotope *Sm80 = new G4Isotope(name = "80Sm", z = 34, a = 80);
+	G4Isotope *Sm82 = new G4Isotope(name = "82Sm", z = 34, a = 82);
+	;
+
+	G4Element *enriched_Sm =
+	    new G4Element(name = "enriched Sm", symbol = "Sm", ncomponents = 6);
+
+	enriched_Sm->AddIsotope(Sm74, abundance = 0.01 * perCent);
+	enriched_Sm->AddIsotope(Sm76, abundance = 0.01 * perCent);
+	enriched_Sm->AddIsotope(Sm77, abundance = 0.01 * perCent);
+	enriched_Sm->AddIsotope(Sm78, abundance = 0.02 * perCent);
+	enriched_Sm->AddIsotope(Sm80, abundance = 0.02 * perCent);
+	enriched_Sm->AddIsotope(Sm82, abundance = 99.93 * perCent);
+
+	G4double Sm_Mass = 1.99845 * g;
+	G4double TargetContainer_Inner_Radius = 10. * mm;
+	G4double TargetContainer_Inner_Length = 4. * mm; // Estimated
+
+	G4double Sm_Density = Sm_Mass / (2. * PI * TargetContainer_Inner_Length *
+	                                 TargetContainer_Inner_Radius);
+
+	target_Sm = new G4Material(name = "target_Sm", Sm_Density, ncomponents = 1);
+	target_Sm->AddElement(enriched_Sm, natoms = 1);
+
 	/************************************************************/
 	// Enriched Sn target from 2016 NRF experiment (preliminary)
 	/************************************************************/
