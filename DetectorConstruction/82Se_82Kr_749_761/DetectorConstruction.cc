@@ -1912,10 +1912,8 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	LaBr4_Wrapping_Logical->SetVisAttributes(new G4VisAttributes(grey));
 
-	LaBr4_rt = LaBr4_
-
-	               rt +
-	           LaBr4_Wrapping_Length * 0.5 - LaBr4_Instance->Get_Length() * 0.5;
+	LaBr4_rt = LaBr4_rt + LaBr4_Wrapping_Length * 0.5 -
+	           LaBr4_Instance->Get_Length() * 0.5;
 	new G4PVPlacement(
 	    rotateLaBr4,
 	    G4ThreeVector(LaBr4_rt * sin(LaBr4_theta) * cos(LaBr4_phi),

@@ -1343,7 +1343,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	    G4ThreeVector(HPGe4_rt * sin(HPGe4_theta) * cos(HPGe4_phi),
 	                  HPGe4_rt * sin(HPGe4_theta) * sin(HPGe4_phi) + HPGe4_dy,
 	                  HPGe4_rt * cos(HPGe4_theta) + HPGe4_dz),
-	    HPGe4_Logical, "LaBr", world_log, false, 0);
+	    HPGe4_Logical, "HPGe4", world_log, false, 0);
 
 	// HPGe4 Wrapping
 

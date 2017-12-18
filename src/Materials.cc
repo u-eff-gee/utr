@@ -230,7 +230,7 @@ void Materials::ConstructMaterials() {
 	G4Isotope *Se77 = new G4Isotope(name = "77Se", z = 34, a = 77);
 	G4Isotope *Se78 = new G4Isotope(name = "78Se", z = 34, a = 78);
 	G4Isotope *Se80 = new G4Isotope(name = "80Se", z = 34, a = 80);
-	G4Isotope *Se82 = new G4Isotope(name = "82Se", z = 34, a = 83);
+	G4Isotope *Se82 = new G4Isotope(name = "82Se", z = 34, a = 82);
 	;
 
 	G4Element *enriched_Se =
