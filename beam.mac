@@ -6,9 +6,15 @@
 /gps/pos/radius 9.525 mm
 /gps/pos/centre 0. 0. -4000. mm
 /gps/direction 0. 0. 1.
+/gps/polarization 1. 0. 0.
 
 /gps/ene/type Mono
 /gps/ene/mono 7. MeV
+# Using an energy distribution from a file
+#/gps/ene/type Arb
+#/gps/hist/type energy
+#/gps/hist/file HISTOGRAMFILE
+#/gps/hist/inter Lin
 
 /run/printProgress 10000
 /run/beamOn 10
