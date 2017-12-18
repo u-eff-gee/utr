@@ -24,6 +24,8 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4PhysicalConstants.hh"
 #include "G4SystemOfUnits.hh"
 
+#include "DetectorConstruction.hh" //For definition of inch
+
 #define PI 3.141592
 
 Materials::Materials() { ConstructMaterials(); }
@@ -247,75 +249,85 @@ void Materials::ConstructMaterials() {
 	G4double TargetContainer_Inner_Radius = 10. * mm;
 	G4double TargetContainer_Inner_Length = 4. * mm; // Estimated
 
-	G4double Se_Density = Se_Mass / (2. * PI * TargetContainer_Inner_Length *
-	                                 TargetContainer_Inner_Radius);
+	G4double Se_Density = Se_Mass / (PI * pow(TargetContainer_Inner_Radius, 2) *
+	                                 TargetContainer_Inner_Length);
 
 	target_Se = new G4Material(name = "target_Se", Se_Density, ncomponents = 1);
 	target_Se->AddElement(enriched_Se, natoms = 1);
 
 	/*************************************************/
-	// Enriched Nd target from 2016 NRF experiment
+	// Enriched 150Nd target from 2016 NRF experiment
 	/*************************************************/
 
-	G4Isotope *Nd74 = new G4Isotope(name = "74Nd", z = 34, a = 74);
-	G4Isotope *Nd76 = new G4Isotope(name = "76Nd", z = 34, a = 76);
-	G4Isotope *Nd77 = new G4Isotope(name = "77Nd", z = 34, a = 77);
-	G4Isotope *Nd78 = new G4Isotope(name = "78Nd", z = 34, a = 78);
-	G4Isotope *Nd80 = new G4Isotope(name = "80Nd", z = 34, a = 80);
-	G4Isotope *Nd82 = new G4Isotope(name = "82Nd", z = 34, a = 82);
-	;
+	G4Isotope *Nd142 = new G4Isotope(name = "142Nd", z = 60, a = 142);
+	G4Isotope *Nd143 = new G4Isotope(name = "143Nd", z = 60, a = 143);
+	G4Isotope *Nd144 = new G4Isotope(name = "144Nd", z = 60, a = 144);
+	G4Isotope *Nd145 = new G4Isotope(name = "145Nd", z = 60, a = 145);
+	G4Isotope *Nd146 = new G4Isotope(name = "146Nd", z = 60, a = 146);
+	G4Isotope *Nd148 = new G4Isotope(name = "148Nd", z = 60, a = 148);
+	G4Isotope *Nd150 = new G4Isotope(name = "150Nd", z = 60, a = 150);
 
-	G4Element *enriched_Nd =
-	    new G4Element(name = "enriched Nd", symbol = "Nd", ncomponents = 6);
+	G4Element *enriched_Nd150 =
+	    new G4Element(name = "enriched Nd150", symbol = "Nd-150e", ncomponents = 7);
 
-	enriched_Nd->AddIsotope(Nd74, abundance = 0.01 * perCent);
-	enriched_Nd->AddIsotope(Nd76, abundance = 0.01 * perCent);
-	enriched_Nd->AddIsotope(Nd77, abundance = 0.01 * perCent);
-	enriched_Nd->AddIsotope(Nd78, abundance = 0.02 * perCent);
-	enriched_Nd->AddIsotope(Nd80, abundance = 0.02 * perCent);
-	enriched_Nd->AddIsotope(Nd82, abundance = 99.93 * perCent);
+	enriched_Nd150->AddIsotope(Nd142, abundance = 1.26 * perCent);
+	enriched_Nd150->AddIsotope(Nd143, abundance = 0.82 * perCent);
+	enriched_Nd150->AddIsotope(Nd144, abundance = 1.34 * perCent);
+	enriched_Nd150->AddIsotope(Nd145, abundance = 0.74 * perCent);
+	enriched_Nd150->AddIsotope(Nd146, abundance = 1.31 * perCent);
+	enriched_Nd150->AddIsotope(Nd148, abundance = 0.94 * perCent);
+	enriched_Nd150->AddIsotope(Nd150, abundance = 93.59 * perCent);
 
-	G4double Nd_Mass = 1.99845 * g;
-	G4double TargetContainer_Inner_Radius = 10. * mm;
-	G4double TargetContainer_Inner_Length = 4. * mm; // Estimated
+	G4double Nd150_Mass = 11582.8 * mg;
 
-	G4double Nd_Density = Nd_Mass / (2. * PI * TargetContainer_Inner_Length *
-	                                 TargetContainer_Inner_Radius);
+	G4double Nd150_Container_OuterHeight = 7.5 * mm; // According to Oak Rich
+	G4double Nd150_Container_InnerHeight = Nd150_Container_OuterHeight - 1. * mm; // Estimated
+	G4double Nd150_Container_OuterRadius = 0.5 * inch; // According to Oak Rich
+	G4double Nd150_Container_InnerRadius = Nd150_Container_OuterRadius - 1. * mm; // Estimated
 
-	target_Nd = new G4Material(name = "target_Nd", Nd_Density, ncomponents = 1);
-	target_Nd->AddElement(enriched_Nd, natoms = 1);
+	G4double Nd150_Density = Nd150_Mass / (PI * pow(Nd150_Container_InnerRadius,2) *
+	                                 Nd150_Container_InnerHeight);
+
+	target_Nd150 = new G4Material(name = "target_Nd150", Nd150_Density, ncomponents = 2);
+	target_Nd150->AddElement(enriched_Nd150, natoms = 2); //Nd(2)O(3) according to Oak Rich
+	target_Nd150->AddElement(nat_O, natoms = 3);
 
 	/*************************************************/
-	// Enriched Sm target from 2016 NRF experiment
+	// Enriched 152Sm target from 2016 NRF experiment
 	/*************************************************/
 
-	G4Isotope *Sm74 = new G4Isotope(name = "74Sm", z = 34, a = 74);
-	G4Isotope *Sm76 = new G4Isotope(name = "76Sm", z = 34, a = 76);
-	G4Isotope *Sm77 = new G4Isotope(name = "77Sm", z = 34, a = 77);
-	G4Isotope *Sm78 = new G4Isotope(name = "78Sm", z = 34, a = 78);
-	G4Isotope *Sm80 = new G4Isotope(name = "80Sm", z = 34, a = 80);
-	G4Isotope *Sm82 = new G4Isotope(name = "82Sm", z = 34, a = 82);
-	;
+	G4Isotope *Sm144 = new G4Isotope(name = "144Sm", z = 62, a = 144);
+	G4Isotope *Sm147 = new G4Isotope(name = "147Sm", z = 62, a = 147);
+	G4Isotope *Sm148 = new G4Isotope(name = "148Sm", z = 62, a = 148);
+	G4Isotope *Sm149 = new G4Isotope(name = "149Sm", z = 62, a = 149);
+	G4Isotope *Sm150 = new G4Isotope(name = "150Sm", z = 62, a = 150);
+    G4Isotope *Sm152 = new G4Isotope(name = "152Sm", z = 62, a = 152);
+    G4Isotope *Sm154 = new G4Isotope(name = "154Sm", z = 62, a = 154);
 
-	G4Element *enriched_Sm =
-	    new G4Element(name = "enriched Sm", symbol = "Sm", ncomponents = 6);
+	G4Element *enriched_Sm152 =
+	    new G4Element(name = "enriched Sm152", symbol = "Sm-152e", ncomponents = 7);
+  //TODO: There is currently no data sheet for the target (Have to request it at some point from Isoflex with Ref: Certificate of Analysis No.62-02-152-3090).
+  //      Only the share of the isotope of interest (152Sm) was written on the flask (96.10%)
+  //      So I just assumed that the remaining natural occuring isotopes of Sm are contained in the target weighted with their respective natural abbundance taken from https://www.isotopes.gov/catalog/product.php?element=Samarium
+	enriched_Sm152->AddIsotope(Sm144, abundance = 3.90 * 3.09  / (3.09+14.97+11.24+13.83+7.44+22.71) * perCent); 
+	enriched_Sm152->AddIsotope(Sm147, abundance = 3.90 * 14.97 / (3.09+14.97+11.24+13.83+7.44+22.71) * perCent);
+	enriched_Sm152->AddIsotope(Sm148, abundance = 3.90 * 11.24 / (3.09+14.97+11.24+13.83+7.44+22.71) * perCent);
+	enriched_Sm152->AddIsotope(Sm149, abundance = 3.90 * 13.83 / (3.09+14.97+11.24+13.83+7.44+22.71) * perCent);
+	enriched_Sm152->AddIsotope(Sm150, abundance = 3.90 * 7.44  / (3.09+14.97+11.24+13.83+7.44+22.71) * perCent);
+    enriched_Sm152->AddIsotope(Sm152, abundance = 96.10 * perCent);
+    enriched_Sm152->AddIsotope(Sm154, abundance = 3.90 * 22.71 / (3.09+14.97+11.24+13.83+7.44+22.71) * perCent);
 
-	enriched_Sm->AddIsotope(Sm74, abundance = 0.01 * perCent);
-	enriched_Sm->AddIsotope(Sm76, abundance = 0.01 * perCent);
-	enriched_Sm->AddIsotope(Sm77, abundance = 0.01 * perCent);
-	enriched_Sm->AddIsotope(Sm78, abundance = 0.02 * perCent);
-	enriched_Sm->AddIsotope(Sm80, abundance = 0.02 * perCent);
-	enriched_Sm->AddIsotope(Sm82, abundance = 99.93 * perCent);
+	G4double Sm152_Mass = 1.61397 * g;
+	G4double Sm152_TargetContainer_Inner_Radius = 10. * mm;
+	G4double Sm152_TargetContainer_Inner_Length = 4. * mm; // Estimated
 
-	G4double Sm_Mass = 1.99845 * g;
-	G4double TargetContainer_Inner_Radius = 10. * mm;
-	G4double TargetContainer_Inner_Length = 4. * mm; // Estimated
+    // Sm152_Density also just estimated (through the height in the target container) as a material in powder form has some arbitary density which is impossible to look up
+	G4double Sm152_Density = Sm152_Mass / (PI * pow(Sm152_TargetContainer_Inner_Radius,2) *
+	                                 Sm152_TargetContainer_Inner_Length); 
 
-	G4double Sm_Density = Sm_Mass / (2. * PI * TargetContainer_Inner_Length *
-	                                 TargetContainer_Inner_Radius);
-
-	target_Sm = new G4Material(name = "target_Sm", Sm_Density, ncomponents = 1);
-	target_Sm->AddElement(enriched_Sm, natoms = 1);
+	target_Sm152 = new G4Material(name = "target_Sm152", Sm152_Density, ncomponents = 2);
+	target_Sm152->AddElement(enriched_Sm152, natoms = 2); //Assumed Sm(2)O(3) as the oxide
+	target_Sm152->AddElement(nat_O, natoms = 3);
 
 	/************************************************************/
 	// Enriched Sn target from 2016 NRF experiment (preliminary)
@@ -334,7 +346,7 @@ void Materials::ConstructMaterials() {
 	G4double Sn_Length = 3. * mm;  // Estimated;
 	G4double Sn_Radius = 10. * mm; // Estimated;
 
-	G4double Sn_Density = Sn_Mass / (2. * PI * Sn_Length * Sn_Radius);
+	G4double Sn_Density = Sn_Mass / (PI * pow(Sn_Radius,2) * Sn_Length);
 
 	target_Sn = new G4Material(name = "target_Sn", Sn_Density, ncomponents = 1);
 
