@@ -37,7 +37,8 @@ class ActionInitialization : public G4VUserActionInitialization {
 	virtual void BuildForMaster() const;
 	virtual void Build() const;
 
-	void setOutputDir(string output){ outputdir = output; };
+	void setOutputDir(string output) { outputdir = output; };
+
   private:
 	string outputdir;
 };

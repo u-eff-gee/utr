@@ -68,16 +68,18 @@ void AngularDistributionGenerator::GeneratePrimaries(G4Event *anEvent) {
 
 	G4int position_success = 0;
 
-	for(unsigned int j = 0; j < source_PV_names.size(); ++j){
+	for (unsigned int j = 0; j < source_PV_names.size(); ++j) {
 		if (!checked_position_generator) {
 
 			position_success = 0;
 
-			G4cout << "============================================================"
-				  "============"
+			G4cout << "========================================================"
+			          "===="
+			          "============"
 			       << G4endl;
 			G4cout << "Checking Monte-Carlo position generator with "
-			       << MAX_TRIES_POSITION << " 3D points for volume " << source_PV_names[j] << " ..." << G4endl;
+			       << MAX_TRIES_POSITION << " 3D points for volume "
+			       << source_PV_names[j] << " ..." << G4endl;
 
 			for (int i = 0; i < MAX_TRIES_POSITION; i++) {
 				random_x = (G4UniformRand() - 0.5) * range_x + source_x;
@@ -85,8 +87,8 @@ void AngularDistributionGenerator::GeneratePrimaries(G4Event *anEvent) {
 				random_z = (G4UniformRand() - 0.5) * range_z + source_z;
 
 				pv = navi->LocateGlobalPointAndSetup(
-					     G4ThreeVector(random_x, random_y, random_z))
-					 ->GetName();
+				             G4ThreeVector(random_x, random_y, random_z))
+				         ->GetName();
 
 				if (pv == source_PV_names[j]) {
 					position_success++;
@@ -94,19 +96,20 @@ void AngularDistributionGenerator::GeneratePrimaries(G4Event *anEvent) {
 			}
 
 			p = (double)position_success / MAX_TRIES_POSITION;
-			pnot = (double) 1. - p;
+			pnot = (double)1. - p;
 
 			G4cout << "Check finished. Of " << MAX_TRIES_POSITION
 			       << " random 3D points, " << position_success
-			       << " were inside volume " << source_PV_names[j] << " ( " <<  p / perCent << " % )" << G4endl;
+			       << " were inside volume " << source_PV_names[j] << " ( "
+			       << p / perCent << " % )" << G4endl;
 			G4cout << "Probability of failure:\tpow( " << pnot << ", "
 			       << MAX_TRIES_POSITION
 			       << " ) = " << pow(pnot, MAX_TRIES_POSITION) / perCent << " %"
 			       << G4endl;
-			G4cout << "============================================================"
-				  "============"
+			G4cout << "========================================================"
+			          "===="
+			          "============"
 			       << G4endl << G4endl;
-
 		}
 	}
 	checked_position_generator = true;
@@ -165,7 +168,7 @@ void AngularDistributionGenerator::GeneratePrimaries(G4Event *anEvent) {
 		             G4ThreeVector(random_x, random_y, random_z))
 		         ->GetName();
 
-		for(unsigned int j = 0; j < source_PV_names.size(); ++j){
+		for (unsigned int j = 0; j < source_PV_names.size(); ++j) {
 			if (pv == source_PV_names[j]) {
 				randomOrigin = G4ThreeVector(random_x, random_y, random_z);
 				particleGun->SetParticlePosition(randomOrigin);
@@ -174,7 +177,7 @@ void AngularDistributionGenerator::GeneratePrimaries(G4Event *anEvent) {
 			}
 		}
 
-		if(position_found){
+		if (position_found) {
 			break;
 		}
 	}
@@ -226,12 +229,14 @@ G4bool AngularDistributionGenerator::AngularDistribution(
 
 		// 0^+ -> 0^+ -> 0^+
 		// Isotropic distribution
-		if ((st[0] == 0. && st[1] == 0. && st[2] == 0.) || (st[0] == -0.1 && st[1] == -0.1 && st[2] == -0.1)) {
+		if ((st[0] == 0. && st[1] == 0. && st[2] == 0.) ||
+		    (st[0] == -0.1 && st[1] == -0.1 && st[2] == -0.1)) {
 			return true;
 		}
 
 		// 0^+ -> 1^+ -> 0^+ or 0^- -> 1^- -> 0^-
-		if ((st[0] == 0. && st[1] == 1. && st[2] == 0.) || (st[0] == -0.1 && st[1] == -1. && st[2] == -2.)) {
+		if ((st[0] == 0. && st[1] == 1. && st[2] == 0.) ||
+		    (st[0] == -0.1 && st[1] == -1. && st[2] == -2.)) {
 			if (rand_w <=
 			    0.75 * (1 + pow(cos(rand_theta), 2) +
 			            pow(sin(rand_theta), 2) * cos(2 * rand_phi))) {
@@ -241,7 +246,8 @@ G4bool AngularDistributionGenerator::AngularDistribution(
 		}
 
 		// 0^+ -> 1^- -> 0^+ or 0^- -> 1^- -> 0^-
-		if ((st[0] == 0. && st[1] == -1. && st[2] == 0.) || (st[0] == -0.1 && st[1] == 1. && st[2] == -0.1)) {
+		if ((st[0] == 0. && st[1] == -1. && st[2] == 0.) ||
+		    (st[0] == -0.1 && st[1] == 1. && st[2] == -0.1)) {
 			if (rand_w <=
 			    0.75 * (1 + pow(cos(rand_theta), 2) -
 			            pow(sin(rand_theta), 2) * cos(2 * rand_phi))) {
@@ -251,7 +257,8 @@ G4bool AngularDistributionGenerator::AngularDistribution(
 		}
 
 		// 0^+ -> 2^+ -> 0^+ or 0^- -> 2^- -> 0^-
-		if ((st[0] == 0. && st[1] == 2. && st[2] == 0.) || (st[0] == -0.1 && st[1] == -2. && st[2] == -0.1)) {
+		if ((st[0] == 0. && st[1] == 2. && st[2] == 0.) ||
+		    (st[0] == -0.1 && st[1] == -2. && st[2] == -0.1)) {
 			if (rand_w <=
 			    0.625 * (2 + cos(2 * rand_phi) + cos(4 * rand_phi) -
 			             2 * cos(2 * rand_theta) * (1 + 2 * cos(2 * rand_phi)) *
@@ -262,24 +269,32 @@ G4bool AngularDistributionGenerator::AngularDistribution(
 		}
 
 		// 0^+ -> 2^+ -> 2^+ or 0^- -> 2^- -> 2^-
-		if ((st[0] == 0. && st[1] == 2. && st[2] == 2.) || (st[0] == -0.1 && st[1] == -2. && st[2] == -2.)) {
-			if (rand_w <= 1./((1. + mix[0]*mix[0])*(1. + mix[1]*mix[1]))*(
-			1.16071 + 
-			mix[1]*(0.298807 + mix[1]) + 
-			(0.0892857 + (2.09165 + 0.25*mix[1])*mix[1])*cos(2.*rand_phi) +
-			pow(cos(rand_theta), 2)*(-1.33929 + (-5.37853 - 0.375*mix[1])*mix[1] + (-1.51786 + (-9.56183 - 0.875*mix[1])*mix[1]*cos(2.*rand_phi))) +
-			pow(cos(rand_theta), 4)*(1.42857 + (7.47018 + 0.625*mix[1])*mix[1] + (1.42857 + (7.47018 + 0.625*mix[1])*mix[1])*cos(2.*rand_phi))
-		)  
+		if ((st[0] == 0. && st[1] == 2. && st[2] == 2.) ||
+		    (st[0] == -0.1 && st[1] == -2. && st[2] == -2.)) {
+			if (rand_w <=
+			    1. / ((1. + mix[0] * mix[0]) * (1. + mix[1] * mix[1])) *
+			        (1.16071 + mix[1] * (0.298807 + mix[1]) +
+			         (0.0892857 + (2.09165 + 0.25 * mix[1]) * mix[1]) *
+			             cos(2. * rand_phi) +
+			         pow(cos(rand_theta), 2) *
+			             (-1.33929 + (-5.37853 - 0.375 * mix[1]) * mix[1] +
+			              (-1.51786 +
+			               (-9.56183 - 0.875 * mix[1]) * mix[1] *
+			                   cos(2. * rand_phi))) +
+			         pow(cos(rand_theta), 4) *
+			             (1.42857 + (7.47018 + 0.625 * mix[1]) * mix[1] +
+			              (1.42857 + (7.47018 + 0.625 * mix[1]) * mix[1]) *
+			                  cos(2. * rand_phi)))
 
-			) {
+			        ) {
 				return true;
 			}
 			return false;
 		}
 
-
 		// 0^+ -> 1^- -> 2^+ or 0^- -> 1^+ -> 2^-
-		if ((st[0] == 0. && st[1] == -1. && st[2] == 2.) || (st[0] == -0.1 && st[1] == 1. && st[2] == -2.)) {
+		if ((st[0] == 0. && st[1] == -1. && st[2] == 2.) ||
+		    (st[0] == -0.1 && st[1] == 1. && st[2] == -2.)) {
 
 			if (rand_w <=
 			    1. / (1. + pow(mix[1], 2)) *
@@ -296,7 +311,8 @@ G4bool AngularDistributionGenerator::AngularDistribution(
 		}
 
 		// 0^+ -> 1^+ -> 2^+ or 0^- -> 1^- -> 2^-
-		if ((st[0] == 0. && st[1] == 1. && st[2] == 2.) || (st[0] == -0.1 && st[1] == -1. && st[2] == -2.)) {
+		if ((st[0] == 0. && st[1] == 1. && st[2] == 2.) ||
+		    (st[0] == -0.1 && st[1] == -1. && st[2] == -2.)) {
 
 			if (rand_w <=
 			    1. / (1. + pow(mix[1], 2)) *
@@ -313,7 +329,8 @@ G4bool AngularDistributionGenerator::AngularDistribution(
 		}
 
 		// 1.5^+ -> 2.5^- -> 1.5^+ or 1.5^- -> 2.5^+ -> 1.5^-
-		if ((st[0] == 1.5 && st[1] == -2.5 && st[2] == 1.5) || (st[0] == -1.5 && st[1] == 1.5 && st[2] == -1.5)) {
+		if ((st[0] == 1.5 && st[1] == -2.5 && st[2] == 1.5) ||
+		    (st[0] == -1.5 && st[1] == 1.5 && st[2] == -1.5)) {
 
 			if (rand_w <=
 			    1. / ((1. + pow(mix[0], 2)) * (1. + pow(mix[1], 2))) *
@@ -337,7 +354,8 @@ G4bool AngularDistributionGenerator::AngularDistribution(
 		}
 
 		// 1.5^+ -> 2.5^+ -> 1.5^+ or 1.5^- -> 2.5^- -> 1.5^-
-		if ((st[0] == 1.5 && st[1] == 2.5 && st[2] == 1.5) || (st[0] == -1.5 && st[1] == -2.5 && st[2] == -1.5)) {
+		if ((st[0] == 1.5 && st[1] == 2.5 && st[2] == 1.5) ||
+		    (st[0] == -1.5 && st[1] == -2.5 && st[2] == -1.5)) {
 
 			if (rand_w <=
 			    1. / ((1. + pow(mix[0], 2)) * (1. + pow(mix[1], 2))) *
@@ -359,68 +377,72 @@ G4bool AngularDistributionGenerator::AngularDistribution(
 			}
 			return false;
 		}
-		
+
 		// 1.5^+ -> 1.5^+ -> 1.5^+ or 1.5^- -> 1.5^- -> 1.5^-
-		if ((st[0] == 1.5 && st[1] == 1.5 && st[2] == 1.5) || (st[0] == -1.5 && st[1] == -1.5 && st[2] == -1.5)) {
+		if ((st[0] == 1.5 && st[1] == 1.5 && st[2] == 1.5) ||
+		    (st[0] == -1.5 && st[1] == -1.5 && st[2] == -1.5)) {
 
-			if (rand_w <= 1./(2.*(1. + mix[0]*mix[0])*(1. + mix[1]*mix[1]))*
-				(
-					2.*(1. + mix[0]*mix[0])*(1. + mix[1]*mix[1]) - 
-					(0.4 + 1.54919*mix[1])*
-					(
-						(0.4 - 1.54919*mix[0])*(1. - 3.*pow(cos(rand_theta), 2)) + 
-						(-1.2 - 1.54919*mix[0])*cos(2.*rand_phi)*pow(sin(rand_theta), 2)		
-					)
-				)
-			                  ) {
+			if (rand_w <=
+			    1. / (2. * (1. + mix[0] * mix[0]) * (1. + mix[1] * mix[1])) *
+			        (2. * (1. + mix[0] * mix[0]) * (1. + mix[1] * mix[1]) -
+			         (0.4 + 1.54919 * mix[1]) *
+			             ((0.4 - 1.54919 * mix[0]) *
+			                  (1. - 3. * pow(cos(rand_theta), 2)) +
+			              (-1.2 - 1.54919 * mix[0]) * cos(2. * rand_phi) *
+			                  pow(sin(rand_theta), 2)))) {
 				return true;
 			}
 			return false;
 		}
-		
+
 		// 1.5^+ -> 1.5^- -> 1.5^+ or 1.5^- -> 1.5^+ -> 1.5^-
-		if ((st[0] == 1.5 && st[1] == -1.5 && st[2] == 1.5) || (st[0] == -1.5 && st[1] == 1.5 && st[2] == -1.5)) {
+		if ((st[0] == 1.5 && st[1] == -1.5 && st[2] == 1.5) ||
+		    (st[0] == -1.5 && st[1] == 1.5 && st[2] == -1.5)) {
 
-			if (rand_w <= 1./(2.*(1. + mix[0]*mix[0])*(1. + mix[1]*mix[1]))*
-				(
-					2.*(1. + mix[0]*mix[0])*(1. + mix[1]*mix[1]) - 
-					(0.4 + 1.54919*mix[1])*
-					(
-						(0.4 - 1.54919*mix[0])*(1. - 3.*pow(cos(rand_theta), 2)) + 
-						(1.2 + 1.54919*mix[0])*cos(2.*rand_phi)*pow(sin(rand_theta), 2)		
-					)
-				)
-			                  ) {
+			if (rand_w <=
+			    1. / (2. * (1. + mix[0] * mix[0]) * (1. + mix[1] * mix[1])) *
+			        (2. * (1. + mix[0] * mix[0]) * (1. + mix[1] * mix[1]) -
+			         (0.4 + 1.54919 * mix[1]) *
+			             ((0.4 - 1.54919 * mix[0]) *
+			                  (1. - 3. * pow(cos(rand_theta), 2)) +
+			              (1.2 + 1.54919 * mix[0]) * cos(2. * rand_phi) *
+			                  pow(sin(rand_theta), 2)))) {
 				return true;
 			}
 			return false;
 		}
-		
+
 		// 0.5^- -> 1.5^- -> 0.5^- or 0.5^+ -> 1.5^+ -> 0.5^+
-		if ((st[0] == -0.5 && st[1] == -1.5 && st[2] == -0.5) || (st[0] == 0.5 && st[1] == 1.5 && st[2] == 0.5)) {
+		if ((st[0] == -0.5 && st[1] == -1.5 && st[2] == -0.5) ||
+		    (st[0] == 0.5 && st[1] == 1.5 && st[2] == 0.5)) {
 
-			if (rand_w <= 1./(2.*(1. + mix[0]*mix[0])*(1. + mix[1]*mix[1]))*
-				(
-					2.*(1. + mix[0]*mix[0])*(1. + mix[1]*mix[1]) - (0.5 + (-1.73205 - 0.5*mix[1])*mix[1])*(
-							(0.5 + (1.73205 - 0.5*mix[0])*mix[0])*(1.-3.*pow(cos(rand_theta), 2)) + 1.5*(-1. + mix[0]*(1.1547 + mix[0]))*(-1. + pow(cos(rand_theta),2))*cos(2.*rand_phi)
-					)
-				)
-			        ) {
+			if (rand_w <=
+			    1. / (2. * (1. + mix[0] * mix[0]) * (1. + mix[1] * mix[1])) *
+			        (2. * (1. + mix[0] * mix[0]) * (1. + mix[1] * mix[1]) -
+			         (0.5 + (-1.73205 - 0.5 * mix[1]) * mix[1]) *
+			             ((0.5 + (1.73205 - 0.5 * mix[0]) * mix[0]) *
+			                  (1. - 3. * pow(cos(rand_theta), 2)) +
+			              1.5 * (-1. + mix[0] * (1.1547 + mix[0])) *
+			                  (-1. + pow(cos(rand_theta), 2)) *
+			                  cos(2. * rand_phi)))) {
 				return true;
 			}
 			return false;
 		}
-		
-		// 0.5^- -> 1.5^+ -> 0.5^- or 0.5^+ -> 1.5^- -> 0.5^+
-		if ((st[0] == -0.5 && st[1] == 1.5 && st[2] == -0.5) || (st[0] == 0.5 && st[1] == -1.5 && st[2] == 0.5) ) {
 
-			if (rand_w <= 1./(2.*(1. + mix[0]*mix[0])*(1. + mix[1]*mix[1]))*
-				(
-					2.*(1. + mix[0]*mix[0])*(1. + mix[1]*mix[1]) - (0.5 + (-1.73205 - 0.5*mix[1])*mix[1])*(
-							(0.5 + (1.73205 - 0.5*mix[0])*mix[0])*(1.-3.*pow(cos(rand_theta), 2)) - 1.5*(-1. + mix[0]*(1.1547 + mix[0]))*(-1. + pow(cos(rand_theta),2))*cos(2.*rand_phi)
-					)
-				)
-			        ) {
+		// 0.5^- -> 1.5^+ -> 0.5^- or 0.5^+ -> 1.5^- -> 0.5^+
+		if ((st[0] == -0.5 && st[1] == 1.5 && st[2] == -0.5) ||
+		    (st[0] == 0.5 && st[1] == -1.5 && st[2] == 0.5)) {
+
+			if (rand_w <=
+			    1. / (2. * (1. + mix[0] * mix[0]) * (1. + mix[1] * mix[1])) *
+			        (2. * (1. + mix[0] * mix[0]) * (1. + mix[1] * mix[1]) -
+			         (0.5 + (-1.73205 - 0.5 * mix[1]) * mix[1]) *
+			             ((0.5 + (1.73205 - 0.5 * mix[0]) * mix[0]) *
+			                  (1. - 3. * pow(cos(rand_theta), 2)) -
+			              1.5 * (-1. + mix[0] * (1.1547 + mix[0])) *
+			                  (-1. + pow(cos(rand_theta), 2)) *
+			                  cos(2. * rand_phi)))) {
 				return true;
 			}
 			return false;

@@ -55,15 +55,15 @@ class AngularDistributionGenerator : public G4VUserPrimaryGeneratorAction {
 	void SetParticleDefinition(G4ParticleDefinition *pd) {
 		particleDefinition = pd;
 	};
-	void SetSourceX(G4double x){ source_x = x; };
-	void SetSourceY(G4double y){ source_y = y; };
-	void SetSourceZ(G4double z){ source_z = z; };
+	void SetSourceX(G4double x) { source_x = x; };
+	void SetSourceY(G4double y) { source_y = y; };
+	void SetSourceZ(G4double z) { source_z = z; };
 
-	void SetSourceDX(G4double dx){ range_x = dx; };
-	void SetSourceDY(G4double dy){ range_y = dy; };
-	void SetSourceDZ(G4double dz){ range_z = dz; };
+	void SetSourceDX(G4double dx) { range_x = dx; };
+	void SetSourceDY(G4double dy) { range_y = dy; };
+	void SetSourceDZ(G4double dz) { range_z = dz; };
 
-	void AddSourcePV(G4String physvol){ source_PV_names.push_back(physvol); };
+	void AddSourcePV(G4String physvol) { source_PV_names.push_back(physvol); };
 
 	G4ParticleDefinition *GetParticleDefinition() {
 		return particleDefinition;
@@ -75,15 +75,15 @@ class AngularDistributionGenerator : public G4VUserPrimaryGeneratorAction {
 	G4double GetState(int statenumber) { return states[statenumber]; };
 	G4double GetDelta(int deltanumber) { return mixing_ratios[deltanumber]; };
 
-	G4double GetSourceX(){ return source_x; };
-	G4double GetSourceY(){ return source_y; };
-	G4double GetSourceZ(){ return source_z; };
+	G4double GetSourceX() { return source_x; };
+	G4double GetSourceY() { return source_y; };
+	G4double GetSourceZ() { return source_z; };
 
-	G4double GetSourceDX(){ return range_x; };
-	G4double GetSourceDY(){ return range_y; };
-	G4double GetSourceDZ(){ return range_z; };
+	G4double GetSourceDX() { return range_x; };
+	G4double GetSourceDY() { return range_y; };
+	G4double GetSourceDZ() { return range_z; };
 
-	G4String GetSourcePV(int i){ return source_PV_names[i]; };
+	G4String GetSourcePV(int i) { return source_PV_names[i]; };
 
   private:
 	G4ParticleGun *particleGun;

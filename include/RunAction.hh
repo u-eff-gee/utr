@@ -53,7 +53,7 @@ class RunAction : public G4UserRunAction {
 	G4String GetOutputFlagName(unsigned int n);
 
 	static const int n_output_flags = 10;
-	void setOutputDir(string output){outputdir = output;};
+	void setOutputDir(string output) { outputdir = output; };
 
   private:
 	unsigned int output_flags[n_output_flags];

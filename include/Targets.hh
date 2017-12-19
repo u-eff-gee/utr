@@ -435,11 +435,11 @@ class Dy164_Target {
 		    new G4Tubs("Dy164_Target_Solid", 0. * mm, Radius, Length * 0.5,
 		               0. * deg, 360. * deg);
 
-		Dy164_Target_Logical =
-		    new G4LogicalVolume(Dy164_Target_Solid, air, "Dy164_Target_Logical");
+		Dy164_Target_Logical = new G4LogicalVolume(Dy164_Target_Solid, air,
+		                                           "Dy164_Target_Logical");
 		Dy164_Target_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());
 
-        // Dy164 metallic Target
+		// Dy164 metallic Target
 		G4Tubs *Dy164_Solid =
 		    new G4Tubs("Dy164_Solid", 0. * mm, Dy164_Target_Radius,
 		               Dy164_Target_Thickness * 0.5, 0. * deg, 360. * deg);
@@ -492,13 +492,14 @@ class Dy164_2O3_Target {
 		G4double Dy164_2O3_Target_Thickness = 0.31423 * mm;
 		G4double Dy164_2O3_Target_Radius = targetContainer->Get_Inner_Radius();
 
-        G4Tubs *Dy164_2O3_Target_Solid =
+		G4Tubs *Dy164_2O3_Target_Solid =
 		    new G4Tubs("Dy164_2O3_Target_Solid", 0. * mm, Radius, Length * 0.5,
 		               0. * deg, 360. * deg);
 
-        Dy164_2O3_Target_Logical =
-		    new G4LogicalVolume(Dy164_2O3_Target_Solid, air, "Dy164_2O3_Target_Logical");
-		Dy164_2O3_Target_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());
+		Dy164_2O3_Target_Logical = new G4LogicalVolume(
+		    Dy164_2O3_Target_Solid, air, "Dy164_2O3_Target_Logical");
+		Dy164_2O3_Target_Logical->SetVisAttributes(
+		    G4VisAttributes::GetInvisible());
 
 		// Target Container
 
@@ -506,7 +507,8 @@ class Dy164_2O3_Target {
 		    targetContainer->Get_Logical();
 
 		new G4PVPlacement(0, G4ThreeVector(), TargetContainer_Logical,
-		                  "TargetContainer", Dy164_2O3_Target_Logical, false, 0);
+		                  "TargetContainer", Dy164_2O3_Target_Logical, false,
+		                  0);
 
 		G4LogicalVolume *TargetContainerBottom_Logical =
 		    targetContainerBottom->Get_Logical();
@@ -530,8 +532,8 @@ class Dy164_2O3_Target {
 		    TargetContainerCap_Logical, "TargetContainerCap",
 		    Dy164_2O3_Target_Logical, false, 0);
 
-        // 164Dy2O3 Target Material
-        G4Tubs *Dy164_2O3_Solid =
+		// 164Dy2O3 Target Material
+		G4Tubs *Dy164_2O3_Solid =
 		    new G4Tubs("Dy164_2O3_Solid", 0. * mm, Dy164_2O3_Target_Radius,
 		               Dy164_2O3_Target_Thickness * 0.5, 0. * deg, 360. * deg);
 
@@ -544,7 +546,8 @@ class Dy164_2O3_Target {
 		    G4ThreeVector(0., 0., Length * 0.5 -
 		                              targetContainerBottom->Get_Thickness() -
 		                              Dy164_2O3_Target_Thickness * 0.5),
-		    Dy164_2O3_Logical, "Dy164_2O3_Target", Dy164_2O3_Target_Logical, false, 0);
+		    Dy164_2O3_Logical, "Dy164_2O3_Target", Dy164_2O3_Target_Logical,
+		    false, 0);
 
 		Target_Center = Length * 0.5 - targetContainerBottom->Get_Thickness() -
 		                Dy164_2O3_Target_Thickness * 0.5;
