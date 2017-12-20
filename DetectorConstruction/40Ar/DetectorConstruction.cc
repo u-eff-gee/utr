@@ -19,7 +19,8 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 // Geometry of 40Ar experiment in 2017 by group of W. Tornow
-// It is based on the geometry of Runs 726-743 of the 82Se - 82Kr experiment from fall/winter 2016. A lot of unnecessary things have been removed.
+// It is based on the geometry of Runs 726-743 of the 82Se - 82Kr experiment
+// from fall/winter 2016. A lot of unnecessary things have been removed.
 
 #include "DetectorConstruction.hh"
 
@@ -258,16 +259,16 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	// Tube
 
-	G4double BeamTube_Outer_Radius = 1. * inch;      // Measured
-	G4double BeamTube_Length_Upstream = 2600. * mm;  // Estimated
+	G4double BeamTube_Outer_Radius = 1. * inch;     // Measured
+	G4double BeamTube_Length_Upstream = 2600. * mm; // Estimated
 	G4double BeamTube_Length_Downstream =
-	    2526.5 * mm - 15. * inch;  //Measured, 2526.5*mm is ZeroDegree_Z. This
-//	                              // variable will be defined later, but for
-//	                              // readability reasons, used only the
-//	                              // numerical value here.
+	    2526.5 * mm - 15. * inch; // Measured, 2526.5*mm is ZeroDegree_Z. This
+	//	                              // variable will be defined later, but for
+	//	                              // readability reasons, used only the
+	//	                              // numerical value here.
 	G4double BeamTube_Length =
 	    BeamTube_Length_Upstream + BeamTube_Length_Downstream;
-	G4double BeamTube_Thickness = 3 * mm;  //Estimated
+	G4double BeamTube_Thickness = 3 * mm; // Estimated
 
 	/******************* Walls and shielding ************************/
 	//                   2
@@ -959,7 +960,8 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	Pb_45mm_23mm *pb45_23 = new Pb_45mm_23mm(world_log);
 	Pb_45mm_17_6mm *pb45_176 = new Pb_45mm_17_6mm(world_log);
 	Pb_45mm_2_3in *pbverythick = new Pb_45mm_2_3in(world_log);
-	Pb_45mm_almost_2_3in *pbalmostverythick = new Pb_45mm_almost_2_3in(world_log);
+	Pb_45mm_almost_2_3in *pbalmostverythick =
+	    new Pb_45mm_almost_2_3in(world_log);
 	Pb_45mm_1_4in *pbthick = new Pb_45mm_1_4in(world_log);
 	Pb_45mm_5_64in *pbmedium = new Pb_45mm_5_64in(world_log);
 	Pb_45mm_3_64in *pbthin = new Pb_45mm_3_64in(world_log);
@@ -1022,8 +1024,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	// HPGe1 Filters
 
-	HPGe1_rt = HPGe1_rt -
-	           HPGe1_Instance->Get_Length() * 0.5;
+	HPGe1_rt = HPGe1_rt - HPGe1_Instance->Get_Length() * 0.5;
 
 	HPGe1_rt -= fcr->Thickness * 0.5;
 	fcr->Put(HPGe1_rt * sin(HPGe1_theta) * cos(HPGe1_phi),
@@ -1048,9 +1049,9 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	HPGe1_rt -= pbverythick->Thickness * 0.5;
 	pbverythick->Put(HPGe1_rt * sin(HPGe1_theta) * cos(HPGe1_phi),
-	             HPGe1_rt * sin(HPGe1_theta) * sin(HPGe1_phi) + HPGe1_dy,
-	             HPGe1_rt * cos(HPGe1_theta) + HPGe1_dz, HPGe1_AngleX,
-	             HPGe1_AngleY, 0.);
+	                 HPGe1_rt * sin(HPGe1_theta) * sin(HPGe1_phi) + HPGe1_dy,
+	                 HPGe1_rt * cos(HPGe1_theta) + HPGe1_dz, HPGe1_AngleX,
+	                 HPGe1_AngleY, 0.);
 	HPGe1_rt -= pbverythick->Thickness * 0.5;
 
 	HPGe1_rt += fcw->FilterCase_Length * 0.5 - fcbo->FilterCaseBottom_Thickness;
@@ -1120,10 +1121,10 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	HPGe2_rt -= cuthin->Thickness * 0.5;
 
 	HPGe2_rt -= pbalmostverythick->Thickness * 0.5;
-	pbalmostverythick->Put(HPGe2_rt * sin(HPGe2_theta) * cos(HPGe2_phi),
-	              HPGe2_rt * sin(HPGe2_theta) * sin(HPGe2_phi) + HPGe2_dy,
-	              HPGe2_rt * cos(HPGe2_theta) + HPGe2_dz, HPGe2_AngleX,
-	              HPGe2_AngleY, 0.);
+	pbalmostverythick->Put(
+	    HPGe2_rt * sin(HPGe2_theta) * cos(HPGe2_phi),
+	    HPGe2_rt * sin(HPGe2_theta) * sin(HPGe2_phi) + HPGe2_dy,
+	    HPGe2_rt * cos(HPGe2_theta) + HPGe2_dz, HPGe2_AngleX, HPGe2_AngleY, 0.);
 	HPGe2_rt -= pbalmostverythick->Thickness * 0.5;
 
 	HPGe2_rt += fcw->FilterCase_Length * 0.5 - fcbo->FilterCaseBottom_Thickness;
@@ -1152,45 +1153,65 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	G4double Polarimeter_TUD_AngleX = 270 * deg;
 	G4double Polarimeter_TUD_AngleY = 180. * deg;
 
-	Polarimeter_TUD *Polarimeter_TUD_Instance = new Polarimeter_TUD("Polarimeter_TUD");
-	G4LogicalVolume *Polarimeter_TUD_TUD_Logical = Polarimeter_TUD_Instance->Get_Logical();
+	Polarimeter_TUD *Polarimeter_TUD_Instance =
+	    new Polarimeter_TUD("Polarimeter_TUD");
+	G4LogicalVolume *Polarimeter_TUD_TUD_Logical =
+	    Polarimeter_TUD_Instance->Get_Logical();
 
 	G4RotationMatrix *rotatePolarimeter_TUD = new G4RotationMatrix();
 	rotatePolarimeter_TUD->rotateX(Polarimeter_TUD_AngleX);
 	rotatePolarimeter_TUD->rotateY(Polarimeter_TUD_AngleY);
 
-	Polarimeter_TUD_rt = Polarimeter_TUD_rt + Polarimeter_TUD_Instance->Get_Length() * 0.5;
+	Polarimeter_TUD_rt =
+	    Polarimeter_TUD_rt + Polarimeter_TUD_Instance->Get_Length() * 0.5;
 
 	new G4PVPlacement(
 	    rotatePolarimeter_TUD,
-	    G4ThreeVector(Polarimeter_TUD_rt * sin(Polarimeter_TUD_theta) * cos(Polarimeter_TUD_phi),
-	                  Polarimeter_TUD_rt * sin(Polarimeter_TUD_theta) * sin(Polarimeter_TUD_phi) + Polarimeter_TUD_dy,
-	                  Polarimeter_TUD_rt * cos(Polarimeter_TUD_theta) + Polarimeter_TUD_dz),
+	    G4ThreeVector(Polarimeter_TUD_rt * sin(Polarimeter_TUD_theta) *
+	                      cos(Polarimeter_TUD_phi),
+	                  Polarimeter_TUD_rt * sin(Polarimeter_TUD_theta) *
+	                          sin(Polarimeter_TUD_phi) +
+	                      Polarimeter_TUD_dy,
+	                  Polarimeter_TUD_rt * cos(Polarimeter_TUD_theta) +
+	                      Polarimeter_TUD_dz),
 	    Polarimeter_TUD_TUD_Logical, "Polarimeter_TUD", world_log, false, 0);
 
 	// Polarimeter_TUD Filters
 
-	Polarimeter_TUD_rt = Polarimeter_TUD_rt - Polarimeter_TUD_Instance->Get_Length()*0.5;
+	Polarimeter_TUD_rt =
+	    Polarimeter_TUD_rt - Polarimeter_TUD_Instance->Get_Length() * 0.5;
 
 	Polarimeter_TUD_rt -= cuthin->Thickness * 0.5;
-	cuthin->Put(Polarimeter_TUD_rt * sin(Polarimeter_TUD_theta) * cos(Polarimeter_TUD_phi),
-	              Polarimeter_TUD_rt * sin(Polarimeter_TUD_theta) * sin(Polarimeter_TUD_phi) + Polarimeter_TUD_dy,
-	              Polarimeter_TUD_rt * cos(Polarimeter_TUD_theta) + Polarimeter_TUD_dz, Polarimeter_TUD_AngleX,
-	              Polarimeter_TUD_AngleY, 0.);
+	cuthin->Put(Polarimeter_TUD_rt * sin(Polarimeter_TUD_theta) *
+	                cos(Polarimeter_TUD_phi),
+	            Polarimeter_TUD_rt * sin(Polarimeter_TUD_theta) *
+	                    sin(Polarimeter_TUD_phi) +
+	                Polarimeter_TUD_dy,
+	            Polarimeter_TUD_rt * cos(Polarimeter_TUD_theta) +
+	                Polarimeter_TUD_dz,
+	            Polarimeter_TUD_AngleX, Polarimeter_TUD_AngleY, 0.);
 	Polarimeter_TUD_rt -= cuthin->Thickness * 0.5;
 
 	Polarimeter_TUD_rt -= cuthin->Thickness * 0.5;
-	cuthin->Put(Polarimeter_TUD_rt * sin(Polarimeter_TUD_theta) * cos(Polarimeter_TUD_phi),
-	              Polarimeter_TUD_rt * sin(Polarimeter_TUD_theta) * sin(Polarimeter_TUD_phi) + Polarimeter_TUD_dy,
-	              Polarimeter_TUD_rt * cos(Polarimeter_TUD_theta) + Polarimeter_TUD_dz, Polarimeter_TUD_AngleX,
-	              Polarimeter_TUD_AngleY, 0.);
+	cuthin->Put(Polarimeter_TUD_rt * sin(Polarimeter_TUD_theta) *
+	                cos(Polarimeter_TUD_phi),
+	            Polarimeter_TUD_rt * sin(Polarimeter_TUD_theta) *
+	                    sin(Polarimeter_TUD_phi) +
+	                Polarimeter_TUD_dy,
+	            Polarimeter_TUD_rt * cos(Polarimeter_TUD_theta) +
+	                Polarimeter_TUD_dz,
+	            Polarimeter_TUD_AngleX, Polarimeter_TUD_AngleY, 0.);
 	Polarimeter_TUD_rt -= cuthin->Thickness * 0.5;
 
 	Polarimeter_TUD_rt -= pb45_23->Thickness * 0.5;
-	pb45_23->Put(Polarimeter_TUD_rt * sin(Polarimeter_TUD_theta) * cos(Polarimeter_TUD_phi),
-	              Polarimeter_TUD_rt * sin(Polarimeter_TUD_theta) * sin(Polarimeter_TUD_phi) + Polarimeter_TUD_dy,
-	              Polarimeter_TUD_rt * cos(Polarimeter_TUD_theta) + Polarimeter_TUD_dz, Polarimeter_TUD_AngleX,
-	              Polarimeter_TUD_AngleY, 0.);
+	pb45_23->Put(Polarimeter_TUD_rt * sin(Polarimeter_TUD_theta) *
+	                 cos(Polarimeter_TUD_phi),
+	             Polarimeter_TUD_rt * sin(Polarimeter_TUD_theta) *
+	                     sin(Polarimeter_TUD_phi) +
+	                 Polarimeter_TUD_dy,
+	             Polarimeter_TUD_rt * cos(Polarimeter_TUD_theta) +
+	                 Polarimeter_TUD_dz,
+	             Polarimeter_TUD_AngleX, Polarimeter_TUD_AngleY, 0.);
 	Polarimeter_TUD_rt -= pb45_23->Thickness * 0.5;
 
 	/************************* HPGe4 ********************************/
@@ -1220,10 +1241,9 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	                  HPGe4_rt * cos(HPGe4_theta) + HPGe4_dz),
 	    HPGe4_Logical, "HPGe4", world_log, false, 0);
 
-
 	// HPGe4 Filters
 
-	HPGe4_rt = HPGe4_rt - HPGe4_Instance->Get_Length()*0.5;
+	HPGe4_rt = HPGe4_rt - HPGe4_Instance->Get_Length() * 0.5;
 
 	HPGe4_rt -= fcr->Thickness * 0.5;
 	fcr->Put(HPGe4_rt * sin(HPGe4_theta) * cos(HPGe4_phi),
@@ -1234,16 +1254,16 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	HPGe4_rt -= cuthin->Thickness * 0.5;
 	cuthin->Put(HPGe4_rt * sin(HPGe4_theta) * cos(HPGe4_phi),
-	              HPGe4_rt * sin(HPGe4_theta) * sin(HPGe4_phi) + HPGe4_dy,
-	              HPGe4_rt * cos(HPGe4_theta) + HPGe4_dz, HPGe4_AngleX,
-	              HPGe4_AngleY, 0.);
+	            HPGe4_rt * sin(HPGe4_theta) * sin(HPGe4_phi) + HPGe4_dy,
+	            HPGe4_rt * cos(HPGe4_theta) + HPGe4_dz, HPGe4_AngleX,
+	            HPGe4_AngleY, 0.);
 	HPGe4_rt -= cuthin->Thickness * 0.5;
 
 	HPGe4_rt -= cuthin->Thickness * 0.5;
 	cuthin->Put(HPGe4_rt * sin(HPGe4_theta) * cos(HPGe4_phi),
-	              HPGe4_rt * sin(HPGe4_theta) * sin(HPGe4_phi) + HPGe4_dy,
-	              HPGe4_rt * cos(HPGe4_theta) + HPGe4_dz, HPGe4_AngleX,
-	              HPGe4_AngleY, 0.);
+	            HPGe4_rt * sin(HPGe4_theta) * sin(HPGe4_phi) + HPGe4_dy,
+	            HPGe4_rt * cos(HPGe4_theta) + HPGe4_dz, HPGe4_AngleX,
+	            HPGe4_AngleY, 0.);
 	HPGe4_rt -= cuthin->Thickness * 0.5;
 
 	HPGe4_rt -= pb45_176->Thickness * 0.5;
@@ -1295,9 +1315,9 @@ void DetectorConstruction::ConstructSDandField() {
 	SetSensitiveDetector("Polarimeter_TUD", Polarimeter_TUDSD, true);
 
 	// ZeroDegree detector
-//	EnergyDepositionSD *ZeroDegreeSD =
-//	    new EnergyDepositionSD("ZeroDegree", "ZeroDegree");
-//	G4SDManager::GetSDMpointer()->AddNewDetector(ZeroDegreeSD);
-//	ZeroDegreeSD->SetDetectorID(5);
-//	SetSensitiveDetector("ZeroDegree", ZeroDegreeSD, true);
+	//	EnergyDepositionSD *ZeroDegreeSD =
+	//	    new EnergyDepositionSD("ZeroDegree", "ZeroDegree");
+	//	G4SDManager::GetSDMpointer()->AddNewDetector(ZeroDegreeSD);
+	//	ZeroDegreeSD->SetDetectorID(5);
+	//	SetSensitiveDetector("ZeroDegree", ZeroDegreeSD, true);
 }

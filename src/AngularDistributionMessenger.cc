@@ -216,25 +216,31 @@ void AngularDistributionMessenger::SetNewValue(G4UIcommand *command,
 		    2, delta34Cmd->GetNewDoubleValue(newValues));
 	}
 
-	if(command == sourceXCmd){
-		angularDistributionGenerator->SetSourceX(sourceXCmd->GetNewDoubleValue(newValues));
+	if (command == sourceXCmd) {
+		angularDistributionGenerator->SetSourceX(
+		    sourceXCmd->GetNewDoubleValue(newValues));
 	}
-	if(command == sourceYCmd){
-		angularDistributionGenerator->SetSourceY(sourceYCmd->GetNewDoubleValue(newValues));
+	if (command == sourceYCmd) {
+		angularDistributionGenerator->SetSourceY(
+		    sourceYCmd->GetNewDoubleValue(newValues));
 	}
-	if(command == sourceZCmd){
-		angularDistributionGenerator->SetSourceZ(sourceZCmd->GetNewDoubleValue(newValues));
+	if (command == sourceZCmd) {
+		angularDistributionGenerator->SetSourceZ(
+		    sourceZCmd->GetNewDoubleValue(newValues));
 	}
-	if(command == sourceDXCmd){
-		angularDistributionGenerator->SetSourceDX(sourceDXCmd->GetNewDoubleValue(newValues));
+	if (command == sourceDXCmd) {
+		angularDistributionGenerator->SetSourceDX(
+		    sourceDXCmd->GetNewDoubleValue(newValues));
 	}
-	if(command == sourceDYCmd){
-		angularDistributionGenerator->SetSourceDY(sourceDYCmd->GetNewDoubleValue(newValues));
+	if (command == sourceDYCmd) {
+		angularDistributionGenerator->SetSourceDY(
+		    sourceDYCmd->GetNewDoubleValue(newValues));
 	}
-	if(command == sourceDZCmd){
-		angularDistributionGenerator->SetSourceDZ(sourceDZCmd->GetNewDoubleValue(newValues));
+	if (command == sourceDZCmd) {
+		angularDistributionGenerator->SetSourceDZ(
+		    sourceDZCmd->GetNewDoubleValue(newValues));
 	}
-	if(command == sourcePVCmd){
+	if (command == sourcePVCmd) {
 		angularDistributionGenerator->AddSourcePV(newValues);
 	}
 }
@@ -292,23 +298,29 @@ G4String AngularDistributionMessenger::GetCurrentValue(G4UIcommand *command) {
 		return delta34Cmd->ConvertToString(
 		    angularDistributionGenerator->GetDelta(2));
 	}
-	if(command == sourceXCmd) {
-		return sourceXCmd->ConvertToString(angularDistributionGenerator->GetSourceX());
+	if (command == sourceXCmd) {
+		return sourceXCmd->ConvertToString(
+		    angularDistributionGenerator->GetSourceX());
 	}
-	if(command == sourceYCmd) {
-		return sourceYCmd->ConvertToString(angularDistributionGenerator->GetSourceY());
+	if (command == sourceYCmd) {
+		return sourceYCmd->ConvertToString(
+		    angularDistributionGenerator->GetSourceY());
 	}
-	if(command == sourceZCmd) {
-		return sourceZCmd->ConvertToString(angularDistributionGenerator->GetSourceZ());
+	if (command == sourceZCmd) {
+		return sourceZCmd->ConvertToString(
+		    angularDistributionGenerator->GetSourceZ());
 	}
-	if(command == sourceDXCmd) {
-		return sourceDXCmd->ConvertToString(angularDistributionGenerator->GetSourceDX());
+	if (command == sourceDXCmd) {
+		return sourceDXCmd->ConvertToString(
+		    angularDistributionGenerator->GetSourceDX());
 	}
-	if(command == sourceDYCmd) {
-		return sourceDYCmd->ConvertToString(angularDistributionGenerator->GetSourceDY());
+	if (command == sourceDYCmd) {
+		return sourceDYCmd->ConvertToString(
+		    angularDistributionGenerator->GetSourceDY());
 	}
-	if(command == sourceDZCmd) {
-		return sourceDZCmd->ConvertToString(angularDistributionGenerator->GetSourceDZ());
+	if (command == sourceDZCmd) {
+		return sourceDZCmd->ConvertToString(
+		    angularDistributionGenerator->GetSourceDZ());
 	}
 
 	return cv;

@@ -33,6 +33,7 @@ class Physics : public G4VUserPhysicsList {
 	void ConstructProcess();
 	void ConstructEMPenelope();
 	void ConstructEMLivermore();
+	void ConstructEMLivermorePolarized();
 	void ConstructHPNeutron();
 	void ConstructChargedParticle();
 };

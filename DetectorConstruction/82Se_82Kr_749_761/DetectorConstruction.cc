@@ -1049,7 +1049,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	// Wrapping at g3 target position
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), LeadWrap_Logical,
+	new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), DoubleLeadWrap_Logical,
 	                  "LeadWrap", world_log, false, 0);
 
 	// Wrapping at second target position

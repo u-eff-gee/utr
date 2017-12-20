@@ -40,8 +40,8 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state) {
 switch (key) {
 	case ARGP_KEY_ARG: break;
 	case 't': args->tree = arg; break;
-	case 'a': args->p1 = arg; break;
-	case 'b': args->p2 = arg; break;
+	case 'p': args->p1 = arg; break;
+	case 'q': args->p2 = arg; break;
 	case 'o': args->outputfilename = arg; break;
 	case 'e': args->bin = atoi(arg); break;
 	case 'm': args->multiplicity = (unsigned int) atoi(arg); break;

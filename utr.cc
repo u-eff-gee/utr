@@ -33,10 +33,10 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4UImanager.hh"
 
 #include <argp.h>
-#include <time.h>
+#include <dirent.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <dirent.h>
+#include <time.h>
 
 using namespace std;
 
@@ -66,7 +66,7 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state) {
 		arguments->macrofile = arg;
 		break;
 	case 'o':
-		arguments->outputdir= arg;
+		arguments->outputdir = arg;
 		break;
 	default:
 		return ARGP_ERR_UNKNOWN;
@@ -105,19 +105,21 @@ int main(int argc, char *argv[]) {
 	G4cout << "ActionInitialization..." << G4endl;
 	ActionInitialization *actionInitialization = new ActionInitialization();
 	// Pass output directory to RunAction via ActionInitialization
-	if(arguments.outputdir){
+	if (arguments.outputdir) {
 		actionInitialization->setOutputDir(arguments.outputdir);
-		if(!opendir(arguments.outputdir)){
+		if (!opendir(arguments.outputdir)) {
 			stringstream command;
-			const int dir_err = mkdir(arguments.outputdir, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-			if(dir_err == -1){
+			const int dir_err = mkdir(arguments.outputdir,
+			                          S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+			if (dir_err == -1) {
 				G4cout << "Error creating output directory" << G4endl;
 				abort();
 			}
-		} else{
-			G4cout << __FILE__ << ": main(): Warning: Output directory '" << arguments.outputdir << "' already exists" << G4endl;
+		} else {
+			G4cout << __FILE__ << ": main(): Warning: Output directory '"
+			       << arguments.outputdir << "' already exists" << G4endl;
 		}
-	} else{
+	} else {
 		actionInitialization->setOutputDir(".");
 	}
 	runManager->SetUserInitialization(actionInitialization);
@@ -139,9 +141,9 @@ int main(int argc, char *argv[]) {
 		G4UIExecutive *ui = 0;
 
 #ifdef G4UI_USE_QT
-                ui = new G4UIExecutive(argc, argv, "qt");
+		ui = new G4UIExecutive(argc, argv, "qt");
 #else
-                ui = new G4UIExecutive(argc, argv);
+		ui = new G4UIExecutive(argc, argv);
 #endif
 
 		UImanager->ApplyCommand("/control/execute init_vis.mac");

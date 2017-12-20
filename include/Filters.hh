@@ -236,7 +236,7 @@ class Pb_45mm_17_6mm {
 
 	Pb_45mm_17_6mm(G4LogicalVolume *world_Logical) {
 		Thickness = 17.6 * mm; // Measured
-		Radius = 45. * mm;       // Measured
+		Radius = 45. * mm;     // Measured
 
 		G4Colour grey(.5, .5, .5);
 
@@ -289,7 +289,7 @@ class Pb_45mm_23mm {
 
 	Pb_45mm_23mm(G4LogicalVolume *world_Logical) {
 		Thickness = 23. * mm; // Measured
-		Radius = 45. * mm;       // Measured
+		Radius = 45. * mm;    // Measured
 
 		G4Colour grey(.5, .5, .5);
 
@@ -342,7 +342,7 @@ class Pb_45mm_almost_2_3in {
 
 	Pb_45mm_almost_2_3in(G4LogicalVolume *world_Logical) {
 		Thickness = 16.5 * mm; // Measured
-		Radius = 45. * mm;       // Measured
+		Radius = 45. * mm;     // Measured
 
 		G4Colour grey(.5, .5, .5);
 
@@ -352,12 +352,14 @@ class Pb_45mm_almost_2_3in {
 		World_Logical = world_Logical;
 
 		G4Tubs *Pb_45mm_almost_2_3in_Solid =
-		    new G4Tubs("Pb_45mm_almost_2_3in_Solid", 0., Radius, Thickness * 0.5,
-		               0. * deg, 360. * deg);
-		Pb_45mm_almost_2_3in_Logical = new G4LogicalVolume(
-		    Pb_45mm_almost_2_3in_Solid, Pb, "Pb_45mm_almost_2_3in_Logical", 0, 0, 0);
+		    new G4Tubs("Pb_45mm_almost_2_3in_Solid", 0., Radius,
+		               Thickness * 0.5, 0. * deg, 360. * deg);
+		Pb_45mm_almost_2_3in_Logical =
+		    new G4LogicalVolume(Pb_45mm_almost_2_3in_Solid, Pb,
+		                        "Pb_45mm_almost_2_3in_Logical", 0, 0, 0);
 
-		Pb_45mm_almost_2_3in_Logical->SetVisAttributes(new G4VisAttributes(grey));
+		Pb_45mm_almost_2_3in_Logical->SetVisAttributes(
+		    new G4VisAttributes(grey));
 
 		rot = new G4RotationMatrix();
 	}
@@ -365,8 +367,9 @@ class Pb_45mm_almost_2_3in {
 	~Pb_45mm_almost_2_3in(){};
 
 	void Put(G4double x, G4double y, G4double z) {
-		new G4PVPlacement(0, G4ThreeVector(x, y, z), Pb_45mm_almost_2_3in_Logical,
-		                  "Pb_45mm_almost_2_3in", World_Logical, false, 0);
+		new G4PVPlacement(0, G4ThreeVector(x, y, z),
+		                  Pb_45mm_almost_2_3in_Logical, "Pb_45mm_almost_2_3in",
+		                  World_Logical, false, 0);
 	}
 
 	void Put(G4double x, G4double y, G4double z, G4double angle_x,
@@ -377,8 +380,9 @@ class Pb_45mm_almost_2_3in {
 		rot->rotateY(angle_y);
 		rot->rotateZ(angle_z);
 
-		new G4PVPlacement(rot, G4ThreeVector(x, y, z), Pb_45mm_almost_2_3in_Logical,
-		                  "Pb_45mm_almost_2_3in", World_Logical, false, 0);
+		new G4PVPlacement(rot, G4ThreeVector(x, y, z),
+		                  Pb_45mm_almost_2_3in_Logical, "Pb_45mm_almost_2_3in",
+		                  World_Logical, false, 0);
 	}
 };
 
@@ -395,7 +399,7 @@ class Pb_45mm_2_3in {
 
 	Pb_45mm_2_3in(G4LogicalVolume *world_Logical) {
 		Thickness = 0.666 * inch; // Measured
-		Radius = 45. * mm;       // Measured
+		Radius = 45. * mm;        // Measured
 
 		G4Colour grey(.5, .5, .5);
 
@@ -766,7 +770,7 @@ class Pb_50mm_36_64in {
 
 	Pb_50mm_36_64in(G4LogicalVolume *world_Logical) {
 		Thickness = 36. / 64. * inch; // Measured
-		Radius = 50. * mm;           // Measured
+		Radius = 50. * mm;            // Measured
 
 		G4Colour grey(.5, .5, .5);
 
@@ -818,8 +822,8 @@ class Pb_50mm_36_64in_1mm {
 	G4double Radius;
 
 	Pb_50mm_36_64in_1mm(G4LogicalVolume *world_Logical) {
-		Thickness = 36. / 64. * inch-1 *mm; // Measured
-		Radius = 50. * mm;           // Measured
+		Thickness = 36. / 64. * inch - 1 * mm; // Measured
+		Radius = 50. * mm;                     // Measured
 
 		G4Colour grey(.5, .5, .5);
 
@@ -831,10 +835,12 @@ class Pb_50mm_36_64in_1mm {
 		G4Tubs *Pb_50mm_36_64in_1mm_Solid =
 		    new G4Tubs("Pb_50mm_36_64in_1mm_Solid", 0., Radius, Thickness * 0.5,
 		               0. * deg, 360. * deg);
-		Pb_50mm_36_64in_1mm_Logical = new G4LogicalVolume(
-		    Pb_50mm_36_64in_1mm_Solid, Pb, "Pb_50mm_36_64in_1mm_Logical", 0, 0, 0);
+		Pb_50mm_36_64in_1mm_Logical =
+		    new G4LogicalVolume(Pb_50mm_36_64in_1mm_Solid, Pb,
+		                        "Pb_50mm_36_64in_1mm_Logical", 0, 0, 0);
 
-		Pb_50mm_36_64in_1mm_Logical->SetVisAttributes(new G4VisAttributes(grey));
+		Pb_50mm_36_64in_1mm_Logical->SetVisAttributes(
+		    new G4VisAttributes(grey));
 
 		rot = new G4RotationMatrix();
 	}
@@ -842,8 +848,9 @@ class Pb_50mm_36_64in_1mm {
 	~Pb_50mm_36_64in_1mm(){};
 
 	void Put(G4double x, G4double y, G4double z) {
-		new G4PVPlacement(0, G4ThreeVector(x, y, z), Pb_50mm_36_64in_1mm_Logical,
-		                  "Pb_50mm_36_64in_1mm", World_Logical, false, 0);
+		new G4PVPlacement(0, G4ThreeVector(x, y, z),
+		                  Pb_50mm_36_64in_1mm_Logical, "Pb_50mm_36_64in_1mm",
+		                  World_Logical, false, 0);
 	}
 
 	void Put(G4double x, G4double y, G4double z, G4double angle_x,
@@ -854,11 +861,11 @@ class Pb_50mm_36_64in_1mm {
 		rot->rotateY(angle_y);
 		rot->rotateZ(angle_z);
 
-		new G4PVPlacement(rot, G4ThreeVector(x, y, z), Pb_50mm_36_64in_1mm_Logical,
-		                  "Pb_50mm_36_64in_1mm", World_Logical, false, 0);
+		new G4PVPlacement(rot, G4ThreeVector(x, y, z),
+		                  Pb_50mm_36_64in_1mm_Logical, "Pb_50mm_36_64in_1mm",
+		                  World_Logical, false, 0);
 	}
 };
-
 
 class Pb_70mm_5mm {
   private:

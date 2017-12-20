@@ -52,9 +52,49 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "G4UAtomicDeexcitation.hh"
 
+#include "G4CascadeInterface.hh"
+
 // Other charged particle processes
 #include "G4hIonisation.hh"
 #include "G4hMultipleScattering.hh"
+
+// Penelope model
+#include "G4PenelopeComptonModel.hh"
+#include "G4PenelopeGammaConversionModel.hh"
+#include "G4PenelopePhotoElectricModel.hh"
+#include "G4PenelopeRayleighModel.hh"
+
+#include "G4PenelopeBremsstrahlungModel.hh"
+#include "G4PenelopeIonisationModel.hh"
+
+// Livermore model
+#include "G4LivermoreComptonModel.hh"
+#include "G4LivermoreGammaConversionModel.hh"
+#include "G4LivermorePhotoElectricModel.hh"
+#include "G4LivermoreRayleighModel.hh"
+
+#include "G4LivermoreBremsstrahlungModel.hh"
+#include "G4LivermoreIonisationModel.hh"
+
+// Livermore polarized model
+#include "G4LivermorePolarizedComptonModel.hh"
+#include "G4LivermorePolarizedGammaConversionModel.hh"
+#include "G4LivermorePolarizedPhotoElectricModel.hh"
+#include "G4LivermorePolarizedRayleighModel.hh"
+
+// High-precision neutron physics
+#include "G4HadronElasticProcess.hh"
+#include "G4NeutronHPElasticData.hh"
+#include "G4NeutronHPThermalScatteringData.hh"
+
+#include "G4NeutronHPInelasticData.hh"
+#include "G4NeutronInelasticProcess.hh"
+
+#include "G4HadronCaptureProcess.hh"
+#include "G4NeutronHPCapture.hh"
+#include "G4NeutronHPCaptureData.hh"
+#include "G4NeutronHPElastic.hh"
+#include "G4NeutronHPInelastic.hh"
 
 Physics::Physics() : G4VUserPhysicsList() { SetVerboseLevel(1); }
 
@@ -82,24 +122,14 @@ void Physics::ConstructParticle() {
 
 void Physics::ConstructProcess() {
 	AddTransportation();
-	ConstructEMPenelope();
+	// ConstructEMPenelope();
 	// ConstructEMLivermore();
+	ConstructEMLivermorePolarized();
 	// ConstructHPNeutron();
 	// ConstructChargedParticle();
 }
 
-// Penelope Models
-#include "G4PenelopeComptonModel.hh"
-#include "G4PenelopeGammaConversionModel.hh"
-#include "G4PenelopePhotoElectricModel.hh"
-#include "G4PenelopeRayleighModel.hh"
-
-#include "G4PenelopeBremsstrahlungModel.hh"
-#include "G4PenelopeIonisationModel.hh"
-
-#include "G4UAtomicDeexcitation.hh"
-
-#include "G4CascadeInterface.hh"
+// Penelope model
 
 void Physics::ConstructEMPenelope() {
 	G4PhysicsListHelper *ph = G4PhysicsListHelper::GetPhysicsListHelper();
@@ -167,16 +197,7 @@ void Physics::ConstructEMPenelope() {
 	de->SetFluo(true);
 }
 
-// Livermore Models
-#include "G4LivermoreComptonModel.hh"
-#include "G4LivermoreGammaConversionModel.hh"
-#include "G4LivermorePhotoElectricModel.hh"
-#include "G4LivermoreRayleighModel.hh"
-
-#include "G4LivermoreBremsstrahlungModel.hh"
-#include "G4LivermoreIonisationModel.hh"
-
-#include "G4CascadeInterface.hh"
+// Livermore model
 
 void Physics::ConstructEMLivermore() {
 	G4PhysicsListHelper *ph = G4PhysicsListHelper::GetPhysicsListHelper();
@@ -246,18 +267,75 @@ void Physics::ConstructEMLivermore() {
 	de->SetFluo(true);
 }
 
-#include "G4HadronElasticProcess.hh"
-#include "G4NeutronHPElasticData.hh"
-#include "G4NeutronHPThermalScatteringData.hh"
+// Polarized Livermore model
 
-#include "G4NeutronHPInelasticData.hh"
-#include "G4NeutronInelasticProcess.hh"
+void Physics::ConstructEMLivermorePolarized() {
+	G4PhysicsListHelper *ph = G4PhysicsListHelper::GetPhysicsListHelper();
+	G4ProcessManager *procMan = G4Gamma::Gamma()->GetProcessManager();
 
-#include "G4HadronCaptureProcess.hh"
-#include "G4NeutronHPCapture.hh"
-#include "G4NeutronHPCaptureData.hh"
-#include "G4NeutronHPElastic.hh"
-#include "G4NeutronHPInelastic.hh"
+	G4ParticleTableIterator<G4String, G4ParticleDefinition *>
+	    *particleIterator = G4ParticleTable::GetParticleTable()->GetIterator();
+	particleIterator->reset();
+	while ((*particleIterator)()) {
+		G4ParticleDefinition *particle = particleIterator->value();
+		G4String particleName = particle->GetParticleName();
+
+		if (particleName == "gamma") {
+
+			G4ComptonScattering *cs = new G4ComptonScattering;
+			cs->SetEmModel(new G4LivermorePolarizedComptonModel(), 1);
+			ph->RegisterProcess(cs, particle);
+
+			G4GammaConversion *gc = new G4GammaConversion;
+			gc->SetEmModel(new G4LivermorePolarizedGammaConversionModel);
+			ph->RegisterProcess(gc, particle);
+
+			G4PhotoElectricEffect *pe = new G4PhotoElectricEffect;
+			pe->SetEmModel(new G4LivermorePolarizedPhotoElectricModel);
+			ph->RegisterProcess(pe, particle);
+
+			G4RayleighScattering *rs = new G4RayleighScattering;
+			rs->SetEmModel(new G4LivermorePolarizedRayleighModel);
+			ph->RegisterProcess(rs, particle);
+
+			G4PhotoNuclearProcess *thePhotoNuclearProcess =
+			    new G4PhotoNuclearProcess();
+			G4CascadeInterface *theLEModel = new G4CascadeInterface;
+			thePhotoNuclearProcess->RegisterMe(theLEModel);
+			procMan->AddDiscreteProcess(thePhotoNuclearProcess);
+		}
+
+		else if (particleName == "e-") {
+			ph->RegisterProcess(new G4eMultipleScattering, particle);
+
+			G4eIonisation *ei = new G4eIonisation;
+			ei->SetEmModel(new G4LivermoreIonisationModel);
+			ph->RegisterProcess(ei, particle);
+
+			G4eBremsstrahlung *eb = new G4eBremsstrahlung;
+			eb->SetEmModel(new G4LivermoreBremsstrahlungModel);
+			ph->RegisterProcess(eb, particle);
+		} else if (particleName == "e+") {
+			ph->RegisterProcess(new G4eMultipleScattering, particle);
+
+			ph->RegisterProcess(new G4eplusAnnihilation, particle);
+
+			ph->RegisterProcess(new G4eIonisation(), particle);
+			// Livermore ionisation model not applicable to positrons
+			// G4eIonisation* poi = new G4eIonisation;
+			// poi->SetEmModel(new G4LivermoreIonisationModel);
+			// ph->RegisterProcess(poi, particle);
+
+			G4eBremsstrahlung *pb = new G4eBremsstrahlung;
+			pb->SetEmModel(new G4LivermoreBremsstrahlungModel);
+			ph->RegisterProcess(pb, particle);
+		}
+	}
+
+	G4VAtomDeexcitation *de = new G4UAtomicDeexcitation();
+	G4LossTableManager::Instance()->SetAtomDeexcitation(de);
+	de->SetFluo(true);
+}
 
 void Physics::ConstructHPNeutron() {
 	// Inspired by Example Hadr04
