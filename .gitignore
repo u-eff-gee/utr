@@ -11,6 +11,9 @@ getHistogram
 histogramToTxt
 rootToTxt
 
+# Scripts for output processing
+loop*.sh
+
 # Root files
 *.root
 
