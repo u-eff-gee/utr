@@ -260,9 +260,9 @@ G4bool AngularDistributionGenerator::AngularDistribution(
 		if ((st[0] == 0. && st[1] == 2. && st[2] == 0.) ||
 		    (st[0] == -0.1 && st[1] == -2. && st[2] == -0.1)) {
 			if (rand_w <=
-			    0.625 * (2 + cos(2 * rand_phi) + cos(4 * rand_phi) -
-			             2 * cos(2 * rand_theta) * (1 + 2 * cos(2 * rand_phi)) *
-			                 pow(sin(rand_phi), 2))) {
+			    0.625 * (2. + cos(2. * rand_theta) + cos(4. * rand_theta) -
+			             2. * cos(2. * rand_phi) * (1. + 2. * cos(2. * rand_theta)) *
+			                 pow(sin(rand_theta), 2.))) {
 				return true;
 			}
 			return false;
