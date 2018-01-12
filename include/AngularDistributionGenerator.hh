@@ -29,6 +29,11 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <vector>
 
+// 360 deg / 2*pi
+#define RAD_TO_DEG 57.29577951308232
+// Maximum value for the sampled w
+#define MAX_W 3.
+
 using std::vector;
 
 class AngularDistributionMessenger;
