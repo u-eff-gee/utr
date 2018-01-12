@@ -1,0 +1,25 @@
+/run/initialize
+
+/ang/particle geantino 
+/ang/energy 3. MeV
+
+/ang/nstates 3
+/ang/state1 0.
+/ang/state2 1.
+/ang/state3 0.
+
+/ang/delta12 0.
+/ang/delta23 0.
+
+/ang/sourceX 0. mm
+/ang/sourceY 0. mm
+/ang/sourceZ 0. mm
+
+/ang/sourceDX 1. mm
+/ang/sourceDY 1. mm
+/ang/sourceDZ 1. mm
+
+/ang/sourcePV source
+
+/run/printProgress 100000
+/run/beamOn 1000000

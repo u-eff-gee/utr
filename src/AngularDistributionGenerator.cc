@@ -128,8 +128,8 @@ void AngularDistributionGenerator::GeneratePrimaries(G4Event *anEvent) {
 		       << MAX_TRIES_MOMENTUM << " 3D vectors ..." << G4endl;
 
 		for (int i = 0; i < MAX_TRIES_MOMENTUM; i++) {
-			random_theta = RAD_TO_DEG*acos(2.*G4UniformRand() - 1.);
-			random_phi = 360. * deg * G4UniformRand();
+			random_theta = acos(2.*G4UniformRand() - 1.);
+			random_phi = twopi*G4UniformRand();
 			random_w = G4UniformRand() * MAX_W;
 
 			if (AngularDistribution(random_theta, random_phi, random_w, states,
@@ -183,8 +183,8 @@ void AngularDistributionGenerator::GeneratePrimaries(G4Event *anEvent) {
 	}
 
 	for (int i = 0; i < MAX_TRIES_MOMENTUM; i++) {
-		random_theta = RAD_TO_DEG*acos(2.*G4UniformRand() - 1.);
-		random_phi = 360. * deg * G4UniformRand();
+		random_theta = acos(2.*G4UniformRand() - 1.);
+		random_phi = twopi*G4UniformRand();
 		random_w = G4UniformRand() * MAX_W;
 
 		if (AngularDistribution(random_theta, random_phi, random_w, states,

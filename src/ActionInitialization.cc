@@ -56,9 +56,9 @@ void ActionInitialization::Build() const {
 	output_flags[POSX] = 0;
 	output_flags[POSY] = 0;
 	output_flags[POSZ] = 0;
-	output_flags[MOMX] = 0;
-	output_flags[MOMY] = 0;
-	output_flags[MOMZ] = 0;
+	output_flags[MOMX] = 1;
+	output_flags[MOMY] = 1;
+	output_flags[MOMZ] = 1;
 	runAction->SetOutputFlags(output_flags);
 
 	G4cout << "================================================================"

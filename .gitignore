@@ -10,6 +10,7 @@ utr
 getHistogram
 histogramToTxt
 rootToTxt
+angdisttest
 
 # Scripts for output processing
 loop*.sh
