@@ -10,6 +10,8 @@
 #include <TFile.h>
 #include <TMath.h>
 
+#include "../include/AngularDistribution.hh"
+
 static char doc[] = "AngularDistributionGenerator_Test";
 static char args_doc[] = "Create histogram of momentum distribution in theta and phi";
 

@@ -29,6 +29,8 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <vector>
 
+#include "AngularDistribution.hh"
+
 #define CHECK_POSITION_GENERATOR 1
 #define CHECK_MOMENTUM_GENERATOR 1
 // Maximum value for the sampled w
@@ -44,9 +46,6 @@ class AngularDistributionGenerator : public G4VUserPrimaryGeneratorAction {
 	~AngularDistributionGenerator();
 
 	void GeneratePrimaries(G4Event *anEvent);
-	G4bool AngularDistribution(G4double rand_theta, G4double rand_phi,
-	                           G4double rand_w, G4double *states, G4int nstates,
-	                           G4double *mixing_ratios);
 
 	// Set- and Get- methods to use with the AngularDistributionMessenger
 
@@ -93,6 +92,7 @@ class AngularDistributionGenerator : public G4VUserPrimaryGeneratorAction {
   private:
 	G4ParticleGun *particleGun;
 	AngularDistributionMessenger *angDistMessenger;
+	AngularDistribution *angdist;
 
 	G4ParticleDefinition *particleDefinition;
 	vector<G4String> source_PV_names;
