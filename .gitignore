@@ -13,7 +13,7 @@ rootToTxt
 angdisttest
 
 # C++ objects
-OutputProcessing/AngularDistribution.o
+unit_test/AngularDistributionGenerator/AngularDistribution.o
 
 # Scripts for output processing
 loop*.sh

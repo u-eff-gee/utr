@@ -29,8 +29,12 @@ This is a [Geant4](https://geant4.web.cern.ch/) [[1]](#ref-g4_1) [[2]](#ref-g4_2
     
  4. [Usage and Visualization](#usage)
  5. [Output Processing](#outputprocessing)
- 6. [License](#license)
- 7. [References](#references)
+ 6. [Unit Tests](#unittests)
+ 
+    6.1 [AngularDistributionGenerator](#angulardistributiongenerator)
+    
+ 7. [License](#license)
+ 8. [References](#references)
 
 ## 1 Quick Start <a name="quickstart"></a>
 
@@ -266,10 +270,15 @@ The process of finding a starting point is depicted in 2 dimensions in the figur
 
 ![MC position generator](.media/MC_Position_Generator.png)
 
+The process of finding a starting vector is shown in one dimension (`W` is only dependent on `θ`) in in the figure below. First, a random value `random_θ` for `θ` with a uniform random distribution **on a sphere**. Note that this is not the same as a uniform distribution of values between 0 and π for θ. Then, a unform random number between 0 and an upper limit `W_max` is drawn. If the value `W_max` is lower than `W(random_θ)` (black points), then a particle will be emitted at that angle.
+
+![MC momentum generator](.media/MC_Momentum_Generator.png)
+
+
 Clearly, the algorithm works well if
 
-* the cuboid approximates the shape of the sources well
-* the angular distribution varies smoothly in the `(θ, φ)` plane
+* the cuboid approximates the shape of the sources well and wraps it tightly
+* the angular distribution varies smoothly in the `(θ, φ)` plane and W_max is very close to the actual maximum value of `W`
 
 The maximum number of randomly sampled points is hard-coded `AngularDistributionGenerator.cc` where it says:
 
@@ -278,7 +287,7 @@ MAX_TRIES_POSITION = 10000
 MAX_TRIES_MOMENTUM = 10000
 ```
 
-AngularDistributionGenerator can do a self-check before the actual simulation in which it creates `MAX_TRIES_XY` points and evaluates how many of the were valid. From this, the probability *p* of not hitting one of the source volumes / angular distribution can be estimated. An individual check is done for each source volume. If `p * N >~ 1`, where N is the number of particles to be simulated, the algorithm will very probably fail once in a while so try increasing `MAX_TRIES_XY`. A typical output of the self-check looks like:
+AngularDistributionGenerator can do a self-check before the actual simulation in which it creates `MAX_TRIES_XY` points and evaluates how many of the were valid. From this, the probability *p* of not hitting one of the source volumes / angular distribution can be estimated. An individual check is done for each source volume. If `p * N >~ 1`, where N is the number of particles to be simulated, the algorithm will very probably fail once in a while so try increasing `MAX_TRIES_XY`. A typical output of the self-check for the position generator looks like:
 
 ```
 G4WT0 > ========================================================================
@@ -287,6 +296,19 @@ G4WT0 > Check finished. Of 100 random 3D points, 82 were inside volume 'Se82_Tar
 G4WT0 > Probability of failure:	pow( 0.18, 100 ) = 3.36706e-73 %
 G4WT0 > ========================================================================
 ```
+The momentum generator contains one more piece of information. This is because the value of `W_max` that was introduced above has been arbitrarily set to 3 in `AngularDistributionGenerator.hh`, which should be a sensible choice for most angular distributions. However, it may be that `W(θ, φ) > 3` for some distribution. This can also be detected by the self-check with a Monte-Carlo method. For each of the MAX_TRIES_MOMENTUM tries, `utr` will also check whether the inequality `W_max <= W(random_θ, random_φ)` holds. If yes, this could be a hint that the value of `W_max` is too low and should be increased manually.
+The corresponding message would look like
+```
+G4WT0 > In 5624 out of 10000 cases (56.24 % ) 
+W(random_theta, random_phi) == MAX_W == 1 was valid. 
+This may mean that MAX_W is set too low and 
+the angular distribution is truncated.
+```
+If everything is okay, it will display
+```
+G4WT0 > MAX_W == 3 seems to be high enough.
+```
+However, using `W_max = 3` might still be inefficient, so it is good to know the minimum and maximum value of the angular distribution in advance. For debugging of the angular distribution, a unit test exists in the repository, which is especially recommended if one defines new angular distributions.
 
 To change parameters of the AngularDistributionGenerator, an AngularDistributionMessenger has been implemented that makes the following macro commands available:
 
@@ -646,7 +668,60 @@ HISTNAME_FILENAME.txt
 where HISTNAME is the name of the TH1 object and FILENAME the same as above.
 The shell script `loopHistogramToTxt.sh` shows how to loop the script over a large number of files.
 
-## 6 License <a name="license"></a>
+## 6 Unit Tests <a name="unittests"></a>
+
+## 6.1 AngularDistributionGenerator <a name="angulardistributiongenerator"></a>
+
+For testing the `AngularDistributionGenerator`, a dedicated geometry can be found in `/DetectorConstruction/AngularDistributionGenerator_Test/` and a macro file and output processing script are located in `/unit_tests/AngularDistributionGenerator/`. The test geometry consists of a very small spherical particle source surrounded by a large hollow sphere which acts as a **ParticleSD**. Geantino particles emitted by this source and detected by the hollow sphere should have the desired angular distribution. This test was originally implemented to test the built-in angular distributions which are manually coded from the output of a computer algebra program, and to get a feeling of how large the value of `W_max` has to be.
+
+In order to use the unit test, the following things have to be prepared:
+
+  1. Build the correct geometry by setting the build variable `DETECTOR_CONSTRUCTION` to `AngularDistributionGenerator_Test` (see [3.2 Compilation](#compilation)).
+  2. Ensure that the momentum vectors of the particles are written to a ROOT file by enabling the correct flags in `ActionInitialization.hh` (see [2.6 Output File Format](#outputfileformat))
+  3. Run a simulation with geantinos and the desired angular distribution. A sample macro is `/unit_tests/AngularDistributionGenerator/angdist_test.mac`
+  4. Compile the analysis script `AngularDistributionGenerator_Test.cpp` in the same directory by typing `make`. It can be executed with a number of simulation output files similar to `GetHistogram` (see [5. Output Processing](#outputprocessing)).
+
+When executed, the analysis script creates a file `hist.root` that contains a histogram in the `(θ, φ)` plane which shows the frequency of particles with a certain direction. This can already be visually compared to the shape of the continuous function that was used as an input. An example for a `0^+ -> 1^+ -> 0^+` cascade is shown below:
+
+![Output of AngDist unit test](.media/010_histogram.png)
+
+With the bad choice `W_max == 1`, the same analysis would result in the following histogram which is cleary different:
+
+![Output of AngDist unit test](.media/010_histogram_bad.png)
+
+In order to have a more quantitative analysis, the histogram can also be fit with the input distribution as it is implemented in `src/AngularDistribution.cc`. For this purpose, `AngularDistribution.hh` is already included in `AngularDistributionGenerator_Test.cpp`. 
+To select a certain distribution, hard code the identifiers and parameters in the source code of the script where it says
+```
+	//
+	//	START OF USER-DEFINED OUTPUT
+	//
+
+		nstates = 3;
+
+		states[0] = 0.;
+		states[1] = 1.;
+		states[2] = 0.;
+
+		mix[0] = 0.;
+		mix[1] = 0.;
+
+	//
+	//	END OF USER-DEFINED OUTPUT
+	//
+```
+and recompile afterwards. Running the script with the `-f` option (the only option that is different from `GetHistogram`) will fit the input distribution to the simulation output.
+Now, by looking at the fit
+
+![Output of AngDist unit test, fitted](.media/010_histogram_fit.png)
+
+and especially the fit residuals
+
+![Output of AngDist unit test, fit residuals](.media/010_histogram_fit_residuals.png)
+
+one can see clear systematic deviations from the input distribution which are a clear indication that `W_max == 1` is not a good choice for this distribution.
+
+
+## 7 License <a name="license"></a>
 
 Copyright (C) 2017
 
@@ -656,7 +731,7 @@ O. Papst
 
 This code is distributed under the terms of the GNU General Public License. See the COPYING file for more information.
 
-## 7 References <a name="references"></a>
+## 8 References <a name="references"></a>
 
 <a name="ref-g4_1">[1]</a> S. Agostinelli *et al.*, “GEANT4 - a simulation toolkit”, Nucl. Inst. Meth. A **506.3**, 250 (2003). [`doi:10.1016/S0168-9002(03)01368-8`](http://dx.doi.org/10.1016/S0168-9002(03)01368-8).  
 <a name="ref-g4_2">[2]</a> J. Allison *et al.*, “GEANT4 developments and applications”, IEEE Transactions on Nuclear Science, **53.1**, 270 (2006). [`doi:10.1109/TNS.2006.869826`](https://doi.org/10.1109/TNS.2006.869826).  
