@@ -31,9 +31,6 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "AngularDistributionGenerator.hh"
 #include "AngularDistributionMessenger.hh"
 
-#define CHECK_POSITION_GENERATOR 1
-#define CHECK_MOMENTUM_GENERATOR 1
-
 AngularDistributionGenerator::AngularDistributionGenerator()
     : G4VUserPrimaryGeneratorAction(), particleGun(0),
       checked_position_generator(false) {
@@ -61,6 +58,7 @@ void AngularDistributionGenerator::GeneratePrimaries(G4Event *anEvent) {
 
 	G4ThreeVector randomOrigin = G4ThreeVector(0., 0., 0.);
 	G4ThreeVector randomDirection = G4ThreeVector(0., 0., 1.);
+
 
 	G4double p, pnot;
 
@@ -91,7 +89,7 @@ void AngularDistributionGenerator::GeneratePrimaries(G4Event *anEvent) {
 				         ->GetName();
 
 				if (pv == source_PV_names[j]) {
-					position_success++;
+					++position_success;
 				}
 			}
 
@@ -117,6 +115,8 @@ void AngularDistributionGenerator::GeneratePrimaries(G4Event *anEvent) {
 #endif
 
 #ifdef CHECK_MOMENTUM_GENERATOR
+	unsigned int max_w = 0;
+	double p_max_w = 0.;
 
 	if (!checked_momentum_generator) {
 		G4int momentum_success = 0;
@@ -134,7 +134,12 @@ void AngularDistributionGenerator::GeneratePrimaries(G4Event *anEvent) {
 
 			if (AngularDistribution(random_theta, random_phi, random_w, states,
 			                        nstates, mixing_ratios)) {
-				momentum_success++;
+				++momentum_success;
+			}
+			if (AngularDistribution(random_theta, random_phi, MAX_W, states,
+						
+			                        nstates, mixing_ratios)) {
+				++max_w;
 			}
 		}
 
@@ -148,6 +153,13 @@ void AngularDistributionGenerator::GeneratePrimaries(G4Event *anEvent) {
 		       << MAX_TRIES_MOMENTUM
 		       << " ) = " << pow(pnot, MAX_TRIES_MOMENTUM) / perCent << " %"
 		       << G4endl;
+		if(max_w == 0){
+			G4cout << "MAX_W == " << MAX_W << " seems to be high enough." << G4endl;
+		} else{
+			p_max_w = (double) max_w/MAX_TRIES_MOMENTUM; 
+			G4cout << G4endl;
+			G4cout << "In " << max_w << " out of " << MAX_TRIES_MOMENTUM << " cases (" << p_max_w / perCent << " % ) W(random_theta, random_phi) == MAX_W == " << MAX_W << " was valid. This may mean that MAX_W is set too low and the angular distribution is truncated." << G4endl;
+		}
 		G4cout << "============================================================"
 		          "============"
 		       << G4endl << G4endl;

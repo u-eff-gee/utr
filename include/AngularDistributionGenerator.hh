@@ -29,6 +29,8 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <vector>
 
+#define CHECK_POSITION_GENERATOR 1
+#define CHECK_MOMENTUM_GENERATOR 1
 // Maximum value for the sampled w
 #define MAX_W 3.
 

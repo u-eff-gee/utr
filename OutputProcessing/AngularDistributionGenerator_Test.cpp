@@ -158,7 +158,18 @@ int main(int argc, char* argv[]){
 	TFile *of = new TFile(args.outputfilename, "RECREATE");
 
 	hist->Write();
-	//ang_dist->Write();
+	ang_dist->Write();
+
+	// Calculate residuals of fit
+	
+	TH2F *residuals= new TH2F("residuals", "Residuals of momentum distribution in (theta, phi)", nbins_theta, theta_low, theta_up, nbins_phi, phi_low, phi_up);
+
+	for(UInt_t th = 0; th < nbins_theta; ++th){
+		for(UInt_t ph = 0; ph < nbins_phi; ++ph){
+			// Calculate residuals --> TODO
+			residuals->SetBinContent(th, ph, abs(hist->GetBinContent(th, ph) - ang_dist->Eval(hist->GetBin)));
+		}
+	}
 
 	of->Close();
 

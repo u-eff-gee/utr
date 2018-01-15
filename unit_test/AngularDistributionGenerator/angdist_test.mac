@@ -1,7 +1,6 @@
 /run/initialize
 
 /ang/particle geantino 
-/ang/energy 3. MeV
 
 /ang/nstates 3
 /ang/state1 0.
