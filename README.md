@@ -307,7 +307,7 @@ To change parameters of the AngularDistributionGenerator, an AngularDistribution
 * `/ang/sourcePV VALUE`
     Enter the name of a physical volume that should act as a source. To add more physical volumes, call `/ang/sourcePV` multiple times with different arguments (about using multiple sources, see also the [caveat](#multiplesources) at the end of this section).
     
-According to the Geant4 conventions for the placement of volumes, the container volume's inside will be the interval [X - DX, X + DX], [Y - DY, Y + DY] and [Z - DZ, Z + DZ].
+The container volume's inside will be the interval [X - DX/2, X + DX/2], [Y - DY/2, Y + DY/2] and [Z - DZ/2, Z + DZ/2].
 
 The identifiers of the angular distribution are given to the simulation as an array of numbers `states  = {state1, state2, ...}` whose length `NSTATES` can to be specified by the user.
 For "real" NRF angular distributions, this array of numbers will be the spins of the excited states in a cascade, with the parity indicated by the sign of the numbers.
