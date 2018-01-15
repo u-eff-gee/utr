@@ -34,7 +34,8 @@ This is a [Geant4](https://geant4.web.cern.ch/) [[1]](#ref-g4_1) [[2]](#ref-g4_2
     6.1 [AngularDistributionGenerator](#angulardistributiongenerator)
     
  7. [License](#license)
- 8. [References](#references)
+ 8. [Acknowledgements](#acknowledgements)
+ 9. [References](#references)
 
 ## 1 Quick Start <a name="quickstart"></a>
 
@@ -731,7 +732,11 @@ O. Papst
 
 This code is distributed under the terms of the GNU General Public License. See the COPYING file for more information.
 
-## 8 References <a name="references"></a>
+## 8 Acknowledgements <a name="acknowledgements"></a>
+
+UG would like to acknowledge the untiring effort of user Jörn Kleemann in debugging the code and making `utr` better in general.
+
+## 9 References <a name="references"></a>
 
 <a name="ref-g4_1">[1]</a> S. Agostinelli *et al.*, “GEANT4 - a simulation toolkit”, Nucl. Inst. Meth. A **506.3**, 250 (2003). [`doi:10.1016/S0168-9002(03)01368-8`](http://dx.doi.org/10.1016/S0168-9002(03)01368-8).  
 <a name="ref-g4_2">[2]</a> J. Allison *et al.*, “GEANT4 developments and applications”, IEEE Transactions on Nuclear Science, **53.1**, 270 (2006). [`doi:10.1109/TNS.2006.869826`](https://doi.org/10.1109/TNS.2006.869826).  
