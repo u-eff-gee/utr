@@ -1,8 +1,8 @@
 CPP=g++
-CFLAGS=-Wall -Wconversion -Wsign-conversion -O3
+CFLAGS=-Wall -Wconversion -Wsign-conversion -O3 -I$(INCLUDE_DIR)
 ROOTFLAGS=`root-config --cflags --glibs`
 
-all: getHistogram histogramToTxt rootToTxt angdisttest
+all: getHistogram histogramToTxt rootToTxt
 
 getHistogram: GetHistogram.cpp
 	$(CPP) -o $@ $< $(CFLAGS) $(ROOTFLAGS)
@@ -18,20 +18,12 @@ rootToTxt: RootToTxt.cpp
 	$(CPP) -o $@ $< $(CFLAGS) $(ROOTFLAGS)
 	cp $@ ..
 
-angdisttest: AngularDistributionGenerator_Test.cpp
-	$(CPP) -o $@ $< $(CFLAGS) $(ROOTFLAGS)
-	cp $@ ..
-
 .PHONY: all clean
 
 clean:
 	rm getHistogram
 	rm ../getHistogram
-	rm loopGetHistogram
 	rm ../loopGetHistogram.sh
 	rm histogramToTxt
 	rm ../histogramToTxt
-	rm angdisttest
-	rm ../angdisttest
-	rm loopHistogramToTxt
 	rm ../loopHistogramToTxt.sh

@@ -12,6 +12,9 @@ histogramToTxt
 rootToTxt
 angdisttest
 
+# C++ objects
+OutputProcessing/AngularDistribution.o
+
 # Scripts for output processing
 loop*.sh
 

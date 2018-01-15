@@ -21,4 +21,4 @@
 /ang/sourcePV source
 
 /run/printProgress 100000
-/run/beamOn 10
+/run/beamOn 10000000
