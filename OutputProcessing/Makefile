@@ -27,3 +27,5 @@ clean:
 	rm histogramToTxt
 	rm ../histogramToTxt
 	rm ../loopHistogramToTxt.sh
+	rm rootToTxt
+	rm ../rootToTxt
