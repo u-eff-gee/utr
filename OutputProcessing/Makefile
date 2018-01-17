@@ -1,5 +1,5 @@
 CPP=g++
-CFLAGS=-Wall -Wconversion -Wsign-conversion -O3 -I$(INCLUDE_DIR)
+CFLAGS=-Wall -Wconversion -Wsign-conversion -O3
 ROOTFLAGS=`root-config --cflags --glibs`
 
 all: getHistogram histogramToTxt rootToTxt
