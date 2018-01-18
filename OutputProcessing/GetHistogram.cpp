@@ -19,8 +19,9 @@ struct arguments{
 
 	int bin;
 	unsigned int multiplicity;
+	bool verbose;
 	
-	arguments() : tree("utr"), p1("utr"), p2(".root"), outputfilename("hist.root"), bin(-1), multiplicity(1) {};
+	arguments() : tree("utr"), p1("utr"), p2(".root"), outputfilename("hist.root"), bin(-1), multiplicity(1), verbose(false) {};
 };
 
 static struct argp_option options[] = {
@@ -28,8 +29,9 @@ static struct argp_option options[] = {
 { 0, 'p', "PATTERN1", 0, "File name pattern 1" },
 { 0, 'q', "PATTERN2", 0, "File name pattern 2" },
 { 0, 'o', "OUTPUTFILENAME", 0, "Output file name" },
-{ 0, 'e', "BIN", 0, "Number of energy bin whose value should be displayed" },
+{ 0, 'b', "BIN", 0, "Number of energy bin whose value should be displayed" },
 { 0, 'm', "MULTIPLICITY", 0, "Particle multiplicity" },
+{ 0, 'v', 0, 0, "Verbose mode (does not silence -e option)" },
 { 0, 0, 0, 0, 0 }
 };
 
@@ -38,15 +40,16 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state) {
 	struct arguments *args = (struct arguments *) state->input;
 
 switch (key) {
-	case ARGP_KEY_ARG: break;
-	case 't': args->tree = arg; break;
-	case 'p': args->p1 = arg; break;
-	case 'q': args->p2 = arg; break;
-	case 'o': args->outputfilename = arg; break;
-	case 'e': args->bin = atoi(arg); break;
-	case 'm': args->multiplicity = (unsigned int) atoi(arg); break;
-	case ARGP_KEY_END: break;
-	default: return ARGP_ERR_UNKNOWN;
+		case ARGP_KEY_ARG: break;
+		case 't': args->tree = arg; break;
+		case 'p': args->p1 = arg; break;
+		case 'q': args->p2 = arg; break;
+		case 'o': args->outputfilename = arg; break;
+		case 'b': args->bin = atoi(arg); break;
+		case 'm': args->multiplicity = (unsigned int) atoi(arg); break;
+		case 'v': args->verbose = true;
+		case ARGP_KEY_END: break;
+		default: return ARGP_ERR_UNKNOWN;
 	}
 
 	return 0;
@@ -62,16 +65,18 @@ int main(int argc, char* argv[]){
 	struct arguments args;
 	argp_parse(&argp, argc, argv, 0, 0, &args);
 
-	cout << "#############################################" << endl;
-	cout << "> GetHistogram" << endl;
-	cout << "> TREENAME     : " << args.tree << endl;
-	cout << "> FILES        : " << "*" << args.p1 << "*" << args.p2 << "*" << endl;
-	cout << "> OUTPUTFILE   : " << args.outputfilename << endl;
-	cout << "> MULTIPLICITY : " << args.multiplicity << endl;
-	if(args.bin != -1){
-		cout << "> BIN          : " << args.bin << endl;
+if(args.verbose){
+		cout << "#############################################" << endl;
+		cout << "> GetHistogram" << endl;
+		cout << "> TREENAME     : " << args.tree << endl;
+		cout << "> FILES        : " << "*" << args.p1 << "*" << args.p2 << "*" << endl;
+		cout << "> OUTPUTFILE   : " << args.outputfilename << endl;
+		cout << "> MULTIPLICITY : " << args.multiplicity << endl;
+		if(args.bin != -1){
+			cout << "> BIN          : " << args.bin << endl;
+		}
+		cout << "#############################################" << endl;
 	}
-	cout << "#############################################" << endl;
 
 	// Find all files in the current directory that contain pattern1 and pattern1 and connect them to a TChain
 	TSystemDirectory dir(".",".");
@@ -79,7 +84,9 @@ int main(int argc, char* argv[]){
 	TList *files = dir.GetListOfFiles();
 	TChain utr("utr");
 
-	cout << "> Joining all files that contain '" << args.p1 << "' and '" << args.p2 << "':" << endl;
+	if(args.verbose){
+		cout << "> Joining all files that contain '" << args.p1 << "' and '" << args.p2 << "':" << endl;
+	}
 	
 	if(files){
 		TSystemFile *file;
@@ -90,7 +97,9 @@ int main(int argc, char* argv[]){
 		while (file){
 			fname = file->GetName();
 			if(!file->IsDirectory() && fname.Contains(args.p1) && fname.Contains(args.p2)){
-				cout << fname << endl;
+				if(args.verbose){
+					cout << fname << endl;
+				}
 				utr.Add(fname);
 			}
 			file = (TSystemFile*) next();
@@ -223,10 +232,19 @@ int main(int argc, char* argv[]){
 	//
 
 	if(args.bin != -1){
-		cout << "> Content of bin #" << args.bin << ":" << endl;
-		for(auto h: hist){
-			cout << h->GetName() << " : " << h->GetBinContent(args.bin) << endl;
+//		cout << "> Content of bin #" << args.bin << ":" << endl;
+//		for(Int_t i = 0; i < nhistograms; ++i){
+//			cout << hist[i]->GetName() << " : " << hist[i]->GetBinContent(args.bin) << endl;
+//		}
+
+		cout << "[ ";
+		for(Int_t i = 0; i < nhistograms; ++i){
+			if(i != 0){
+				cout << ", ";
+			}
+			cout << hist[i]->GetBinContent(args.bin);
 		}
+		cout << "]" << endl;
 	}
 
 	// Write histogram to a new TFile
@@ -238,5 +256,7 @@ int main(int argc, char* argv[]){
 
 	of->Close();
 
-	cout << "> Created output file " << args.outputfilename << endl;
+	if(args.verbose){
+		cout << "> Created output file " << args.outputfilename << endl;
+	}
 }	
