@@ -31,7 +31,7 @@ static struct argp_option options[] = {
 { 0, 'o', "OUTPUTFILENAME", 0, "Output file name" },
 { 0, 'b', "BIN", 0, "Number of energy bin whose value should be displayed" },
 { 0, 'm', "MULTIPLICITY", 0, "Particle multiplicity" },
-{ 0, 'v', 0, 0, "Verbose mode (does not silence -e option)" },
+{ 0, 'v', 0, 0, "Verbose mode (does not silence -b option)" },
 { 0, 0, 0, 0, 0 }
 };
 

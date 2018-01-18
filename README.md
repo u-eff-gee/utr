@@ -369,6 +369,10 @@ At the moment, the following distributions are implemented:
     1/2+- -> 3/2+- -> 1/2+-
 * `states == {0.5, -1.5, 0.5} or {-0.5, 1.5, -0.5}`
     1/2+- -> 3/2-+ -> 1/2+-
+* `states == {2.5, 1.5, 2.5} or {-2.5, -1.5, -2.5}`
+    5/2+- -> 3/2+- -> 5/2+-
+* `states == {2.5, -1.5, 2.5} or {-2.5, 1.5, -2.5}`
+    5/2+- -> 3/2-+ -> 5/2+-
 
 Finding the correct dimensions of the container box might need visualization. Try placing a `G4Box` with the desired dimensions at the desired position in the geometry and see whether it encloses the source volume completely and as close as possible. In fact, most of the predefined geometries have such a `G4Box` called `AuxBox` which is commented out. After using it to determine the size and position of the container box, remember to comment out the code again.
 
@@ -590,13 +594,14 @@ $ ./getHistogram --help
 Usage: getHistogram [OPTION...] Create histograms from a list of events
 GetHistogram
 
-  -e BIN                     Number of energy bin whose value should be
+  -b BIN                     Number of energy bin whose value should be
                              displayed
   -m MULTIPLICITY            Particle multiplicity
   -o OUTPUTFILENAME          Output file name
   -p PATTERN1                File name pattern 1
   -q PATTERN2                File name pattern 2
   -t TREENAME                Name of tree
+  -v                         Verbose mode (does not silence -b option)
   -?, --help                 Give this help list
       --usage                Give a short usage message
 ```
@@ -606,7 +611,7 @@ shows how to use the script. The meaning of the arguments to the options is:
 * TREE: Name of the ROOT tree (Default: TREE=="utr") in all of the output files.
 * PATTERN1 and 2: Two strings that identify the set of files to be merged. See also the example below. (Default: PATTERN1=="utr", PATTERN2==".root")
 * OUTPUTFILE: Name of the output file that contains the histograms. (Default: OUTPUTFILENAME=="hist.root")
-* MULTIPLICITY: Determines how many events should be accumulated before adding information to the histogram. This can be used, for example, to simulate higher multiplicity events in a detector: Imagine two photons with energies of 511 keV hit a detector and deposit all their energy. However, the two events cannot be distinguished by the detector due to pileup, so a single event with an energy of 1022 will be added to the spectrum. Similarly, Geant4 simulates events by event. In order to simulate pileup of n events, set MULTIPLICITY==n. (Default: MULTIPLICITY==1)
+* MULTIPLICITY: Determines how many events should be accumulated before adding information to the histogram. This can be used, for example, to simulate higher multiplicity events in a detector: Imagine two photons with energies of 511 keV hit a detector and deposit all their energy. However, the two events cannot be distinguished by the detector due to pileup, so a single event with an energy of 1022 keV will be added to the spectrum. Similarly, Geant4 simulates events by event. In order to simulate pileup of n events, set MULTIPLICITY==n. (Default: MULTIPLICITY==1)
 * BIN: Number of the histogram bin that should be printed to the screen while executing `getHistogram`. This option was introduced because often, one is only interested in the content of a special bin in the histograms (for example the full-energy peak). If the histograms are defined such that bin `3000` contains the events with an energy deposition between `2.9995 MeV` and `3.0005 MeV` and so on, so there is an easy correspondence between bin number and energy. (Default: BIN==-1)
 
 **A short example:**
