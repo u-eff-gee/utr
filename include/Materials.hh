@@ -22,6 +22,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #define Materials_h 1
 
 #include "G4Material.hh"
+#include "Units.hh"
 
 class Materials {
 

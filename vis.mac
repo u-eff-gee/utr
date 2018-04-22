@@ -34,7 +34,7 @@
 # Specify camera focus point
 #/vis/viewer/set/targetPoint 0 0 0 mm #g3 setup target position
 #/vis/viewer/set/targetPoint 0 0 1612.1 mm #second setup target position
-/vis/viewer/set/targetPoint 0 0 1612.1 mm #second setup target position
+/vis/viewer/set/targetPoint 0 0 0 mm
 #
 # Specify zoom value:
 /vis/viewer/zoom 1.4
