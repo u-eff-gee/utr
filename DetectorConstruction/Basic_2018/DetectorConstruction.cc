@@ -35,6 +35,7 @@ Materials *materials = Materials::Instance();
 #include "globals.hh"
 
 #include "Wheel.hh"
+#include "First_Setup.hh"
 
 // Sensitive Detectors
 //#include "EnergyDepositionSD.hh"
@@ -70,6 +71,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	/*
 	 * Fast-forward to specific parts of the geometry by searching for
 	 * WORLD (world volume)
+	 * FIRST_SETUP (first setup upstream of g3)
 	 * WHEEL (g3 wheel)
 	 */
 
@@ -104,7 +106,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	G4double World_x = 1000. * mm;
 	G4double World_y = 1000. * mm;
-	G4double World_z = 1000. * mm;
+	G4double World_z = 2000. * mm;
 
 	G4Box *World_dim =
 	    new G4Box("World_Solid", World_x * 0.5, World_y * 0.5, World_z * 0.5);
@@ -119,10 +121,19 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	/***************** WHEEL *****************/
 
+	G4double Wheel_To_Target = 10.*inch; // Estimated
 	Wheel wheel;
 	G4LogicalVolume *Wheel_Logical = wheel.Get_Logical();
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), Wheel_Logical, "Wheel", World_Logical, false, 0, false);
+	new G4PVPlacement(0, G4ThreeVector(0., 0., Wheel_To_Target + wheel.Get_Length()*0.5), Wheel_Logical, "Wheel", World_Logical, false, 0, false);
+
+	/***************** FIRST_SETUP *****************/
+
+	G4double First_Setup_To_Wheel = 34.*inch;
+	First_Setup first_Setup;
+	G4LogicalVolume *First_Setup_Logical = first_Setup.Get_Logical();
+
+	new G4PVPlacement(0, G4ThreeVector(0., first_Setup.Get_Z_Axis_Offset_Y(), Wheel_To_Target - First_Setup_To_Wheel - first_Setup.Get_Length()*0.5), First_Setup_Logical, "First_Setup", World_Logical, false, 0, false);
 
 	return World_Physical;
 }

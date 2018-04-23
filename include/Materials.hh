@@ -27,12 +27,13 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 class Materials {
 
   private:
-	Materials();
 	~Materials();
 
 	static Materials *instance;
 
   public:
+	Materials();
+
 	static Materials *Instance() {
 		if (instance == NULL) {
 			instance = new Materials();
@@ -54,6 +55,8 @@ class Materials {
 	G4Material *Get_target_Cr54_2O3() { return target_Cr54_2O3; }
 
 	G4Material *Get_Stainless_Steel() { return stainlessSteel; }
+	G4Material *Get_Half_Density_Al() { return half_density_Al; }
+	G4Material *Get_One_Third_Density_Al() { return one_third_density_Al; }
 
 	G4Material *Get_Labr3() { return LaBr3; }
 	G4Material *Get_LaBr3Ce() { return LaBr3Ce; }
@@ -72,6 +75,8 @@ class Materials {
 	G4Material *target_Dy164_2O3;
 	G4Material *target_Cr54_2O3;
 
+	G4Material *half_density_Al;
+	G4Material *one_third_density_Al;
 	G4Material *stainlessSteel;
 
 	G4Material *LaBr3;

@@ -19,6 +19,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "Materials.hh"
+#include "Units.hh"
 
 #include "G4NistManager.hh"
 #include "G4PhysicalConstants.hh"
@@ -189,6 +190,28 @@ void Materials::ConstructMaterials() {
 
 	target_Kr = new G4Material(name = "target_Kr", Kr_Density, ncomponents = 1);
 	target_Kr->AddElement(enriched_Kr, natoms = 1);
+
+	/*************************************************/
+	//             "low-density Aluminium"
+	// Since it tedious to construct metal beams of
+	// holding structures, simply construct a solid
+	// beam made of low-density aluminium
+	/*************************************************/
+
+	G4Element *nat_Al = new G4Element(name = "natural Al", symbol = "nat_Al", 
+					z = 13, a = 26.9815385 * g / mole);
+
+	G4double Al_Density = 2.70 * g / cm3;
+
+	half_density_Al = new G4Material(name = "half_density_Al",
+	                                Al_Density*0.5, ncomponents = 1);
+
+	half_density_Al->AddElement(nat_Al, natoms = 1);
+
+	one_third_density_Al = new G4Material(name = "one_third_density_Al",
+	                                Al_Density/3., ncomponents = 1);
+
+	one_third_density_Al->AddElement(nat_Al, natoms = 1);
 
 	/*************************************************/
 	//             "Stainless steel"
