@@ -38,6 +38,7 @@ First_Setup::First_Setup(){
 	Materials *materials = new Materials();
 
 	G4NistManager *nist = G4NistManager::Instance();
+	G4Material *air = nist->FindOrBuildMaterial("G4_AIR");
 	G4Material *Al = nist->FindOrBuildMaterial("G4_Al");
 	G4Material *Pb = nist->FindOrBuildMaterial("G4_Pb");
 	G4Material *one_third_density_Al = materials->Get_One_Third_Density_Al();
@@ -54,7 +55,7 @@ First_Setup::First_Setup(){
 	// Construct mother volume
 	G4Box *First_Setup_Solid = new G4Box("First_Setup_Solid", First_Setup_X*0.5, First_Setup_Y*0.5, First_Setup_Length*0.5);
 	
-	First_Setup_Logical = new G4LogicalVolume(First_Setup_Solid, Al, "First_Setup_Logical");
+	First_Setup_Logical = new G4LogicalVolume(First_Setup_Solid, air, "First_Setup_Logical");
 	//First_Setup_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());
 
 	// Construct table plate

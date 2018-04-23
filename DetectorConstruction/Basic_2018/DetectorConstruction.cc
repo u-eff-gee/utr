@@ -34,8 +34,9 @@ Materials *materials = Materials::Instance();
 #include "G4VisAttributes.hh"
 #include "globals.hh"
 
-#include "Wheel.hh"
+#include "First_UTR_Wall.hh"
 #include "First_Setup.hh"
+#include "Wheel.hh"
 
 // Sensitive Detectors
 //#include "EnergyDepositionSD.hh"
@@ -71,6 +72,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	/*
 	 * Fast-forward to specific parts of the geometry by searching for
 	 * WORLD (world volume)
+	 * FIRST_UTR_WALL
 	 * FIRST_SETUP (first setup upstream of g3)
 	 * WHEEL (g3 wheel)
 	 */
@@ -104,9 +106,9 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	/***************** WORLD *****************/
 
-	G4double World_x = 1000. * mm;
-	G4double World_y = 1000. * mm;
-	G4double World_z = 2000. * mm;
+	G4double World_x = 2000. * mm;
+	G4double World_y = 2000. * mm;
+	G4double World_z = 5000. * mm;
 
 	G4Box *World_dim =
 	    new G4Box("World_Solid", World_x * 0.5, World_y * 0.5, World_z * 0.5);
@@ -114,26 +116,43 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	G4LogicalVolume *World_Logical =
 	    new G4LogicalVolume(World_dim, air, "World_Logical", 0, 0, 0);
 
-	World_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());
+	//World_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());
+	World_Logical->SetVisAttributes(red);
 
 	G4VPhysicalVolume *World_Physical =
 	    new G4PVPlacement(0, G4ThreeVector(), World_Logical, "World", 0, false, 0);
 
+	/***************** GENERAL DIMENSIONS *****************/
+
+	//G4double Beam_Pipe_Outer_Radius = 1.*inch;
+	G4double Wheel_To_Target = 10.*inch; // Estimated
+	G4double First_Setup_To_Wheel = 34.*inch;
+	G4double First_UTR_Wall_To_First_Setup = 4.2*inch;
+
+	/***************** INITIALIZAIONS *****************/
+
+	First_UTR_Wall first_UTR_Wall;
+	First_Setup first_Setup;
+	Wheel wheel;
+
+	/***************** FIRST_UTR_WALL *****************/
+
+	G4LogicalVolume *First_UTR_Wall_Logical = first_UTR_Wall.Get_Logical();
+
+	new G4PVPlacement(0, G4ThreeVector(0., first_UTR_Wall.Get_Z_Axis_Offset_Y(), Wheel_To_Target - First_Setup_To_Wheel - first_Setup.Get_Length() - First_UTR_Wall_To_First_Setup - first_UTR_Wall.Get_Length()*0.5), First_UTR_Wall_Logical, "First_UTR_Wall", World_Logical, false, 0, false);
+
+	/***************** FIRST_SETUP *****************/
+
+	G4LogicalVolume *First_Setup_Logical = first_Setup.Get_Logical();
+
+	new G4PVPlacement(0, G4ThreeVector(0., first_Setup.Get_Z_Axis_Offset_Y(), Wheel_To_Target - First_Setup_To_Wheel - first_Setup.Get_Length()*0.5), First_Setup_Logical, "First_Setup", World_Logical, false, 0, false);
+
 	/***************** WHEEL *****************/
 
-	G4double Wheel_To_Target = 10.*inch; // Estimated
-	Wheel wheel;
 	G4LogicalVolume *Wheel_Logical = wheel.Get_Logical();
 
 	new G4PVPlacement(0, G4ThreeVector(0., 0., Wheel_To_Target + wheel.Get_Length()*0.5), Wheel_Logical, "Wheel", World_Logical, false, 0, false);
 
-	/***************** FIRST_SETUP *****************/
-
-	G4double First_Setup_To_Wheel = 34.*inch;
-	First_Setup first_Setup;
-	G4LogicalVolume *First_Setup_Logical = first_Setup.Get_Logical();
-
-	new G4PVPlacement(0, G4ThreeVector(0., first_Setup.Get_Z_Axis_Offset_Y(), Wheel_To_Target - First_Setup_To_Wheel - first_Setup.Get_Length()*0.5), First_Setup_Logical, "First_Setup", World_Logical, false, 0, false);
 
 	return World_Physical;
 }
