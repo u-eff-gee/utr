@@ -34,6 +34,7 @@ First_Setup::First_Setup(){
 
 	G4Colour grey(0.5, 0.5, 0.5);
 	G4Colour green(0., 0.5, 0.);
+	G4Colour white(1.0, 1.0, 1.0);
 
 	Materials *materials = new Materials();
 
@@ -125,6 +126,7 @@ First_Setup::First_Setup(){
 	G4Box *Concrete_Block_Solid = new G4Box("Concrete_Block_Solid", Concrete_Block_X*0.5, Concrete_Block_Y*0.5, Concrete_Block_Z*0.5);
 
 	G4LogicalVolume *Concrete_Block_Logical = new G4LogicalVolume(Concrete_Block_Solid, concrete, "Concrete_Block_Logical");
+	Concrete_Block_Logical->SetVisAttributes(white);
 
 	new G4PVPlacement(0, G4ThreeVector(0., -First_Setup_Y*0.5 + First_Setup_Table_Thickness + Concrete_Block_Y*0.5, -First_Setup_Length*0.5 + Concrete_Block_Z*0.5), Concrete_Block_Logical, "Concrete_Block", First_Setup_Logical, false, 0, false);
 
@@ -206,7 +208,7 @@ First_Setup::First_Setup(){
 
 	// Beam pipe holder
 
-	G4double Beam_Pipe_Holder_X = 4.*inch; // Estimated
+	G4double Beam_Pipe_Holder_X = 4.*inch;
 	G4double Beam_Pipe_Holder_Y = Concrete_Block_Y + Lead_Base_Y + Lead_Tunnel_Y*0.5;	
 	G4double Beam_Pipe_Holder_Z = 0.5*inch;;	
 
