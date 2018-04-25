@@ -152,7 +152,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	/***************** G3_TABLE *****************/
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., Wheel_To_Target + wheel.Get_Length() + g3_Table.Get_Length()), g3_Table.Get_Logical(), "G3_Table", World_Logical, false, 0, false);
+	new G4PVPlacement(0, G4ThreeVector(0., g3_Table.Get_Z_Axis_Offset_Y(), Wheel_To_Target + wheel.Get_Length() + g3_Table.Get_Length()), g3_Table.Get_Logical(), "G3_Table", World_Logical, false, 0, false);
 
 	return World_Physical;
 }

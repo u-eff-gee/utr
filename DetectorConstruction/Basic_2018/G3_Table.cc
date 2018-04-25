@@ -25,6 +25,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4SubtractionSolid.hh"
 #include "G4Tubs.hh"
 #include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
 
 #include "Units.hh"
 #include "G3_Table.hh"
@@ -45,7 +46,7 @@ G3_Table::G3_Table(){
 	G4Material *concrete = nist->FindOrBuildMaterial("G4_CONCRETE");
 
 	G4double G3_Table_X = 21.*inch;
-	G4double G3_Table_Y = 20.*inch; // Estimated, probably too large for the geometry that is really inside
+	G4double G3_Table_Y = 25.*inch; // Dimension of mother volume, arbitrary
 	G3_Table_Length = 36.25*inch;
 
 	// Mother volume
@@ -104,4 +105,25 @@ G3_Table::G3_Table(){
 	Lead_Wall_Logical->SetVisAttributes(green);
 
 	new G4PVPlacement(0, G4ThreeVector(0., -G3_Table_Y*0.5 + G3_Table_Plate_Thickness*0.5 + Plastic_Base_Y + Concrete_Base_Y + Lead_Wall_Y*0.5, -Wall_To_Table_Edge + Lead_Wall_Z*0.5), Lead_Wall_Logical, "Lead_Wall", G3_Table_Logical, false, 0, false);
+
+	Z_Axis_Offset_Y = G3_Table_Y*0.5 - (G3_Table_Plate_Thickness + Plastic_Base_Y + Concrete_Base_Y +5.*inch);
+
+	// Upstream beam pipe holder
+	G4double Upstream_Holder_X = 2.75*inch;
+	G4double Upstream_Holder_Y = G3_Table_Y*0.5 + Z_Axis_Offset_Y - G3_Table_Plate_Thickness + 2.*inch;
+	G4double Upstream_Holder_Z = 0.5*inch;
+	
+	G4Box *Upstream_Holder_Solid_Solid = new G4Box("Upstream_Holder_Solid_Solid", Upstream_Holder_X*0.5, Upstream_Holder_Y*0.5, Upstream_Holder_Z*0.5);
+
+	G4double Beam_Pipe_Outer_Radius = 2.*inch;
+	G4Box *Upstream_Holder_Hole_Solid = new G4Box("Upstream_Holder_Hole_Solid", Beam_Pipe_Outer_Radius*0.5, Beam_Pipe_Outer_Radius*0.5, Upstream_Holder_Z);
+
+	G4RotationMatrix *rotZ = new G4RotationMatrix();
+	rotZ->rotateZ(45.*deg);
+	//G4SubtractionSolid* Upstream_Holder_Solid = new G4SubtractionSolid("Upstream_Holder_Solid", Upstream_Holder_Solid_Solid, Upstream_Holder_Hole_Solid, rotZ, G4ThreeVector(0., 0., Upstream_Holder_Y*0.5));
+	G4SubtractionSolid* Upstream_Holder_Solid = new G4SubtractionSolid("Upstream_Holder_Solid", Upstream_Holder_Solid_Solid, Upstream_Holder_Hole_Solid, rotZ, G4ThreeVector(0., Upstream_Holder_Y*0.5, 0.));
+
+	G4LogicalVolume *Upstream_Holder_Logical = new G4LogicalVolume(Upstream_Holder_Solid, Al, "Upstream_Holder_Logical");
+
+	new G4PVPlacement(0, G4ThreeVector(0., -G3_Table_Y*0.5 + G3_Table_Plate_Thickness + Upstream_Holder_Y*0.5, -G3_Table_Length*0.5 + 0.5*inch + Upstream_Holder_Z*0.5), Upstream_Holder_Logical, "Upstream_Holder", G3_Table_Logical, false, 0, false);
 }
