@@ -135,6 +135,8 @@ G3_Table::G3_Table(){
 	G4LogicalVolume *Upstream_Holder_Logical = new G4LogicalVolume(Upstream_Holder_Solid, Al, "Upstream_Holder_Logical");
 
 	new G4PVPlacement(0, G4ThreeVector(0., -G3_Table_Y*0.5 + G3_Table_Plate_Thickness + Upstream_Holder_Y*0.5, -G3_Table_Length*0.5 + 0.5*inch + Upstream_Holder_Z*0.5), Upstream_Holder_Logical, "Upstream_Holder", G3_Table_Logical, false, 0, false);
+
+	// Vacuum valve inside upstream beam pipe holder
 	
 	// Downstream beam pipe holder
 	G4double Downstream_Holder_X = 6.*inch;
@@ -143,7 +145,7 @@ G3_Table::G3_Table(){
 	
 	G4Box *Downstream_Holder_Solid_Solid = new G4Box("Downstream_Holder_Solid_Solid", Downstream_Holder_X*0.5, Downstream_Holder_Y*0.5, Downstream_Holder_Z*0.5);
 
-	G4Box *Downstream_Holder_Hole_Solid = new G4Box("Downstream_Holder_Hole_Solid", Beam_Pipe_Outer_Radius*0.5, Beam_Pipe_Outer_Radius*0.5, Downstream_Holder_Z);
+	G4Box *Downstream_Holder_Hole_Solid = new G4Box("Downstream_Holder_Hole_Solid", 3.*inch, 3.*inch, Downstream_Holder_Z);
 
 	G4SubtractionSolid* Downstream_Holder_Solid = new G4SubtractionSolid("Downstream_Holder_Solid", Downstream_Holder_Solid_Solid, Downstream_Holder_Hole_Solid, rotZ, G4ThreeVector(0., Downstream_Holder_Y*0.5, 0.));
 

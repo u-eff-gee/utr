@@ -38,6 +38,7 @@ Materials *materials = Materials::Instance();
 #include "First_Setup.hh"
 #include "Wheel.hh"
 #include "G3_Table.hh"
+#include "Table2.hh"
 
 // Sensitive Detectors
 //#include "EnergyDepositionSD.hh"
@@ -77,6 +78,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	 * FIRST_SETUP (first setup upstream of g3)
 	 * WHEEL (g3 wheel)
 	 * G3_TABLE
+	 * TABLE_2 (the table on which the second setup is mounted)
 	 */
 
 	G4Colour white(1.0, 1.0, 1.0);
@@ -110,7 +112,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	G4double World_x = 2000. * mm;
 	G4double World_y = 2000. * mm;
-	G4double World_z = 5000. * mm;
+	G4double World_z = 6000. * mm;
 
 	G4Box *World_dim =
 	    new G4Box("World_Solid", World_x * 0.5, World_y * 0.5, World_z * 0.5);
@@ -137,6 +139,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	First_Setup first_Setup;
 	Wheel wheel;
 	G3_Table g3_Table;
+	Table2 table2;
 
 	/***************** FIRST_UTR_WALL *****************/
 
@@ -152,7 +155,11 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	/***************** G3_TABLE *****************/
 
-	new G4PVPlacement(0, G4ThreeVector(0., g3_Table.Get_Z_Axis_Offset_Y(), Wheel_To_Target + wheel.Get_Length() + g3_Table.Get_Length()), g3_Table.Get_Logical(), "G3_Table", World_Logical, false, 0, false);
+	new G4PVPlacement(0, G4ThreeVector(0., g3_Table.Get_Z_Axis_Offset_Y(), Wheel_To_Target + wheel.Get_Length() + g3_Table.Get_Length()*0.5), g3_Table.Get_Logical(), "G3_Table", World_Logical, false, 0, false);
+
+	/***************** TABLE_2 *****************/
+
+	new G4PVPlacement(0, G4ThreeVector(0., table2.Get_Z_Axis_Offset_Y(),  Wheel_To_Target + wheel.Get_Length() + g3_Table.Get_Length() + table2.Get_Length()*0.5 + table2.Get_Z_Axis_Offset_Z()), table2.Get_Logical(), "Table2", World_Logical, false, 0, false);
 
 	return World_Physical;
 }

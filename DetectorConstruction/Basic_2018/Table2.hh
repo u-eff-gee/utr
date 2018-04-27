@@ -18,20 +18,28 @@ You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef DETECTORCONSTRUCTION_HH
-#define DETECTORCONSTRUCTION_HH
+#ifndef TABLE2_HH
+#define TABLE2_HH 1
 
-#include "G4SystemOfUnits.hh"
-#include "G4UnitsTable.hh"
-#include "G4VUserDetectorConstruction.hh"
+#include "G4LogicalVolume.hh"
 
-class DetectorConstruction : public G4VUserDetectorConstruction {
-  public:
-	DetectorConstruction();
-	~DetectorConstruction();
+class Table2{
+public:
+	Table2();
+	~Table2(){};
 
-	virtual G4VPhysicalVolume *Construct();
-	virtual void ConstructSDandField();
+	G4LogicalVolume *Get_Logical(){ return Table2_Logical; }
+	
+	G4double Get_Length(){ return Table2_Length; };
+	G4double Get_Z_Axis_Offset_Y(){ return Z_Axis_Offset_Y; };
+	G4double Get_Z_Axis_Offset_Z(){ return Z_Axis_Offset_Z; };
+
+private:
+	G4double Table2_Length;
+	G4double Z_Axis_Offset_Y;
+	G4double Z_Axis_Offset_Z;
+
+	G4LogicalVolume *Table2_Logical;
 };
 
 #endif
