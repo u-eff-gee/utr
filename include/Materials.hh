@@ -55,6 +55,8 @@ class Materials {
 	G4Material *Get_target_Cr54_2O3() { return target_Cr54_2O3; }
 
 	G4Material *Get_Stainless_Steel() { return stainlessSteel; }
+	G4Material *Get_Brass() { return brass; }
+	G4Material *Get_One_Third_Density_Brass() { return one_third_density_brass; }
 	G4Material *Get_Half_Density_Al() { return half_density_Al; }
 	G4Material *Get_One_Third_Density_Al() { return one_third_density_Al; }
 
@@ -78,6 +80,8 @@ class Materials {
 	G4Material *half_density_Al;
 	G4Material *one_third_density_Al;
 	G4Material *stainlessSteel;
+	G4Material *brass;
+	G4Material *one_third_density_brass;
 
 	G4Material *LaBr3;
 	G4Material *LaBr3Ce;

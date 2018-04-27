@@ -425,4 +425,23 @@ void Materials::ConstructMaterials() {
 	pump_vacuum->AddElement(nat_N, fractionmass = 75.5268 * perCent);
 	pump_vacuum->AddElement(nat_C, fractionmass = 0.0124 * perCent);
 	pump_vacuum->AddElement(nat_Ar, fractionmass = 1.2827 * perCent);
+
+	/***********************************/
+	//      Brass (CuZn30) 
+	/***********************************/
+
+	G4Element *nat_Cu = nist->FindOrBuildElement("Cu");
+	G4Element *nat_Zn = nist->FindOrBuildElement("Zn");
+
+	density = 8.75 * g / cm3; // Estimated from densities given in Wikipedia
+
+	brass = new G4Material(name = "brass", density, ncomponents = 2);
+
+	brass->AddElement(nat_Cu, fractionmass = 70.*perCent);
+	brass->AddElement(nat_Zn, fractionmass = 30.*perCent);
+
+	one_third_density_brass = new G4Material(name = "one_third_density_brass", density/3., ncomponents = 2);
+
+	one_third_density_brass->AddElement(nat_Cu, fractionmass = 70.*perCent);
+	one_third_density_brass->AddElement(nat_Zn, fractionmass = 30.*perCent);
 }
