@@ -36,6 +36,7 @@ Materials *materials = Materials::Instance();
 
 #include "First_UTR_Wall.hh"
 #include "First_Setup.hh"
+#include "G3_Wall.hh"
 #include "Wheel.hh"
 #include "G3_Table.hh"
 #include "Table2.hh"
@@ -76,6 +77,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	 * WORLD (world volume)
 	 * FIRST_UTR_WALL
 	 * FIRST_SETUP (first setup upstream of g3)
+	 * G3_WALL (wall immediately in front of g3)
 	 * WHEEL (g3 wheel)
 	 * G3_TABLE
 	 * TABLE_2 (the table on which the second setup is mounted)
@@ -110,8 +112,8 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	/***************** WORLD *****************/
 
-	G4double World_x = 2000. * mm;
-	G4double World_y = 2000. * mm;
+	G4double World_x = 3000. * mm;
+	G4double World_y = 3000. * mm;
 	G4double World_z = 6000. * mm;
 
 	G4Box *World_dim =
@@ -132,11 +134,13 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	G4double Wheel_To_Target = 10.*inch; // Estimated
 	G4double First_Setup_To_Wheel = 34.*inch;
 	G4double First_UTR_Wall_To_First_Setup = 4.2*inch;
+	G4double First_Setup_To_G3_Wall = 2.*inch; // Estimated
 
 	/***************** INITIALIZAIONS *****************/
 
 	First_UTR_Wall first_UTR_Wall;
 	First_Setup first_Setup;
+	G3_Wall g3_Wall;
 	Wheel wheel;
 	G3_Table g3_Table;
 	Table2 table2;
@@ -148,6 +152,10 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	/***************** FIRST_SETUP *****************/
 
 	new G4PVPlacement(0, G4ThreeVector(0., first_Setup.Get_Z_Axis_Offset_Y(), Wheel_To_Target - First_Setup_To_Wheel - first_Setup.Get_Length()*0.5), first_Setup.Get_Logical(), "First_Setup", World_Logical, false, 0, false);
+
+	/***************** G3_WALL *****************/
+
+	new G4PVPlacement(0, G4ThreeVector(0., 0., Wheel_To_Target - First_Setup_To_Wheel + First_Setup_To_G3_Wall + g3_Wall.Get_Length()*0.5), g3_Wall.Get_Logical(), "G3_Wall", World_Logical, false, 0, false);
 
 	/***************** WHEEL *****************/
 
