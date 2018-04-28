@@ -1,5 +1,4 @@
-/*
-utr - Geant4 simulation of the UTR at HIGS
+/* utr - Geant4 simulation of the UTR at HIGS
 Copyright (C) 2017 the developing team (see README.md)
 
 This file is part of utr.

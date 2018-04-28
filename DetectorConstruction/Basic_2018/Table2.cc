@@ -34,7 +34,6 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 Table2::Table2(){
 	
 	G4Colour green(0., 0.5, 0.);
-	G4Colour yellow(1.0, 1.0, 0.0);
 	G4Colour grey(0.5, 0.5, 0.5);
 	G4Colour white(1.0, 1.0, 1.0);
 	G4Colour light_orange(1.0, 0.82, 0.36);

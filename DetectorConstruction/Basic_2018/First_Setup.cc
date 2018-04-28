@@ -25,6 +25,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4SubtractionSolid.hh"
 #include "G4Tubs.hh"
 #include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
 
 #include "Units.hh"
 #include "First_Setup.hh"
@@ -224,4 +225,16 @@ First_Setup::First_Setup(){
 	new G4PVPlacement(0, G4ThreeVector(0., -First_Setup_Y*0.5 + First_Setup_Table_Thickness + Beam_Pipe_Holder_Y*0.5, First_Setup_Length*0.5 - Beam_Pipe_Holder_Z*0.5), Beam_Pipe_Holder_Logical, "Beam_Pipe_Holder", First_Setup_Logical, false, 0, false);
 
 	Z_Axis_Offset_Y = First_Setup_Y*0.5 - First_Setup_Table_Thickness - Concrete_Block_Y - Lead_Base_Y - Lead_Tunnel_Y*0.5;
+
+	// Lead wrap around beam pipe
+	
+	G4double Lead_Wrap_Thickness = 4.*mm; // Estimated
+	G4double Lead_Wrap_Length = 16.*inch; // Estimated
+
+	G4Tubs* Lead_Wrap_Solid = new G4Tubs("Lead_Wrap_Solid", Beam_Pipe_Outer_Radius, Beam_Pipe_Outer_Radius + Lead_Wrap_Thickness, Lead_Wrap_Length*0.5, 0., twopi);
+
+	G4LogicalVolume *Lead_Wrap_Logical = new G4LogicalVolume(Lead_Wrap_Solid, Pb, "Lead_Wrap_Logical");
+	Lead_Wrap_Logical->SetVisAttributes(green);
+
+	new G4PVPlacement(0, G4ThreeVector(0., -First_Setup_Y*0.5 + First_Setup_Table_Thickness + Concrete_Block_Y + Lead_Base_Y + 2.*inch, -First_Setup_Length*0.5 + 4.*inch + Lead_Tunnel_Z + Lead_Portal_Right_Z + Lead_Wrap_Length*0.5), Lead_Wrap_Logical, "Lead_Wrap", First_Setup_Logical, false, 0, false);
 }
