@@ -50,7 +50,7 @@ Table2::Table2(){
 	G4Material *one_third_density_brass = materials->Get_One_Third_Density_Brass();
 
 	G4double Table2_X = 34.*inch;
-	G4double Table2_Y = 60.*inch; // Dimension of mother volume, arbitrary
+	G4double Table2_Y = 70.*inch; // Dimension of mother volume, arbitrary
 	G4double Table_Plate_Radius = 17.*inch;
 	G4double Table_Plate_Hole_Radius = 9.*inch;
 	Table2_Length = 38.*inch;
@@ -59,7 +59,6 @@ Table2::Table2(){
 	// Mother volume
 	G4Box *Table2_Solid = new G4Box("Table2_Solid", Table2_X*0.5, Table2_Y*0.5, Table2_Length*0.5);
 	Table2_Logical = new G4LogicalVolume(Table2_Solid, air, "Table2_Logical");
-
 
 	// Upstream beam pipe holder
 	
