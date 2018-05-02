@@ -39,13 +39,13 @@ First_UTR_Wall::First_UTR_Wall(){
 	G4Material *Pb = nist->FindOrBuildMaterial("G4_Pb");
 
 	First_UTR_Wall_Length = 8.*inch;
-	G4double First_UTR_Wall_X = 22.*inch; // Estimated
+	G4double First_UTR_Wall_X = 22.*inch;
 	G4double First_UTR_Wall_Y = 26.*inch;
-	Z_Axis_Offset_Y = 1.*inch;
+	G4double Mother_Volume_Y = 30.*inch; // Arbitrary
 	G4double Beam_Pipe_Outer_Radius = 1.*inch;
 
 	// Construct mother volume
-	G4Box *First_UTR_Wall_Solid = new G4Box("First_UTR_Wall_Solid", First_UTR_Wall_X*0.5, First_UTR_Wall_Y*0.5, First_UTR_Wall_Length*0.5);
+	G4Box *First_UTR_Wall_Solid = new G4Box("First_UTR_Wall_Solid", First_UTR_Wall_X*0.5, Mother_Volume_Y*0.5, First_UTR_Wall_Length*0.5);
 	
 	First_UTR_Wall_Logical = new G4LogicalVolume(First_UTR_Wall_Solid, air, "First_UTR_Wall_Logical");
 	//First_UTR_Wall_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());
@@ -53,10 +53,10 @@ First_UTR_Wall::First_UTR_Wall(){
 	G4Box *Lead_Wall_Solid_Solid = new G4Box("Lead_Wall_Solid_Solid", First_UTR_Wall_X*0.5, First_UTR_Wall_Y*0.5, First_UTR_Wall_Length*0.5);
 	G4Tubs *Lead_Wall_Hole_Solid = new G4Tubs("Lead_Wall_Hole_Solid", 0., Beam_Pipe_Outer_Radius, First_UTR_Wall_Length, 0., twopi);
 
-	G4SubtractionSolid *Lead_Wall_Solid = new G4SubtractionSolid("Lead_Wall_Solid", Lead_Wall_Solid_Solid, Lead_Wall_Hole_Solid, 0, G4ThreeVector(0., -Z_Axis_Offset_Y, 0.));
+	G4SubtractionSolid *Lead_Wall_Solid = new G4SubtractionSolid("Lead_Wall_Solid", Lead_Wall_Solid_Solid, Lead_Wall_Hole_Solid, 0, G4ThreeVector(0., -1.*inch, 0.));
 
 	G4LogicalVolume *Lead_Wall_Logical = new G4LogicalVolume(Lead_Wall_Solid, Pb, "Lead_Wall_Logical");
 	Lead_Wall_Logical->SetVisAttributes(green);
 
-	new G4PVPlacement(0, G4ThreeVector(), Lead_Wall_Logical, "Lead_Wall", First_UTR_Wall_Logical, false, 0, false);
+	new G4PVPlacement(0, G4ThreeVector(0., 1.*inch, 0.), Lead_Wall_Logical, "Lead_Wall", First_UTR_Wall_Logical, false, 0, false);
 }

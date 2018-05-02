@@ -35,8 +35,6 @@ G3_Wall::G3_Wall(){
 	G4Colour green(0., 0.5, 0.);
 	G4Colour white(1.0, 1.0, 1.0);
 
-	Materials *materials = new Materials();
-
 	G4NistManager *nist = G4NistManager::Instance();
 	G4Material *air = nist->FindOrBuildMaterial("G4_AIR");
 	G4Material *Pb = nist->FindOrBuildMaterial("G4_Pb");

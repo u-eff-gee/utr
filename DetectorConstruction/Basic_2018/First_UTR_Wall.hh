@@ -31,11 +31,9 @@ public:
 	G4LogicalVolume *Get_Logical(){ return First_UTR_Wall_Logical; }
 	
 	G4double Get_Length(){ return First_UTR_Wall_Length; };
-	G4double Get_Z_Axis_Offset_Y(){ return Z_Axis_Offset_Y; };
 
 private:
 	G4double First_UTR_Wall_Length;
-	G4double Z_Axis_Offset_Y;
 
 	G4LogicalVolume *First_UTR_Wall_Logical;
 };

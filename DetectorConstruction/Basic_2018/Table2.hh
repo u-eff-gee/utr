@@ -31,12 +31,10 @@ public:
 	G4LogicalVolume *Get_Logical(){ return Table2_Logical; }
 	
 	G4double Get_Length(){ return Table2_Length; };
-	G4double Get_Z_Axis_Offset_Y(){ return Z_Axis_Offset_Y; };
 	G4double Get_Z_Axis_Offset_Z(){ return Z_Axis_Offset_Z; };
 
 private:
 	G4double Table2_Length;
-	G4double Z_Axis_Offset_Y;
 	G4double Z_Axis_Offset_Z;
 
 	G4LogicalVolume *Table2_Logical;

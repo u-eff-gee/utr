@@ -46,46 +46,16 @@ G3_Table::G3_Table(){
 	G4Material *concrete = nist->FindOrBuildMaterial("G4_CONCRETE");
 
 	G4double G3_Table_X = 21.*inch;
-	G4double G3_Table_Y = 25.*inch; // Dimension of mother volume, arbitrary
+	G4double G3_Table_Y = 30.*inch; // Dimension of mother volume, arbitrary
 	G3_Table_Length = 36.25*inch;
 
 	// Mother volume
 	G4Box *G3_Table_Solid = new G4Box("G3_Table_Solid", G3_Table_X*0.5, G3_Table_Y*0.5, G3_Table_Length*0.5);
 	G3_Table_Logical = new G4LogicalVolume(G3_Table_Solid, air, "G3_Table_Logical");
 
-	// Table plate
-	G4double G3_Table_Plate_Thickness = 0.5*inch; // Estimated, probably too large for the geometry that is really inside
-
-	G4Box *G3_Table_Plate_Solid = new G4Box("G3_Table_Plate_Solid", G3_Table_X*0.5, G3_Table_Plate_Thickness*0.5, G3_Table_Length*0.5);
-	G4LogicalVolume *G3_Table_Plate_Logical = new G4LogicalVolume(G3_Table_Plate_Solid, Al, "G3_Table_Plate_Logical");
-	G3_Table_Plate_Logical->SetVisAttributes(grey);
-
-	new G4PVPlacement(0, G4ThreeVector(0., -G3_Table_Y*0.5 + G3_Table_Plate_Thickness*0.5, 0.), G3_Table_Plate_Logical, "G3_Table_Plate", G3_Table_Logical, false, 0, false);
-
 	// Concrete and lead shielding
 	
 	G4double Wall_To_Table_Edge = 8.*inch;
-
-	G4double Plastic_Base_X = 20.*inch;
-	G4double Plastic_Base_Y = 1.*inch;
-	G4double Plastic_Base_Z = 12.*inch;
-
-	G4Box* Plastic_Base_Solid = new G4Box("Plastic_Base_Solid", Plastic_Base_X*0.5, Plastic_Base_Y*0.5, Plastic_Base_Z*0.5);
-	G4LogicalVolume* Plastic_Base_Logical = new G4LogicalVolume(Plastic_Base_Solid, PE, "Plastic_Base_Logical");
-
-	Plastic_Base_Logical->SetVisAttributes(yellow);
-
-	new G4PVPlacement(0, G4ThreeVector(0., -G3_Table_Y*0.5 + G3_Table_Plate_Thickness*0.5 + Plastic_Base_Y*0.5, -Wall_To_Table_Edge + Plastic_Base_Z*0.5), Plastic_Base_Logical, "Plastic_Base", G3_Table_Logical, false, 0, false);
-
-	G4double Concrete_Base_X = 20.*inch;
-	G4double Concrete_Base_Y = 7.25*inch;
-	G4double Concrete_Base_Z = 1.5*7.75*inch;
-
-	G4Box* Concrete_Base_Solid = new G4Box("Concrete_Base_Solid", Concrete_Base_X*0.5, Concrete_Base_Y*0.5, Concrete_Base_Z*0.5);
-	G4LogicalVolume* Concrete_Base_Logical = new G4LogicalVolume(Concrete_Base_Solid, concrete, "Concrete_Base_Logical");
-	Concrete_Base_Logical->SetVisAttributes(white);
-
-	new G4PVPlacement(0, G4ThreeVector(0., -G3_Table_Y*0.5 + G3_Table_Plate_Thickness*0.5 + Plastic_Base_Y + Concrete_Base_Y*0.5, -Wall_To_Table_Edge + Concrete_Base_Z*0.5), Concrete_Base_Logical, "Concrete_Base", G3_Table_Logical, false, 0, false);
 
 	G4double Lead_Wall_X = 20.*inch;
 	G4double Lead_Wall_Y = 12.*inch;
@@ -104,11 +74,9 @@ G3_Table::G3_Table(){
 
 	Lead_Wall_Logical->SetVisAttributes(green);
 
-	new G4PVPlacement(0, G4ThreeVector(0., -G3_Table_Y*0.5 + G3_Table_Plate_Thickness*0.5 + Plastic_Base_Y + Concrete_Base_Y + Lead_Wall_Y*0.5, -Wall_To_Table_Edge + Lead_Wall_Z*0.5), Lead_Wall_Logical, "Lead_Wall", G3_Table_Logical, false, 0, false);
+	new G4PVPlacement(0, G4ThreeVector(0., 1.*inch, -Wall_To_Table_Edge + Lead_Wall_Z*0.5), Lead_Wall_Logical, "Lead_Wall", G3_Table_Logical, false, 0, false);
 
-	Z_Axis_Offset_Y = G3_Table_Y*0.5 - (G3_Table_Plate_Thickness + Plastic_Base_Y + Concrete_Base_Y +5.*inch);
-
-	G4double Lead_Collimator_Inner_Radius = 1.1*inch;
+	G4double Lead_Collimator_Inner_Radius = 1.1*inch; // Estimated, but definitely larger than outer radius of beam pipe
 	G4double Lead_Collimator_Outer_Radius = 2.*inch;
 	G4double Lead_Collimator_Length = 4.*inch;
 	G4Tubs *Lead_Collimator_Solid = new G4Tubs("Lead_Collimator_Solid", Lead_Collimator_Inner_Radius, Lead_Collimator_Outer_Radius, Lead_Collimator_Length*0.5, 0., twopi);
@@ -116,11 +84,41 @@ G3_Table::G3_Table(){
 	G4LogicalVolume *Lead_Collimator_Logical = new G4LogicalVolume(Lead_Collimator_Solid, Pb, "Lead_Collimator_Logical");
 	Lead_Collimator_Logical->SetVisAttributes(green);
 
-	new G4PVPlacement(0, G4ThreeVector(0., -G3_Table_Y*0.5 + G3_Table_Plate_Thickness*0.5 + Plastic_Base_Y + Concrete_Base_Y + Lead_Wall_Y*0.5 - 1.*inch, -Wall_To_Table_Edge + 10.*inch), Lead_Collimator_Logical, "Lead_Collimator", G3_Table_Logical, false, 0, false);
+	new G4PVPlacement(0, G4ThreeVector(0., 0., -Wall_To_Table_Edge + 10.*inch), Lead_Collimator_Logical, "Lead_Collimator", G3_Table_Logical, false, 0, false);
+
+	G4double Concrete_Base_X = 20.*inch;
+	G4double Concrete_Base_Y = 7.25*inch;
+	G4double Concrete_Base_Z = 1.5*7.75*inch;
+
+	G4Box* Concrete_Base_Solid = new G4Box("Concrete_Base_Solid", Concrete_Base_X*0.5, Concrete_Base_Y*0.5, Concrete_Base_Z*0.5);
+	G4LogicalVolume* Concrete_Base_Logical = new G4LogicalVolume(Concrete_Base_Solid, concrete, "Concrete_Base_Logical");
+	Concrete_Base_Logical->SetVisAttributes(white);
+
+	new G4PVPlacement(0, G4ThreeVector(0., 1.*inch -Lead_Wall_Y*0.5 -Concrete_Base_Y*0.5, -Wall_To_Table_Edge + Concrete_Base_Z*0.5), Concrete_Base_Logical, "Concrete_Base", G3_Table_Logical, false, 0, false);
+
+	G4double Plastic_Base_X = 20.*inch;
+	G4double Plastic_Base_Y = 1.*inch;
+	G4double Plastic_Base_Z = 12.*inch;
+
+	G4Box* Plastic_Base_Solid = new G4Box("Plastic_Base_Solid", Plastic_Base_X*0.5, Plastic_Base_Y*0.5, Plastic_Base_Z*0.5);
+	G4LogicalVolume* Plastic_Base_Logical = new G4LogicalVolume(Plastic_Base_Solid, PE, "Plastic_Base_Logical");
+
+	Plastic_Base_Logical->SetVisAttributes(yellow);
+
+	new G4PVPlacement(0, G4ThreeVector(0., 1.*inch - Lead_Wall_Y*0.5 - Concrete_Base_Y - Plastic_Base_Y*0.5, -Wall_To_Table_Edge + Plastic_Base_Z*0.5), Plastic_Base_Logical, "Plastic_Base", G3_Table_Logical, false, 0, false);
+
+	// Table plate
+	G4double G3_Table_Plate_Thickness = 0.5*inch; // Estimated, probably too large for the geometry that is really inside
+
+	G4Box *G3_Table_Plate_Solid = new G4Box("G3_Table_Plate_Solid", G3_Table_X*0.5, G3_Table_Plate_Thickness*0.5, G3_Table_Length*0.5);
+	G4LogicalVolume *G3_Table_Plate_Logical = new G4LogicalVolume(G3_Table_Plate_Solid, Al, "G3_Table_Plate_Logical");
+	G3_Table_Plate_Logical->SetVisAttributes(grey);
+
+	new G4PVPlacement(0, G4ThreeVector(0., 1.*inch - 0.5*Lead_Wall_Y - Concrete_Base_Y - Plastic_Base_Y - G3_Table_Plate_Thickness*0.5, 0.), G3_Table_Plate_Logical, "G3_Table_Plate", G3_Table_Logical, false, 0, false);
 
 	// Upstream beam pipe holder
 	G4double Upstream_Holder_X = 2.75*inch;
-	G4double Upstream_Holder_Y = G3_Table_Y*0.5 + Z_Axis_Offset_Y - G3_Table_Plate_Thickness + 2.*inch;
+	G4double Upstream_Holder_Y = -(1.*inch - Lead_Wall_Y*0.5 - Concrete_Base_Y - Plastic_Base_Y);
 	G4double Upstream_Holder_Z = 0.5*inch;
 	
 	G4Box *Upstream_Holder_Solid_Solid = new G4Box("Upstream_Holder_Solid_Solid", Upstream_Holder_X*0.5, Upstream_Holder_Y*0.5, Upstream_Holder_Z*0.5);
@@ -134,13 +132,11 @@ G3_Table::G3_Table(){
 
 	G4LogicalVolume *Upstream_Holder_Logical = new G4LogicalVolume(Upstream_Holder_Solid, Al, "Upstream_Holder_Logical");
 
-	new G4PVPlacement(0, G4ThreeVector(0., -G3_Table_Y*0.5 + G3_Table_Plate_Thickness + Upstream_Holder_Y*0.5, -G3_Table_Length*0.5 + 0.5*inch + Upstream_Holder_Z*0.5), Upstream_Holder_Logical, "Upstream_Holder", G3_Table_Logical, false, 0, false);
+	new G4PVPlacement(0, G4ThreeVector(0., -Upstream_Holder_Y*0.5, -G3_Table_Length*0.5 + 0.5*inch + Upstream_Holder_Z*0.5), Upstream_Holder_Logical, "Upstream_Holder", G3_Table_Logical, false, 0, false);
 
-	// Vacuum valve inside upstream beam pipe holder
-	
 	// Downstream beam pipe holder
 	G4double Downstream_Holder_X = 6.*inch;
-	G4double Downstream_Holder_Y = G3_Table_Y*0.5 + Z_Axis_Offset_Y - G3_Table_Plate_Thickness + 2.*inch;
+	G4double Downstream_Holder_Y = -(1.*inch - Lead_Wall_Y*0.5 - Concrete_Base_Y - Plastic_Base_Y);
 	G4double Downstream_Holder_Z = 0.5*inch;
 	
 	G4Box *Downstream_Holder_Solid_Solid = new G4Box("Downstream_Holder_Solid_Solid", Downstream_Holder_X*0.5, Downstream_Holder_Y*0.5, Downstream_Holder_Z*0.5);
@@ -151,5 +147,5 @@ G3_Table::G3_Table(){
 
 	G4LogicalVolume *Downstream_Holder_Logical = new G4LogicalVolume(Downstream_Holder_Solid, Al, "Downstream_Holder_Logical");
 
-	new G4PVPlacement(0, G4ThreeVector(0., -G3_Table_Y*0.5 + G3_Table_Plate_Thickness + Downstream_Holder_Y*0.5, G3_Table_Length*0.5 - 1.75*inch - Downstream_Holder_Z*0.5), Downstream_Holder_Logical, "Downstream_Holder", G3_Table_Logical, false, 0, false);
+	new G4PVPlacement(0, G4ThreeVector(0., -Downstream_Holder_Y*0.5, G3_Table_Length*0.5 - 1.75*inch - Downstream_Holder_Z*0.5), Downstream_Holder_Logical, "Downstream_Holder", G3_Table_Logical, false, 0, false);
 }

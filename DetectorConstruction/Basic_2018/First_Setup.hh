@@ -32,14 +32,11 @@ public:
 	G4double Get_Length(){ return First_Setup_Length; };
 	G4double Get_X(){ return First_Setup_X; };
 	G4double Get_Y(){ return First_Setup_Y; };
-	G4double Get_Z_Axis_Offset_Y(){ return Z_Axis_Offset_Y; };
 
 private:
 	G4double First_Setup_Length;
 	G4double First_Setup_X;
 	G4double First_Setup_Y;
-	G4double Z_Axis_Offset_Y;
-
 	G4LogicalVolume *First_Setup_Logical;
 };
 
