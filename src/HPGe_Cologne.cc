@@ -110,7 +110,7 @@ HPGe_Cologne::HPGe_Cologne(G4String Detector_Name) {
 	
 	G4double Dewar_Length = 10.5*inch;
 	G4double Dewar_Outer_Radius = 5.*inch;
-	G4double Dewar_Wall_Thickness = 5.* mm;
+	G4double Dewar_Wall_Thickness = 5.* mm; // Estimated
 	
 	// Mother Volume
 

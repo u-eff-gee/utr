@@ -37,6 +37,7 @@ Materials *materials = Materials::Instance();
 #include "First_UTR_Wall.hh"
 #include "First_Setup.hh"
 #include "G3_Wall.hh"
+#include "Detectors_G3.hh"
 #include "Wheel.hh"
 #include "G3_Table.hh"
 #include "Table2.hh"
@@ -47,25 +48,6 @@ Materials *materials = Materials::Instance();
 //#include "G4SDManager.hh"
 //#include "ParticleSD.hh"
 //#include "SecondarySD.hh"
-
-// Units
-//#include "G4PhysicalConstants.hh"
-//#include "G4SystemOfUnits.hh"
-//#include "G4UnitsTable.hh"
-
-// Detectors
-//#include "Germanium1_TUD.hh"
-//#include "Germanium2_TUD.hh"
-//#include "HPGe1.hh"
-//#include "HPGe1_55.hh"
-//#include "HPGe2.hh"
-//#include "HPGe2_55.hh"
-//#include "HPGe3.hh"
-//#include "HPGe4.hh"
-//#include "LaBr_Cologne.hh"
-//#include "LaBr_TUD.hh"
-//#include "Polarimeter_TUD.hh"
-//#include "ZeroDegree.hh"
 
 DetectorConstruction::DetectorConstruction() {}
 
@@ -79,11 +61,11 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	 * FIRST_UTR_WALL
 	 * FIRST_SETUP (first setup upstream of g3)
 	 * G3_WALL (wall immediately in front of g3)
-	 * G3_DETECTORS (detectors in g3)
+	 * DETECTORS_G3 (detectors in g3)
 	 * WHEEL (g3 wheel)
 	 * G3_TABLE
 	 * TABLE_2 (the table on which the second setup is mounted)
-	 * 2ND_DETECTORS (detectors in second setup)
+	 * DETECTORS_2ND (detectors in second setup)
 	 */
 
 	G4Colour white(1.0, 1.0, 1.0);
@@ -100,18 +82,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	G4NistManager *nist = G4NistManager::Instance();
 
-	// G4Material* Cu = nist->FindOrBuildMaterial("G4_Cu");
-	// G4Material* Au = nist->FindOrBuildMaterial("G4_Au");
-	//G4Material *Al = nist->FindOrBuildMaterial("G4_Al");
-	//	G4Material *vacuum = nist->FindOrBuildMaterial("G4_Galactic");
 	G4Material *air = nist->FindOrBuildMaterial("G4_AIR");
-	//G4Material *Pb = nist->FindOrBuildMaterial("G4_Pb");
-	//G4Material *Plexiglass = nist->FindOrBuildMaterial("G4_PLEXIGLASS");
-	//G4Material *Fe = nist->FindOrBuildMaterial("G4_Fe");
-	//G4Material *Concrete = nist->FindOrBuildMaterial("G4_CONCRETE");
-	//G4Material *Scintillator_Plastic =
-	//    nist->FindOrBuildMaterial("G4_PLASTIC_SC_VINYLTOLUENE");
-	//G4Material *pump_vacuum = materials->Get_Pump_Vacuum();
 
 	/***************** WORLD *****************/
 
@@ -145,6 +116,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	First_UTR_Wall first_UTR_Wall;
 	First_Setup first_Setup;
 	G3_Wall g3_Wall;
+	Detectors_G3 detectors_G3;
 	Wheel wheel;
 	G3_Table g3_Table;
 	Table2 table2;
@@ -162,9 +134,13 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 //	new G4PVPlacement(0, G4ThreeVector(0., 0., Wheel_To_Target - First_Setup_To_Wheel + First_Setup_To_G3_Wall + g3_Wall.Get_Length()*0.5), g3_Wall.Get_Logical(), "G3_Wall", World_Logical, false, 0, false);
 
+	/***************** DETECTORS_G3 *****************/
+
+	new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), detectors_G3.Get_Logical(), "Detectors_G3", World_Logical, false, 0, false);
+
 	/***************** WHEEL *****************/
 
-//	new G4PVPlacement(0, G4ThreeVector(0., 0., Wheel_To_Target + wheel.Get_Length()*0.5), wheel.Get_Logical(), "Wheel", World_Logical, false, 0, false);
+	new G4PVPlacement(0, G4ThreeVector(0., 0., Wheel_To_Target + wheel.Get_Length()*0.5), wheel.Get_Logical(), "Wheel", World_Logical, false, 0, false);
 
 	/***************** G3_TABLE *****************/
 
@@ -172,11 +148,11 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	/***************** TABLE_2 *****************/
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0.,  Wheel_To_Target + wheel.Get_Length() + g3_Table.Get_Length() + table2.Get_Length()*0.5 + table2.Get_Z_Axis_Offset_Z()), table2.Get_Logical(), "Table2", World_Logical, false, 0, false);
+//	new G4PVPlacement(0, G4ThreeVector(0., 0.,  Wheel_To_Target + wheel.Get_Length() + g3_Table.Get_Length() + table2.Get_Length()*0.5 + table2.Get_Z_Axis_Offset_Z()), table2.Get_Logical(), "Table2", World_Logical, false, 0, false);
 
 	/***************** DETECTORS_2ND *****************/
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., G3_Target_To_2nd_Target), detectors_2nd.Get_Logical(), "Detectors_2nd", World_Logical, false, 0, false);
+//	new G4PVPlacement(0, G4ThreeVector(0., 0., G3_Target_To_2nd_Target), detectors_2nd.Get_Logical(), "Detectors_2nd", World_Logical, false, 0, false);
 	
 
 	return World_Physical;

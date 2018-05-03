@@ -40,6 +40,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4SystemOfUnits.hh"
 
 #include "OptimizePolycone.hh"
+#include "Units.hh"
 
 HPGe1::HPGe1(G4String Detector_Name) {
 
@@ -49,6 +50,7 @@ HPGe1::HPGe1(G4String Detector_Name) {
 	G4Colour red(1.0, 0.0, 0.0);
 	G4Colour green(0.0, 1.0, 0.0);
 	G4Colour blue(0.0, 0.0, 1.0);
+	G4Colour brown(0.45, 0.25, 0.);
 	G4Colour cyan(0.0, 1.0, 1.0);
 	G4Colour magenta(1.0, 0.0, 1.0);
 	G4Colour yellow(1.0, 1.0, 0.0);
@@ -96,23 +98,35 @@ HPGe1::HPGe1(G4String Detector_Name) {
 	G4Material *EndCap_Window_Material = Be;
 	G4Material *ColdFinger_Material = Cu;
 	G4Material *Crystal_Material = Ge;
+	G4Material *Dewar_Material = Al;
+	G4Material *Connection_Material = Al;
+	
+	// Connection between dewar and mount cup
+	G4double Connection_Length = 2.*inch;
+	G4double Connection_Radius = 0.75*inch; // Estimated
+
+	// Dewar dimensions
+	
+	G4double Dewar_Length = 9.*inch;
+	G4double Dewar_Outer_Radius = 3.*inch;
+	G4double Dewar_Wall_Thickness = 5.* mm; // Estimated
 
 	// Mother Volume
 
-	G4double Mother_Radius =
-	    Detector_Radius + MountCup_Wall + End_Cap_To_Crystal_Gap + EndCap_Wall;
+	G4double Mother_Radius = Dewar_Outer_Radius;
 	G4double Mother_Length =
-	    EndCap_Window + End_Cap_To_Crystal_Gap + MountCup_Length;
+	    EndCap_Window + End_Cap_To_Crystal_Gap + MountCup_Length + Connection_Length + Dewar_Length;
 
 	Length = Mother_Length;
 	Radius = Mother_Radius;
+	Front_Radius = Detector_Radius + MountCup_Wall + End_Cap_To_Crystal_Gap + EndCap_Wall;
 
 	G4Tubs *Mother_Solid = new G4Tubs("Mother_Solid", 0., Mother_Radius,
 	                                  Mother_Length / 2, 0. * deg, 360. * deg);
 	HPGe1_Logical = new G4LogicalVolume(Mother_Solid, Mother_Material,
 	                                    "Mother_Logical", 0, 0, 0);
 
-	HPGe1_Logical->SetVisAttributes(new G4VisAttributes(red));
+	HPGe1_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());
 
 	// End Cap
 
@@ -258,7 +272,7 @@ HPGe1::HPGe1(G4String Detector_Name) {
 
 	ColdFinger_Logical->SetVisAttributes(new G4VisAttributes(orange));
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., -Length * 0.5),
+	new G4PVPlacement(0, G4ThreeVector(0., 0., Length * 0.5 - EndCap_Window - End_Cap_To_Crystal_Gap - MountCup_Length),
 	                  ColdFinger_Logical, "ColdFinger", HPGe1_Logical, false,
 	                  0);
 
@@ -314,4 +328,29 @@ HPGe1::HPGe1(G4String Detector_Name) {
 	                                               MountCup_Wall -
 	                                               Detector_Length),
 	                  Crystal_Logical, "Crystal", HPGe1_Logical, false, 0);
+	
+	// Connection
+
+	G4Tubs* Connection_Solid = new G4Tubs("Connection_Solid", 0., Connection_Radius, Connection_Length*0.5, 0., twopi);
+	G4LogicalVolume* Connection_Logical = new G4LogicalVolume(Connection_Solid, Connection_Material, "Connection_Logical");
+
+	Connection_Logical->SetVisAttributes(grey);
+
+	new G4PVPlacement(0, G4ThreeVector(0., 0., Length*0.5- EndCap_Window - End_Cap_To_Crystal_Gap - MountCup_Length - Connection_Length*0.5), Connection_Logical, "Connection", HPGe1_Logical, false, 0, false);
+
+	// Dewar
+
+	G4Tubs* Dewar_Lid_Solid = new G4Tubs("Dewar_Lid_Solid", 0, Dewar_Outer_Radius, Dewar_Wall_Thickness*0.5, 0., twopi);
+	G4LogicalVolume *Dewar_Lid_Logical = new G4LogicalVolume(Dewar_Lid_Solid, Dewar_Material, "Dewar_Lid_Logical");
+	Dewar_Lid_Logical->SetVisAttributes(brown);
+
+	new G4PVPlacement(0, G4ThreeVector(0., 0., Length*0.5- EndCap_Window - End_Cap_To_Crystal_Gap - MountCup_Length - Connection_Length - Dewar_Wall_Thickness*0.5), Dewar_Lid_Logical, "Dewar_Lid_1", HPGe1_Logical, false, 0, false);
+	
+	G4Tubs* Dewar_Wall_Solid = new G4Tubs("Dewar_Wall_Solid", Dewar_Outer_Radius - Dewar_Wall_Thickness, Dewar_Outer_Radius, (Dewar_Length - 2.*Dewar_Wall_Thickness)*0.5, 0., twopi);
+	G4LogicalVolume* Dewar_Wall_Logical = new G4LogicalVolume(Dewar_Wall_Solid, Dewar_Material, "Dewar_Wall_Logical");
+	Dewar_Wall_Logical->SetVisAttributes(brown);
+
+	new G4PVPlacement(0, G4ThreeVector(0., 0., Length*0.5- EndCap_Window - End_Cap_To_Crystal_Gap - MountCup_Length - Connection_Length - Dewar_Length*0.5), Dewar_Wall_Logical, "Dewar_Wall", HPGe1_Logical, false, 0, false);
+
+	new G4PVPlacement(0, G4ThreeVector(0., 0., Length*0.5- EndCap_Window - End_Cap_To_Crystal_Gap - MountCup_Length - Connection_Length - Dewar_Length + Dewar_Wall_Thickness*0.5), Dewar_Lid_Logical, "Dewar_Lid_2", HPGe1_Logical, false, 0, false);
 }
