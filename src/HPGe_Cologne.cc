@@ -120,6 +120,7 @@ HPGe_Cologne::HPGe_Cologne(G4String Detector_Name) {
 
 	Length = Mother_Length;
 	Radius = Mother_Radius;
+	Front_Radius = Detector_Radius + MountCup_Wall + End_Cap_To_Crystal_Gap + EndCap_Wall;
 
 	G4Tubs *Mother_Solid = new G4Tubs("Mother_Solid", 0., Mother_Radius,
 	                                  Mother_Length *0.5, 0. * deg, 360. * deg);

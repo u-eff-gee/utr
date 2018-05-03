@@ -140,7 +140,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	G4double First_Setup_To_G3_Wall = 3.5*inch;
 	G4double G3_Target_To_2nd_Target = 62.*inch; // Estimated
 
-	/***************** INITIALIZAIONS *****************/
+	/***************** INITIALIZATIONS *****************/
 
 	First_UTR_Wall first_UTR_Wall;
 	First_Setup first_Setup;

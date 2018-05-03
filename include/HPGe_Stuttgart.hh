@@ -39,10 +39,12 @@ class HPGe_Stuttgart {
 
 	G4double Get_Length() { return Length; };
 	G4double Get_Radius() { return Radius; };
+	G4double Get_Front_Radius() { return Front_Radius; };
 
   private:
 	G4double Length;
 	G4double Radius;
+	G4double Front_Radius;
 
 	G4LogicalVolume *HPGe_Stuttgart_Logical;
 };
