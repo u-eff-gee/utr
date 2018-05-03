@@ -22,10 +22,13 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4NistManager.hh"
 #include "G4PVPlacement.hh"
 #include "G4LogicalVolume.hh"
+#include "G4SystemOfUnits.hh"
 
 #include "Units.hh"
 #include "Detectors_2nd.hh"
 #include "HPGe_Stuttgart.hh"
+#include "HPGe_Cologne.hh"
+#include "HPGe1_55.hh"
 
 Detectors_2nd::Detectors_2nd(){
 	
@@ -41,9 +44,117 @@ Detectors_2nd::Detectors_2nd(){
 	G4Box *Detectors_2nd_Solid = new G4Box("Detectors_2nd_Solid", Detectors_2nd_X*0.5, Detectors_2nd_Y*0.5, Detectors_2nd_Length*0.5);
 	Detectors_2nd_Logical = new G4LogicalVolume(Detectors_2nd_Solid, air, "Detectors_2nd_Logical");
 
+	/************************** Detectors ***************************/
+	//
+	// 1) HPGE10 (HPGe_Cologne)
+	// 2) HPGE11 (HPGe_Stuttgart)
+	// 3) HPGE12 (TUNL HPGe1_55)
+	//
+	// Placement in spherical coordinate system
+	//
+	//                      y      z = beam direction
+	//
+	//                      |   /
+	//                      |  /
+	//                      | /
+	//                      O------ x = polarization plane
+	//
+	//
+	//			y
+	//
+	//			|   /Λ
+	//			|  / |  phi
+	//			| /  |
+	//			|/___|__ x
+	//
+	//
+	//			x-y-Plane
+	//
+	//			|   /Λ
+	//			|  / |  theta
+	//			| /  |
+	//			|/___|__ z
+	//
 
-	HPGe_Stuttgart hpge_Stuttgart = HPGe_Stuttgart("HPGe_Stuttgart");
-	G4LogicalVolume *HPGe_Stuttgart_Logical = hpge_Stuttgart.Get_Logical();
+	/**************** HPGE11 HPGe_Stuttgart *******************/
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), HPGe_Stuttgart_Logical, "HPGe_Stuttgart", Detectors_2nd_Logical, false, 0, false);
+	G4double HPGe_Cologne_rt = 100. * mm; // Estimated
+	G4double HPGe_Cologne_dy = 0. * mm; // Estimated
+	G4double HPGe_Cologne_dz = 0. * mm; // Estimated
+	G4double HPGe_Cologne_phi = 270. * deg;
+	G4double HPGe_Cologne_theta = 90. * deg;
+
+	G4double HPGe_Cologne_AngleX = 90. * deg;
+	G4double HPGe_Cologne_AngleY = 0. * deg;
+
+	HPGe_Cologne *HPGe_Cologne_Instance = new HPGe_Cologne("HPGe_Cologne");
+	G4LogicalVolume *HPGe_Cologne_Logical = HPGe_Cologne_Instance->Get_Logical();
+
+	G4RotationMatrix *rotateHPGe_Cologne = new G4RotationMatrix();
+	rotateHPGe_Cologne->rotateX(HPGe_Cologne_AngleX);
+	rotateHPGe_Cologne->rotateY(HPGe_Cologne_AngleY);
+
+	HPGe_Cologne_rt = HPGe_Cologne_rt + HPGe_Cologne_Instance->Get_Length() * 0.5;
+
+	new G4PVPlacement(
+	    rotateHPGe_Cologne,
+	    G4ThreeVector(HPGe_Cologne_rt * sin(HPGe_Cologne_theta) * cos(HPGe_Cologne_phi),
+	                  HPGe_Cologne_rt * sin(HPGe_Cologne_theta) * sin(HPGe_Cologne_phi) + HPGe_Cologne_dy,
+	                  HPGe_Cologne_rt * cos(HPGe_Cologne_theta) + HPGe_Cologne_dz),
+	    HPGe_Cologne_Logical, "HPGe_Cologne", Detectors_2nd_Logical, false, 0);
+
+	/**************** HPGE11 HPGe_Stuttgart *******************/
+
+	G4double HPGe_Stuttgart_rt = 100. * mm; // Estimated
+	G4double HPGe_Stuttgart_dy = 0. * mm; // Estimated
+	G4double HPGe_Stuttgart_dz = 0. * mm; // Estimated
+	G4double HPGe_Stuttgart_phi = 0. * deg;
+	G4double HPGe_Stuttgart_theta = 90. * deg;
+
+	G4double HPGe_Stuttgart_AngleX = 180. * deg;
+	G4double HPGe_Stuttgart_AngleY = 90. * deg;
+
+	HPGe_Stuttgart *HPGe_Stuttgart_Instance = new HPGe_Stuttgart("HPGe_Stuttgart");
+	G4LogicalVolume *HPGe_Stuttgart_Logical = HPGe_Stuttgart_Instance->Get_Logical();
+
+	G4RotationMatrix *rotateHPGe_Stuttgart = new G4RotationMatrix();
+	rotateHPGe_Stuttgart->rotateX(HPGe_Stuttgart_AngleX);
+	rotateHPGe_Stuttgart->rotateY(HPGe_Stuttgart_AngleY);
+
+	HPGe_Stuttgart_rt = HPGe_Stuttgart_rt + HPGe_Stuttgart_Instance->Get_Length() * 0.5;
+
+	new G4PVPlacement(
+	    rotateHPGe_Stuttgart,
+	    G4ThreeVector(HPGe_Stuttgart_rt * sin(HPGe_Stuttgart_theta) * cos(HPGe_Stuttgart_phi),
+	                  HPGe_Stuttgart_rt * sin(HPGe_Stuttgart_theta) * sin(HPGe_Stuttgart_phi) + HPGe_Stuttgart_dy,
+	                  HPGe_Stuttgart_rt * cos(HPGe_Stuttgart_theta) + HPGe_Stuttgart_dz),
+	    HPGe_Stuttgart_Logical, "HPGe_Stuttgart", Detectors_2nd_Logical, false, 0);
+
+	/**************** HPGE12 HPGe1_55 *******************/
+
+	G4double HPGe1_55_rt = 100. * mm; // Estimated
+	G4double HPGe1_55_dy = 0. * mm; // Estimated
+	G4double HPGe1_55_dz = 0. * mm; // Estimated
+	G4double HPGe1_55_phi = 90. * deg;
+	G4double HPGe1_55_theta = 90. * deg;
+
+	G4double HPGe1_55_AngleX = 270. * deg;
+	G4double HPGe1_55_AngleY = 0. * deg;
+
+	HPGe1_55 *HPGe1_55_Instance = new HPGe1_55("HPGe1_55");
+	G4LogicalVolume *HPGe1_55_Logical = HPGe1_55_Instance->Get_Logical();
+
+	G4RotationMatrix *rotateHPGe1_55 = new G4RotationMatrix();
+	rotateHPGe1_55->rotateX(HPGe1_55_AngleX);
+	rotateHPGe1_55->rotateY(HPGe1_55_AngleY);
+
+	HPGe1_55_rt = HPGe1_55_rt + HPGe1_55_Instance->Get_Length() * 0.5;
+
+	new G4PVPlacement(
+	    rotateHPGe1_55,
+	    G4ThreeVector(HPGe1_55_rt * sin(HPGe1_55_theta) * cos(HPGe1_55_phi),
+	                  HPGe1_55_rt * sin(HPGe1_55_theta) * sin(HPGe1_55_phi) + HPGe1_55_dy,
+	                  HPGe1_55_rt * cos(HPGe1_55_theta) + HPGe1_55_dz),
+	    HPGe1_55_Logical, "HPGe1_55", Detectors_2nd_Logical, false, 0);
+
 }

@@ -40,6 +40,7 @@ Materials *materials = Materials::Instance();
 #include "Wheel.hh"
 #include "G3_Table.hh"
 #include "Table2.hh"
+#include "Detectors_2nd.hh"
 
 // Sensitive Detectors
 //#include "EnergyDepositionSD.hh"
@@ -78,9 +79,11 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	 * FIRST_UTR_WALL
 	 * FIRST_SETUP (first setup upstream of g3)
 	 * G3_WALL (wall immediately in front of g3)
+	 * G3_DETECTORS (detectors in g3)
 	 * WHEEL (g3 wheel)
 	 * G3_TABLE
 	 * TABLE_2 (the table on which the second setup is mounted)
+	 * 2ND_DETECTORS (detectors in second setup)
 	 */
 
 	G4Colour white(1.0, 1.0, 1.0);
@@ -135,6 +138,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	G4double First_Setup_To_Wheel = 34.*inch;
 	G4double First_UTR_Wall_To_First_Setup = 4.2*inch;
 	G4double First_Setup_To_G3_Wall = 3.5*inch;
+	G4double G3_Target_To_2nd_Target = 62.*inch; // Estimated
 
 	/***************** INITIALIZAIONS *****************/
 
@@ -144,30 +148,36 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	Wheel wheel;
 	G3_Table g3_Table;
 	Table2 table2;
+	Detectors_2nd detectors_2nd;	
 
 	/***************** FIRST_UTR_WALL *****************/
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., Wheel_To_Target - First_Setup_To_Wheel - first_Setup.Get_Length() - First_UTR_Wall_To_First_Setup - first_UTR_Wall.Get_Length()*0.5), first_UTR_Wall.Get_Logical(), "First_UTR_Wall", World_Logical, false, 0, false);
+//	new G4PVPlacement(0, G4ThreeVector(0., 0., Wheel_To_Target - First_Setup_To_Wheel - first_Setup.Get_Length() - First_UTR_Wall_To_First_Setup - first_UTR_Wall.Get_Length()*0.5), first_UTR_Wall.Get_Logical(), "First_UTR_Wall", World_Logical, false, 0, false);
 
 	/***************** FIRST_SETUP *****************/
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., Wheel_To_Target - First_Setup_To_Wheel - first_Setup.Get_Length()*0.5), first_Setup.Get_Logical(), "First_Setup", World_Logical, false, 0, false);
+//	new G4PVPlacement(0, G4ThreeVector(0., 0., Wheel_To_Target - First_Setup_To_Wheel - first_Setup.Get_Length()*0.5), first_Setup.Get_Logical(), "First_Setup", World_Logical, false, 0, false);
 
 	/***************** G3_WALL *****************/
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., Wheel_To_Target - First_Setup_To_Wheel + First_Setup_To_G3_Wall + g3_Wall.Get_Length()*0.5), g3_Wall.Get_Logical(), "G3_Wall", World_Logical, false, 0, false);
+//	new G4PVPlacement(0, G4ThreeVector(0., 0., Wheel_To_Target - First_Setup_To_Wheel + First_Setup_To_G3_Wall + g3_Wall.Get_Length()*0.5), g3_Wall.Get_Logical(), "G3_Wall", World_Logical, false, 0, false);
 
 	/***************** WHEEL *****************/
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., Wheel_To_Target + wheel.Get_Length()*0.5), wheel.Get_Logical(), "Wheel", World_Logical, false, 0, false);
+//	new G4PVPlacement(0, G4ThreeVector(0., 0., Wheel_To_Target + wheel.Get_Length()*0.5), wheel.Get_Logical(), "Wheel", World_Logical, false, 0, false);
 
 	/***************** G3_TABLE *****************/
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., Wheel_To_Target + wheel.Get_Length() + g3_Table.Get_Length()*0.5), g3_Table.Get_Logical(), "G3_Table", World_Logical, false, 0, false);
+//	new G4PVPlacement(0, G4ThreeVector(0., 0., Wheel_To_Target + wheel.Get_Length() + g3_Table.Get_Length()*0.5), g3_Table.Get_Logical(), "G3_Table", World_Logical, false, 0, false);
 
 	/***************** TABLE_2 *****************/
 
 	new G4PVPlacement(0, G4ThreeVector(0., 0.,  Wheel_To_Target + wheel.Get_Length() + g3_Table.Get_Length() + table2.Get_Length()*0.5 + table2.Get_Z_Axis_Offset_Z()), table2.Get_Logical(), "Table2", World_Logical, false, 0, false);
+
+	/***************** DETECTORS_2ND *****************/
+
+	new G4PVPlacement(0, G4ThreeVector(0., 0., G3_Target_To_2nd_Target), detectors_2nd.Get_Logical(), "Detectors_2nd", World_Logical, false, 0, false);
+	
 
 	return World_Physical;
 }
