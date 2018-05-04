@@ -19,20 +19,20 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 //**************************************************************//
-//	60%  HPGe detector 1 @ HIGS Serial No. 36-TN31061A
+//	60%  HPGe detector @ HIGS Serial No. 36-TN31061A
 //**************************************************************//
 
-#ifndef HPGe1_h
-#define HPGe1_h 1
+#ifndef HPGe_60_TUNL_31061_h
+#define HPGe_60_TUNL_31061_h 1
 
 #include "G4LogicalVolume.hh"
 
-class HPGe1 {
+class HPGe_60_TUNL_31061 {
   public:
-	HPGe1(G4String Detector_Name);
-	~HPGe1();
+	HPGe_60_TUNL_31061(G4String Detector_Name);
+	~HPGe_60_TUNL_31061();
 
-	G4LogicalVolume *Get_Logical() { return HPGe1_Logical; }
+	G4LogicalVolume *Get_Logical() { return HPGe_60_TUNL_31061_Logical; }
 
 	G4double Get_Length() { return Length; };
 	G4double Get_Radius() { return Radius; };
@@ -43,7 +43,7 @@ class HPGe1 {
 	G4double Radius;
 	G4double Front_Radius;
 
-	G4LogicalVolume *HPGe1_Logical;
+	G4LogicalVolume *HPGe_60_TUNL_31061_Logical;
 };
 
 #endif

@@ -18,32 +18,32 @@ You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/// \file HPGe4.hh
-/// \brief Header file of HPGe4
-
 //**************************************************************//
-//	60%  HPGe detector 4 @ HIGS Serial No. 36-TN21033A
+//	60%  HPGe detector @ HIGS Serial No. 36-TN40663A
 //**************************************************************//
 
-#ifndef HPGe4_h
-#define HPGe4_h 1
+#ifndef HPGe_60_TUNL_40663_h
+#define HPGe_60_TUNL_40663_h 1
 
 #include "G4LogicalVolume.hh"
 
-class HPGe4 {
+class HPGe_60_TUNL_40663 {
   public:
-	HPGe4(G4String Detector_Name);
-	~HPGe4();
+	HPGe_60_TUNL_40663(G4String Detector_Name);
+	~HPGe_60_TUNL_40663();
 
-	G4LogicalVolume *Get_Logical() { return HPGe4_Logical; }
-	G4double Get_Length() { return Length; }
-	G4double Get_Radius() { return Radius; }
+	G4LogicalVolume *Get_Logical() { return HPGe_60_TUNL_40663_Logical; }
+
+	G4double Get_Length() { return Length; };
+	G4double Get_Radius() { return Radius; };
+	G4double Get_Front_Radius() { return Front_Radius; };
 
   private:
 	G4double Length;
 	G4double Radius;
+	G4double Front_Radius;
 
-	G4LogicalVolume *HPGe4_Logical;
+	G4LogicalVolume *HPGe_60_TUNL_40663_Logical;
 };
 
 #endif

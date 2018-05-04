@@ -29,7 +29,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Units.hh"
 #include "Detectors_G3.hh"
-#include "HPGe1.hh"
+#include "HPGe_60_TUNL_40663.hh"
 #include "FilterCase.hh"
 
 Detectors_G3::Detectors_G3(){
@@ -105,7 +105,7 @@ Detectors_G3::Detectors_G3(){
 	G4double HPGe1_Pb_Wrap_Thickness = 2.*mm; // Estimated
 	G4double HPGe1_Pb_Wrap_Length = 100.*mm; // Estimated
 
-	HPGe1 *HPGe1_Instance = new HPGe1("HPGe1");
+	HPGe_60_TUNL_40663 *HPGe1_Instance = new HPGe_60_TUNL_40663("HPGe1");
 	G4LogicalVolume *HPGe1_Logical = HPGe1_Instance->Get_Logical();
 
 	G4RotationMatrix *rotateHPGe1 = new G4RotationMatrix();

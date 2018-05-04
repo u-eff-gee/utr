@@ -31,7 +31,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "Detectors_2nd.hh"
 #include "HPGe_Stuttgart.hh"
 #include "HPGe_Cologne.hh"
-#include "HPGe1_55.hh"
+#include "HPGe_55_TUNL_31524.hh"
 
 Detectors_2nd::Detectors_2nd(){
 
@@ -250,86 +250,86 @@ Detectors_2nd::Detectors_2nd(){
 	    HPGe_Stuttgart_Pb_Logical, "HPGe_Stuttgart_Pb", Detectors_2nd_Logical, false, 0);
 	}
 
-	/**************** HPGE12 HPGe1_55 *******************/
+	/**************** HPGE12 HPGe_55_TUNL_31524 *******************/
 
-	G4double HPGe1_55_rt = 100. * mm; // Estimated
-	G4double HPGe1_55_dy = 0. * mm; // Estimated
-	G4double HPGe1_55_dz = 0. * mm; // Estimated
-	G4double HPGe1_55_phi = 90. * deg;
-	G4double HPGe1_55_theta = 90. * deg;
+	G4double HPGe12_rt = 100. * mm; // Estimated
+	G4double HPGe12_dy = 0. * mm; // Estimated
+	G4double HPGe12_dz = 0. * mm; // Estimated
+	G4double HPGe12_phi = 90. * deg;
+	G4double HPGe12_theta = 90. * deg;
 
-	G4double HPGe1_55_AngleX = 270. * deg;
-	G4double HPGe1_55_AngleY = 0. * deg;
+	G4double HPGe12_AngleX = 270. * deg;
+	G4double HPGe12_AngleY = 0. * deg;
 	
-	G4double HPGe1_55_Cu_Radius = 50.*mm; // Estimated
-	G4double HPGe1_55_Cu_Thickness = 1.*mm; // Estimated
-	G4double HPGe1_55_Pb_Radius = 50.*mm; // Estimated
-	G4double HPGe1_55_Pb_Thickness = 3.*mm; // Estimated
-	G4double HPGe1_55_Pb_Wrap_Thickness = 2.*mm; // Estimated
-	G4double HPGe1_55_Pb_Wrap_Length = 150.*mm; // Estimated
+	G4double HPGe12_Cu_Radius = 50.*mm; // Estimated
+	G4double HPGe12_Cu_Thickness = 1.*mm; // Estimated
+	G4double HPGe12_Pb_Radius = 50.*mm; // Estimated
+	G4double HPGe12_Pb_Thickness = 3.*mm; // Estimated
+	G4double HPGe12_Pb_Wrap_Thickness = 2.*mm; // Estimated
+	G4double HPGe12_Pb_Wrap_Length = 150.*mm; // Estimated
 
-	HPGe1_55 *HPGe1_55_Instance = new HPGe1_55("HPGe1_55");
-	G4LogicalVolume *HPGe1_55_Logical = HPGe1_55_Instance->Get_Logical();
+	HPGe_55_TUNL_31524 *HPGe12_Instance = new HPGe_55_TUNL_31524("HPGe12");
+	G4LogicalVolume *HPGe12_Logical = HPGe12_Instance->Get_Logical();
 
-	G4RotationMatrix *rotateHPGe1_55 = new G4RotationMatrix();
-	rotateHPGe1_55->rotateX(HPGe1_55_AngleX);
-	rotateHPGe1_55->rotateY(HPGe1_55_AngleY);
+	G4RotationMatrix *rotateHPGe12 = new G4RotationMatrix();
+	rotateHPGe12->rotateX(HPGe12_AngleX);
+	rotateHPGe12->rotateY(HPGe12_AngleY);
 
-	HPGe1_55_rt = HPGe1_55_rt + HPGe1_55_Instance->Get_Length() * 0.5;
+	HPGe12_rt = HPGe12_rt + HPGe12_Instance->Get_Length() * 0.5;
 
 	new G4PVPlacement(
-	    rotateHPGe1_55,
-	    G4ThreeVector(HPGe1_55_rt * sin(HPGe1_55_theta) * cos(HPGe1_55_phi),
-	                  HPGe1_55_rt * sin(HPGe1_55_theta) * sin(HPGe1_55_phi) + HPGe1_55_dy,
-	                  HPGe1_55_rt * cos(HPGe1_55_theta) + HPGe1_55_dz),
-	    HPGe1_55_Logical, "HPGe1_55", Detectors_2nd_Logical, false, 0);
+	    rotateHPGe12,
+	    G4ThreeVector(HPGe12_rt * sin(HPGe12_theta) * cos(HPGe12_phi),
+	                  HPGe12_rt * sin(HPGe12_theta) * sin(HPGe12_phi) + HPGe12_dy,
+	                  HPGe12_rt * cos(HPGe12_theta) + HPGe12_dz),
+	    HPGe12_Logical, "HPGe12", Detectors_2nd_Logical, false, 0);
 
-	HPGe1_55_rt -= HPGe1_55_Instance->Get_Length() * 0.5;
+	HPGe12_rt -= HPGe12_Instance->Get_Length() * 0.5;
 
-	if(HPGe1_55_Pb_Wrap_Thickness != 0.){
-		HPGe1_55_rt += HPGe1_55_Pb_Wrap_Length * 0.5;
+	if(HPGe12_Pb_Wrap_Thickness != 0.){
+		HPGe12_rt += HPGe12_Pb_Wrap_Length * 0.5;
 
-		G4Tubs *HPGe1_55_Pb_Wrap_Solid = new G4Tubs("HPGe1_55_Pb_Wrap_Solid", HPGe1_55_Instance->Get_Front_Radius(), HPGe1_55_Instance->Get_Front_Radius() + HPGe1_55_Pb_Wrap_Thickness, HPGe1_55_Pb_Wrap_Length*0.5, 0., twopi);
+		G4Tubs *HPGe12_Pb_Wrap_Solid = new G4Tubs("HPGe12_Pb_Wrap_Solid", HPGe12_Instance->Get_Front_Radius(), HPGe12_Instance->Get_Front_Radius() + HPGe12_Pb_Wrap_Thickness, HPGe12_Pb_Wrap_Length*0.5, 0., twopi);
 
-		G4LogicalVolume *HPGe1_55_Pb_Wrap_Logical = new G4LogicalVolume(HPGe1_55_Pb_Wrap_Solid, Pb, "HPGe1_55_Pb_Wrap_Logical");
-		HPGe1_55_Pb_Wrap_Logical->SetVisAttributes(green);
+		G4LogicalVolume *HPGe12_Pb_Wrap_Logical = new G4LogicalVolume(HPGe12_Pb_Wrap_Solid, Pb, "HPGe12_Pb_Wrap_Logical");
+		HPGe12_Pb_Wrap_Logical->SetVisAttributes(green);
 
-		new G4PVPlacement(rotateHPGe1_55,
-	    G4ThreeVector(HPGe1_55_rt * sin(HPGe1_55_theta) * cos(HPGe1_55_phi),
-	                  HPGe1_55_rt * sin(HPGe1_55_theta) * sin(HPGe1_55_phi) + HPGe1_55_dy,
-	                  HPGe1_55_rt * cos(HPGe1_55_theta) + HPGe1_55_dz),
-	    HPGe1_55_Pb_Wrap_Logical, "HPGe1_55_Pb_Wrap", Detectors_2nd_Logical, false, 0);
+		new G4PVPlacement(rotateHPGe12,
+	    G4ThreeVector(HPGe12_rt * sin(HPGe12_theta) * cos(HPGe12_phi),
+	                  HPGe12_rt * sin(HPGe12_theta) * sin(HPGe12_phi) + HPGe12_dy,
+	                  HPGe12_rt * cos(HPGe12_theta) + HPGe12_dz),
+	    HPGe12_Pb_Wrap_Logical, "HPGe12_Pb_Wrap", Detectors_2nd_Logical, false, 0);
 
-		HPGe1_55_rt -= HPGe1_55_Pb_Wrap_Length * 0.5;
+		HPGe12_rt -= HPGe12_Pb_Wrap_Length * 0.5;
 	}
 
-	if(HPGe1_55_Cu_Thickness > 0.){
-		HPGe1_55_rt -= HPGe1_55_Cu_Thickness * 0.5;
+	if(HPGe12_Cu_Thickness > 0.){
+		HPGe12_rt -= HPGe12_Cu_Thickness * 0.5;
 
-		G4Tubs* HPGe1_55_Cu_Solid = new G4Tubs("HPGe1_55_Cu_Solid", 0., HPGe1_55_Cu_Radius, HPGe1_55_Cu_Thickness*0.5, 0., twopi);
-		G4LogicalVolume *HPGe1_55_Cu_Logical = new G4LogicalVolume(HPGe1_55_Cu_Solid, Cu, "HPGe1_55_Cu_Logical");
-		HPGe1_55_Cu_Logical->SetVisAttributes(orange);
+		G4Tubs* HPGe12_Cu_Solid = new G4Tubs("HPGe12_Cu_Solid", 0., HPGe12_Cu_Radius, HPGe12_Cu_Thickness*0.5, 0., twopi);
+		G4LogicalVolume *HPGe12_Cu_Logical = new G4LogicalVolume(HPGe12_Cu_Solid, Cu, "HPGe12_Cu_Logical");
+		HPGe12_Cu_Logical->SetVisAttributes(orange);
 
-		new G4PVPlacement(rotateHPGe1_55,
-	    G4ThreeVector(HPGe1_55_rt * sin(HPGe1_55_theta) * cos(HPGe1_55_phi),
-	                  HPGe1_55_rt * sin(HPGe1_55_theta) * sin(HPGe1_55_phi) + HPGe1_55_dy,
-	                  HPGe1_55_rt * cos(HPGe1_55_theta) + HPGe1_55_dz),
-	    HPGe1_55_Cu_Logical, "HPGe1_55_Cu", Detectors_2nd_Logical, false, 0);
+		new G4PVPlacement(rotateHPGe12,
+	    G4ThreeVector(HPGe12_rt * sin(HPGe12_theta) * cos(HPGe12_phi),
+	                  HPGe12_rt * sin(HPGe12_theta) * sin(HPGe12_phi) + HPGe12_dy,
+	                  HPGe12_rt * cos(HPGe12_theta) + HPGe12_dz),
+	    HPGe12_Cu_Logical, "HPGe12_Cu", Detectors_2nd_Logical, false, 0);
 	}
 
-	HPGe1_55_rt -= HPGe1_55_Cu_Thickness*0.5;
+	HPGe12_rt -= HPGe12_Cu_Thickness*0.5;
 
-	if(HPGe1_55_Pb_Thickness > 0.){
-		HPGe1_55_rt -= HPGe1_55_Pb_Thickness * 0.5;
+	if(HPGe12_Pb_Thickness > 0.){
+		HPGe12_rt -= HPGe12_Pb_Thickness * 0.5;
 
-		G4Tubs* HPGe1_55_Pb_Solid = new G4Tubs("HPGe1_55_Pb_Solid", 0., HPGe1_55_Pb_Radius, HPGe1_55_Pb_Thickness*0.5, 0., twopi);
-		G4LogicalVolume *HPGe1_55_Pb_Logical = new G4LogicalVolume(HPGe1_55_Pb_Solid, Pb, "HPGe1_55_Pb_Logical");
-		HPGe1_55_Pb_Logical->SetVisAttributes(green);
+		G4Tubs* HPGe12_Pb_Solid = new G4Tubs("HPGe12_Pb_Solid", 0., HPGe12_Pb_Radius, HPGe12_Pb_Thickness*0.5, 0., twopi);
+		G4LogicalVolume *HPGe12_Pb_Logical = new G4LogicalVolume(HPGe12_Pb_Solid, Pb, "HPGe12_Pb_Logical");
+		HPGe12_Pb_Logical->SetVisAttributes(green);
 
-		new G4PVPlacement(rotateHPGe1_55,
-	    G4ThreeVector(HPGe1_55_rt * sin(HPGe1_55_theta) * cos(HPGe1_55_phi),
-	                  HPGe1_55_rt * sin(HPGe1_55_theta) * sin(HPGe1_55_phi) + HPGe1_55_dy,
-	                  HPGe1_55_rt * cos(HPGe1_55_theta) + HPGe1_55_dz),
-	    HPGe1_55_Pb_Logical, "HPGe1_55_Pb", Detectors_2nd_Logical, false, 0);
+		new G4PVPlacement(rotateHPGe12,
+	    G4ThreeVector(HPGe12_rt * sin(HPGe12_theta) * cos(HPGe12_phi),
+	                  HPGe12_rt * sin(HPGe12_theta) * sin(HPGe12_phi) + HPGe12_dy,
+	                  HPGe12_rt * cos(HPGe12_theta) + HPGe12_dz),
+	    HPGe12_Pb_Logical, "HPGe12_Pb", Detectors_2nd_Logical, false, 0);
 	}
 }
