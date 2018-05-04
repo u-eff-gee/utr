@@ -19,14 +19,10 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 //**************************************************************//
-//	Nominal 100% coaxial HPGe, 
-//	Ortec serial number: 73954
-//	Dimensions from g4horus Geant4 implementation of the
-//	HORUS setup in Cologne (https://gitlab.ikp.uni-koeln.de/jmayer/g4horus/)
-//	Published under the MIT license (see header file)
+// ANL detector (no datasheet available, all copied from HPGe_Cologne)
 //**************************************************************//
 
-#include "HPGe_Cologne.hh"
+#include "HPGe_ANL.hh"
 #include "G4LogicalVolume.hh"
 #include "G4Material.hh"
 #include "G4MaterialTable.hh"
@@ -46,7 +42,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "OptimizePolycone.hh"
 #include "Units.hh"
 
-HPGe_Cologne::HPGe_Cologne(G4String Detector_Name) {
+HPGe_ANL::HPGe_ANL(G4String Detector_Name) {
 
 	G4Colour white(1.0, 1.0, 1.0);
 	G4Colour grey(0.5, 0.5, 0.5);
@@ -124,10 +120,10 @@ HPGe_Cologne::HPGe_Cologne(G4String Detector_Name) {
 
 	G4Tubs *Mother_Solid = new G4Tubs("Mother_Solid", 0., Mother_Radius,
 	                                  Mother_Length *0.5, 0. * deg, 360. * deg);
-	HPGe_Cologne_Logical = new G4LogicalVolume(Mother_Solid, Mother_Material,
+	HPGe_ANL_Logical = new G4LogicalVolume(Mother_Solid, Mother_Material,
 	                                    "Mother_Logical", 0, 0, 0);
 
-	HPGe_Cologne_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());
+	HPGe_ANL_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());
 
 	// End Cap
 
@@ -148,7 +144,7 @@ HPGe_Cologne::HPGe_Cologne(G4String Detector_Name) {
 
 	new G4PVPlacement(0, G4ThreeVector(0., 0., Length *0.5- EndCap_Length *0.5-
 	                                               EndCap_Window),
-	                  EndCap_Logical, "EndCap", HPGe_Cologne_Logical, false, 0);
+	                  EndCap_Logical, "EndCap", HPGe_ANL_Logical, false, 0);
 
 	// End Cap Window
 
@@ -164,7 +160,7 @@ HPGe_Cologne::HPGe_Cologne(G4String Detector_Name) {
 	EndCap_Window_Logical->SetVisAttributes(new G4VisAttributes(gray));
 
 	new G4PVPlacement(0, G4ThreeVector(0., 0., Length*0.5- EndCap_Window*0.5),
-	                  EndCap_Window_Logical, "EndCap_Window", HPGe_Cologne_Logical,
+	                  EndCap_Window_Logical, "EndCap_Window", HPGe_ANL_Logical,
 	                  false, 0);
 
 	// Mount Cup Wall
@@ -186,7 +182,7 @@ HPGe_Cologne::HPGe_Cologne(G4String Detector_Name) {
 	    0, G4ThreeVector(0., 0., Length *0.5- EndCap_Window -
 	                                 End_Cap_To_Crystal_Gap - MountCup_Wall -
 	                                 MountCup_Wall_Length *0.5),
-	    MountCup_Logical, "MountCup_Wall", HPGe_Cologne_Logical, false, 0);
+	    MountCup_Logical, "MountCup_Wall", HPGe_ANL_Logical, false, 0);
 
 	// Mount Cup Base
 
@@ -203,7 +199,7 @@ HPGe_Cologne::HPGe_Cologne(G4String Detector_Name) {
 	MountCup_Base_Logical->SetVisAttributes(new G4VisAttributes(cyan));
 
 	new G4PVPlacement(0, G4ThreeVector(0., 0., Length*0.5- EndCap_Window - End_Cap_To_Crystal_Gap - MountCup_Wall + MountCup_Base *0.5),
-	                  MountCup_Base_Logical, "MountCupBase", HPGe_Cologne_Logical,
+	                  MountCup_Base_Logical, "MountCupBase", HPGe_ANL_Logical,
 	                  false, 0);
 
 	// Mount Cup Face
@@ -222,7 +218,7 @@ HPGe_Cologne::HPGe_Cologne(G4String Detector_Name) {
 	new G4PVPlacement(0, G4ThreeVector(0., 0., Length *0.5- EndCap_Window -
 	                                               End_Cap_To_Crystal_Gap -
 	                                               MountCup_Wall *0.5),
-	                  MountCup_Face_Logical, "MountCup_Face", HPGe_Cologne_Logical,
+	                  MountCup_Face_Logical, "MountCup_Face", HPGe_ANL_Logical,
 	                  false, 0);
 
 	// Cold Finger
@@ -274,7 +270,7 @@ HPGe_Cologne::HPGe_Cologne(G4String Detector_Name) {
 	ColdFinger_Logical->SetVisAttributes(new G4VisAttributes(orange));
 
 	new G4PVPlacement(0, G4ThreeVector(0., 0., Length * 0.5 - EndCap_Window - End_Cap_To_Crystal_Gap - MountCup_Length),
-	                  ColdFinger_Logical, "ColdFinger", HPGe_Cologne_Logical, false,
+	                  ColdFinger_Logical, "ColdFinger", HPGe_ANL_Logical, false,
 	                  0, false);
 
 	// Germanium Detector Crystal
@@ -328,7 +324,7 @@ HPGe_Cologne::HPGe_Cologne(G4String Detector_Name) {
 	                                               End_Cap_To_Crystal_Gap -
 	                                               MountCup_Wall -
 	                                               Detector_Length),
-	                  Crystal_Logical, "Crystal", HPGe_Cologne_Logical, false, 0);
+	                  Crystal_Logical, "Crystal", HPGe_ANL_Logical, false, 0);
 
 	// Connection
 
@@ -337,7 +333,7 @@ HPGe_Cologne::HPGe_Cologne(G4String Detector_Name) {
 
 	Connection_Logical->SetVisAttributes(grey);
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., Length*0.5- EndCap_Window - End_Cap_To_Crystal_Gap - MountCup_Length - Connection_Length*0.5), Connection_Logical, "Connection", HPGe_Cologne_Logical, false, 0, false);
+	new G4PVPlacement(0, G4ThreeVector(0., 0., Length*0.5- EndCap_Window - End_Cap_To_Crystal_Gap - MountCup_Length - Connection_Length*0.5), Connection_Logical, "Connection", HPGe_ANL_Logical, false, 0, false);
 
 	// Dewar
 
@@ -345,13 +341,13 @@ HPGe_Cologne::HPGe_Cologne(G4String Detector_Name) {
 	G4LogicalVolume *Dewar_Lid_Logical = new G4LogicalVolume(Dewar_Lid_Solid, Dewar_Material, "Dewar_Lid_Logical");
 	Dewar_Lid_Logical->SetVisAttributes(cyan);
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., Length*0.5- EndCap_Window - End_Cap_To_Crystal_Gap - MountCup_Length - Connection_Length - Dewar_Wall_Thickness*0.5), Dewar_Lid_Logical, "Dewar_Lid_1", HPGe_Cologne_Logical, false, 0, false);
+	new G4PVPlacement(0, G4ThreeVector(0., 0., Length*0.5- EndCap_Window - End_Cap_To_Crystal_Gap - MountCup_Length - Connection_Length - Dewar_Wall_Thickness*0.5), Dewar_Lid_Logical, "Dewar_Lid_1", HPGe_ANL_Logical, false, 0, false);
 	
 	G4Tubs* Dewar_Wall_Solid = new G4Tubs("Dewar_Wall_Solid", Dewar_Outer_Radius - Dewar_Wall_Thickness, Dewar_Outer_Radius, (Dewar_Length - 2.*Dewar_Wall_Thickness)*0.5, 0., twopi);
 	G4LogicalVolume* Dewar_Wall_Logical = new G4LogicalVolume(Dewar_Wall_Solid, Dewar_Material, "Dewar_Wall_Logical");
 	Dewar_Wall_Logical->SetVisAttributes(cyan);
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., Length*0.5- EndCap_Window - End_Cap_To_Crystal_Gap - MountCup_Length - Connection_Length - Dewar_Length*0.5), Dewar_Wall_Logical, "Dewar_Wall", HPGe_Cologne_Logical, false, 0, false);
+	new G4PVPlacement(0, G4ThreeVector(0., 0., Length*0.5- EndCap_Window - End_Cap_To_Crystal_Gap - MountCup_Length - Connection_Length - Dewar_Length*0.5), Dewar_Wall_Logical, "Dewar_Wall", HPGe_ANL_Logical, false, 0, false);
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., Length*0.5- EndCap_Window - End_Cap_To_Crystal_Gap - MountCup_Length - Connection_Length - Dewar_Length + Dewar_Wall_Thickness*0.5), Dewar_Lid_Logical, "Dewar_Lid_2", HPGe_Cologne_Logical, false, 0, false);
+	new G4PVPlacement(0, G4ThreeVector(0., 0., Length*0.5- EndCap_Window - End_Cap_To_Crystal_Gap - MountCup_Length - Connection_Length - Dewar_Length + Dewar_Wall_Thickness*0.5), Dewar_Lid_Logical, "Dewar_Lid_2", HPGe_ANL_Logical, false, 0, false);
 }

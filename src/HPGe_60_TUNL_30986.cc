@@ -74,7 +74,8 @@ HPGe_60_TUNL_30986::HPGe_60_TUNL_30986(G4String Detector_Name) {
 	G4double Hole_Depth = 70.9 * mm;
 	G4double Hole_Bottom_Radius = 8. * mm;
 
-	G4double MountCup_Length = 105. * mm;      // (A)
+	//G4double MountCup_Length = 105. * mm;      // (A)
+	G4double MountCup_Length = 10.5 * inch; //     Measured at the detector. The difference to above might be because the data sheet shows only the case of the crystal, not the preamp electronics
 	G4double End_Cap_To_Crystal_Gap = 4. * mm; // (B)
 	G4double MountCup_Base = 3.2 * mm;         // (C)
 	G4double EndCap_Window = 0.5 * mm;         // (D)
