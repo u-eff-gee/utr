@@ -201,7 +201,7 @@ HPGe1::HPGe1(G4String Detector_Name) {
 
 	MountCup_Base_Logical->SetVisAttributes(new G4VisAttributes(cyan));
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., -Length / 2 + MountCup_Base / 2),
+	new G4PVPlacement(0, G4ThreeVector(0., 0., Length*0.5 - EndCap_Window - End_Cap_To_Crystal_Gap - MountCup_Wall + MountCup_Base*0.5),
 	                  MountCup_Base_Logical, "MountCupBase", HPGe1_Logical,
 	                  false, 0);
 
