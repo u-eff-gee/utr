@@ -18,30 +18,24 @@ You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-//**************************************************************//
-//	120%  Zero Degree detector @ HIGS Serial No. 33-P40383A
-//**************************************************************//
-
-#ifndef ZeroDegree_h
-#define ZeroDegree_h 1
+#ifndef ZERODEGREE_SETUP_HH
+#define ZERODEGREE_SETUP_HH 1
 
 #include "G4LogicalVolume.hh"
 
-class ZeroDegree {
-  public:
-	ZeroDegree(G4String Detector_Name);
-	~ZeroDegree(){};
+class ZeroDegree_Setup{
+public:
+	ZeroDegree_Setup();
+	~ZeroDegree_Setup(){};
 
-	G4LogicalVolume *Get_Logical() { return ZeroDegree_Logical; }
+	G4LogicalVolume *Get_Logical(){ return ZeroDegree_Setup_Logical; }
+	
+	G4double Get_Length(){ return ZeroDegree_Setup_Length; };
 
-	G4double Get_Length() { return Length; };
-	G4double Get_Radius() { return Radius; };
+private:
+	G4double ZeroDegree_Setup_Length;
 
-  private:
-	G4double Length;
-	G4double Radius;
-
-	G4LogicalVolume *ZeroDegree_Logical;
+	G4LogicalVolume *ZeroDegree_Setup_Logical;
 };
 
 #endif

@@ -42,6 +42,7 @@ Materials *materials = Materials::Instance();
 #include "G3_Table.hh"
 #include "Table2.hh"
 #include "Detectors_2nd.hh"
+#include "ZeroDegree_Setup.hh"
 
 // Sensitive Detectors
 //#include "EnergyDepositionSD.hh"
@@ -66,6 +67,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	 * G3_TABLE
 	 * TABLE_2 (the table on which the second setup is mounted)
 	 * DETECTORS_2ND (detectors in second setup)
+	 * ZERODEGREE_SETUP (zero-degree detector)
 	 */
 
 	G4Colour white(1.0, 1.0, 1.0);
@@ -110,6 +112,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	G4double First_UTR_Wall_To_First_Setup = 4.2*inch;
 	G4double First_Setup_To_G3_Wall = 3.5*inch;
 	G4double G3_Target_To_2nd_Target = 62.*inch; // Estimated
+	G4double ZeroDegree_To_2nd_Target = 980.*mm;
 
 	/***************** INITIALIZATIONS *****************/
 
@@ -121,6 +124,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	G3_Table g3_Table;
 	Table2 table2;
 	Detectors_2nd detectors_2nd;	
+	ZeroDegree_Setup zeroDegree_Setup;
 
 	/***************** FIRST_UTR_WALL *****************/
 
@@ -153,6 +157,10 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	/***************** DETECTORS_2ND *****************/
 
 //	new G4PVPlacement(0, G4ThreeVector(0., 0., G3_Target_To_2nd_Target), detectors_2nd.Get_Logical(), "Detectors_2nd", World_Logical, false, 0, false);
+
+	/***************** ZERODEGREE_SETUP *****************/
+
+	new G4PVPlacement(0, G4ThreeVector(0., 0., G3_Target_To_2nd_Target + ZeroDegree_To_2nd_Target), zeroDegree_Setup.Get_Logical(), "ZeroDegree_Setup", World_Logical, false, 0, false);
 	
 
 	return World_Physical;
