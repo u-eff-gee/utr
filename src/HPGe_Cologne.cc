@@ -227,7 +227,7 @@ HPGe_Cologne::HPGe_Cologne(G4String Detector_Name) {
 
 	// Cold Finger
 
-	const G4int nsteps = 100;
+	const G4int nsteps = 500;
 
 	G4double zPlaneTemp[nsteps];
 	G4double rInnerTemp[nsteps];

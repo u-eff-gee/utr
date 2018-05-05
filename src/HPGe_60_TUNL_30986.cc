@@ -224,7 +224,7 @@ HPGe_60_TUNL_30986::HPGe_60_TUNL_30986(G4String Detector_Name) {
 
 	// Cold Finger
 
-	const G4int nsteps = 100;
+	const G4int nsteps = 500;
 
 	G4double zPlaneTemp[nsteps];
 	G4double rInnerTemp[nsteps];
@@ -264,6 +264,10 @@ HPGe_60_TUNL_30986::HPGe_60_TUNL_30986(G4String Detector_Name) {
 	G4Polycone *ColdFinger_Solid =
 	    new G4Polycone("ColdFinger_Solid", 0. * deg, 360. * deg,
 	                   nsteps_optimized, zPlane, rInner, rOuter);
+
+	for(unsigned int i = 0; i < nsteps_optimized; ++i){
+		G4cout << zPlane[i] << " : " << rOuter[i] << G4endl;
+	}
 
 	G4LogicalVolume *ColdFinger_Logical = new G4LogicalVolume(
 	    ColdFinger_Solid, ColdFinger_Material, "ColdFinger_Logical", 0, 0, 0);
