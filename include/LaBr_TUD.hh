@@ -26,24 +26,19 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 class LaBr_TUD {
   public:
 	LaBr_TUD(G4String Detector_Name);
-	~LaBr_TUD();
+	~LaBr_TUD(){};
 
-	G4LogicalVolume *Get_Logical() { return detectorLogical; }
+	G4LogicalVolume *Get_Logical() { return LaBr_TUD_Logical; }
 	G4double Get_Radius() { return Radius; }
 	G4double Get_Length() { return Length; }
+	G4double Get_Front_Radius() {return Front_Radius;};
 
   private:
 	G4double Length;
 	G4double Radius;
+	G4double Front_Radius;
 
-	G4LogicalVolume *detectorLogical;
-
-	G4double lengthCrystal;
-	G4double radiusCrystal;
-	G4double thicknessHousing;
-	G4double radiusHousing;
-	G4double thicknessVacuumFront;
-	G4double thicknessVacuumBack;
+	G4LogicalVolume *LaBr_TUD_Logical;
 };
 
 #endif

@@ -33,6 +33,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "HPGe_60_TUNL_31061.hh"
 #include "HPGe_60_TUNL_40663.hh"
 #include "HPGe_ANL.hh"
+#include "LaBr_TUD.hh"
 #include "FilterCase.hh"
 
 Detectors_G3::Detectors_G3(){
@@ -459,5 +460,90 @@ Detectors_G3::Detectors_G3(){
 	                  HPGe4_rt * sin(HPGe4_theta) * sin(HPGe4_phi) + HPGe4_dy,
 	                  HPGe4_rt * cos(HPGe4_theta) + HPGe4_dz),
 	    HPGe4_Pb_Logical, "HPGe4_Pb", Detectors_G3_Logical, false, 0);
+	}
+
+	/**************** LABR2 *******************/
+
+	G4double LaBr2_rt = 100. * mm; // Estimated
+	G4double LaBr2_dy = 0. * mm; // Estimated
+	G4double LaBr2_dz = 0. * mm; // Estimated
+	G4double LaBr2_phi = 270. * deg;
+	G4double LaBr2_theta = 90. * deg;
+
+	G4double LaBr2_AngleX = 0. * deg;
+	G4double LaBr2_AngleY = 0. * deg;
+	G4double LaBr2_AngleZ = 0. * deg;
+
+	G4double LaBr2_Cu_Radius = 45.*mm; // Estimated
+	G4double LaBr2_Cu_Thickness = 1.*mm; // Estimated
+	G4double LaBr2_Pb_Radius = 45.*mm; // Estimated
+	G4double LaBr2_Pb_Thickness = 3.*mm; // Estimated
+	G4double LaBr2_Pb_Wrap_Thickness = 2.*mm; // Estimated
+	G4double LaBr2_Pb_Wrap_Length = 50.*mm; // Estimated
+
+	LaBr_TUD *LaBr2_Instance = new LaBr_TUD("LaBr2");
+	G4LogicalVolume *LaBr2_Logical = LaBr2_Instance->Get_Logical();
+
+	G4RotationMatrix *rotateLaBr2 = new G4RotationMatrix();
+	rotateLaBr2->rotateX(LaBr2_AngleX);
+	rotateLaBr2->rotateY(LaBr2_AngleY);
+	rotateLaBr2->rotateZ(LaBr2_AngleZ);
+
+	LaBr2_rt = LaBr2_rt + LaBr2_Instance->Get_Length() * 0.5;
+
+	new G4PVPlacement(
+	    rotateLaBr2,
+	    G4ThreeVector(LaBr2_rt * sin(LaBr2_theta) * cos(LaBr2_phi),
+	                  LaBr2_rt * sin(LaBr2_theta) * sin(LaBr2_phi) + LaBr2_dy,
+	                  LaBr2_rt * cos(LaBr2_theta) + LaBr2_dz),
+	    LaBr2_Logical, "LaBr2", Detectors_G3_Logical, false, 0);
+
+	LaBr2_rt -= LaBr2_Instance->Get_Length() * 0.5;
+
+	if(LaBr2_Pb_Wrap_Thickness != 0.){
+		LaBr2_rt += LaBr2_Pb_Wrap_Length * 0.5;
+
+		G4Tubs *LaBr2_Pb_Wrap_Solid = new G4Tubs("LaBr2_Pb_Wrap_Solid", LaBr2_Instance->Get_Front_Radius(), LaBr2_Instance->Get_Front_Radius() + LaBr2_Pb_Wrap_Thickness, LaBr2_Pb_Wrap_Length*0.5, 0., twopi);
+
+		G4LogicalVolume *LaBr2_Pb_Wrap_Logical = new G4LogicalVolume(LaBr2_Pb_Wrap_Solid, Pb, "LaBr2_Pb_Wrap_Logical");
+		LaBr2_Pb_Wrap_Logical->SetVisAttributes(green);
+
+		new G4PVPlacement(rotateLaBr2,
+	    G4ThreeVector(LaBr2_rt * sin(LaBr2_theta) * cos(LaBr2_phi),
+	                  LaBr2_rt * sin(LaBr2_theta) * sin(LaBr2_phi) + LaBr2_dy,
+	                  LaBr2_rt * cos(LaBr2_theta) + LaBr2_dz),
+	    LaBr2_Pb_Wrap_Logical, "LaBr2_Pb_Wrap", Detectors_G3_Logical, false, 0);
+
+		LaBr2_rt -= LaBr2_Pb_Wrap_Length * 0.5;
+	}
+
+	if(LaBr2_Cu_Thickness > 0.){
+		LaBr2_rt -= LaBr2_Cu_Thickness * 0.5;
+
+		G4Tubs* LaBr2_Cu_Solid = new G4Tubs("LaBr2_Cu_Solid", 0., LaBr2_Cu_Radius, LaBr2_Cu_Thickness*0.5, 0., twopi);
+		G4LogicalVolume *LaBr2_Cu_Logical = new G4LogicalVolume(LaBr2_Cu_Solid, Cu, "LaBr2_Cu_Logical");
+		LaBr2_Cu_Logical->SetVisAttributes(orange);
+
+		new G4PVPlacement(rotateLaBr2,
+	    G4ThreeVector(LaBr2_rt * sin(LaBr2_theta) * cos(LaBr2_phi),
+	                  LaBr2_rt * sin(LaBr2_theta) * sin(LaBr2_phi) + LaBr2_dy,
+	                  LaBr2_rt * cos(LaBr2_theta) + LaBr2_dz),
+	    LaBr2_Cu_Logical, "LaBr2_Cu", Detectors_G3_Logical, false, 0);
+	}
+
+	LaBr2_rt -= LaBr2_Cu_Thickness*0.5;
+
+	if(LaBr2_Pb_Thickness > 0.){
+		LaBr2_rt -= LaBr2_Pb_Thickness * 0.5;
+
+		G4Tubs* LaBr2_Pb_Solid = new G4Tubs("LaBr2_Pb_Solid", 0., LaBr2_Pb_Radius, LaBr2_Pb_Thickness*0.5, 0., twopi);
+		G4LogicalVolume *LaBr2_Pb_Logical = new G4LogicalVolume(LaBr2_Pb_Solid, Pb, "LaBr2_Pb_Logical");
+		LaBr2_Pb_Logical->SetVisAttributes(green);
+
+		new G4PVPlacement(rotateLaBr2,
+	    G4ThreeVector(LaBr2_rt * sin(LaBr2_theta) * cos(LaBr2_phi),
+	                  LaBr2_rt * sin(LaBr2_theta) * sin(LaBr2_phi) + LaBr2_dy,
+	                  LaBr2_rt * cos(LaBr2_theta) + LaBr2_dz),
+	    LaBr2_Pb_Logical, "LaBr2_Pb", Detectors_G3_Logical, false, 0);
 	}
 }
