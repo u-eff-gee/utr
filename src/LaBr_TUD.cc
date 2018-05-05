@@ -73,18 +73,18 @@ LaBr_TUD::LaBr_TUD(G4String Detector_Name){
 	G4double Vacuum_Thickness_Front = 2.*mm;
 	G4double Vacuum_Thickness_Back = 2.*mm;
 
-	G4double Circuit_Housing_1_Length = 2.5*inch; // Estimated
+	G4double Circuit_Housing_1_Length = 2.25*inch;
 	G4double Circuit_Housing_1_Radius = 3.5*inch *0.5;
 
 	G4double Circuit_Housing_2_Length = 3.*cm;
-	G4double Circuit_Housing_2_Rmin = 2.25*inch * 0.5;
+	G4double Circuit_Housing_2_Rmin = 2.5*inch * 0.5;
 	G4double Circuit_Housing_2_Rmax = 3.5*inch * 0.5;
 	
 	G4double Circuit_Housing_3_Length = 3.*cm;
-	G4double Circuit_Housing_3_Radius = 2.25*inch *0.5;
+	G4double Circuit_Housing_3_Radius = 2.5*inch *0.5;
 
 	G4double PMT_Housing_Length = 7.*cm;
-	G4double PMT_Housing_Radius = 2.25*inch * 0.5;
+	G4double PMT_Housing_Radius = 2.5*inch * 0.5;
 
 	/*********************** Mother volume *********************/
 
@@ -95,7 +95,7 @@ LaBr_TUD::LaBr_TUD(G4String Detector_Name){
 
 	G4Tubs *LaBr_TUD_Solid = new G4Tubs("LaBr_TUD_Solid", 0., Radius, Length * 0.5,  0., twopi);
 	LaBr_TUD_Logical = new G4LogicalVolume(LaBr_TUD_Solid, air, "LaBr_TUD_Logical");
-	LaBr_TUD_Logical->SetVisAttributes(red);
+	LaBr_TUD_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());
 
 	/*********************** LaBr Crystal Housing *********************/
 
