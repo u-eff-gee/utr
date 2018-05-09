@@ -193,8 +193,10 @@ void Physics::ConstructEMPenelope() {
 	}
 
 	G4VAtomDeexcitation *de = new G4UAtomicDeexcitation();
-	G4LossTableManager::Instance()->SetAtomDeexcitation(de);
 	de->SetFluo(true);
+	de->SetAuger(false);
+	de->SetPIXE(false); // Particle Induced X-ray Emission
+	G4LossTableManager::Instance()->SetAtomDeexcitation(de);
 }
 
 // Livermore model
@@ -263,8 +265,10 @@ void Physics::ConstructEMLivermore() {
 	}
 
 	G4VAtomDeexcitation *de = new G4UAtomicDeexcitation();
-	G4LossTableManager::Instance()->SetAtomDeexcitation(de);
 	de->SetFluo(true);
+	de->SetAuger(false);
+	de->SetPIXE(false); // Particle Induced X-ray Emission
+	G4LossTableManager::Instance()->SetAtomDeexcitation(de);
 }
 
 // Polarized Livermore model
@@ -333,8 +337,10 @@ void Physics::ConstructEMLivermorePolarized() {
 	}
 
 	G4VAtomDeexcitation *de = new G4UAtomicDeexcitation();
-	G4LossTableManager::Instance()->SetAtomDeexcitation(de);
 	de->SetFluo(true);
+	de->SetAuger(false);
+	de->SetPIXE(false); // Particle Induced X-ray Emission
+	G4LossTableManager::Instance()->SetAtomDeexcitation(de);
 }
 
 void Physics::ConstructHPNeutron() {
