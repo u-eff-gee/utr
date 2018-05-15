@@ -43,9 +43,9 @@ G3_Wall::G3_Wall(){
 	G4double Concrete_Base_Hor_Z = 8.*inch;
 	G4double Concrete_Base_Ver_Z = 15.5*inch;
 
-	G3_Wall_Length =Concrete_Base_Hor_Z + Concrete_Base_Ver_Z;
+	G3_Wall_Length = Concrete_Base_Hor_Z + Concrete_Base_Ver_Z;
 	G3_Wall_X = 100*inch;
-	G3_Wall_Y = 100.*inch;
+	G3_Wall_Y = 105.*inch;
 
 	// Construct mother volume
 	G4Box *G3_Wall_Solid = new G4Box("G3_Wall_Solid", G3_Wall_X*0.5, G3_Wall_Y*0.5, G3_Wall_Length*0.5);
@@ -97,12 +97,14 @@ G3_Wall::G3_Wall(){
 	G4double Concrete_Base_Hor_X = 15.5*inch;
 	G4double Concrete_Base_Hor_Y = 41.*inch;
 
+    Floor_Level = -Lead_Wall_Tunnel_Y*0.5 - Lead_Wall_Base_Y - Concrete_Base_Hor_Y;
+
 	G4Box *Concrete_Base_Hor_Solid = new G4Box("Concrete_Base_Hor_Solid", Concrete_Base_Hor_X*0.5, Concrete_Base_Hor_Y*0.5, Concrete_Base_Hor_Z*0.5);
 
 	G4LogicalVolume *Concrete_Base_Hor_Logical = new G4LogicalVolume(Concrete_Base_Hor_Solid, concrete, "Concrete_Base_Hor_Logical");
 	Concrete_Base_Hor_Logical->SetVisAttributes(white);
 
-	new G4PVPlacement(0, G4ThreeVector(0., -Lead_Wall_Tunnel_Y*0.5 - Lead_Wall_Base_Y - Concrete_Base_Hor_Y*0.5, -G3_Wall_Length*0.5 + Concrete_Base_Hor_Z*0.5), Concrete_Base_Hor_Logical, "Concrete_Base_Hor", G3_Wall_Logical, false, 0, false);
+	new G4PVPlacement(0, G4ThreeVector(0., Floor_Level + Concrete_Base_Hor_Y*0.5, -G3_Wall_Length*0.5 + Concrete_Base_Hor_Z*0.5), Concrete_Base_Hor_Logical, "Concrete_Base_Hor", G3_Wall_Logical, false, 0, false);
 
 	G4double Concrete_Base_Ver_X = 8.*inch;
 	G4double Concrete_Base_Ver_Y = 30.*inch; // Estimated
@@ -112,5 +114,5 @@ G3_Wall::G3_Wall(){
 	G4LogicalVolume *Concrete_Base_Ver_Logical = new G4LogicalVolume(Concrete_Base_Ver_Solid, concrete, "Concrete_Base_Ver_Logical");
 	Concrete_Base_Ver_Logical->SetVisAttributes(white);
 
-	new G4PVPlacement(0, G4ThreeVector(0., -Lead_Wall_Tunnel_Y*0.5 - Lead_Wall_Base_Y - Concrete_Base_Hor_Y + Concrete_Base_Ver_Y*0.5, -G3_Wall_Length*0.5 + Concrete_Base_Hor_Z + Concrete_Base_Ver_Z*0.5), Concrete_Base_Ver_Logical, "Concrete_Base_Ver", G3_Wall_Logical, false, 0, false);
+	new G4PVPlacement(0, G4ThreeVector(0., Floor_Level + Concrete_Base_Ver_Y*0.5, -G3_Wall_Length*0.5 + Concrete_Base_Hor_Z + Concrete_Base_Ver_Z*0.5), Concrete_Base_Ver_Logical, "Concrete_Base_Ver", G3_Wall_Logical, false, 0, false);
 }

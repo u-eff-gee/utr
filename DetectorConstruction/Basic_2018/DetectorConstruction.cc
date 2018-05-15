@@ -34,6 +34,7 @@ Materials *materials = Materials::Instance();
 #include "G4VisAttributes.hh"
 #include "globals.hh"
 
+#include "Room.hh"
 #include "First_UTR_Wall.hh"
 #include "First_Setup.hh"
 #include "G3_Wall.hh"
@@ -89,7 +90,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	/***************** WORLD *****************/
 
 	G4double World_x = 3000. * mm;
-	G4double World_y = 3000. * mm;
+	G4double World_y = 3150. * mm;
 	G4double World_z = 6000. * mm;
 
 	G4Box *World_dim =
@@ -99,7 +100,10 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	    new G4LogicalVolume(World_dim, air, "World_Logical", 0, 0, 0);
 
 	//World_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());
-	World_Logical->SetVisAttributes(red);
+    G4VisAttributes* world_vis = new G4VisAttributes(true, red);
+    world_vis->SetForceWireframe(true);
+
+	World_Logical->SetVisAttributes(world_vis);
 
 	G4VPhysicalVolume *World_Physical =
 	    new G4PVPlacement(0, G4ThreeVector(), World_Logical, "World", 0, false, 0);
@@ -125,18 +129,25 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	Table2 table2;
 	Detectors_2nd detectors_2nd;	
 	ZeroDegree_Setup zeroDegree_Setup;
+	Room room(World_x, World_y, World_z,
+            Wheel_To_Target - First_Setup_To_Wheel - first_Setup.Get_Length() - First_UTR_Wall_To_First_Setup - first_UTR_Wall.Get_Length(),
+            g3_Wall.Get_Floor_Level());
 
-	/***************** FIRST_UTR_WALL *****************/
+	/***************** ROOM *****************/
 
-//	new G4PVPlacement(0, G4ThreeVector(0., 0., Wheel_To_Target - First_Setup_To_Wheel - first_Setup.Get_Length() - First_UTR_Wall_To_First_Setup - first_UTR_Wall.Get_Length()*0.5), first_UTR_Wall.Get_Logical(), "First_UTR_Wall", World_Logical, false, 0, false);
+	new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), room.Get_Logical(), "Room", World_Logical, false, 0, false);
+	
+    /***************** FIRST_UTR_WALL *****************/
+
+	new G4PVPlacement(0, G4ThreeVector(0., 0., Wheel_To_Target - First_Setup_To_Wheel - first_Setup.Get_Length() - First_UTR_Wall_To_First_Setup - first_UTR_Wall.Get_Length()*0.5), first_UTR_Wall.Get_Logical(), "First_UTR_Wall", World_Logical, false, 0, false);
 
 	/***************** FIRST_SETUP *****************/
 
-//	new G4PVPlacement(0, G4ThreeVector(0., 0., Wheel_To_Target - First_Setup_To_Wheel - first_Setup.Get_Length()*0.5), first_Setup.Get_Logical(), "First_Setup", World_Logical, false, 0, false);
+	new G4PVPlacement(0, G4ThreeVector(0., 0., Wheel_To_Target - First_Setup_To_Wheel - first_Setup.Get_Length()*0.5), first_Setup.Get_Logical(), "First_Setup", World_Logical, false, 0, false);
 
 	/***************** G3_WALL *****************/
 
-//	new G4PVPlacement(0, G4ThreeVector(0., 0., Wheel_To_Target - First_Setup_To_Wheel + First_Setup_To_G3_Wall + g3_Wall.Get_Length()*0.5), g3_Wall.Get_Logical(), "G3_Wall", World_Logical, false, 0, false);
+	new G4PVPlacement(0, G4ThreeVector(0., 0., Wheel_To_Target - First_Setup_To_Wheel + First_Setup_To_G3_Wall + g3_Wall.Get_Length()*0.5), g3_Wall.Get_Logical(), "G3_Wall", World_Logical, false, 0, false);
 
 	/***************** DETECTORS_G3 *****************/
 
@@ -148,15 +159,15 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	/***************** G3_TABLE *****************/
 
-//	new G4PVPlacement(0, G4ThreeVector(0., 0., Wheel_To_Target + wheel.Get_Length() + g3_Table.Get_Length()*0.5), g3_Table.Get_Logical(), "G3_Table", World_Logical, false, 0, false);
+	new G4PVPlacement(0, G4ThreeVector(0., 0., Wheel_To_Target + wheel.Get_Length() + g3_Table.Get_Length()*0.5), g3_Table.Get_Logical(), "G3_Table", World_Logical, false, 0, false);
 
 	/***************** TABLE_2 *****************/
 
-//	new G4PVPlacement(0, G4ThreeVector(0., 0.,  Wheel_To_Target + wheel.Get_Length() + g3_Table.Get_Length() + table2.Get_Length()*0.5 + table2.Get_Z_Axis_Offset_Z()), table2.Get_Logical(), "Table2", World_Logical, false, 0, false);
+	new G4PVPlacement(0, G4ThreeVector(0., 0.,  Wheel_To_Target + wheel.Get_Length() + g3_Table.Get_Length() + table2.Get_Length()*0.5 + table2.Get_Z_Axis_Offset_Z()), table2.Get_Logical(), "Table2", World_Logical, false, 0, false);
 
 	/***************** DETECTORS_2ND *****************/
 
-//	new G4PVPlacement(0, G4ThreeVector(0., 0., G3_Target_To_2nd_Target), detectors_2nd.Get_Logical(), "Detectors_2nd", World_Logical, false, 0, false);
+	new G4PVPlacement(0, G4ThreeVector(0., 0., G3_Target_To_2nd_Target), detectors_2nd.Get_Logical(), "Detectors_2nd", World_Logical, false, 0, false);
 
 	/***************** ZERODEGREE_SETUP *****************/
 
