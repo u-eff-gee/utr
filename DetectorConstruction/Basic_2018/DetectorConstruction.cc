@@ -36,6 +36,7 @@ Materials *materials = Materials::Instance();
 
 #include "Room.hh"
 #include "Beampipe_Upstream.hh"
+#include "Beampipe_Downstream.hh"
 #include "First_UTR_Wall.hh"
 #include "First_Setup.hh"
 #include "G3_Wall.hh"
@@ -62,7 +63,8 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	 * Fast-forward to specific parts of the geometry by searching for
 	 * ROOM (UTR walls and floor)
 	 * WORLD (world volume)
-	 * UPSTREAM_BEAMPIPE
+	 * BEAMPIPE_UPSTREAM 
+	 * BEAMPIPE_DOWNSTREAM
 	 * FIRST_UTR_WALL
 	 * FIRST_SETUP (first setup upstream of g3)
 	 * G3_WALL (wall immediately in front of g3)
@@ -123,6 +125,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	/***************** INITIALIZATIONS *****************/
 
 	Beampipe_Upstream beampipe_Upstream;
+	Beampipe_Downstream beampipe_Downstream;
 	First_UTR_Wall first_UTR_Wall;
 	First_Setup first_Setup;
 	G3_Wall g3_Wall;
@@ -143,6 +146,10 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	/***************** UPSTREAM_BEAMPIPE *****************/
 
 	new G4PVPlacement(0, G4ThreeVector(0., 0., beampipe_Upstream.Get_Z_Axis_Offset_Z()), beampipe_Upstream.Get_Logical(), "Beampipe_Upstream", World_Logical, false, 0, false);
+
+	/***************** DOWNSTREAM_BEAMPIPE *****************/
+
+	new G4PVPlacement(0, G4ThreeVector(0., 0., G3_Target_To_2nd_Target + beampipe_Downstream.Get_Z_Axis_Offset_Z()), beampipe_Downstream.Get_Logical(), "Beampipe_Downstream", World_Logical, false, 0, false);
 	
     /***************** FIRST_UTR_WALL *****************/
 
