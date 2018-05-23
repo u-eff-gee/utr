@@ -35,6 +35,7 @@ Materials *materials = Materials::Instance();
 #include "globals.hh"
 
 #include "Room.hh"
+#include "Beampipe_Upstream.hh"
 #include "First_UTR_Wall.hh"
 #include "First_Setup.hh"
 #include "G3_Wall.hh"
@@ -59,7 +60,9 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	/*
 	 * Fast-forward to specific parts of the geometry by searching for
+	 * ROOM (UTR walls and floor)
 	 * WORLD (world volume)
+	 * UPSTREAM_BEAMPIPE
 	 * FIRST_UTR_WALL
 	 * FIRST_SETUP (first setup upstream of g3)
 	 * G3_WALL (wall immediately in front of g3)
@@ -110,7 +113,6 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	/***************** GENERAL DIMENSIONS *****************/
 
-	//G4double Beam_Pipe_Outer_Radius = 1.*inch;
 	G4double Wheel_To_Target = 3.*inch;
 	G4double First_Setup_To_Wheel = 34.*inch;
 	G4double First_UTR_Wall_To_First_Setup = 4.2*inch;
@@ -120,6 +122,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	/***************** INITIALIZATIONS *****************/
 
+	Beampipe_Upstream beampipe_Upstream;
 	First_UTR_Wall first_UTR_Wall;
 	First_Setup first_Setup;
 	G3_Wall g3_Wall;
@@ -131,11 +134,15 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	ZeroDegree_Setup zeroDegree_Setup;
 	Room room(World_x, World_y, World_z,
             Wheel_To_Target - First_Setup_To_Wheel - first_Setup.Get_Length() - First_UTR_Wall_To_First_Setup - first_UTR_Wall.Get_Length(),
-            g3_Wall.Get_Floor_Level());
+	g3_Wall.Get_Floor_Level());
 
 	/***************** ROOM *****************/
 
 	new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), room.Get_Logical(), "Room", World_Logical, false, 0, false);
+
+	/***************** UPSTREAM_BEAMPIPE *****************/
+
+	new G4PVPlacement(0, G4ThreeVector(0., 0., beampipe_Upstream.Get_Z_Axis_Offset_Z()), beampipe_Upstream.Get_Logical(), "Beampipe_Upstream", World_Logical, false, 0, false);
 	
     /***************** FIRST_UTR_WALL *****************/
 
