@@ -27,9 +27,10 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4UnionSolid.hh"
 
 #include "Units.hh"
+#include "Vacuum.hh"
 #include "Beampipe_Downstream.hh"
 
-Beampipe_Downstream::Beampipe_Downstream(){
+Beampipe_Downstream::Beampipe_Downstream(G4double relative_density){
 	
 	G4Colour white(1.0, 1.0, 1.0);
 	G4Colour orange(1.0, 0.5, 0.0);
@@ -37,7 +38,8 @@ Beampipe_Downstream::Beampipe_Downstream(){
 
 	G4NistManager *nist = G4NistManager::Instance();
 
-	G4Material *vacuum = nist->FindOrBuildMaterial("G4_Galactic");
+	Vacuum vac(relative_density);
+	G4Material *vacuum = vac.Get_Material();
 	G4Material *plexiglass = nist->FindOrBuildMaterial("G4_PLEXIGLASS");
 
 	G4double Beampipe_Inner_Radius = 0.875*inch;

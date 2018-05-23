@@ -24,7 +24,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 class Beampipe_Upstream{
 public:
-	Beampipe_Upstream();
+	Beampipe_Upstream(G4double relative_density);
 	~Beampipe_Upstream(){};
 
 	G4LogicalVolume *Get_Logical(){ return Beampipe_Upstream_Logical; }

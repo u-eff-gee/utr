@@ -124,8 +124,8 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	/***************** INITIALIZATIONS *****************/
 
-	Beampipe_Upstream beampipe_Upstream;
-	Beampipe_Downstream beampipe_Downstream;
+	Beampipe_Upstream beampipe_Upstream(1e-2);
+	Beampipe_Downstream beampipe_Downstream(1e-2);
 	First_UTR_Wall first_UTR_Wall;
 	First_Setup first_Setup;
 	G3_Wall g3_Wall;
@@ -141,7 +141,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	/***************** ROOM *****************/
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), room.Get_Logical(), "Room", World_Logical, false, 0, false);
+	//new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), room.Get_Logical(), "Room", World_Logical, false, 0, false);
 
 	/***************** UPSTREAM_BEAMPIPE *****************/
 

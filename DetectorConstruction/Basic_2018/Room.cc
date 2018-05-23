@@ -43,6 +43,8 @@ Room::Room(G4double World_x, G4double World_y, G4double World_z,
     Wall_Thickness = 14.*cm; // Measured by U. Gayer
     Floor_Thickness = 26.8*cm; // Estimated from drawings
 
+    G4double Beampipe_Outer_Radius = 1.*inch;
+
 	// Construct mother volume
 	G4Box *Room_Solid = new G4Box("Room_Solid", World_x * 0.5, World_y * 0.5, World_z * 0.5);
 	
@@ -50,7 +52,11 @@ Room::Room(G4double World_x, G4double World_y, G4double World_z,
 	Room_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());
 
     // Construct Wall between UTR and collimator room
-	G4Box *Room_Wall_Solid = new G4Box("Room_Wall_Solid", World_x*0.5, World_y*0.5, Wall_Thickness*0.5);
+	G4Box *Room_Wall_Solid_Solid = new G4Box("Room_Wall_Solid_Solid", World_x*0.5, World_y*0.5, Wall_Thickness*0.5);
+
+	G4Tubs *Room_Wall_Hole_Solid = new G4Tubs("Room_Wall_Hole_Solid", 0., Beampipe_Outer_Radius, Wall_Thickness*0.5, 0., twopi);
+
+	G4SubtractionSolid *Room_Wall_Solid = new G4SubtractionSolid("Room_Wall_Solid", Room_Wall_Solid_Solid, Room_Wall_Hole_Solid);
 
 	G4LogicalVolume *Room_Wall_Logical = new G4LogicalVolume(Room_Wall_Solid, concrete, "Room_Wall_Logical");
 	Room_Wall_Logical->SetVisAttributes(grey);

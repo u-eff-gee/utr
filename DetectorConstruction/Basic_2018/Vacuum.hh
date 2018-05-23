@@ -17,26 +17,20 @@ You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef BEAMPIPE_DOWNSTREAM_HH 
-#define BEAMPIPE_DOWNSTREAM_HH 1
+#ifndef VACUUM_HH 
+#define VACUUM_HH 1
 
-#include "G4LogicalVolume.hh"
+#include "G4Material.hh"
 
-class Beampipe_Downstream{
+class Vacuum{
 public:
-	Beampipe_Downstream(G4double relative_density);
-	~Beampipe_Downstream(){};
+	Vacuum(G4double relative_density);
+	~Vacuum(){};
 
-	G4LogicalVolume *Get_Logical(){ return Beampipe_Downstream_Logical; }
-	
-	G4double Get_Length(){ return Beampipe_Downstream_Length; };
-	G4double Get_Z_Axis_Offset_Z(){ return Z_Axis_Offset_Z; };
+	G4Material *Get_Material(){ return Vacuum_Material; }
 
 private:
-	G4double Beampipe_Downstream_Length;
-	G4double Z_Axis_Offset_Z;
-
-	G4LogicalVolume *Beampipe_Downstream_Logical;
+	G4Material *Vacuum_Material;
 };
 
 #endif
