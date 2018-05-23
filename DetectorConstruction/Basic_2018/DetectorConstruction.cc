@@ -48,10 +48,10 @@ Materials *materials = Materials::Instance();
 #include "ZeroDegree_Setup.hh"
 
 // Sensitive Detectors
-//#include "EnergyDepositionSD.hh"
-//#include "G4SDManager.hh"
-//#include "ParticleSD.hh"
-//#include "SecondarySD.hh"
+#include "G4SDManager.hh"
+#include "EnergyDepositionSD.hh"
+#include "ParticleSD.hh"
+#include "SecondarySD.hh"
 
 DetectorConstruction::DetectorConstruction() {}
 
@@ -161,7 +161,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	/***************** G3_WALL *****************/
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., Wheel_To_Target - First_Setup_To_Wheel + First_Setup_To_G3_Wall + g3_Wall.Get_Length()*0.5), g3_Wall.Get_Logical(), "G3_Wall", World_Logical, false, 0, false);
+	//new G4PVPlacement(0, G4ThreeVector(0., 0., Wheel_To_Target - First_Setup_To_Wheel + First_Setup_To_G3_Wall + g3_Wall.Get_Length()*0.5), g3_Wall.Get_Logical(), "G3_Wall", World_Logical, false, 0, false);
 
 	/***************** DETECTORS_G3 *****************/
 
@@ -193,4 +193,52 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 void DetectorConstruction::ConstructSDandField() {
 
+	/*************** Gamma3 **************/
+
+	EnergyDepositionSD *HPGe1SD = new EnergyDepositionSD("HPGe1", "HPGe1");
+	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe1SD);
+	HPGe1SD->SetDetectorID(1);
+	SetSensitiveDetector("HPGe1", HPGe1SD, true);
+
+	EnergyDepositionSD *HPGe2SD = new EnergyDepositionSD("HPGe2", "HPGe2");
+	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe2SD);
+	HPGe2SD->SetDetectorID(2);
+	SetSensitiveDetector("HPGe2", HPGe2SD, true);
+
+	EnergyDepositionSD *HPGe3SD = new EnergyDepositionSD("HPGe3", "HPGe3");
+	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe3SD);
+	HPGe3SD->SetDetectorID(3);
+	SetSensitiveDetector("HPGe3", HPGe3SD, true);
+
+	EnergyDepositionSD *HPGe4SD = new EnergyDepositionSD("HPGe4", "HPGe4");
+	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe4SD);
+	HPGe4SD->SetDetectorID(4);
+	SetSensitiveDetector("HPGe4", HPGe4SD, true);
+
+	EnergyDepositionSD *LaBr1SD = new EnergyDepositionSD("LaBr1", "LaBr1");
+	G4SDManager::GetSDMpointer()->AddNewDetector(LaBr1SD);
+	LaBr1SD->SetDetectorID(5);
+	SetSensitiveDetector("LaBr1", LaBr1SD, true);
+
+	EnergyDepositionSD *LaBr2SD = new EnergyDepositionSD("LaBr2", "LaBr2");
+	G4SDManager::GetSDMpointer()->AddNewDetector(LaBr2SD);
+	LaBr2SD->SetDetectorID(6);
+	SetSensitiveDetector("LaBr2", LaBr2SD, true);
+
+	EnergyDepositionSD *LaBr3SD = new EnergyDepositionSD("LaBr3", "LaBr3");
+	G4SDManager::GetSDMpointer()->AddNewDetector(LaBr3SD);
+	LaBr3SD->SetDetectorID(7);
+	SetSensitiveDetector("LaBr3", LaBr3SD, true);
+
+	EnergyDepositionSD *LaBr4SD = new EnergyDepositionSD("LaBr4", "LaBr4");
+	G4SDManager::GetSDMpointer()->AddNewDetector(LaBr4SD);
+	LaBr4SD->SetDetectorID(8);
+	SetSensitiveDetector("LaBr4", LaBr4SD, true);
+
+	/********* ZeroDegree detector *******/
+
+	EnergyDepositionSD *ZeroDegreeSD = new EnergyDepositionSD("ZeroDegree", "ZeroDegree");
+	G4SDManager::GetSDMpointer()->AddNewDetector(ZeroDegreeSD);
+	ZeroDegreeSD->SetDetectorID(0);
+	SetSensitiveDetector("ZeroDegree", ZeroDegreeSD, true);
 }
