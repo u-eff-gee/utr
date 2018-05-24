@@ -1,1 +1,1 @@
-/control/loop source.mac E 0.35 2. 0.5 MeV
+/control/loop source.mac E 0.35 2. 0.05 MeV 
