@@ -32,6 +32,15 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
 
 	virtual G4VPhysicalVolume *Construct();
 	virtual void ConstructSDandField();
+
+	void print_info() const;
+
+private:
+	G4double World_x;
+	G4double World_y;
+	G4double World_z;
+
+	G4double G3_Target_To_2nd_Target;
 };
 
 #endif

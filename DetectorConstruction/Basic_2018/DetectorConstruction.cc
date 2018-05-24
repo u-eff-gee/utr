@@ -193,10 +193,19 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	zeroDegree_Setup.Construct(G4ThreeVector(0., 0., G3_Target_To_2nd_Target + ZeroDegree_To_2nd_Target));
 
+	print_info();
+
 	return World_Physical;
 }
 
 void DetectorConstruction::ConstructSDandField() {
+
+	/********* ZeroDegree detector *******/
+
+	EnergyDepositionSD *ZeroDegreeSD = new EnergyDepositionSD("ZeroDegree", "ZeroDegree");
+	G4SDManager::GetSDMpointer()->AddNewDetector(ZeroDegreeSD);
+	ZeroDegreeSD->SetDetectorID(0);
+	SetSensitiveDetector("ZeroDegree", ZeroDegreeSD, true);
 
 	/*************** Gamma3 **************/
 
@@ -240,10 +249,35 @@ void DetectorConstruction::ConstructSDandField() {
 	LaBr4SD->SetDetectorID(8);
 	SetSensitiveDetector("LaBr4", LaBr4SD, true);
 
-	/********* ZeroDegree detector *******/
+	/*************** Second setup **************/
 
-	EnergyDepositionSD *ZeroDegreeSD = new EnergyDepositionSD("ZeroDegree", "ZeroDegree");
-	G4SDManager::GetSDMpointer()->AddNewDetector(ZeroDegreeSD);
-	ZeroDegreeSD->SetDetectorID(0);
-	SetSensitiveDetector("ZeroDegree", ZeroDegreeSD, true);
+	//EnergyDepositionSD *HPGe9SD = new EnergyDepositionSD("HPGe9", "HPGe9");
+	//G4SDManager::GetSDMpointer()->AddNewDetector(HPGe9SD);
+	//HPGe9SD->SetDetectorID(9);
+	//SetSensitiveDetector("HPGe9", HPGe9SD, true);
+
+	EnergyDepositionSD *HPGe10SD = new EnergyDepositionSD("HPGe10", "HPGe10");
+	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe10SD);
+	HPGe10SD->SetDetectorID(10);
+	SetSensitiveDetector("HPGe_Cologne", HPGe10SD, true);
+
+	EnergyDepositionSD *HPGe11SD = new EnergyDepositionSD("HPGe11", "HPGe11");
+	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe11SD);
+	HPGe11SD->SetDetectorID(11);
+	SetSensitiveDetector("HPGe_Stuttgart", HPGe11SD, true);
+
+	EnergyDepositionSD *HPGe12SD = new EnergyDepositionSD("HPGe12", "HPGe12");
+	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe12SD);
+	HPGe12SD->SetDetectorID(12);
+	SetSensitiveDetector("HPGe12", HPGe12SD, true);
+}
+
+void DetectorConstruction::print_info() const {
+	printf("==============================================================\n");
+	printf("  DetectorConstruction: Info (all dimensions in mm)\n");
+	G4cout << G4endl;
+	printf("> Ideal position of G3 target : ( %5.2f, %5.2f, %5.2f )\n", 0., 0., 0.);
+	printf("> Ideal position of 2nd target: ( %5.2f, %5.2f, %5.2f)\n", 0., 0., G3_Target_To_2nd_Target);
+	printf("> World dimensions            : ( %5.2f, %5.2f, %5.2f)\n", World_x, World_y, World_z);
+	printf("==============================================================\n");
 }

@@ -81,21 +81,21 @@ void Detectors_2nd::Construct(G4ThreeVector global_coordinates){
 
 	/**************** HPGE10 HPGe_Cologne *******************/
 
-	G4double HPGe_Cologne_rt = 100. * mm; // Estimated
-	G4double HPGe_Cologne_dy = 0. * mm; // Estimated
-	G4double HPGe_Cologne_dz = 0. * mm; // Estimated
+	G4double HPGe_Cologne_rt = 94.4 * mm; 
+	G4double HPGe_Cologne_dy = 0. * mm; 
+	G4double HPGe_Cologne_dz = 0. * mm; 
 	G4double HPGe_Cologne_phi = 270. * deg;
 	G4double HPGe_Cologne_theta = 90. * deg;
 
 	G4double HPGe_Cologne_AngleX = 90. * deg;
 	G4double HPGe_Cologne_AngleY = 0. * deg;
 
-	G4double HPGe_Cologne_Cu_Radius = 50.*mm; // Estimated
-	G4double HPGe_Cologne_Cu_Thickness = 1.*mm; // Estimated
-	G4double HPGe_Cologne_Pb_Radius = 50.*mm; // Estimated
-	G4double HPGe_Cologne_Pb_Thickness = 3.*mm; // Estimated
-	G4double HPGe_Cologne_Pb_Wrap_Thickness = 2.*mm; // Estimated
-	G4double HPGe_Cologne_Pb_Wrap_Length = 150.*mm; // Estimated
+	G4double HPGe_Cologne_Cu_Radius = 50.*mm; 
+	G4double HPGe_Cologne_Cu_Thickness = 1.*1.15*mm; 
+	G4double HPGe_Cologne_Pb_Radius = 50.*mm; 
+	G4double HPGe_Cologne_Pb_Thickness = (4.*1.2 + 1.*2.)*mm; 
+	G4double HPGe_Cologne_Pb_Wrap_Thickness = 2.*1.2*mm; 
+	G4double HPGe_Cologne_Pb_Wrap_Length = 200.*mm; 
 
 	HPGe_Cologne *HPGe_Cologne_Instance = new HPGe_Cologne("HPGe_Cologne");
 	G4LogicalVolume *HPGe_Cologne_Logical = HPGe_Cologne_Instance->Get_Logical();
@@ -164,21 +164,21 @@ void Detectors_2nd::Construct(G4ThreeVector global_coordinates){
 
 	/**************** HPGE11 HPGe_Stuttgart *******************/
 
-	G4double HPGe_Stuttgart_rt = 100. * mm; // Estimated
-	G4double HPGe_Stuttgart_dy = 0. * mm; // Estimated
-	G4double HPGe_Stuttgart_dz = 0. * mm; // Estimated
+	G4double HPGe_Stuttgart_rt = 84.4 * mm; 
+	G4double HPGe_Stuttgart_dy = 0. * mm; 
+	G4double HPGe_Stuttgart_dz = 0. * mm; 
 	G4double HPGe_Stuttgart_phi = 0. * deg;
 	G4double HPGe_Stuttgart_theta = 90. * deg;
 
 	G4double HPGe_Stuttgart_AngleX = 180. * deg;
 	G4double HPGe_Stuttgart_AngleY = 90. * deg;
 
-	G4double HPGe_Stuttgart_Cu_Radius = 50.*mm; // Estimated
-	G4double HPGe_Stuttgart_Cu_Thickness = 1.*mm; // Estimated
-	G4double HPGe_Stuttgart_Pb_Radius = 50.*mm; // Estimated
-	G4double HPGe_Stuttgart_Pb_Thickness = 3.*mm; // Estimated
-	G4double HPGe_Stuttgart_Pb_Wrap_Thickness = 2.*mm; // Estimated
-	G4double HPGe_Stuttgart_Pb_Wrap_Length = 150.*mm; // Estimated
+	G4double HPGe_Stuttgart_Cu_Radius = 50.*mm; 
+	G4double HPGe_Stuttgart_Cu_Thickness = 1.*1.15*mm; 
+	G4double HPGe_Stuttgart_Pb_Radius = 50.*mm; 
+	G4double HPGe_Stuttgart_Pb_Thickness = (5.*1.2 + 1.*2.)*mm; 
+	G4double HPGe_Stuttgart_Pb_Wrap_Thickness = 1.*1.2*mm; 
+	G4double HPGe_Stuttgart_Pb_Wrap_Length = 250.*mm; 
 
 	HPGe_Stuttgart *HPGe_Stuttgart_Instance = new HPGe_Stuttgart("HPGe_Stuttgart");
 	G4LogicalVolume *HPGe_Stuttgart_Logical = HPGe_Stuttgart_Instance->Get_Logical();
@@ -247,21 +247,21 @@ void Detectors_2nd::Construct(G4ThreeVector global_coordinates){
 
 	/**************** HPGE12 HPGe_55_TUNL_31524 *******************/
 
-	G4double HPGe12_rt = 100. * mm; // Estimated
-	G4double HPGe12_dy = 0. * mm; // Estimated
-	G4double HPGe12_dz = 0. * mm; // Estimated
+	G4double HPGe12_rt = 89.4 * mm; 
+	G4double HPGe12_dy = 0. * mm; 
+	G4double HPGe12_dz = 0. * mm; 
 	G4double HPGe12_phi = 90. * deg;
 	G4double HPGe12_theta = 90. * deg;
 
 	G4double HPGe12_AngleX = 270. * deg;
 	G4double HPGe12_AngleY = 0. * deg;
 	
-	G4double HPGe12_Cu_Radius = 50.*mm; // Estimated
-	G4double HPGe12_Cu_Thickness = 1.*mm; // Estimated
-	G4double HPGe12_Pb_Radius = 50.*mm; // Estimated
-	G4double HPGe12_Pb_Thickness = 3.*mm; // Estimated
-	G4double HPGe12_Pb_Wrap_Thickness = 2.*mm; // Estimated
-	G4double HPGe12_Pb_Wrap_Length = 150.*mm; // Estimated
+	G4double HPGe12_Cu_Radius = 50.*mm; 
+	G4double HPGe12_Cu_Thickness = 1.*1.15*mm; 
+	G4double HPGe12_Pb_Radius = 50.*mm; 
+	G4double HPGe12_Pb_Thickness = (4.*1.2 + 1.*2.)*mm; 
+	G4double HPGe12_Pb_Wrap_Thickness = 2.*1.2*mm; 
+	G4double HPGe12_Pb_Wrap_Length = 200.*mm; 
 
 	HPGe_55_TUNL_31524 *HPGe12_Instance = new HPGe_55_TUNL_31524("HPGe12");
 	G4LogicalVolume *HPGe12_Logical = HPGe12_Instance->Get_Logical();
