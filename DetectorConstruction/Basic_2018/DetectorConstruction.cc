@@ -94,9 +94,9 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	/***************** WORLD *****************/
 
-	G4double World_x = 3000. * mm;
-	G4double World_y = 3150. * mm;
-	G4double World_z = 6000. * mm;
+	World_x = 3000. * mm;
+	World_y = 3150. * mm;
+	World_z = 6000. * mm;
 
 	G4Box *World_dim =
 	    new G4Box("World_Solid", World_x * 0.5, World_y * 0.5, World_z * 0.5);
@@ -119,7 +119,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	G4double First_Setup_To_Wheel = 34.*inch;
 	G4double First_UTR_Wall_To_First_Setup = 4.2*inch;
 	G4double First_Setup_To_G3_Wall = 3.5*inch;
-	G4double G3_Target_To_2nd_Target = 62.*inch; // Estimated
+	G3_Target_To_2nd_Target = 62.*inch; // Estimated
 	G4double ZeroDegree_To_2nd_Target = 980.*mm;
 
 	/***************** INITIALIZATIONS *****************/
@@ -187,11 +187,19 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	new G4PVPlacement(0, G4ThreeVector(0., 0., G3_Target_To_2nd_Target + ZeroDegree_To_2nd_Target), zeroDegree_Setup.Get_Logical(), "ZeroDegree_Setup", World_Logical, false, 0, false);
 	
+	print_info();
 
 	return World_Physical;
 }
 
 void DetectorConstruction::ConstructSDandField() {
+
+	/********* ZeroDegree detector *******/
+
+	EnergyDepositionSD *ZeroDegreeSD = new EnergyDepositionSD("ZeroDegree", "ZeroDegree");
+	G4SDManager::GetSDMpointer()->AddNewDetector(ZeroDegreeSD);
+	ZeroDegreeSD->SetDetectorID(0);
+	SetSensitiveDetector("ZeroDegree", ZeroDegreeSD, true);
 
 	/*************** Gamma3 **************/
 
@@ -235,10 +243,35 @@ void DetectorConstruction::ConstructSDandField() {
 	LaBr4SD->SetDetectorID(8);
 	SetSensitiveDetector("LaBr4", LaBr4SD, true);
 
-	/********* ZeroDegree detector *******/
+	/*************** Second setup **************/
 
-	EnergyDepositionSD *ZeroDegreeSD = new EnergyDepositionSD("ZeroDegree", "ZeroDegree");
-	G4SDManager::GetSDMpointer()->AddNewDetector(ZeroDegreeSD);
-	ZeroDegreeSD->SetDetectorID(0);
-	SetSensitiveDetector("ZeroDegree", ZeroDegreeSD, true);
+	//EnergyDepositionSD *HPGe9SD = new EnergyDepositionSD("HPGe9", "HPGe9");
+	//G4SDManager::GetSDMpointer()->AddNewDetector(HPGe9SD);
+	//HPGe9SD->SetDetectorID(9);
+	//SetSensitiveDetector("HPGe9", HPGe9SD, true);
+
+	EnergyDepositionSD *HPGe10SD = new EnergyDepositionSD("HPGe10", "HPGe10");
+	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe10SD);
+	HPGe10SD->SetDetectorID(10);
+	SetSensitiveDetector("HPGe_Cologne", HPGe10SD, true);
+
+	EnergyDepositionSD *HPGe11SD = new EnergyDepositionSD("HPGe11", "HPGe11");
+	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe11SD);
+	HPGe11SD->SetDetectorID(11);
+	SetSensitiveDetector("HPGe_Stuttgart", HPGe11SD, true);
+
+	EnergyDepositionSD *HPGe12SD = new EnergyDepositionSD("HPGe12", "HPGe12");
+	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe12SD);
+	HPGe12SD->SetDetectorID(12);
+	SetSensitiveDetector("HPGe12", HPGe12SD, true);
+}
+
+void DetectorConstruction::print_info() const {
+	printf("==============================================================\n");
+	printf("  DetectorConstruction: Info (all dimensions in mm)\n");
+	G4cout << G4endl;
+	printf("> Ideal position of G3 target : ( %5.2f, %5.2f, %5.2f )\n", 0., 0., 0.);
+	printf("> Ideal position of 2nd target: ( %5.2f, %5.2f, %5.2f)\n", 0., 0., G3_Target_To_2nd_Target);
+	printf("> World dimensions            : ( %5.2f, %5.2f, %5.2f)\n", World_x, World_y, World_z);
+	printf("==============================================================\n");
 }
