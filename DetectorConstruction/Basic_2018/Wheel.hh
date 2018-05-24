@@ -21,23 +21,23 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef WHEEL_HH
 #define WHEEL_HH 1
 
+#include <vector>
+
 #include "G4LogicalVolume.hh"
 
 class Wheel{
 public:
-	Wheel();
+	Wheel(G4LogicalVolume *World_Log);
 	~Wheel(){};
 
-	G4LogicalVolume *Get_Logical(){ return Wheel_Logical; }
-	
+	void Construct(G4ThreeVector global_coordinates);
+
 	G4double Get_Length(){ return Wheel_Thickness; };
-	G4double Get_Max_Radius(){ return Wheel_Max_Radius; };
 
 private:
+	G4LogicalVolume* World_Logical;
 	G4double Wheel_Thickness;
-	G4double Wheel_Max_Radius;
-
-	G4LogicalVolume *Wheel_Logical;
+	std::vector<G4double> Ring_Thickness;
 };
 
 #endif

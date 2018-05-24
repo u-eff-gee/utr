@@ -24,19 +24,20 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 class Beampipe_Upstream{
 public:
-	Beampipe_Upstream(G4double relative_density);
+	Beampipe_Upstream(G4LogicalVolume *World_Log);
 	~Beampipe_Upstream(){};
 
-	G4LogicalVolume *Get_Logical(){ return Beampipe_Upstream_Logical; }
-	
+	void Construct(G4ThreeVector global_coordinates, G4double relative_density);
+
 	G4double Get_Length(){ return Beampipe_Upstream_Length; };
 	G4double Get_Z_Axis_Offset_Z(){ return Z_Axis_Offset_Z; };
 
 private:
+	G4LogicalVolume *World_Logical;
+	G4double Beampipe_Upstream_Upstream_Length;
+	G4double Beampipe_Upstream_Downstream_Length;
 	G4double Beampipe_Upstream_Length;
 	G4double Z_Axis_Offset_Z;
-
-	G4LogicalVolume *Beampipe_Upstream_Logical;
 };
 
 #endif

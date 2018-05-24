@@ -30,7 +30,17 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "Vacuum.hh"
 #include "Beampipe_Upstream.hh"
 
-Beampipe_Upstream::Beampipe_Upstream(G4double relative_density){
+Beampipe_Upstream::Beampipe_Upstream(G4LogicalVolume *World_Log):
+World_Logical(World_Log),
+Beampipe_Upstream_Upstream_Length(100.*inch), // Estimated
+Beampipe_Upstream_Downstream_Length(35.*inch) // Estimated
+{
+	Beampipe_Upstream_Length = Beampipe_Upstream_Upstream_Length + Beampipe_Upstream_Downstream_Length;
+	Z_Axis_Offset_Z = 0.5*(Beampipe_Upstream_Downstream_Length - Beampipe_Upstream_Upstream_Length);
+
+}
+
+void Beampipe_Upstream::Construct(G4ThreeVector global_coordinates, G4double relative_density){
 	
 	G4Colour white(1.0, 1.0, 1.0);
 	G4Colour orange(1.0, 0.5, 0.0);
@@ -45,18 +55,16 @@ Beampipe_Upstream::Beampipe_Upstream(G4double relative_density){
 
 	G4double Beampipe_Inner_Radius = 0.875*inch;
 	G4double Beampipe_Outer_Radius = 1.*inch;
-	G4double Beampipe_Upstream_Upstream_Length = 100.*inch; // Estimated
-	G4double Beampipe_Upstream_Downstream_Length = 35.*inch; // Estimated
-	Beampipe_Upstream_Length = Beampipe_Upstream_Upstream_Length + Beampipe_Upstream_Downstream_Length;
-	Z_Axis_Offset_Z = 0.5*(Beampipe_Upstream_Downstream_Length - Beampipe_Upstream_Upstream_Length);
-
 	G4double Beampipe_Joint_Outer_Radius = 1.4*inch; // Estimated
 	G4double Beampipe_Joint_Length = 3.*inch; // Estimated
+	
+	// Beam pipe vacuum
+	G4Tubs *Vacuum_Solid = new G4Tubs("Vacuum_Solid", 0., Beampipe_Inner_Radius, Beampipe_Upstream_Length*0.5, 0., twopi);
+	G4LogicalVolume *Vacuum_Logical = new G4LogicalVolume(Vacuum_Solid, vacuum, "Vacuum_Logical");
 
-	// Mother volume
-	G4Tubs *Beampipe_Upstream_Solid = new G4Tubs("Beampipe_Upstream_Solid", 0., Beampipe_Joint_Outer_Radius, Beampipe_Upstream_Length*0.5, 0., twopi);
-	Beampipe_Upstream_Logical = new G4LogicalVolume(Beampipe_Upstream_Solid, vacuum, "Beampipe_Upstream_Logical");
-	Beampipe_Upstream_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());
+	Vacuum_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());	
+	
+	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., 0.), Vacuum_Logical, "Vacuum", World_Logical, false, 0, false);
 
 	// Beam pipe
 	G4Tubs *Pipe_Upstream_Solid = new G4Tubs("Pipe_Upstream_Solid", Beampipe_Inner_Radius, Beampipe_Outer_Radius, Beampipe_Upstream_Length*0.5, 0., twopi);
@@ -64,7 +72,7 @@ Beampipe_Upstream::Beampipe_Upstream(G4double relative_density){
 
 	Pipe_Upstream_Logical->SetVisAttributes(white);	
 	
-	new G4PVPlacement(0, G4ThreeVector(), Pipe_Upstream_Logical, "Pipe_Upstream", Beampipe_Upstream_Logical, false, 0, false);
+	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., 0.), Pipe_Upstream_Logical, "Pipe_Upstream", World_Logical, false, 0, false);
 
 	// Beampipe downstream joint
 	
@@ -75,7 +83,7 @@ Beampipe_Upstream::Beampipe_Upstream(G4double relative_density){
 
 	Downstream_Joint_Logical->SetVisAttributes(white);
 	
-	new G4PVPlacement(0, G4ThreeVector(0., 0., Beampipe_Upstream_Length*0.5 - Beampipe_Upstream_Downstream_Length + Downstream_Joint_To_Target), Downstream_Joint_Logical, "Downstream_Joint", Beampipe_Upstream_Logical, false, 0, false);
+	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., Beampipe_Upstream_Length*0.5 - Beampipe_Upstream_Downstream_Length + Downstream_Joint_To_Target), Downstream_Joint_Logical, "Downstream_Joint", World_Logical, false, 0, false);
 	
 	// Downstream exit window
 	
@@ -86,7 +94,7 @@ Beampipe_Upstream::Beampipe_Upstream(G4double relative_density){
 
 	Downstream_Exit_Window_Logical->SetVisAttributes(white);
 	
-	new G4PVPlacement(0, G4ThreeVector(0., 0., Beampipe_Upstream_Length*0.5 - Downstream_Exit_Window_Thickness*0.5), Downstream_Exit_Window_Logical, "Downstream_Exit_Window", Beampipe_Upstream_Logical, false, 0, false);
+	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., Beampipe_Upstream_Length*0.5 - Downstream_Exit_Window_Thickness*0.5), Downstream_Exit_Window_Logical, "Downstream_Exit_Window", World_Logical, false, 0, false);
 
 	// Upstream exit window
 	
@@ -97,7 +105,7 @@ Beampipe_Upstream::Beampipe_Upstream(G4double relative_density){
 
 	Upstream_Exit_Window_Logical->SetVisAttributes(white);
 	
-	new G4PVPlacement(0, G4ThreeVector(0., 0., -Beampipe_Upstream_Length*0.5 + Upstream_Exit_Window_Thickness*0.5), Upstream_Exit_Window_Logical, "Upstream_Exit_Window", Beampipe_Upstream_Logical, false, 0, false);
+	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., Beampipe_Upstream_Length*0.5 + Upstream_Exit_Window_Thickness*0.5), Upstream_Exit_Window_Logical, "Upstream_Exit_Window", World_Logical, false, 0, false);
 	
 	// Target Holder Tube
 	
@@ -134,8 +142,7 @@ Beampipe_Upstream::Beampipe_Upstream(G4double relative_density){
 
 	TargetTube_Logical->SetVisAttributes(new G4VisAttributes(orange));
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., Beampipe_Upstream_Length*0.5 - Beampipe_Upstream_Downstream_Length + Downstream_Joint_To_Target - TargetTube_Total_Length * 0.5 + TargetTubeFront_Length*0.5),
-	                  TargetTube_Logical, "TargetTube", Beampipe_Upstream_Logical, false, 0);
+	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., Beampipe_Upstream_Length*0.5 - Beampipe_Upstream_Downstream_Length + Downstream_Joint_To_Target - TargetTube_Total_Length * 0.5 + TargetTubeFront_Length*0.5), TargetTube_Logical, "TargetTube", World_Logical, false, 0);
 
 	// Target ring
 	
@@ -148,5 +155,5 @@ Beampipe_Upstream::Beampipe_Upstream(G4double relative_density){
 
 	Target_Ring_Logical->SetVisAttributes(red);
 	
-	new G4PVPlacement(0, G4ThreeVector(0., 0., Beampipe_Upstream_Length*0.5 - Beampipe_Upstream_Downstream_Length), Target_Ring_Logical, "Target_Ring", Beampipe_Upstream_Logical, false, 0, false);
+	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., Beampipe_Upstream_Length*0.5 - Beampipe_Upstream_Downstream_Length), Target_Ring_Logical, "Target_Ring", World_Logical, false, 0, false);
 }

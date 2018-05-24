@@ -24,25 +24,24 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 class G3_Wall{
 public:
-	G3_Wall();
+	G3_Wall(G4LogicalVolume *World_Log);
 	~G3_Wall(){};
 
-	G4LogicalVolume *Get_Logical(){ return G3_Wall_Logical; }
-	
-	G4double Get_Length(){ return G3_Wall_Length; };
-	G4double Get_X(){ return G3_Wall_X; };
-	G4double Get_Y(){ return G3_Wall_Y; };
-	G4double Get_Z_Axis_Offset_Y(){ return Z_Axis_Offset_Y; };
+	void Construct(G4ThreeVector global_coordinates);
+
 	G4double Get_Floor_Level(){ return Floor_Level; };
+	G4double Get_Length(){ return G3_Wall_Length; };
 
 private:
-	G4double G3_Wall_Length;
-	G4double G3_Wall_X;
-	G4double G3_Wall_Y;
-	G4double Z_Axis_Offset_Y;
-	G4double Floor_Level;
+	G4LogicalVolume *World_Logical;
 
-	G4LogicalVolume *G3_Wall_Logical;
+	G4double Lead_Wall_Tunnel_Y;
+	G4double Lead_Wall_Base_Y;
+	G4double Concrete_Base_Hor_Y;
+	G4double Floor_Level;
+	G4double Concrete_Base_Hor_Z;
+	G4double Concrete_Base_Ver_Z;
+	G4double G3_Wall_Length;
 };
 
 #endif

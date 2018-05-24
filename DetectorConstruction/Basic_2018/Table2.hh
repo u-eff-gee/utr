@@ -25,19 +25,18 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 class Table2{
 public:
-	Table2();
+	Table2(G4LogicalVolume *World_Logical);
 	~Table2(){};
 
-	G4LogicalVolume *Get_Logical(){ return Table2_Logical; }
-	
+	void Construct(G4ThreeVector global_coordinates);
+
 	G4double Get_Length(){ return Table2_Length; };
 	G4double Get_Z_Axis_Offset_Z(){ return Z_Axis_Offset_Z; };
 
 private:
+	G4LogicalVolume *World_Logical;
 	G4double Table2_Length;
 	G4double Z_Axis_Offset_Z;
-
-	G4LogicalVolume *Table2_Logical;
 };
 
 #endif

@@ -31,22 +31,11 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "ZeroDegree.hh"
 #include "Units.hh"
 
-ZeroDegree_Setup::ZeroDegree_Setup(){
+ZeroDegree_Setup::ZeroDegree_Setup(G4LogicalVolume *World_Log):
+World_Logical(World_Log)
+{}
 
-	G4Colour orange(1.0, 0.5, 0.0);
-	G4Colour green(0.0, 1.0, 0.0);
-	
-	G4NistManager *nist = G4NistManager::Instance();
-
-	G4Material *air = nist->FindOrBuildMaterial("G4_AIR");
-
-	G4double ZeroDegree_Setup_X = 40.*inch; // Dimension of mother volume, arbitrary
-	G4double ZeroDegree_Setup_Y = 20.*inch; // Dimension of mother volume, arbitrary
-	ZeroDegree_Setup_Length = 20.*inch; // Dimension of mother volume, arbitrary
-	
-	// Mother volume
-	G4Box *ZeroDegree_Setup_Solid = new G4Box("ZeroDegree_Setup_Solid", ZeroDegree_Setup_X*0.5, ZeroDegree_Setup_Y*0.5, ZeroDegree_Setup_Length*0.5);
-	ZeroDegree_Setup_Logical = new G4LogicalVolume(ZeroDegree_Setup_Solid, air, "ZeroDegree_Setup_Logical");
+void ZeroDegree_Setup::Construct(G4ThreeVector global_coordinates){
 
 	// Zero degree detector
 	
@@ -63,6 +52,6 @@ ZeroDegree_Setup::ZeroDegree_Setup(){
 	rotateZeroDegree->rotateX(ZeroDegree_AngleX);
 	rotateZeroDegree->rotateY(ZeroDegree_AngleY);
 
-	new G4PVPlacement(rotateZeroDegree, G4ThreeVector(ZeroDegree_X, ZeroDegree_Y, ZeroDegree_Z), zeroDegree.Get_Logical(), "ZeroDegree", ZeroDegree_Setup_Logical, false, 0, false);
+	new G4PVPlacement(rotateZeroDegree, global_coordinates + G4ThreeVector(ZeroDegree_X, ZeroDegree_Y, ZeroDegree_Z), zeroDegree.Get_Logical(), "ZeroDegree", World_Logical, false, 0, false);
 
 }

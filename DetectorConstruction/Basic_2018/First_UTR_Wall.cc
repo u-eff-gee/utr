@@ -29,25 +29,23 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "Units.hh"
 #include "First_UTR_Wall.hh"
 
-First_UTR_Wall::First_UTR_Wall(){
+First_UTR_Wall::First_UTR_Wall(G4LogicalVolume *World_Log): 
+World_Logical(World_Log), 
+First_UTR_Wall_Length(8.*inch)
+{}
+
+void First_UTR_Wall::Construct(G4ThreeVector global_coordinates){
 
 	G4Colour green(0., 0.5, 0.);
 
 	G4NistManager *nist = G4NistManager::Instance();
 
-	G4Material *air = nist->FindOrBuildMaterial("G4_AIR");
 	G4Material *Pb = nist->FindOrBuildMaterial("G4_Pb");
 
-	First_UTR_Wall_Length = 8.*inch;
 	G4double First_UTR_Wall_X = 22.*inch;
 	G4double First_UTR_Wall_Y = 26.*inch;
-	G4double Mother_Volume_Y = 30.*inch; // Arbitrary
 	G4double Beam_Pipe_Outer_Radius = 1.*inch;
 
-	// Construct mother volume
-	G4Box *First_UTR_Wall_Solid = new G4Box("First_UTR_Wall_Solid", First_UTR_Wall_X*0.5, Mother_Volume_Y*0.5, First_UTR_Wall_Length*0.5);
-	
-	First_UTR_Wall_Logical = new G4LogicalVolume(First_UTR_Wall_Solid, air, "First_UTR_Wall_Logical");
 	//First_UTR_Wall_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());
 
 	G4Box *Lead_Wall_Solid_Solid = new G4Box("Lead_Wall_Solid_Solid", First_UTR_Wall_X*0.5, First_UTR_Wall_Y*0.5, First_UTR_Wall_Length*0.5);
@@ -58,5 +56,5 @@ First_UTR_Wall::First_UTR_Wall(){
 	G4LogicalVolume *Lead_Wall_Logical = new G4LogicalVolume(Lead_Wall_Solid, Pb, "Lead_Wall_Logical");
 	Lead_Wall_Logical->SetVisAttributes(green);
 
-	new G4PVPlacement(0, G4ThreeVector(0., 1.*inch, 0.), Lead_Wall_Logical, "Lead_Wall", First_UTR_Wall_Logical, false, 0, false);
+	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., Beam_Pipe_Outer_Radius, 0.), Lead_Wall_Logical, "Lead_Wall", World_Logical, false, 0, false);
 }

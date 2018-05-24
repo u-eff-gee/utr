@@ -36,24 +36,19 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "LaBr_TUD.hh"
 #include "FilterCase.hh"
 
-Detectors_G3::Detectors_G3(){
+Detectors_G3::Detectors_G3(G4LogicalVolume *World_Log):
+World_Logical(World_Log)
+{};
+
+void Detectors_G3::Construct(G4ThreeVector global_coordinates){
 
 	G4Colour orange(1.0, 0.5, 0.0);
 	G4Colour green(0.0, 1.0, 0.0);
 	
 	G4NistManager *nist = G4NistManager::Instance();
 
-	G4Material *air = nist->FindOrBuildMaterial("G4_AIR");
 	G4Material *Cu= nist->FindOrBuildMaterial("G4_Cu");
 	G4Material *Pb= nist->FindOrBuildMaterial("G4_Pb");
-
-	G4double Detectors_G3_X = 70.*inch; // Dimension of mother volume, arbitrary
-	G4double Detectors_G3_Y = 70.*inch; // Dimension of mother volume, arbitrary
-	Detectors_G3_Length = 70.*inch; // Dimension of mother volume, arbitrary
-	
-	// Mother volume
-	G4Box *Detectors_G3_Solid = new G4Box("Detectors_G3_Solid", Detectors_G3_X*0.5, Detectors_G3_Y*0.5, Detectors_G3_Length*0.5);
-	Detectors_G3_Logical = new G4LogicalVolume(Detectors_G3_Solid, air, "Detectors_G3_Logical");
 
 	/************************** Detectors ***************************/
 	//
@@ -114,10 +109,10 @@ Detectors_G3::Detectors_G3(){
 
 	new G4PVPlacement(
 	    rotateHPGe1,
-	    G4ThreeVector(HPGe1_rt * sin(HPGe1_theta) * cos(HPGe1_phi),
+	    global_coordinates + G4ThreeVector(HPGe1_rt * sin(HPGe1_theta) * cos(HPGe1_phi),
 	                  HPGe1_rt * sin(HPGe1_theta) * sin(HPGe1_phi) + HPGe1_dy,
 	                  HPGe1_rt * cos(HPGe1_theta) + HPGe1_dz),
-	    HPGe1_Logical, "HPGe1", Detectors_G3_Logical, false, 0);
+	    HPGe1_Logical, "HPGe1", World_Logical, false, 0);
 
 	HPGe1_rt -= HPGe1_Instance->Get_Length() * 0.5;
 
@@ -130,10 +125,10 @@ Detectors_G3::Detectors_G3(){
 		HPGe1_Pb_Wrap_Logical->SetVisAttributes(green);
 
 		new G4PVPlacement(rotateHPGe1,
-	    G4ThreeVector(HPGe1_rt * sin(HPGe1_theta) * cos(HPGe1_phi),
+	    global_coordinates + G4ThreeVector(HPGe1_rt * sin(HPGe1_theta) * cos(HPGe1_phi),
 	                  HPGe1_rt * sin(HPGe1_theta) * sin(HPGe1_phi) + HPGe1_dy,
 	                  HPGe1_rt * cos(HPGe1_theta) + HPGe1_dz),
-	    HPGe1_Pb_Wrap_Logical, "HPGe1_Pb_Wrap", Detectors_G3_Logical, false, 0);
+	    HPGe1_Pb_Wrap_Logical, "HPGe1_Pb_Wrap", World_Logical, false, 0);
 
 		HPGe1_rt -= HPGe1_Pb_Wrap_Length * 0.5;
 	}
@@ -142,10 +137,10 @@ Detectors_G3::Detectors_G3(){
 	HPGe1_rt -= filterCase1.Get_Offset_From_Detector();
 
 	new G4PVPlacement(rotateHPGe1, 
-	    G4ThreeVector(HPGe1_rt * sin(HPGe1_theta) * cos(HPGe1_phi),
+	    global_coordinates + G4ThreeVector(HPGe1_rt * sin(HPGe1_theta) * cos(HPGe1_phi),
 	                  HPGe1_rt * sin(HPGe1_theta) * sin(HPGe1_phi) + HPGe1_dy,
 	                  HPGe1_rt * cos(HPGe1_theta) + HPGe1_dz),
-	    filterCase1.Get_Logical(), "HPGe1_FilterCase", Detectors_G3_Logical, false, 0, false
+	    filterCase1.Get_Logical(), "HPGe1_FilterCase", World_Logical, false, 0, false
 	    );
 	
 	HPGe1_rt += filterCase1.Get_Offset_From_Detector();
@@ -159,10 +154,10 @@ Detectors_G3::Detectors_G3(){
 		HPGe1_Cu_Logical->SetVisAttributes(orange);
 
 		new G4PVPlacement(rotateHPGe1,
-	    G4ThreeVector(HPGe1_rt * sin(HPGe1_theta) * cos(HPGe1_phi),
+	    global_coordinates + G4ThreeVector(HPGe1_rt * sin(HPGe1_theta) * cos(HPGe1_phi),
 	                  HPGe1_rt * sin(HPGe1_theta) * sin(HPGe1_phi) + HPGe1_dy,
 	                  HPGe1_rt * cos(HPGe1_theta) + HPGe1_dz),
-	    HPGe1_Cu_Logical, "HPGe1_Cu", Detectors_G3_Logical, false, 0);
+	    HPGe1_Cu_Logical, "HPGe1_Cu", World_Logical, false, 0);
 	}
 
 	HPGe1_rt -= HPGe1_Cu_Thickness*0.5;
@@ -175,10 +170,10 @@ Detectors_G3::Detectors_G3(){
 		HPGe1_Pb_Logical->SetVisAttributes(green);
 
 		new G4PVPlacement(rotateHPGe1,
-	    G4ThreeVector(HPGe1_rt * sin(HPGe1_theta) * cos(HPGe1_phi),
+	    global_coordinates + G4ThreeVector(HPGe1_rt * sin(HPGe1_theta) * cos(HPGe1_phi),
 	                  HPGe1_rt * sin(HPGe1_theta) * sin(HPGe1_phi) + HPGe1_dy,
 	                  HPGe1_rt * cos(HPGe1_theta) + HPGe1_dz),
-	    HPGe1_Pb_Logical, "HPGe1_Pb", Detectors_G3_Logical, false, 0);
+	    HPGe1_Pb_Logical, "HPGe1_Pb", World_Logical, false, 0);
 	}
 
 	/**************** HPGE2 *******************/
@@ -212,10 +207,10 @@ Detectors_G3::Detectors_G3(){
 
 	new G4PVPlacement(
 	    rotateHPGe2,
-	    G4ThreeVector(HPGe2_rt * sin(HPGe2_theta) * cos(HPGe2_phi),
+	    global_coordinates + G4ThreeVector(HPGe2_rt * sin(HPGe2_theta) * cos(HPGe2_phi),
 	                  HPGe2_rt * sin(HPGe2_theta) * sin(HPGe2_phi) + HPGe2_dy,
 	                  HPGe2_rt * cos(HPGe2_theta) + HPGe2_dz),
-	    HPGe2_Logical, "HPGe2", Detectors_G3_Logical, false, 0);
+	    HPGe2_Logical, "HPGe2", World_Logical, false, 0);
 
 	HPGe2_rt -= HPGe2_Instance->Get_Length() * 0.5;
 
@@ -228,10 +223,10 @@ Detectors_G3::Detectors_G3(){
 		HPGe2_Pb_Wrap_Logical->SetVisAttributes(green);
 
 		new G4PVPlacement(rotateHPGe2,
-	    G4ThreeVector(HPGe2_rt * sin(HPGe2_theta) * cos(HPGe2_phi),
+	    global_coordinates + G4ThreeVector(HPGe2_rt * sin(HPGe2_theta) * cos(HPGe2_phi),
 	                  HPGe2_rt * sin(HPGe2_theta) * sin(HPGe2_phi) + HPGe2_dy,
 	                  HPGe2_rt * cos(HPGe2_theta) + HPGe2_dz),
-	    HPGe2_Pb_Wrap_Logical, "HPGe2_Pb_Wrap", Detectors_G3_Logical, false, 0);
+	    HPGe2_Pb_Wrap_Logical, "HPGe2_Pb_Wrap", World_Logical, false, 0);
 
 		HPGe2_rt -= HPGe2_Pb_Wrap_Length * 0.5;
 	}
@@ -240,10 +235,10 @@ Detectors_G3::Detectors_G3(){
 	HPGe2_rt -= filterCase2.Get_Offset_From_Detector();
 
 	new G4PVPlacement(rotateHPGe2, 
-	    G4ThreeVector(HPGe2_rt * sin(HPGe2_theta) * cos(HPGe2_phi),
+	    global_coordinates + G4ThreeVector(HPGe2_rt * sin(HPGe2_theta) * cos(HPGe2_phi),
 	                  HPGe2_rt * sin(HPGe2_theta) * sin(HPGe2_phi) + HPGe2_dy,
 	                  HPGe2_rt * cos(HPGe2_theta) + HPGe2_dz),
-	    filterCase2.Get_Logical(), "HPGe2_FilterCase", Detectors_G3_Logical, false, 0, false
+	    filterCase2.Get_Logical(), "HPGe2_FilterCase", World_Logical, false, 0, false
 	    );
 	
 	HPGe2_rt += filterCase2.Get_Offset_From_Detector();
@@ -257,10 +252,10 @@ Detectors_G3::Detectors_G3(){
 		HPGe2_Cu_Logical->SetVisAttributes(orange);
 
 		new G4PVPlacement(rotateHPGe2,
-	    G4ThreeVector(HPGe2_rt * sin(HPGe2_theta) * cos(HPGe2_phi),
+	    global_coordinates + G4ThreeVector(HPGe2_rt * sin(HPGe2_theta) * cos(HPGe2_phi),
 	                  HPGe2_rt * sin(HPGe2_theta) * sin(HPGe2_phi) + HPGe2_dy,
 	                  HPGe2_rt * cos(HPGe2_theta) + HPGe2_dz),
-	    HPGe2_Cu_Logical, "HPGe2_Cu", Detectors_G3_Logical, false, 0);
+	    HPGe2_Cu_Logical, "HPGe2_Cu", World_Logical, false, 0);
 	}
 
 	HPGe2_rt -= HPGe2_Cu_Thickness*0.5;
@@ -273,10 +268,10 @@ Detectors_G3::Detectors_G3(){
 		HPGe2_Pb_Logical->SetVisAttributes(green);
 
 		new G4PVPlacement(rotateHPGe2,
-	    G4ThreeVector(HPGe2_rt * sin(HPGe2_theta) * cos(HPGe2_phi),
+	    global_coordinates + G4ThreeVector(HPGe2_rt * sin(HPGe2_theta) * cos(HPGe2_phi),
 	                  HPGe2_rt * sin(HPGe2_theta) * sin(HPGe2_phi) + HPGe2_dy,
 	                  HPGe2_rt * cos(HPGe2_theta) + HPGe2_dz),
-	    HPGe2_Pb_Logical, "HPGe2_Pb", Detectors_G3_Logical, false, 0);
+	    HPGe2_Pb_Logical, "HPGe2_Pb", World_Logical, false, 0);
 	}
 
 	/**************** HPGE3 *******************/
@@ -310,10 +305,10 @@ Detectors_G3::Detectors_G3(){
 
 	new G4PVPlacement(
 	    rotateHPGe3,
-	    G4ThreeVector(HPGe3_rt * sin(HPGe3_theta) * cos(HPGe3_phi),
+	    global_coordinates + G4ThreeVector(HPGe3_rt * sin(HPGe3_theta) * cos(HPGe3_phi),
 	                  HPGe3_rt * sin(HPGe3_theta) * sin(HPGe3_phi) + HPGe3_dy,
 	                  HPGe3_rt * cos(HPGe3_theta) + HPGe3_dz),
-	    HPGe3_Logical, "HPGe3", Detectors_G3_Logical, false, 0);
+	    HPGe3_Logical, "HPGe3", World_Logical, false, 0);
 
 	HPGe3_rt -= HPGe3_Instance->Get_Length() * 0.5;
 
@@ -326,10 +321,10 @@ Detectors_G3::Detectors_G3(){
 		HPGe3_Pb_Wrap_Logical->SetVisAttributes(green);
 
 		new G4PVPlacement(rotateHPGe3,
-	    G4ThreeVector(HPGe3_rt * sin(HPGe3_theta) * cos(HPGe3_phi),
+	    global_coordinates + G4ThreeVector(HPGe3_rt * sin(HPGe3_theta) * cos(HPGe3_phi),
 	                  HPGe3_rt * sin(HPGe3_theta) * sin(HPGe3_phi) + HPGe3_dy,
 	                  HPGe3_rt * cos(HPGe3_theta) + HPGe3_dz),
-	    HPGe3_Pb_Wrap_Logical, "HPGe3_Pb_Wrap", Detectors_G3_Logical, false, 0);
+	    HPGe3_Pb_Wrap_Logical, "HPGe3_Pb_Wrap", World_Logical, false, 0);
 
 		HPGe3_rt -= HPGe3_Pb_Wrap_Length * 0.5;
 	}
@@ -338,10 +333,10 @@ Detectors_G3::Detectors_G3(){
 	HPGe3_rt -= filterCase3.Get_Offset_From_Detector();
 
 	new G4PVPlacement(rotateHPGe3, 
-	    G4ThreeVector(HPGe3_rt * sin(HPGe3_theta) * cos(HPGe3_phi),
+	    global_coordinates + G4ThreeVector(HPGe3_rt * sin(HPGe3_theta) * cos(HPGe3_phi),
 	                  HPGe3_rt * sin(HPGe3_theta) * sin(HPGe3_phi) + HPGe3_dy,
 	                  HPGe3_rt * cos(HPGe3_theta) + HPGe3_dz),
-	    filterCase3.Get_Logical(), "HPGe3_FilterCase", Detectors_G3_Logical, false, 0, false
+	    filterCase3.Get_Logical(), "HPGe3_FilterCase", World_Logical, false, 0, false
 	    );
 	
 	HPGe3_rt += filterCase3.Get_Offset_From_Detector();
@@ -355,10 +350,10 @@ Detectors_G3::Detectors_G3(){
 		HPGe3_Cu_Logical->SetVisAttributes(orange);
 
 		new G4PVPlacement(rotateHPGe3,
-	    G4ThreeVector(HPGe3_rt * sin(HPGe3_theta) * cos(HPGe3_phi),
+	    global_coordinates + G4ThreeVector(HPGe3_rt * sin(HPGe3_theta) * cos(HPGe3_phi),
 	                  HPGe3_rt * sin(HPGe3_theta) * sin(HPGe3_phi) + HPGe3_dy,
 	                  HPGe3_rt * cos(HPGe3_theta) + HPGe3_dz),
-	    HPGe3_Cu_Logical, "HPGe3_Cu", Detectors_G3_Logical, false, 0);
+	    HPGe3_Cu_Logical, "HPGe3_Cu", World_Logical, false, 0);
 	}
 
 	HPGe3_rt -= HPGe3_Cu_Thickness*0.5;
@@ -371,10 +366,10 @@ Detectors_G3::Detectors_G3(){
 		HPGe3_Pb_Logical->SetVisAttributes(green);
 
 		new G4PVPlacement(rotateHPGe3,
-	    G4ThreeVector(HPGe3_rt * sin(HPGe3_theta) * cos(HPGe3_phi),
+	    global_coordinates + G4ThreeVector(HPGe3_rt * sin(HPGe3_theta) * cos(HPGe3_phi),
 	                  HPGe3_rt * sin(HPGe3_theta) * sin(HPGe3_phi) + HPGe3_dy,
 	                  HPGe3_rt * cos(HPGe3_theta) + HPGe3_dz),
-	    HPGe3_Pb_Logical, "HPGe3_Pb", Detectors_G3_Logical, false, 0);
+	    HPGe3_Pb_Logical, "HPGe3_Pb", World_Logical, false, 0);
 	}
 
 	/**************** HPGE4 *******************/
@@ -408,10 +403,10 @@ Detectors_G3::Detectors_G3(){
 
 	new G4PVPlacement(
 	    rotateHPGe4,
-	    G4ThreeVector(HPGe4_rt * sin(HPGe4_theta) * cos(HPGe4_phi),
+	    global_coordinates + G4ThreeVector(HPGe4_rt * sin(HPGe4_theta) * cos(HPGe4_phi),
 	                  HPGe4_rt * sin(HPGe4_theta) * sin(HPGe4_phi) + HPGe4_dy,
 	                  HPGe4_rt * cos(HPGe4_theta) + HPGe4_dz),
-	    HPGe4_Logical, "HPGe4", Detectors_G3_Logical, false, 0);
+	    HPGe4_Logical, "HPGe4", World_Logical, false, 0);
 
 	HPGe4_rt -= HPGe4_Instance->Get_Length() * 0.5;
 
@@ -424,10 +419,10 @@ Detectors_G3::Detectors_G3(){
 		HPGe4_Pb_Wrap_Logical->SetVisAttributes(green);
 
 		new G4PVPlacement(rotateHPGe4,
-	    G4ThreeVector(HPGe4_rt * sin(HPGe4_theta) * cos(HPGe4_phi),
+	    global_coordinates + G4ThreeVector(HPGe4_rt * sin(HPGe4_theta) * cos(HPGe4_phi),
 	                  HPGe4_rt * sin(HPGe4_theta) * sin(HPGe4_phi) + HPGe4_dy,
 	                  HPGe4_rt * cos(HPGe4_theta) + HPGe4_dz),
-	    HPGe4_Pb_Wrap_Logical, "HPGe4_Pb_Wrap", Detectors_G3_Logical, false, 0);
+	    HPGe4_Pb_Wrap_Logical, "HPGe4_Pb_Wrap", World_Logical, false, 0);
 
 		HPGe4_rt -= HPGe4_Pb_Wrap_Length * 0.5;
 	}
@@ -440,10 +435,10 @@ Detectors_G3::Detectors_G3(){
 		HPGe4_Cu_Logical->SetVisAttributes(orange);
 
 		new G4PVPlacement(rotateHPGe4,
-	    G4ThreeVector(HPGe4_rt * sin(HPGe4_theta) * cos(HPGe4_phi),
+	    global_coordinates + G4ThreeVector(HPGe4_rt * sin(HPGe4_theta) * cos(HPGe4_phi),
 	                  HPGe4_rt * sin(HPGe4_theta) * sin(HPGe4_phi) + HPGe4_dy,
 	                  HPGe4_rt * cos(HPGe4_theta) + HPGe4_dz),
-	    HPGe4_Cu_Logical, "HPGe4_Cu", Detectors_G3_Logical, false, 0);
+	    HPGe4_Cu_Logical, "HPGe4_Cu", World_Logical, false, 0);
 	}
 
 	HPGe4_rt -= HPGe4_Cu_Thickness*0.5;
@@ -456,10 +451,10 @@ Detectors_G3::Detectors_G3(){
 		HPGe4_Pb_Logical->SetVisAttributes(green);
 
 		new G4PVPlacement(rotateHPGe4,
-	    G4ThreeVector(HPGe4_rt * sin(HPGe4_theta) * cos(HPGe4_phi),
+	    global_coordinates + G4ThreeVector(HPGe4_rt * sin(HPGe4_theta) * cos(HPGe4_phi),
 	                  HPGe4_rt * sin(HPGe4_theta) * sin(HPGe4_phi) + HPGe4_dy,
 	                  HPGe4_rt * cos(HPGe4_theta) + HPGe4_dz),
-	    HPGe4_Pb_Logical, "HPGe4_Pb", Detectors_G3_Logical, false, 0);
+	    HPGe4_Pb_Logical, "HPGe4_Pb", World_Logical, false, 0);
 	}
 
 	/**************** LABR1 *******************/
@@ -493,10 +488,10 @@ Detectors_G3::Detectors_G3(){
 
 	new G4PVPlacement(
 	    rotateLaBr1,
-	    G4ThreeVector(LaBr1_rt * sin(LaBr1_theta) * cos(LaBr1_phi),
+	    global_coordinates + G4ThreeVector(LaBr1_rt * sin(LaBr1_theta) * cos(LaBr1_phi),
 	                  LaBr1_rt * sin(LaBr1_theta) * sin(LaBr1_phi) + LaBr1_dy,
 	                  LaBr1_rt * cos(LaBr1_theta) + LaBr1_dz),
-	    LaBr1_Logical, "LaBr1", Detectors_G3_Logical, false, 0);
+	    LaBr1_Logical, "LaBr1", World_Logical, false, 0);
 
 	LaBr1_rt -= LaBr1_Instance->Get_Length() * 0.5;
 
@@ -509,10 +504,10 @@ Detectors_G3::Detectors_G3(){
 		LaBr1_Pb_Wrap_Logical->SetVisAttributes(green);
 
 		new G4PVPlacement(rotateLaBr1,
-	    G4ThreeVector(LaBr1_rt * sin(LaBr1_theta) * cos(LaBr1_phi),
+	    global_coordinates + G4ThreeVector(LaBr1_rt * sin(LaBr1_theta) * cos(LaBr1_phi),
 	                  LaBr1_rt * sin(LaBr1_theta) * sin(LaBr1_phi) + LaBr1_dy,
 	                  LaBr1_rt * cos(LaBr1_theta) + LaBr1_dz),
-	    LaBr1_Pb_Wrap_Logical, "LaBr1_Pb_Wrap", Detectors_G3_Logical, false, 0);
+	    LaBr1_Pb_Wrap_Logical, "LaBr1_Pb_Wrap", World_Logical, false, 0);
 
 		LaBr1_rt -= LaBr1_Pb_Wrap_Length * 0.5;
 	}
@@ -521,10 +516,10 @@ Detectors_G3::Detectors_G3(){
 	LaBr1_rt -= filterCaseL1.Get_Offset_From_Detector();
 
 	new G4PVPlacement(rotateLaBr1, 
-	    G4ThreeVector(LaBr1_rt * sin(LaBr1_theta) * cos(LaBr1_phi),
+	    global_coordinates + G4ThreeVector(LaBr1_rt * sin(LaBr1_theta) * cos(LaBr1_phi),
 	                  LaBr1_rt * sin(LaBr1_theta) * sin(LaBr1_phi) + LaBr1_dy,
 	                  LaBr1_rt * cos(LaBr1_theta) + LaBr1_dz),
-	    filterCaseL1.Get_Logical(), "LaBr1_FilterCase", Detectors_G3_Logical, false, 0, false
+	    filterCaseL1.Get_Logical(), "LaBr1_FilterCase", World_Logical, false, 0, false
 	    );
 	
 	LaBr1_rt += filterCaseL1.Get_Offset_From_Detector();
@@ -538,10 +533,10 @@ Detectors_G3::Detectors_G3(){
 		LaBr1_Cu_Logical->SetVisAttributes(orange);
 
 		new G4PVPlacement(rotateLaBr1,
-	    G4ThreeVector(LaBr1_rt * sin(LaBr1_theta) * cos(LaBr1_phi),
+	    global_coordinates + G4ThreeVector(LaBr1_rt * sin(LaBr1_theta) * cos(LaBr1_phi),
 	                  LaBr1_rt * sin(LaBr1_theta) * sin(LaBr1_phi) + LaBr1_dy,
 	                  LaBr1_rt * cos(LaBr1_theta) + LaBr1_dz),
-	    LaBr1_Cu_Logical, "LaBr1_Cu", Detectors_G3_Logical, false, 0);
+	    LaBr1_Cu_Logical, "LaBr1_Cu", World_Logical, false, 0);
 	}
 
 	LaBr1_rt -= LaBr1_Cu_Thickness*0.5;
@@ -554,10 +549,10 @@ Detectors_G3::Detectors_G3(){
 		LaBr1_Pb_Logical->SetVisAttributes(green);
 
 		new G4PVPlacement(rotateLaBr1,
-	    G4ThreeVector(LaBr1_rt * sin(LaBr1_theta) * cos(LaBr1_phi),
+	    global_coordinates + G4ThreeVector(LaBr1_rt * sin(LaBr1_theta) * cos(LaBr1_phi),
 	                  LaBr1_rt * sin(LaBr1_theta) * sin(LaBr1_phi) + LaBr1_dy,
 	                  LaBr1_rt * cos(LaBr1_theta) + LaBr1_dz),
-	    LaBr1_Pb_Logical, "LaBr1_Pb", Detectors_G3_Logical, false, 0);
+	    LaBr1_Pb_Logical, "LaBr1_Pb", World_Logical, false, 0);
 	}
 
 	/**************** LABR2 *******************/
@@ -591,10 +586,10 @@ Detectors_G3::Detectors_G3(){
 
 	new G4PVPlacement(
 	    rotateLaBr2,
-	    G4ThreeVector(LaBr2_rt * sin(LaBr2_theta) * cos(LaBr2_phi),
+	    global_coordinates + G4ThreeVector(LaBr2_rt * sin(LaBr2_theta) * cos(LaBr2_phi),
 	                  LaBr2_rt * sin(LaBr2_theta) * sin(LaBr2_phi) + LaBr2_dy,
 	                  LaBr2_rt * cos(LaBr2_theta) + LaBr2_dz),
-	    LaBr2_Logical, "LaBr2", Detectors_G3_Logical, false, 0);
+	    LaBr2_Logical, "LaBr2", World_Logical, false, 0);
 
 	LaBr2_rt -= LaBr2_Instance->Get_Length() * 0.5;
 
@@ -607,10 +602,10 @@ Detectors_G3::Detectors_G3(){
 		LaBr2_Pb_Wrap_Logical->SetVisAttributes(green);
 
 		new G4PVPlacement(rotateLaBr2,
-	    G4ThreeVector(LaBr2_rt * sin(LaBr2_theta) * cos(LaBr2_phi),
+	    global_coordinates + G4ThreeVector(LaBr2_rt * sin(LaBr2_theta) * cos(LaBr2_phi),
 	                  LaBr2_rt * sin(LaBr2_theta) * sin(LaBr2_phi) + LaBr2_dy,
 	                  LaBr2_rt * cos(LaBr2_theta) + LaBr2_dz),
-	    LaBr2_Pb_Wrap_Logical, "LaBr2_Pb_Wrap", Detectors_G3_Logical, false, 0);
+	    LaBr2_Pb_Wrap_Logical, "LaBr2_Pb_Wrap", World_Logical, false, 0);
 
 		LaBr2_rt -= LaBr2_Pb_Wrap_Length * 0.5;
 	}
@@ -619,10 +614,10 @@ Detectors_G3::Detectors_G3(){
 	LaBr2_rt -= filterCaseL2.Get_Offset_From_Detector();
 
 	new G4PVPlacement(rotateLaBr2, 
-	    G4ThreeVector(LaBr2_rt * sin(LaBr2_theta) * cos(LaBr2_phi),
+	    global_coordinates + G4ThreeVector(LaBr2_rt * sin(LaBr2_theta) * cos(LaBr2_phi),
 	                  LaBr2_rt * sin(LaBr2_theta) * sin(LaBr2_phi) + LaBr2_dy,
 	                  LaBr2_rt * cos(LaBr2_theta) + LaBr2_dz),
-	    filterCaseL2.Get_Logical(), "LaBr2_FilterCase", Detectors_G3_Logical, false, 0, false
+	    filterCaseL2.Get_Logical(), "LaBr2_FilterCase", World_Logical, false, 0, false
 	    );
 	
 	LaBr2_rt += filterCaseL2.Get_Offset_From_Detector();
@@ -636,10 +631,10 @@ Detectors_G3::Detectors_G3(){
 		LaBr2_Cu_Logical->SetVisAttributes(orange);
 
 		new G4PVPlacement(rotateLaBr2,
-	    G4ThreeVector(LaBr2_rt * sin(LaBr2_theta) * cos(LaBr2_phi),
+	    global_coordinates + G4ThreeVector(LaBr2_rt * sin(LaBr2_theta) * cos(LaBr2_phi),
 	                  LaBr2_rt * sin(LaBr2_theta) * sin(LaBr2_phi) + LaBr2_dy,
 	                  LaBr2_rt * cos(LaBr2_theta) + LaBr2_dz),
-	    LaBr2_Cu_Logical, "LaBr2_Cu", Detectors_G3_Logical, false, 0);
+	    LaBr2_Cu_Logical, "LaBr2_Cu", World_Logical, false, 0);
 	}
 
 	LaBr2_rt -= LaBr2_Cu_Thickness*0.5;
@@ -652,10 +647,10 @@ Detectors_G3::Detectors_G3(){
 		LaBr2_Pb_Logical->SetVisAttributes(green);
 
 		new G4PVPlacement(rotateLaBr2,
-	    G4ThreeVector(LaBr2_rt * sin(LaBr2_theta) * cos(LaBr2_phi),
+	    global_coordinates + G4ThreeVector(LaBr2_rt * sin(LaBr2_theta) * cos(LaBr2_phi),
 	                  LaBr2_rt * sin(LaBr2_theta) * sin(LaBr2_phi) + LaBr2_dy,
 	                  LaBr2_rt * cos(LaBr2_theta) + LaBr2_dz),
-	    LaBr2_Pb_Logical, "LaBr2_Pb", Detectors_G3_Logical, false, 0);
+	    LaBr2_Pb_Logical, "LaBr2_Pb", World_Logical, false, 0);
 	}
 
 	/**************** LABR3 *******************/
@@ -689,10 +684,10 @@ Detectors_G3::Detectors_G3(){
 
 	new G4PVPlacement(
 	    rotateLaBr3,
-	    G4ThreeVector(LaBr3_rt * sin(LaBr3_theta) * cos(LaBr3_phi),
+	    global_coordinates + G4ThreeVector(LaBr3_rt * sin(LaBr3_theta) * cos(LaBr3_phi),
 	                  LaBr3_rt * sin(LaBr3_theta) * sin(LaBr3_phi) + LaBr3_dy,
 	                  LaBr3_rt * cos(LaBr3_theta) + LaBr3_dz),
-	    LaBr3_Logical, "LaBr3", Detectors_G3_Logical, false, 0);
+	    LaBr3_Logical, "LaBr3", World_Logical, false, 0);
 
 	LaBr3_rt -= LaBr3_Instance->Get_Length() * 0.5;
 
@@ -705,10 +700,10 @@ Detectors_G3::Detectors_G3(){
 		LaBr3_Pb_Wrap_Logical->SetVisAttributes(green);
 
 		new G4PVPlacement(rotateLaBr3,
-	    G4ThreeVector(LaBr3_rt * sin(LaBr3_theta) * cos(LaBr3_phi),
+	    global_coordinates + G4ThreeVector(LaBr3_rt * sin(LaBr3_theta) * cos(LaBr3_phi),
 	                  LaBr3_rt * sin(LaBr3_theta) * sin(LaBr3_phi) + LaBr3_dy,
 	                  LaBr3_rt * cos(LaBr3_theta) + LaBr3_dz),
-	    LaBr3_Pb_Wrap_Logical, "LaBr3_Pb_Wrap", Detectors_G3_Logical, false, 0);
+	    LaBr3_Pb_Wrap_Logical, "LaBr3_Pb_Wrap", World_Logical, false, 0);
 
 		LaBr3_rt -= LaBr3_Pb_Wrap_Length * 0.5;
 	}
@@ -721,10 +716,10 @@ Detectors_G3::Detectors_G3(){
 		LaBr3_Cu_Logical->SetVisAttributes(orange);
 
 		new G4PVPlacement(rotateLaBr3,
-	    G4ThreeVector(LaBr3_rt * sin(LaBr3_theta) * cos(LaBr3_phi),
+	    global_coordinates + G4ThreeVector(LaBr3_rt * sin(LaBr3_theta) * cos(LaBr3_phi),
 	                  LaBr3_rt * sin(LaBr3_theta) * sin(LaBr3_phi) + LaBr3_dy,
 	                  LaBr3_rt * cos(LaBr3_theta) + LaBr3_dz),
-	    LaBr3_Cu_Logical, "LaBr3_Cu", Detectors_G3_Logical, false, 0);
+	    LaBr3_Cu_Logical, "LaBr3_Cu", World_Logical, false, 0);
 	}
 
 	LaBr3_rt -= LaBr3_Cu_Thickness*0.5;
@@ -737,10 +732,10 @@ Detectors_G3::Detectors_G3(){
 		LaBr3_Pb_Logical->SetVisAttributes(green);
 
 		new G4PVPlacement(rotateLaBr3,
-	    G4ThreeVector(LaBr3_rt * sin(LaBr3_theta) * cos(LaBr3_phi),
+	    global_coordinates + G4ThreeVector(LaBr3_rt * sin(LaBr3_theta) * cos(LaBr3_phi),
 	                  LaBr3_rt * sin(LaBr3_theta) * sin(LaBr3_phi) + LaBr3_dy,
 	                  LaBr3_rt * cos(LaBr3_theta) + LaBr3_dz),
-	    LaBr3_Pb_Logical, "LaBr3_Pb", Detectors_G3_Logical, false, 0);
+	    LaBr3_Pb_Logical, "LaBr3_Pb", World_Logical, false, 0);
 	}
 
 	/**************** LABR4 *******************/
@@ -774,10 +769,10 @@ Detectors_G3::Detectors_G3(){
 
 	new G4PVPlacement(
 	    rotateLaBr4,
-	    G4ThreeVector(LaBr4_rt * sin(LaBr4_theta) * cos(LaBr4_phi),
+	    global_coordinates + G4ThreeVector(LaBr4_rt * sin(LaBr4_theta) * cos(LaBr4_phi),
 	                  LaBr4_rt * sin(LaBr4_theta) * sin(LaBr4_phi) + LaBr4_dy,
 	                  LaBr4_rt * cos(LaBr4_theta) + LaBr4_dz),
-	    LaBr4_Logical, "LaBr4", Detectors_G3_Logical, false, 0);
+	    LaBr4_Logical, "LaBr4", World_Logical, false, 0);
 
 	LaBr4_rt -= LaBr4_Instance->Get_Length() * 0.5;
 
@@ -790,10 +785,10 @@ Detectors_G3::Detectors_G3(){
 		LaBr4_Pb_Wrap_Logical->SetVisAttributes(green);
 
 		new G4PVPlacement(rotateLaBr4,
-	    G4ThreeVector(LaBr4_rt * sin(LaBr4_theta) * cos(LaBr4_phi),
+	    global_coordinates + G4ThreeVector(LaBr4_rt * sin(LaBr4_theta) * cos(LaBr4_phi),
 	                  LaBr4_rt * sin(LaBr4_theta) * sin(LaBr4_phi) + LaBr4_dy,
 	                  LaBr4_rt * cos(LaBr4_theta) + LaBr4_dz),
-	    LaBr4_Pb_Wrap_Logical, "LaBr4_Pb_Wrap", Detectors_G3_Logical, false, 0);
+	    LaBr4_Pb_Wrap_Logical, "LaBr4_Pb_Wrap", World_Logical, false, 0);
 
 		LaBr4_rt -= LaBr4_Pb_Wrap_Length * 0.5;
 	}
@@ -806,10 +801,10 @@ Detectors_G3::Detectors_G3(){
 		LaBr4_Cu_Logical->SetVisAttributes(orange);
 
 		new G4PVPlacement(rotateLaBr4,
-	    G4ThreeVector(LaBr4_rt * sin(LaBr4_theta) * cos(LaBr4_phi),
+	    global_coordinates + G4ThreeVector(LaBr4_rt * sin(LaBr4_theta) * cos(LaBr4_phi),
 	                  LaBr4_rt * sin(LaBr4_theta) * sin(LaBr4_phi) + LaBr4_dy,
 	                  LaBr4_rt * cos(LaBr4_theta) + LaBr4_dz),
-	    LaBr4_Cu_Logical, "LaBr4_Cu", Detectors_G3_Logical, false, 0);
+	    LaBr4_Cu_Logical, "LaBr4_Cu", World_Logical, false, 0);
 	}
 
 	LaBr4_rt -= LaBr4_Cu_Thickness*0.5;
@@ -822,9 +817,9 @@ Detectors_G3::Detectors_G3(){
 		LaBr4_Pb_Logical->SetVisAttributes(green);
 
 		new G4PVPlacement(rotateLaBr4,
-	    G4ThreeVector(LaBr4_rt * sin(LaBr4_theta) * cos(LaBr4_phi),
+	    global_coordinates + G4ThreeVector(LaBr4_rt * sin(LaBr4_theta) * cos(LaBr4_phi),
 	                  LaBr4_rt * sin(LaBr4_theta) * sin(LaBr4_phi) + LaBr4_dy,
 	                  LaBr4_rt * cos(LaBr4_theta) + LaBr4_dz),
-	    LaBr4_Pb_Logical, "LaBr4_Pb", Detectors_G3_Logical, false, 0);
+	    LaBr4_Pb_Logical, "LaBr4_Pb", World_Logical, false, 0);
 	}
 }

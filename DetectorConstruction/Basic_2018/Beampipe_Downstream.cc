@@ -30,7 +30,15 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "Vacuum.hh"
 #include "Beampipe_Downstream.hh"
 
-Beampipe_Downstream::Beampipe_Downstream(G4double relative_density){
+Beampipe_Downstream::Beampipe_Downstream(G4LogicalVolume *World_Log):
+World_Logical(World_Log),
+Beampipe_Downstream_Upstream_Length(16.*inch), // Estimated
+Beampipe_Downstream_Downstream_Length(24.*inch) // Estimated
+{
+	Z_Axis_Offset_Z = 0.5*(Beampipe_Downstream_Downstream_Length - Beampipe_Downstream_Upstream_Length); // Alignment w.r.t. second target position
+}
+
+void Beampipe_Downstream::Construct(G4ThreeVector global_coordinates, G4double relative_density){
 	
 	G4Colour white(1.0, 1.0, 1.0);
 	G4Colour orange(1.0, 0.5, 0.0);
@@ -44,15 +52,15 @@ Beampipe_Downstream::Beampipe_Downstream(G4double relative_density){
 
 	G4double Beampipe_Inner_Radius = 0.875*inch;
 	G4double Beampipe_Outer_Radius = 1.*inch;
-	G4double Beampipe_Downstream_Upstream_Length = 16.*inch; // Estimated
-	G4double Beampipe_Downstream_Downstream_Length = 24.*inch; // Estimated
 	Beampipe_Downstream_Length = Beampipe_Downstream_Upstream_Length + Beampipe_Downstream_Downstream_Length;
-	Z_Axis_Offset_Z = 0.5*(Beampipe_Downstream_Downstream_Length - Beampipe_Downstream_Upstream_Length);
+	
+	// Beam pipe vacuum
+	G4Tubs *Vacuum_Solid = new G4Tubs("Vacuum_Solid", 0., Beampipe_Inner_Radius, Beampipe_Downstream_Length*0.5, 0., twopi);
+	G4LogicalVolume *Vacuum_Logical = new G4LogicalVolume(Vacuum_Solid, vacuum, "Vacuum_Logical");
 
-	// Mother volume
-	G4Tubs *Beampipe_Downstream_Solid = new G4Tubs("Beampipe_Downstream_Solid", 0., Beampipe_Outer_Radius, Beampipe_Downstream_Length*0.5, 0., twopi);
-	Beampipe_Downstream_Logical = new G4LogicalVolume(Beampipe_Downstream_Solid, vacuum, "Beampipe_Downstream_Logical");
-	Beampipe_Downstream_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());
+	Vacuum_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());	
+	
+	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., 0.), Vacuum_Logical, "Vacuum", World_Logical, false, 0, false);
 
 	// Beam pipe
 	G4Tubs *Pipe_Downstream_Solid = new G4Tubs("Pipe_Downstream_Solid", Beampipe_Inner_Radius, Beampipe_Outer_Radius, Beampipe_Downstream_Length*0.5, 0., twopi);
@@ -60,7 +68,7 @@ Beampipe_Downstream::Beampipe_Downstream(G4double relative_density){
 
 	Pipe_Downstream_Logical->SetVisAttributes(white);	
 	
-	new G4PVPlacement(0, G4ThreeVector(), Pipe_Downstream_Logical, "Pipe_Downstream", Beampipe_Downstream_Logical, false, 0, false);
+	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., 0.), Pipe_Downstream_Logical, "Pipe_Downstream", World_Logical, false, 0, false);
 
 	// Downstream exit window
 	
@@ -71,7 +79,7 @@ Beampipe_Downstream::Beampipe_Downstream(G4double relative_density){
 
 	Downstream_Exit_Window_Logical->SetVisAttributes(white);
 	
-	new G4PVPlacement(0, G4ThreeVector(0., 0., Beampipe_Downstream_Length*0.5 - Downstream_Exit_Window_Thickness*0.5), Downstream_Exit_Window_Logical, "Downstream_Exit_Window", Beampipe_Downstream_Logical, false, 0, false);
+	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., Beampipe_Downstream_Length*0.5 - Downstream_Exit_Window_Thickness*0.5), Downstream_Exit_Window_Logical, "Downstream_Exit_Window", World_Logical, false, 0, false);
 
 	// Target Holder Tube
 	
@@ -108,8 +116,8 @@ Beampipe_Downstream::Beampipe_Downstream(G4double relative_density){
 
 	TargetTube_Logical->SetVisAttributes(new G4VisAttributes(orange));
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., Beampipe_Downstream_Length*0.5 - Downstream_Exit_Window_Thickness - TargetTube_Total_Length * 0.5 + TargetTubeFront_Length*0.5),
-	                  TargetTube_Logical, "TargetTube", Beampipe_Downstream_Logical, false, 0);
+	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., Beampipe_Downstream_Length*0.5 - Downstream_Exit_Window_Thickness - TargetTube_Total_Length * 0.5 + TargetTubeFront_Length*0.5),
+	                  TargetTube_Logical, "TargetTube", World_Logical, false, 0);
 
 	// Target ring
 	
@@ -122,5 +130,5 @@ Beampipe_Downstream::Beampipe_Downstream(G4double relative_density){
 
 	Target_Ring_Logical->SetVisAttributes(red);
 	
-	new G4PVPlacement(0, G4ThreeVector(0., 0., Beampipe_Downstream_Length*0.5 - Beampipe_Downstream_Downstream_Length), Target_Ring_Logical, "Target_Ring", Beampipe_Downstream_Logical, false, 0, false);
+	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., Beampipe_Downstream_Length*0.5 - Beampipe_Downstream_Downstream_Length), Target_Ring_Logical, "Target_Ring", World_Logical, false, 0, false);
 }

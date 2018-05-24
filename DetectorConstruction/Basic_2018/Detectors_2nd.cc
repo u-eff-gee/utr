@@ -33,24 +33,19 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "HPGe_Cologne.hh"
 #include "HPGe_55_TUNL_31524.hh"
 
-Detectors_2nd::Detectors_2nd(){
+Detectors_2nd::Detectors_2nd(G4LogicalVolume *World_Log):
+World_Logical(World_Log)
+{}
+
+void Detectors_2nd::Construct(G4ThreeVector global_coordinates){
 
 	G4Colour orange(1.0, 0.5, 0.0);
 	G4Colour green(0.0, 1.0, 0.0);
 	
 	G4NistManager *nist = G4NistManager::Instance();
 
-	G4Material *air = nist->FindOrBuildMaterial("G4_AIR");
 	G4Material *Cu= nist->FindOrBuildMaterial("G4_Cu");
 	G4Material *Pb= nist->FindOrBuildMaterial("G4_Pb");
-
-	G4double Detectors_2nd_X = 70.*inch; // Dimension of mother volume, arbitrary
-	G4double Detectors_2nd_Y = 70.*inch; // Dimension of mother volume, arbitrary
-	Detectors_2nd_Length = 70.*inch; // Dimension of mother volume, arbitrary
-	
-	// Mother volume
-	G4Box *Detectors_2nd_Solid = new G4Box("Detectors_2nd_Solid", Detectors_2nd_X*0.5, Detectors_2nd_Y*0.5, Detectors_2nd_Length*0.5);
-	Detectors_2nd_Logical = new G4LogicalVolume(Detectors_2nd_Solid, air, "Detectors_2nd_Logical");
 
 	/************************** Detectors ***************************/
 	//
@@ -113,10 +108,10 @@ Detectors_2nd::Detectors_2nd(){
 
 	new G4PVPlacement(
 	    rotateHPGe_Cologne,
-	    G4ThreeVector(HPGe_Cologne_rt * sin(HPGe_Cologne_theta) * cos(HPGe_Cologne_phi),
+	    global_coordinates + G4ThreeVector(HPGe_Cologne_rt * sin(HPGe_Cologne_theta) * cos(HPGe_Cologne_phi),
 	                  HPGe_Cologne_rt * sin(HPGe_Cologne_theta) * sin(HPGe_Cologne_phi) + HPGe_Cologne_dy,
 	                  HPGe_Cologne_rt * cos(HPGe_Cologne_theta) + HPGe_Cologne_dz),
-	    HPGe_Cologne_Logical, "HPGe_Cologne", Detectors_2nd_Logical, false, 0);
+	    HPGe_Cologne_Logical, "HPGe_Cologne", World_Logical, false, 0);
 
 	HPGe_Cologne_rt -= HPGe_Cologne_Instance->Get_Length() * 0.5;
 
@@ -129,10 +124,10 @@ Detectors_2nd::Detectors_2nd(){
 		HPGe_Cologne_Pb_Wrap_Logical->SetVisAttributes(green);
 
 		new G4PVPlacement(rotateHPGe_Cologne,
-	    G4ThreeVector(HPGe_Cologne_rt * sin(HPGe_Cologne_theta) * cos(HPGe_Cologne_phi),
+	    global_coordinates + G4ThreeVector(HPGe_Cologne_rt * sin(HPGe_Cologne_theta) * cos(HPGe_Cologne_phi),
 	                  HPGe_Cologne_rt * sin(HPGe_Cologne_theta) * sin(HPGe_Cologne_phi) + HPGe_Cologne_dy,
 	                  HPGe_Cologne_rt * cos(HPGe_Cologne_theta) + HPGe_Cologne_dz),
-	    HPGe_Cologne_Pb_Wrap_Logical, "HPGe_Cologne_Pb_Wrap", Detectors_2nd_Logical, false, 0);
+	    HPGe_Cologne_Pb_Wrap_Logical, "HPGe_Cologne_Pb_Wrap", World_Logical, false, 0);
 
 		HPGe_Cologne_rt -= HPGe_Cologne_Pb_Wrap_Length * 0.5;
 	}
@@ -145,10 +140,10 @@ Detectors_2nd::Detectors_2nd(){
 		HPGe_Cologne_Cu_Logical->SetVisAttributes(orange);
 
 		new G4PVPlacement(rotateHPGe_Cologne,
-	    G4ThreeVector(HPGe_Cologne_rt * sin(HPGe_Cologne_theta) * cos(HPGe_Cologne_phi),
+	    global_coordinates + G4ThreeVector(HPGe_Cologne_rt * sin(HPGe_Cologne_theta) * cos(HPGe_Cologne_phi),
 	                  HPGe_Cologne_rt * sin(HPGe_Cologne_theta) * sin(HPGe_Cologne_phi) + HPGe_Cologne_dy,
 	                  HPGe_Cologne_rt * cos(HPGe_Cologne_theta) + HPGe_Cologne_dz),
-	    HPGe_Cologne_Cu_Logical, "HPGe_Cologne_Cu", Detectors_2nd_Logical, false, 0);
+	    HPGe_Cologne_Cu_Logical, "HPGe_Cologne_Cu", World_Logical, false, 0);
 	}
 
 	HPGe_Cologne_rt -= HPGe_Cologne_Cu_Thickness*0.5;
@@ -161,10 +156,10 @@ Detectors_2nd::Detectors_2nd(){
 		HPGe_Cologne_Pb_Logical->SetVisAttributes(green);
 
 		new G4PVPlacement(rotateHPGe_Cologne,
-	    G4ThreeVector(HPGe_Cologne_rt * sin(HPGe_Cologne_theta) * cos(HPGe_Cologne_phi),
+	    global_coordinates + G4ThreeVector(HPGe_Cologne_rt * sin(HPGe_Cologne_theta) * cos(HPGe_Cologne_phi),
 	                  HPGe_Cologne_rt * sin(HPGe_Cologne_theta) * sin(HPGe_Cologne_phi) + HPGe_Cologne_dy,
 	                  HPGe_Cologne_rt * cos(HPGe_Cologne_theta) + HPGe_Cologne_dz),
-	    HPGe_Cologne_Pb_Logical, "HPGe_Cologne_Pb", Detectors_2nd_Logical, false, 0);
+	    HPGe_Cologne_Pb_Logical, "HPGe_Cologne_Pb", World_Logical, false, 0);
 	}
 
 	/**************** HPGE11 HPGe_Stuttgart *******************/
@@ -196,10 +191,10 @@ Detectors_2nd::Detectors_2nd(){
 
 	new G4PVPlacement(
 	    rotateHPGe_Stuttgart,
-	    G4ThreeVector(HPGe_Stuttgart_rt * sin(HPGe_Stuttgart_theta) * cos(HPGe_Stuttgart_phi),
+	    global_coordinates + G4ThreeVector(HPGe_Stuttgart_rt * sin(HPGe_Stuttgart_theta) * cos(HPGe_Stuttgart_phi),
 	                  HPGe_Stuttgart_rt * sin(HPGe_Stuttgart_theta) * sin(HPGe_Stuttgart_phi) + HPGe_Stuttgart_dy,
 	                  HPGe_Stuttgart_rt * cos(HPGe_Stuttgart_theta) + HPGe_Stuttgart_dz),
-	    HPGe_Stuttgart_Logical, "HPGe_Stuttgart", Detectors_2nd_Logical, false, 0);
+	    HPGe_Stuttgart_Logical, "HPGe_Stuttgart", World_Logical, false, 0);
 
 	HPGe_Stuttgart_rt -= HPGe_Stuttgart_Instance->Get_Length() * 0.5;
 
@@ -212,10 +207,10 @@ Detectors_2nd::Detectors_2nd(){
 		HPGe_Stuttgart_Pb_Wrap_Logical->SetVisAttributes(green);
 
 		new G4PVPlacement(rotateHPGe_Stuttgart,
-	    G4ThreeVector(HPGe_Stuttgart_rt * sin(HPGe_Stuttgart_theta) * cos(HPGe_Stuttgart_phi),
+	    global_coordinates + G4ThreeVector(HPGe_Stuttgart_rt * sin(HPGe_Stuttgart_theta) * cos(HPGe_Stuttgart_phi),
 	                  HPGe_Stuttgart_rt * sin(HPGe_Stuttgart_theta) * sin(HPGe_Stuttgart_phi) + HPGe_Stuttgart_dy,
 	                  HPGe_Stuttgart_rt * cos(HPGe_Stuttgart_theta) + HPGe_Stuttgart_dz),
-	    HPGe_Stuttgart_Pb_Wrap_Logical, "HPGe_Stuttgart_Pb_Wrap", Detectors_2nd_Logical, false, 0);
+	    HPGe_Stuttgart_Pb_Wrap_Logical, "HPGe_Stuttgart_Pb_Wrap", World_Logical, false, 0);
 
 		HPGe_Stuttgart_rt -= HPGe_Stuttgart_Pb_Wrap_Length * 0.5;
 	}
@@ -228,10 +223,10 @@ Detectors_2nd::Detectors_2nd(){
 		HPGe_Stuttgart_Cu_Logical->SetVisAttributes(orange);
 
 		new G4PVPlacement(rotateHPGe_Stuttgart,
-	    G4ThreeVector(HPGe_Stuttgart_rt * sin(HPGe_Stuttgart_theta) * cos(HPGe_Stuttgart_phi),
+	    global_coordinates + G4ThreeVector(HPGe_Stuttgart_rt * sin(HPGe_Stuttgart_theta) * cos(HPGe_Stuttgart_phi),
 	                  HPGe_Stuttgart_rt * sin(HPGe_Stuttgart_theta) * sin(HPGe_Stuttgart_phi) + HPGe_Stuttgart_dy,
 	                  HPGe_Stuttgart_rt * cos(HPGe_Stuttgart_theta) + HPGe_Stuttgart_dz),
-	    HPGe_Stuttgart_Cu_Logical, "HPGe_Stuttgart_Cu", Detectors_2nd_Logical, false, 0);
+	    HPGe_Stuttgart_Cu_Logical, "HPGe_Stuttgart_Cu", World_Logical, false, 0);
 	}
 
 	HPGe_Stuttgart_rt -= HPGe_Stuttgart_Cu_Thickness*0.5;
@@ -244,10 +239,10 @@ Detectors_2nd::Detectors_2nd(){
 		HPGe_Stuttgart_Pb_Logical->SetVisAttributes(green);
 
 		new G4PVPlacement(rotateHPGe_Stuttgart,
-	    G4ThreeVector(HPGe_Stuttgart_rt * sin(HPGe_Stuttgart_theta) * cos(HPGe_Stuttgart_phi),
+	    global_coordinates + G4ThreeVector(HPGe_Stuttgart_rt * sin(HPGe_Stuttgart_theta) * cos(HPGe_Stuttgart_phi),
 	                  HPGe_Stuttgart_rt * sin(HPGe_Stuttgart_theta) * sin(HPGe_Stuttgart_phi) + HPGe_Stuttgart_dy,
 	                  HPGe_Stuttgart_rt * cos(HPGe_Stuttgart_theta) + HPGe_Stuttgart_dz),
-	    HPGe_Stuttgart_Pb_Logical, "HPGe_Stuttgart_Pb", Detectors_2nd_Logical, false, 0);
+	    HPGe_Stuttgart_Pb_Logical, "HPGe_Stuttgart_Pb", World_Logical, false, 0);
 	}
 
 	/**************** HPGE12 HPGe_55_TUNL_31524 *******************/
@@ -279,10 +274,10 @@ Detectors_2nd::Detectors_2nd(){
 
 	new G4PVPlacement(
 	    rotateHPGe12,
-	    G4ThreeVector(HPGe12_rt * sin(HPGe12_theta) * cos(HPGe12_phi),
+	    global_coordinates + G4ThreeVector(HPGe12_rt * sin(HPGe12_theta) * cos(HPGe12_phi),
 	                  HPGe12_rt * sin(HPGe12_theta) * sin(HPGe12_phi) + HPGe12_dy,
 	                  HPGe12_rt * cos(HPGe12_theta) + HPGe12_dz),
-	    HPGe12_Logical, "HPGe12", Detectors_2nd_Logical, false, 0);
+	    HPGe12_Logical, "HPGe12", World_Logical, false, 0);
 
 	HPGe12_rt -= HPGe12_Instance->Get_Length() * 0.5;
 
@@ -295,10 +290,10 @@ Detectors_2nd::Detectors_2nd(){
 		HPGe12_Pb_Wrap_Logical->SetVisAttributes(green);
 
 		new G4PVPlacement(rotateHPGe12,
-	    G4ThreeVector(HPGe12_rt * sin(HPGe12_theta) * cos(HPGe12_phi),
+	    global_coordinates + G4ThreeVector(HPGe12_rt * sin(HPGe12_theta) * cos(HPGe12_phi),
 	                  HPGe12_rt * sin(HPGe12_theta) * sin(HPGe12_phi) + HPGe12_dy,
 	                  HPGe12_rt * cos(HPGe12_theta) + HPGe12_dz),
-	    HPGe12_Pb_Wrap_Logical, "HPGe12_Pb_Wrap", Detectors_2nd_Logical, false, 0);
+	    HPGe12_Pb_Wrap_Logical, "HPGe12_Pb_Wrap", World_Logical, false, 0);
 
 		HPGe12_rt -= HPGe12_Pb_Wrap_Length * 0.5;
 	}
@@ -311,10 +306,10 @@ Detectors_2nd::Detectors_2nd(){
 		HPGe12_Cu_Logical->SetVisAttributes(orange);
 
 		new G4PVPlacement(rotateHPGe12,
-	    G4ThreeVector(HPGe12_rt * sin(HPGe12_theta) * cos(HPGe12_phi),
+	    global_coordinates + G4ThreeVector(HPGe12_rt * sin(HPGe12_theta) * cos(HPGe12_phi),
 	                  HPGe12_rt * sin(HPGe12_theta) * sin(HPGe12_phi) + HPGe12_dy,
 	                  HPGe12_rt * cos(HPGe12_theta) + HPGe12_dz),
-	    HPGe12_Cu_Logical, "HPGe12_Cu", Detectors_2nd_Logical, false, 0);
+	    HPGe12_Cu_Logical, "HPGe12_Cu", World_Logical, false, 0);
 	}
 
 	HPGe12_rt -= HPGe12_Cu_Thickness*0.5;
@@ -327,9 +322,9 @@ Detectors_2nd::Detectors_2nd(){
 		HPGe12_Pb_Logical->SetVisAttributes(green);
 
 		new G4PVPlacement(rotateHPGe12,
-	    G4ThreeVector(HPGe12_rt * sin(HPGe12_theta) * cos(HPGe12_phi),
+	    global_coordinates + G4ThreeVector(HPGe12_rt * sin(HPGe12_theta) * cos(HPGe12_phi),
 	                  HPGe12_rt * sin(HPGe12_theta) * sin(HPGe12_phi) + HPGe12_dy,
 	                  HPGe12_rt * cos(HPGe12_theta) + HPGe12_dz),
-	    HPGe12_Pb_Logical, "HPGe12_Pb", Detectors_2nd_Logical, false, 0);
+	    HPGe12_Pb_Logical, "HPGe12_Pb", World_Logical, false, 0);
 	}
 }

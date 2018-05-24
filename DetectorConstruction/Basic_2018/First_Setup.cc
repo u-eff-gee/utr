@@ -31,7 +31,14 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "First_Setup.hh"
 #include "Materials.hh"
 
-First_Setup::First_Setup(){
+First_Setup::First_Setup(G4LogicalVolume *World_Log):
+World_Logical(World_Log),
+First_Setup_Length(41.5*inch),
+First_Setup_X(44.*inch),
+First_Setup_Y(50.*inch) // Arbitrary
+{}
+
+void First_Setup::Construct(G4ThreeVector global_coordinates){
 
 	G4Colour grey(0.5, 0.5, 0.5);
 	G4Colour green(0., 0.5, 0.);
@@ -40,21 +47,10 @@ First_Setup::First_Setup(){
 	Materials *materials = new Materials();
 
 	G4NistManager *nist = G4NistManager::Instance();
-	G4Material *air = nist->FindOrBuildMaterial("G4_AIR");
 	G4Material *Al = nist->FindOrBuildMaterial("G4_Al");
 	G4Material *Pb = nist->FindOrBuildMaterial("G4_Pb");
 	G4Material *one_third_density_Al = materials->Get_One_Third_Density_Al();
 	G4Material *concrete = nist->FindOrBuildMaterial("G4_CONCRETE");
-
-	First_Setup_Length = 41.5*inch;
-	First_Setup_X = 44.*inch;
-	First_Setup_Y = 50.*inch; // Arbitrary
-
-	// Construct mother volume
-	G4Box *First_Setup_Solid = new G4Box("First_Setup_Solid", First_Setup_X*0.5, First_Setup_Y*0.5, First_Setup_Length*0.5);
-	
-	First_Setup_Logical = new G4LogicalVolume(First_Setup_Solid, air, "First_Setup_Logical");
-	//First_Setup_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());
 
 	// Lead and concrete wall
 	
@@ -72,7 +68,7 @@ First_Setup::First_Setup(){
 	G4LogicalVolume *Lead_Tunnel_Logical = new G4LogicalVolume(Lead_Tunnel_Solid, Pb, "Lead_Tunnel_Logical");
 	Lead_Tunnel_Logical->SetVisAttributes(green);
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., -First_Setup_Length*0.5 + Lead_Tunnel_Z*0.5 + 4.*inch), Lead_Tunnel_Logical, "Lead_Tunnel", First_Setup_Logical, false, 0, false);
+	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., -First_Setup_Length*0.5 + Lead_Tunnel_Z*0.5 + 4.*inch), Lead_Tunnel_Logical, "Lead_Tunnel", World_Logical, false, 0, false);
 
 	G4double Lead_Base_X = 16.*inch;
 	G4double Lead_Base_Y = 4.*inch;
@@ -82,7 +78,7 @@ First_Setup::First_Setup(){
 	G4LogicalVolume *Lead_Base_Logical = new G4LogicalVolume(Lead_Base_Solid, Pb, "Lead_Base_Logical");
 	Lead_Base_Logical->SetVisAttributes(green);
 
-	new G4PVPlacement(0, G4ThreeVector(0., -Lead_Tunnel_Y*0.5 - Lead_Base_Y*0.5, -First_Setup_Length*0.5 + Lead_Base_Z*0.5), Lead_Base_Logical, "Lead_Base", First_Setup_Logical, false, 0, false);
+	new G4PVPlacement(0, global_coordinates +  G4ThreeVector(0., -Lead_Tunnel_Y*0.5 - Lead_Base_Y*0.5, -First_Setup_Length*0.5 + Lead_Base_Z*0.5), Lead_Base_Logical, "Lead_Base", World_Logical, false, 0, false);
 
 	G4double Concrete_Block_X = 14.*inch;
 	G4double Concrete_Block_Y = 3.75*inch;
@@ -93,7 +89,7 @@ First_Setup::First_Setup(){
 	G4LogicalVolume *Concrete_Block_Logical = new G4LogicalVolume(Concrete_Block_Solid, concrete, "Concrete_Block_Logical");
 	Concrete_Block_Logical->SetVisAttributes(white);
 
-	new G4PVPlacement(0, G4ThreeVector(0., -Lead_Tunnel_Y*0.5 - Lead_Base_Y - Concrete_Block_Y*0.5, -First_Setup_Length*0.5 + Concrete_Block_Z*0.5), Concrete_Block_Logical, "Concrete_Block", First_Setup_Logical, false, 0, false);
+	new G4PVPlacement(0, global_coordinates +  G4ThreeVector(0., -Lead_Tunnel_Y*0.5 - Lead_Base_Y - Concrete_Block_Y*0.5, -First_Setup_Length*0.5 + Concrete_Block_Z*0.5), Concrete_Block_Logical, "Concrete_Block", World_Logical, false, 0, false);
 
 	G4double Lead_Top_X = 16.*inch;
 	G4double Lead_Top_Y = 4.*inch;
@@ -103,7 +99,7 @@ First_Setup::First_Setup(){
 	G4LogicalVolume *Lead_Top_Logical = new G4LogicalVolume(Lead_Top_Solid, Pb, "Lead_Top_Logical");
 	Lead_Top_Logical->SetVisAttributes(green);
 	
-	new G4PVPlacement(0, G4ThreeVector(0., Lead_Tunnel_Y*0.5 + Lead_Top_Y*0.5, -First_Setup_Length*0.5 + 4.*inch + Lead_Top_Z*0.5), Lead_Top_Logical, "Lead_Top", First_Setup_Logical, false, 0, false);
+	new G4PVPlacement(0, global_coordinates +  G4ThreeVector(0., Lead_Tunnel_Y*0.5 + Lead_Top_Y*0.5, -First_Setup_Length*0.5 + 4.*inch + Lead_Top_Z*0.5), Lead_Top_Logical, "Lead_Top", World_Logical, false, 0, false);
 
 	G4double Lead_Top_Right_X = 4.*inch;
 	G4double Lead_Top_Right_Y = 8.*inch;
@@ -113,7 +109,7 @@ First_Setup::First_Setup(){
 	G4LogicalVolume *Lead_Top_Right_Logical = new G4LogicalVolume(Lead_Top_Right_Solid, Pb, "Lead_Top_Right_Logical");
 	Lead_Top_Right_Logical->SetVisAttributes(green);
 
-	new G4PVPlacement(0, G4ThreeVector(-6.*inch, -Lead_Tunnel_Y *0.5 + Lead_Top_Right_Y*0.5, -First_Setup_Length*0.5 + Lead_Top_Right_Z*0.5), Lead_Top_Right_Logical, "Lead_Top_Right", First_Setup_Logical, false, 0, false);
+	new G4PVPlacement(0, global_coordinates +  G4ThreeVector(-6.*inch, -Lead_Tunnel_Y *0.5 + Lead_Top_Right_Y*0.5, -First_Setup_Length*0.5 + Lead_Top_Right_Z*0.5), Lead_Top_Right_Logical, "Lead_Top_Right", World_Logical, false, 0, false);
 
 	G4double Lead_Portal_Top_X = 8.*inch;
 	G4double Lead_Portal_Top_Y = 2.*inch;
@@ -123,7 +119,7 @@ First_Setup::First_Setup(){
 	G4LogicalVolume *Lead_Portal_Top_Logical = new G4LogicalVolume(Lead_Portal_Top_Solid, Pb, "Lead_Portal_Top_Logical");
 	Lead_Portal_Top_Logical->SetVisAttributes(green);
 
-	new G4PVPlacement(0, G4ThreeVector(0., Lead_Tunnel_Y*0.5 + Lead_Portal_Top_Y*0.5, -First_Setup_Length*0.5 + 4.*inch + Lead_Tunnel_Z + Lead_Portal_Top_Z*0.5), Lead_Portal_Top_Logical, "Lead_Portal_Top", First_Setup_Logical, false, 0, false);
+	new G4PVPlacement(0, global_coordinates +  G4ThreeVector(0., Lead_Tunnel_Y*0.5 + Lead_Portal_Top_Y*0.5, -First_Setup_Length*0.5 + 4.*inch + Lead_Tunnel_Z + Lead_Portal_Top_Z*0.5), Lead_Portal_Top_Logical, "Lead_Portal_Top", World_Logical, false, 0, false);
 
 	G4double Lead_Portal_Right_X = 4.*inch;
 	G4double Lead_Portal_Right_Y = 4.*inch;
@@ -133,7 +129,7 @@ First_Setup::First_Setup(){
 	G4LogicalVolume *Lead_Portal_Right_Logical = new G4LogicalVolume(Lead_Portal_Right_Solid, Pb, "Lead_Portal_Right_Logical");
 	Lead_Portal_Right_Logical->SetVisAttributes(green);
 
-	new G4PVPlacement(0, G4ThreeVector(-3.*inch, -Lead_Tunnel_Y*0.5 + Lead_Portal_Right_Y*0.5, -First_Setup_Length*0.5 + 4.*inch + Lead_Tunnel_Z + Lead_Portal_Right_Z*0.5), Lead_Portal_Right_Logical, "Lead_Portal_Right", First_Setup_Logical, false, 0, false);
+	new G4PVPlacement(0, global_coordinates +  G4ThreeVector(-3.*inch, -Lead_Tunnel_Y*0.5 + Lead_Portal_Right_Y*0.5, -First_Setup_Length*0.5 + 4.*inch + Lead_Tunnel_Z + Lead_Portal_Right_Z*0.5), Lead_Portal_Right_Logical, "Lead_Portal_Right", World_Logical, false, 0, false);
 
 	G4double Lead_Portal_Left_X = 4.*inch;
 	G4double Lead_Portal_Left_Y = 4.*inch;
@@ -143,7 +139,7 @@ First_Setup::First_Setup(){
 	G4LogicalVolume *Lead_Portal_Left_Logical = new G4LogicalVolume(Lead_Portal_Left_Solid, Pb, "Lead_Portal_Left_Logical");
 	Lead_Portal_Left_Logical->SetVisAttributes(green);
 	
-	new G4PVPlacement(0, G4ThreeVector(3.*inch, -Lead_Tunnel_Y*0.5 + Lead_Portal_Left_Y*0.5, -First_Setup_Length*0.5 + 4.*inch + Lead_Tunnel_Z + Lead_Portal_Left_Z*0.5), Lead_Portal_Left_Logical, "Lead_Portal_Left", First_Setup_Logical, false, 0, false);
+	new G4PVPlacement(0, global_coordinates +  G4ThreeVector(3.*inch, -Lead_Tunnel_Y*0.5 + Lead_Portal_Left_Y*0.5, -First_Setup_Length*0.5 + 4.*inch + Lead_Tunnel_Z + Lead_Portal_Left_Z*0.5), Lead_Portal_Left_Logical, "Lead_Portal_Left", World_Logical, false, 0, false);
 
 	// Beam pipe holder
 
@@ -160,7 +156,7 @@ First_Setup::First_Setup(){
 	G4LogicalVolume *Beam_Pipe_Holder_Logical = new G4LogicalVolume(Beam_Pipe_Holder_Solid, Al, "Beam_Pipe_Holder_Logical");
 	Beam_Pipe_Holder_Logical->SetVisAttributes(grey);
 
-	new G4PVPlacement(0, G4ThreeVector(0., -Beam_Pipe_Holder_Y*0.5, First_Setup_Length*0.5 - Beam_Pipe_Holder_Z*0.5), Beam_Pipe_Holder_Logical, "Beam_Pipe_Holder", First_Setup_Logical, false, 0, false);
+	new G4PVPlacement(0, global_coordinates +  G4ThreeVector(0., -Beam_Pipe_Holder_Y*0.5, First_Setup_Length*0.5 -Beam_Pipe_Holder_Z*0.5), Beam_Pipe_Holder_Logical, "Beam_Pipe_Holder", World_Logical, false, 0, false);
 
 	// Lead wrap around beam pipe
 	
@@ -172,7 +168,7 @@ First_Setup::First_Setup(){
 	G4LogicalVolume *Lead_Wrap1_Logical = new G4LogicalVolume(Lead_Wrap1_Solid, Pb, "Lead_Wrap1_Logical");
 	Lead_Wrap1_Logical->SetVisAttributes(green);
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., -First_Setup_Length*0.5 + 4.*inch + Lead_Tunnel_Z + Lead_Portal_Right_Z + Lead_Wrap1_Length*0.5), Lead_Wrap1_Logical, "Lead_Wrap1", First_Setup_Logical, false, 0, false);
+	new G4PVPlacement(0, global_coordinates +  G4ThreeVector(0., 0., -First_Setup_Length*0.5 + 4.*inch + Lead_Tunnel_Z + Lead_Portal_Right_Z + Lead_Wrap1_Length*0.5), Lead_Wrap1_Logical, "Lead_Wrap1", World_Logical, false, 0, false);
 
 	G4double Lead_Wrap2_Thickness =0.04*inch;
 	G4double Lead_Wrap2_Length = 10.*inch;
@@ -182,7 +178,7 @@ First_Setup::First_Setup(){
 	G4LogicalVolume *Lead_Wrap2_Logical = new G4LogicalVolume(Lead_Wrap2_Solid, Pb, "Lead_Wrap2_Logical");
 	Lead_Wrap2_Logical->SetVisAttributes(green);
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., First_Setup_Length*0.5 - Beam_Pipe_Holder_Z - Lead_Wrap2_Length*0.5), Lead_Wrap2_Logical, "Lead_Wrap2", First_Setup_Logical, false, 0, false);
+	new G4PVPlacement(0, global_coordinates +  G4ThreeVector(0., 0., First_Setup_Length*0.5 - Beam_Pipe_Holder_Z - Lead_Wrap2_Length*0.5), Lead_Wrap2_Logical, "Lead_Wrap2", World_Logical, false, 0, false);
 	
 	// Construct table plate
 	G4double First_Setup_Box_Y = 12.*inch;
@@ -201,7 +197,7 @@ First_Setup::First_Setup(){
 	G4LogicalVolume* Table_Logical = new G4LogicalVolume(Table_Solid, Al, "Table_Solid");
 	Table_Logical->SetVisAttributes(grey);
 
-	new G4PVPlacement(0, G4ThreeVector(0., -Lead_Tunnel_Y*0.5 - Lead_Base_Y - Concrete_Block_Y -First_Setup_Table_Thickness*0.5), Table_Logical, "First_Setup_Table", First_Setup_Logical, false, 0, false);
+	new G4PVPlacement(0, global_coordinates +  G4ThreeVector(0., -Lead_Tunnel_Y*0.5 - Lead_Base_Y - Concrete_Block_Y -First_Setup_Table_Thickness*0.5, 0.), Table_Logical, "First_Setup_Table", World_Logical, false, 0, false);
 	
 	// Construct columns on table
 	
@@ -213,11 +209,11 @@ First_Setup::First_Setup(){
 	G4LogicalVolume *Table_Column_Logical = new G4LogicalVolume(Table_Column_Solid, Al, "Table_Column_Logical");
 	Table_Column_Logical->SetVisAttributes(grey);
 
-	new G4PVPlacement(0, G4ThreeVector(Table_Hole_X*0.5 + Table_Column_Base_Length*0.5, -Lead_Tunnel_Y*0.5 - Lead_Base_Y - Concrete_Block_Y + Table_Column_Height*0.5, -First_Setup_Length*0.5 + 3.5*inch), Table_Column_Logical, "Table_Column_0", First_Setup_Logical, false, 0, false);
-	new G4PVPlacement(0, G4ThreeVector(-Table_Hole_X*0.5 - Table_Column_Base_Length*0.5, -Lead_Tunnel_Y*0.5 - Lead_Base_Y - Concrete_Block_Y +Table_Column_Height*0.5, -First_Setup_Length*0.5 + 3.5*inch), Table_Column_Logical, "Table_Column_1", First_Setup_Logical, false, 0, false);
+	new G4PVPlacement(0, global_coordinates +  G4ThreeVector(Table_Hole_X*0.5 + Table_Column_Base_Length*0.5, -Lead_Tunnel_Y*0.5 - Lead_Base_Y - Concrete_Block_Y + Table_Column_Height*0.5, -First_Setup_Length*0.5 + 3.5*inch), Table_Column_Logical, "Table_Column_0", World_Logical, false, 0, false);
+	new G4PVPlacement(0, global_coordinates +  G4ThreeVector(-Table_Hole_X*0.5 - Table_Column_Base_Length*0.5, -Lead_Tunnel_Y*0.5 - Lead_Base_Y - Concrete_Block_Y +Table_Column_Height*0.5, -First_Setup_Length*0.5 + 3.5*inch), Table_Column_Logical, "Table_Column_1", World_Logical, false, 0, false);
 
-	new G4PVPlacement(0, G4ThreeVector(Table_Hole_X*0.5 + Table_Column_Base_Length*0.5, -Lead_Tunnel_Y*0.5 - Lead_Base_Y - Concrete_Block_Y +Table_Column_Height*0.5, First_Setup_Length*0.5 - 3.5*inch), Table_Column_Logical, "Table_Column_2", First_Setup_Logical, false, 0, false);
-	new G4PVPlacement(0, G4ThreeVector(-Table_Hole_X*0.5 - Table_Column_Base_Length*0.5, -Lead_Tunnel_Y*0.5 - Lead_Base_Y - Concrete_Block_Y + Table_Column_Height*0.5, First_Setup_Length*0.5 - 3.5*inch), Table_Column_Logical, "Table_Column_3", First_Setup_Logical, false, 0, false);
+	new G4PVPlacement(0, global_coordinates +  G4ThreeVector(Table_Hole_X*0.5 + Table_Column_Base_Length*0.5, -Lead_Tunnel_Y*0.5 - Lead_Base_Y - Concrete_Block_Y +Table_Column_Height*0.5, First_Setup_Length*0.5 - 3.5*inch), Table_Column_Logical, "Table_Column_2", World_Logical, false, 0, false);
+	new G4PVPlacement(0, global_coordinates +  G4ThreeVector(-Table_Hole_X*0.5 - Table_Column_Base_Length*0.5, -Lead_Tunnel_Y*0.5 - Lead_Base_Y - Concrete_Block_Y + Table_Column_Height*0.5, First_Setup_Length*0.5 - 3.5*inch), Table_Column_Logical, "Table_Column_3", World_Logical, false, 0, false);
 	
 	// Construct box on top of table
 	
@@ -228,8 +224,8 @@ First_Setup::First_Setup(){
 	G4LogicalVolume *Box_Wall_Logical = new G4LogicalVolume(Box_Wall_Solid, one_third_density_Al, "Box_Wall_Logical");
 	Box_Wall_Logical->SetVisAttributes(grey);
 
-	new G4PVPlacement(0, G4ThreeVector(-Table_Hole_X*0.5 - Table_Column_Base_Length + Box_Wall_Thickness*0.5, -Lead_Tunnel_Y*0.5 - Lead_Base_Y - Concrete_Block_Y + Table_Column_Height + First_Setup_Box_Y*0.5, 0.), Box_Wall_Logical, "Box_Wall_0", First_Setup_Logical, false, 0, false);
-	new G4PVPlacement(0, G4ThreeVector(Table_Hole_X*0.5 + Table_Column_Base_Length - Box_Wall_Thickness*0.5, -Lead_Tunnel_Y*0.5 - Lead_Base_Y - Concrete_Block_Y + Table_Column_Height + First_Setup_Box_Y*0.5, 0.), Box_Wall_Logical, "Box_Wall_1", First_Setup_Logical, false, 0, false);
+	new G4PVPlacement(0, global_coordinates +  G4ThreeVector(-Table_Hole_X*0.5 - Table_Column_Base_Length + Box_Wall_Thickness*0.5, -Lead_Tunnel_Y*0.5 - Lead_Base_Y - Concrete_Block_Y + Table_Column_Height + First_Setup_Box_Y*0.5, 0.), Box_Wall_Logical, "Box_Wall_0", World_Logical, false, 0, false);
+	new G4PVPlacement(0, global_coordinates +  G4ThreeVector(Table_Hole_X*0.5 + Table_Column_Base_Length - Box_Wall_Thickness*0.5, -Lead_Tunnel_Y*0.5 - Lead_Base_Y - Concrete_Block_Y + Table_Column_Height + First_Setup_Box_Y*0.5, 0.), Box_Wall_Logical, "Box_Wall_1", World_Logical, false, 0, false);
 
 	// Construct beams on box
 	
@@ -239,10 +235,10 @@ First_Setup::First_Setup(){
 	G4LogicalVolume *Box_Beam_Logical = new G4LogicalVolume(Box_Beam_Solid, one_third_density_Al, "Box_Beam_Logical");
 	Box_Beam_Logical->SetVisAttributes(grey);
 
-	new G4PVPlacement(0, G4ThreeVector(0., -Lead_Tunnel_Y*0.5 - Lead_Base_Y - Concrete_Block_Y + Table_Column_Height + First_Setup_Box_Y - Beam_Base_Length*0.5, -First_Setup_Length*0.5 + Beam_Base_Length*0.5), Box_Beam_Logical, "Box_Beam_0", First_Setup_Logical, false, 0, false);
-	new G4PVPlacement(0, G4ThreeVector(0., -Lead_Tunnel_Y*0.5 - Lead_Base_Y - Concrete_Block_Y + Table_Column_Height + First_Setup_Box_Y - Beam_Base_Length*0.5, First_Setup_Length*0.5 - Beam_Base_Length*0.5), Box_Beam_Logical, "Box_Beam_1", First_Setup_Logical, false, 0, false);
+	new G4PVPlacement(0, global_coordinates +  G4ThreeVector(0., -Lead_Tunnel_Y*0.5 - Lead_Base_Y - Concrete_Block_Y + Table_Column_Height + First_Setup_Box_Y - Beam_Base_Length*0.5, -First_Setup_Length*0.5 + Beam_Base_Length*0.5), Box_Beam_Logical, "Box_Beam_0", World_Logical, false, 0, false);
+	new G4PVPlacement(0, global_coordinates +  G4ThreeVector(0., -Lead_Tunnel_Y*0.5 - Lead_Base_Y - Concrete_Block_Y + Table_Column_Height + First_Setup_Box_Y - Beam_Base_Length*0.5, First_Setup_Length*0.5 -Beam_Base_Length*0.5), Box_Beam_Logical, "Box_Beam_1", World_Logical, false, 0, false);
 
-	new G4PVPlacement(0, G4ThreeVector(0., -Lead_Tunnel_Y*0.5 - Lead_Base_Y - Concrete_Block_Y + Table_Column_Height + Beam_Base_Length*0.5, -First_Setup_Length*0.5 + Beam_Base_Length*0.5), Box_Beam_Logical, "Box_Beam_0", First_Setup_Logical, false, 0, false);
-	new G4PVPlacement(0, G4ThreeVector(0., -Lead_Tunnel_Y*0.5 - Lead_Base_Y - Concrete_Block_Y + Table_Column_Height + Beam_Base_Length*0.5, First_Setup_Length*0.5 - Beam_Base_Length*0.5), Box_Beam_Logical, "Box_Beam_1", First_Setup_Logical, false, 0, false);
+	new G4PVPlacement(0, global_coordinates +  G4ThreeVector(0., -Lead_Tunnel_Y*0.5 - Lead_Base_Y - Concrete_Block_Y + Table_Column_Height + Beam_Base_Length*0.5, -First_Setup_Length*0.5 + Beam_Base_Length*0.5), Box_Beam_Logical, "Box_Beam_0", World_Logical, false, 0, false);
+	new G4PVPlacement(0, global_coordinates +  G4ThreeVector(0., -Lead_Tunnel_Y*0.5 - Lead_Base_Y - Concrete_Block_Y + Table_Column_Height + Beam_Base_Length*0.5, First_Setup_Length*0.5 -Beam_Base_Length*0.5), Box_Beam_Logical, "Box_Beam_1", World_Logical, false, 0, false);
 
 }

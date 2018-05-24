@@ -25,17 +25,16 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 class G3_Table{
 public:
-	G3_Table();
+	G3_Table(G4LogicalVolume *World_Log);
 	~G3_Table(){};
 
-	G4LogicalVolume *Get_Logical(){ return G3_Table_Logical; }
-	
+	void Construct(G4ThreeVector global_coordinates);
+
 	G4double Get_Length(){ return G3_Table_Length; };
 
 private:
+	G4LogicalVolume *World_Logical;
 	G4double G3_Table_Length;
-
-	G4LogicalVolume *G3_Table_Logical;
 };
 
 #endif

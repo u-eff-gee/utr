@@ -25,17 +25,13 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 class ZeroDegree_Setup{
 public:
-	ZeroDegree_Setup();
+	ZeroDegree_Setup(G4LogicalVolume *World_Log);
 	~ZeroDegree_Setup(){};
 
-	G4LogicalVolume *Get_Logical(){ return ZeroDegree_Setup_Logical; }
-	
-	G4double Get_Length(){ return ZeroDegree_Setup_Length; };
+	void Construct(G4ThreeVector global_coordinates);
 
 private:
-	G4double ZeroDegree_Setup_Length;
-
-	G4LogicalVolume *ZeroDegree_Setup_Logical;
+	G4LogicalVolume *World_Logical;
 };
 
 #endif

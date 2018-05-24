@@ -105,8 +105,8 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	    new G4LogicalVolume(World_dim, air, "World_Logical", 0, 0, 0);
 
 	//World_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());
-    G4VisAttributes* world_vis = new G4VisAttributes(true, red);
-    world_vis->SetForceWireframe(true);
+    	G4VisAttributes* world_vis = new G4VisAttributes(true, red);
+    	world_vis->SetForceWireframe(true);
 
 	World_Logical->SetVisAttributes(world_vis);
 
@@ -122,71 +122,76 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	G4double G3_Target_To_2nd_Target = 62.*inch; // Estimated
 	G4double ZeroDegree_To_2nd_Target = 980.*mm;
 
+	/***************************************************/
 	/***************** INITIALIZATIONS *****************/
+	/***************************************************/
 
-	Beampipe_Upstream beampipe_Upstream(1e-2);
-	Beampipe_Downstream beampipe_Downstream(1e-2);
-	First_UTR_Wall first_UTR_Wall;
-	First_Setup first_Setup;
-	G3_Wall g3_Wall;
-	Detectors_G3 detectors_G3;
-	Wheel wheel;
-	G3_Table g3_Table;
-	Table2 table2;
-	Detectors_2nd detectors_2nd;	
-	ZeroDegree_Setup zeroDegree_Setup;
-	Room room(World_x, World_y, World_z,
-            Wheel_To_Target - First_Setup_To_Wheel - first_Setup.Get_Length() - First_UTR_Wall_To_First_Setup - first_UTR_Wall.Get_Length(),
-	g3_Wall.Get_Floor_Level());
+	Room room(World_Logical);
+	Beampipe_Upstream beampipe_Upstream(World_Logical);
+	First_UTR_Wall first_UTR_Wall(World_Logical);
+	First_Setup first_Setup(World_Logical);
+	G3_Wall g3_Wall(World_Logical);
+	Detectors_G3 detectors_G3(World_Logical);
+	Wheel wheel(World_Logical);
+	G3_Table g3_Table(World_Logical);
+	Table2 table2(World_Logical);
+	Beampipe_Downstream beampipe_Downstream(World_Logical);
+	Detectors_2nd detectors_2nd(World_Logical);	
+	ZeroDegree_Setup zeroDegree_Setup(World_Logical);
+
+	/***************************************************/
+	/*****************  CONSTRUCTION  *****************/
+	/***************************************************/
 
 	/***************** ROOM *****************/
 
-	//new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), room.Get_Logical(), "Room", World_Logical, false, 0, false);
+	room.Construct(G4ThreeVector(), World_x, World_y, World_z,
+            Wheel_To_Target - First_Setup_To_Wheel - first_Setup.Get_Length() - First_UTR_Wall_To_First_Setup - first_UTR_Wall.Get_Length(),
+	g3_Wall.Get_Floor_Level());
 
-	/***************** UPSTREAM_BEAMPIPE *****************/
+	/***************** BEAMPIPE_UPSTREAM *****************/
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., beampipe_Upstream.Get_Z_Axis_Offset_Z()), beampipe_Upstream.Get_Logical(), "Beampipe_Upstream", World_Logical, false, 0, false);
+	beampipe_Upstream.Construct(G4ThreeVector(0., 0., beampipe_Upstream.Get_Z_Axis_Offset_Z()), 1e-2);
 
-	/***************** DOWNSTREAM_BEAMPIPE *****************/
+	/***************** FIRST_UTR_WALL *****************/
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., G3_Target_To_2nd_Target + beampipe_Downstream.Get_Z_Axis_Offset_Z()), beampipe_Downstream.Get_Logical(), "Beampipe_Downstream", World_Logical, false, 0, false);
-	
-    /***************** FIRST_UTR_WALL *****************/
-
-	new G4PVPlacement(0, G4ThreeVector(0., 0., Wheel_To_Target - First_Setup_To_Wheel - first_Setup.Get_Length() - First_UTR_Wall_To_First_Setup - first_UTR_Wall.Get_Length()*0.5), first_UTR_Wall.Get_Logical(), "First_UTR_Wall", World_Logical, false, 0, false);
+	first_UTR_Wall.Construct(G4ThreeVector(0., 0., Wheel_To_Target - First_Setup_To_Wheel - first_Setup.Get_Length() - First_UTR_Wall_To_First_Setup - first_UTR_Wall.Get_Length()*0.5));
 
 	/***************** FIRST_SETUP *****************/
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., Wheel_To_Target - First_Setup_To_Wheel - first_Setup.Get_Length()*0.5), first_Setup.Get_Logical(), "First_Setup", World_Logical, false, 0, false);
+	first_Setup.Construct(G4ThreeVector(0., 0., Wheel_To_Target - First_Setup_To_Wheel - first_Setup.Get_Length()*0.5));
 
 	/***************** G3_WALL *****************/
 
-	//new G4PVPlacement(0, G4ThreeVector(0., 0., Wheel_To_Target - First_Setup_To_Wheel + First_Setup_To_G3_Wall + g3_Wall.Get_Length()*0.5), g3_Wall.Get_Logical(), "G3_Wall", World_Logical, false, 0, false);
+	g3_Wall.Construct(G4ThreeVector(0., 0., Wheel_To_Target - First_Setup_To_Wheel + First_Setup_To_G3_Wall + g3_Wall.Get_Length()*0.5));
 
 	/***************** DETECTORS_G3 *****************/
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), detectors_G3.Get_Logical(), "Detectors_G3", World_Logical, false, 0, false);
+	detectors_G3.Construct(G4ThreeVector(0., 0., 0.));
 
 	/***************** WHEEL *****************/
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., Wheel_To_Target + wheel.Get_Length()*0.5), wheel.Get_Logical(), "Wheel", World_Logical, false, 0, false);
+	wheel.Construct(G4ThreeVector(0., 0., Wheel_To_Target + wheel.Get_Length()*0.5));
 
 	/***************** G3_TABLE *****************/
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., Wheel_To_Target + wheel.Get_Length() + g3_Table.Get_Length()*0.5), g3_Table.Get_Logical(), "G3_Table", World_Logical, false, 0, false);
+	g3_Table.Construct(G4ThreeVector(0., 0., Wheel_To_Target + wheel.Get_Length() + g3_Table.Get_Length()*0.5));
 
 	/***************** TABLE_2 *****************/
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0.,  Wheel_To_Target + wheel.Get_Length() + g3_Table.Get_Length() + table2.Get_Length()*0.5 + table2.Get_Z_Axis_Offset_Z()), table2.Get_Logical(), "Table2", World_Logical, false, 0, false);
+	table2.Construct(G4ThreeVector(0., 0.,  Wheel_To_Target + wheel.Get_Length() + g3_Table.Get_Length() + table2.Get_Length()*0.5 + table2.Get_Z_Axis_Offset_Z()));
+
+	/***************** BEAMPIPE_DOWNSTREAM *****************/
+
+	beampipe_Downstream.Construct(G4ThreeVector(0., 0., G3_Target_To_2nd_Target + beampipe_Downstream.Get_Z_Axis_Offset_Z()), 1e-2);
 
 	/***************** DETECTORS_2ND *****************/
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., G3_Target_To_2nd_Target), detectors_2nd.Get_Logical(), "Detectors_2nd", World_Logical, false, 0, false);
-
+	detectors_2nd.Construct(G4ThreeVector(0., 0., G3_Target_To_2nd_Target));
+	
 	/***************** ZERODEGREE_SETUP *****************/
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., G3_Target_To_2nd_Target + ZeroDegree_To_2nd_Target), zeroDegree_Setup.Get_Logical(), "ZeroDegree_Setup", World_Logical, false, 0, false);
-	
+	zeroDegree_Setup.Construct(G4ThreeVector(0., 0., G3_Target_To_2nd_Target + ZeroDegree_To_2nd_Target));
 
 	return World_Physical;
 }

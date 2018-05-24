@@ -25,17 +25,13 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 class Detectors_2nd{
 public:
-	Detectors_2nd();
+	Detectors_2nd(G4LogicalVolume *World_Log);
 	~Detectors_2nd(){};
 
-	G4LogicalVolume *Get_Logical(){ return Detectors_2nd_Logical; }
-	
-	G4double Get_Length(){ return Detectors_2nd_Length; };
+	void Construct(G4ThreeVector global_coordinates);
 
 private:
-	G4double Detectors_2nd_Length;
-
-	G4LogicalVolume *Detectors_2nd_Logical;
+	G4LogicalVolume *World_Logical;
 };
 
 #endif

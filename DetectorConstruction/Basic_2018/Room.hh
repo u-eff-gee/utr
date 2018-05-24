@@ -25,20 +25,19 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 class Room{
 public:
-	Room(G4double World_x, G4double World_y, G4double World_z,
-            G4double Wall_pos, G4double Floor_pos);
+	Room(G4LogicalVolume *World_Log);
 	~Room(){};
 
-	G4LogicalVolume *Get_Logical(){ return Room_Logical; }
-	
+	void Construct(G4ThreeVector global_coordinates, G4double World_x, G4double World_y, G4double World_z,
+            G4double Wall_pos, G4double Floor_pos);
+
 	G4double Get_Wall_Thickness(){ return Wall_Thickness; };
 	G4double Get_Floor_Thickness(){ return Floor_Thickness; };
 
 private:
+	G4LogicalVolume *World_Logical;
 	G4double Wall_Thickness;
 	G4double Floor_Thickness;
-
-	G4LogicalVolume *Room_Logical;
 };
 
 #endif
