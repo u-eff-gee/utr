@@ -90,7 +90,7 @@ See section [5 Output Processing](#output)
 ## 2 Features <a name="features"></a>
 
 ### 2.1 Geometry <a name="geometry"></a>
-The `DetectorConstruction.cc` has to be adapted by the user for their experiment. Several pre-defined geometries from various experiments already exist in the `DetectorConstruction/` directory. The most recent geometries are from the experiments on 82Kr/82Se and 120Sn/82Kr. Those have implementations of the most relevant parts of the collimator room and the utr (γ³ setup [[5]](#ref-g3) and second setup).
+The `DetectorConstruction.cc` has to be adapted by the user for their experiment. Several pre-defined geometries from various experiments already exist in the `DetectorConstruction/` directory. The most recent geometries are from the experiments on 82Kr/82Se and 120Sn/82Kr. Those have implementations of the most relevant parts of the collimator room and the UTR (γ³ setup [[5]](#ref-g3) and second setup).
 
 By default, `utr` will use the geometry in `DetectorConstruction/82Se_82Kr_726_743` for no particular reason. To use the geometry in "DetectorConstruction/DetectorConstructionXY", set the corresponding CMake build variable when building the source code (see also [3 Installation](#installation)).
 
@@ -433,7 +433,7 @@ In section [2.2 Sensitive Detectors](#sensitivedetectors) the format of the ROOT
 * **x/y/z**
 * **vx/vy/vz**
 
-The user can specify in `ActionInitialization.cc` which of these quantities should be written to the ROOT file, to avoid creating unnecessarily large files. When the `RunAction` is initialized in `ActionInitialization.cc`, set the value of the corresponding output flag to 0 if this quantitiy should not be written to the ROOT file.
+The user can specify in `ActionInitialization.cc` which of these quantities should be written to the ROOT file, to avoid creating unnecessarily large files. When the `RunAction` is initialized in `ActionInitialization.cc`, set the value of the corresponding output flag to 0 if this quantity should not be written to the ROOT file.
 
 For example, the code
 
@@ -450,7 +450,7 @@ output_flags[MOMY] = 0;
 output_flags[MOMZ] = 0;
 ```
 
-would only write the energy deposition, the particle type and the senstive detector volume.
+would only write the energy deposition, the particle type and the sensitive detector volume.
 
 ## 3 Installation <a name="installation"></a>
 
@@ -691,7 +691,7 @@ When executed, the analysis script creates a file `hist.root` that contains a hi
 
 ![Output of AngDist unit test](.media/010_histogram.png)
 
-With the bad choice `W_max == 1`, the same analysis would result in the following histogram which is cleary different:
+With the bad choice `W_max == 1`, the same analysis would result in the following histogram which is clearly different:
 
 ![Output of AngDist unit test](.media/010_histogram_bad.png)
 
@@ -733,7 +733,7 @@ Copyright (C) 2017
 
 U. Gayer (ugayer@ikp.tu-darmstadt.de)
 
-O. Papst
+O. Papst (opapst@ikp.tu-darmstadt.de)
 
 This code is distributed under the terms of the GNU General Public License. See the COPYING file for more information.
 
@@ -743,9 +743,9 @@ UG would like to acknowledge the untiring effort of user Jörn Kleemann in debug
 
 ## 9 References <a name="references"></a>
 
-<a name="ref-g4_1">[1]</a> S. Agostinelli *et al.*, “GEANT4 - a simulation toolkit”, Nucl. Inst. Meth. A **506.3**, 250 (2003). [`doi:10.1016/S0168-9002(03)01368-8`](http://dx.doi.org/10.1016/S0168-9002(03)01368-8).  
+<a name="ref-g4_1">[1]</a> S. Agostinelli *et al.*, “GEANT4 - a simulation toolkit”, Nucl. Inst. Meth. A **506.3**, 250 (2003). [`doi:10.1016/S0168-9002(03)01368-8`](https://doi.org/10.1016/S0168-9002(03)01368-8).  
 <a name="ref-g4_2">[2]</a> J. Allison *et al.*, “GEANT4 developments and applications”, IEEE Transactions on Nuclear Science, **53.1**, 270 (2006). [`doi:10.1109/TNS.2006.869826`](https://doi.org/10.1109/TNS.2006.869826).  
-<a name="ref-g4_3">[3]</a> J. Allison *et al.*, “Recent developments in GEANT4”, Nucl. Inst. Meth. A **835**, 186 (2016). [`doi:10.1016/j.nima.2016.06.125`](http://dx.doi.org/10.1016/j.nima.2016.06.125).  
-<a name="ref-higs">[4]</a> H. R. Weller *et al.*, “Research opportunities at the upgraded HIγS facility”, Prog. Part. Nucl. Phys. **62.1**, 257 (2009). [`doi:10.1016/j.ppnp.2008.07.001`](https://dx.doi.org/10.1016/j.ppnp.2008.07.001).  
-<a name="ref-g3">[5]</a> B. Löher *et al.*, “The high-efficiency γ-ray spectroscopy setup γ³ at HIγS”, Nucl. Instr. Meth. Phys. Res. A **723**, 136 (2013). [`doi:10.1016/j.nima.2013.04.087`](https://dx.doi.org/10.1016/j.nima.2013.04.087).  
+<a name="ref-g4_3">[3]</a> J. Allison *et al.*, “Recent developments in GEANT4”, Nucl. Inst. Meth. A **835**, 186 (2016). [`doi:10.1016/j.nima.2016.06.125`](https://doi.org/10.1016/j.nima.2016.06.125).  
+<a name="ref-higs">[4]</a> H. R. Weller *et al.*, “Research opportunities at the upgraded HIγS facility”, Prog. Part. Nucl. Phys. **62.1**, 257 (2009). [`doi:10.1016/j.ppnp.2008.07.001`](https://doi.org/10.1016/j.ppnp.2008.07.001).  
+<a name="ref-g3">[5]</a> B. Löher *et al.*, “The high-efficiency γ-ray spectroscopy setup γ³ at HIγS”, Nucl. Instr. Meth. Phys. Res. A **723**, 136 (2013). [`doi:10.1016/j.nima.2013.04.087`](https://doi.org/10.1016/j.nima.2013.04.087).  
 
