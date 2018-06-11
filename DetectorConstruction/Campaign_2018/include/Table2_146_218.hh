@@ -18,15 +18,15 @@ You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef TABLE2_HH
-#define TABLE2_HH 1
+#ifndef TABLE2_146_218_HH
+#define TABLE2_146_218_HH 1
 
 #include "G4LogicalVolume.hh"
 
-class Table2{
+class Table2_146_218{
 public:
-	Table2(G4LogicalVolume *World_Logical);
-	~Table2(){};
+	Table2_146_218(G4LogicalVolume *World_Logical);
+	~Table2_146_218(){};
 
 	void Construct(G4ThreeVector global_coordinates);
 

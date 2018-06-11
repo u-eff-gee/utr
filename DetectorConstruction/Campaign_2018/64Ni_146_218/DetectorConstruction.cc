@@ -18,6 +18,10 @@ You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/*
+Setup for runs 146 - 218
+*/
+
 #include "DetectorConstruction.hh"
 
 // Materials
@@ -43,7 +47,7 @@ Materials *materials = Materials::Instance();
 #include "Detectors_G3.hh"
 #include "Wheel.hh"
 #include "G3_Table.hh"
-#include "Table2.hh"
+#include "Table2_146_218.hh"
 #include "Detectors_2nd.hh"
 #include "ZeroDegree_Setup.hh"
 
@@ -118,7 +122,6 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	G4double Wheel_To_Target = 3.*inch;
 	G4double First_Setup_To_Wheel = 34.*inch;
 	G4double First_UTR_Wall_To_First_Setup = 4.2*inch;
-	G4double First_Setup_To_G3_Wall = 3.5*inch;
 	G3_Target_To_2nd_Target = 62.*inch; // Estimated
 	G4double ZeroDegree_To_2nd_Target = 980.*mm;
 
@@ -130,11 +133,11 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	Beampipe_Upstream beampipe_Upstream(World_Logical);
 	First_UTR_Wall first_UTR_Wall(World_Logical);
 	First_Setup first_Setup(World_Logical);
-	G3_Wall g3_Wall(World_Logical);
+	G3_Wall g3_Wall(World_Logical); // Was not there in these runs. However, it still defines the floor height, so it is needed here
 	Detectors_G3 detectors_G3(World_Logical);
 	Wheel wheel(World_Logical);
 	G3_Table g3_Table(World_Logical);
-	Table2 table2(World_Logical);
+	Table2_146_218 table2(World_Logical);
 	Beampipe_Downstream beampipe_Downstream(World_Logical);
 	Detectors_2nd detectors_2nd(World_Logical);	
 	ZeroDegree_Setup zeroDegree_Setup(World_Logical);
@@ -163,7 +166,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	/***************** G3_WALL *****************/
 
-	g3_Wall.Construct(G4ThreeVector(0., 0., Wheel_To_Target - First_Setup_To_Wheel + First_Setup_To_G3_Wall + g3_Wall.Get_Length()*0.5));
+	//g3_Wall.Construct(G4ThreeVector(0., 0., Wheel_To_Target - First_Setup_To_Wheel + First_Setup_To_G3_Wall + g3_Wall.Get_Length()*0.5));
 
 	/***************** DETECTORS_G3 *****************/
 
