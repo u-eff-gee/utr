@@ -44,11 +44,11 @@ Materials *materials = Materials::Instance();
 #include "First_UTR_Wall.hh"
 #include "First_Setup.hh"
 #include "G3_Wall.hh"
-#include "Detectors_G3.hh"
+#include "Detectors_G3_146_228.hh"
 #include "Wheel.hh"
 #include "G3_Table.hh"
 #include "Table2_219_221.hh"
-#include "Detectors_2nd.hh"
+#include "Detectors_2nd_146_249.hh"
 #include "ZeroDegree_Setup.hh"
 
 // Sensitive Detectors
@@ -134,12 +134,12 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	First_UTR_Wall first_UTR_Wall(World_Logical);
 	First_Setup first_Setup(World_Logical);
 	G3_Wall g3_Wall(World_Logical); // Was not there in these runs. However, it still defines the floor height, so it is needed here
-	Detectors_G3 detectors_G3(World_Logical);
+	Detectors_G3_146_228 detectors_G3(World_Logical);
 	Wheel wheel(World_Logical);
 	G3_Table g3_Table(World_Logical);
 	Table2_219_221 table2(World_Logical);
 	Beampipe_Downstream beampipe_Downstream(World_Logical);
-	Detectors_2nd detectors_2nd(World_Logical);	
+	Detectors_2nd_146_249 detectors_2nd(World_Logical);	
 	ZeroDegree_Setup zeroDegree_Setup(World_Logical);
 
 	/***************************************************/

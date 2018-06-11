@@ -18,15 +18,15 @@ You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef DETECTORS_2ND_HH
-#define DETECTORS_2ND_HH 1
+#ifndef DETECTORS_G3_229_250_HH
+#define DETECTORS_G3_229_250_HH 1
 
 #include "G4LogicalVolume.hh"
 
-class Detectors_2nd{
+class Detectors_G3_229_250{
 public:
-	Detectors_2nd(G4LogicalVolume *World_Log);
-	~Detectors_2nd(){};
+	Detectors_G3_229_250(G4LogicalVolume *World_Log);
+	~Detectors_G3_229_250(){};
 
 	void Construct(G4ThreeVector global_coordinates);
 

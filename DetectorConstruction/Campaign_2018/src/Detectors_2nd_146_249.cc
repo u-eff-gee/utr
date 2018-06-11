@@ -28,16 +28,16 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4VisAttributes.hh"
 
 #include "Units.hh"
-#include "Detectors_2nd.hh"
+#include "Detectors_2nd_146_249.hh"
 #include "HPGe_Stuttgart.hh"
 #include "HPGe_Cologne.hh"
 #include "HPGe_55_TUNL_31524.hh"
 
-Detectors_2nd::Detectors_2nd(G4LogicalVolume *World_Log):
+Detectors_2nd_146_249::Detectors_2nd_146_249(G4LogicalVolume *World_Log):
 World_Logical(World_Log)
 {}
 
-void Detectors_2nd::Construct(G4ThreeVector global_coordinates){
+void Detectors_2nd_146_249::Construct(G4ThreeVector global_coordinates){
 
 	G4Colour orange(1.0, 0.5, 0.0);
 	G4Colour green(0.0, 1.0, 0.0);

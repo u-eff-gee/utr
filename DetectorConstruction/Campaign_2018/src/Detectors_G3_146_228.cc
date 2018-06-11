@@ -28,19 +28,19 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4VisAttributes.hh"
 
 #include "Units.hh"
-#include "Detectors_G3.hh"
+#include "Detectors_G3_146_228.hh"
 #include "HPGe_60_TUNL_30986.hh"
 #include "HPGe_60_TUNL_31061.hh"
 #include "HPGe_60_TUNL_40663.hh"
-#include "HPGe_ANL.hh"
+#include "HPGe_60_TUNL_21033.hh"
 #include "LaBr_TUD.hh"
 #include "FilterCase.hh"
 
-Detectors_G3::Detectors_G3(G4LogicalVolume *World_Log):
+Detectors_G3_146_228::Detectors_G3_146_228(G4LogicalVolume *World_Log):
 World_Logical(World_Log)
 {}
 
-void Detectors_G3::Construct(G4ThreeVector global_coordinates){
+void Detectors_G3_146_228::Construct(G4ThreeVector global_coordinates){
 
 	G4Colour orange(1.0, 0.5, 0.0);
 	G4Colour green(0.0, 1.0, 0.0);
@@ -51,8 +51,6 @@ void Detectors_G3::Construct(G4ThreeVector global_coordinates){
 	G4Material *Pb= nist->FindOrBuildMaterial("G4_Pb");
 
 	/************************** Detectors ***************************/
-	//
-	// 1) HPGE1
 	//
 	// Placement in spherical coordinate system
 	//
@@ -82,14 +80,14 @@ void Detectors_G3::Construct(G4ThreeVector global_coordinates){
 
 	/**************** HPGE1 *******************/
 
-	G4double HPGe1_rt = 130. * mm;
+	G4double HPGe1_rt = 60.4 * mm;
 	G4double HPGe1_dy = 0. * mm;
 	G4double HPGe1_dz = 0. * mm;
-	G4double HPGe1_phi = 315. * deg;
-	G4double HPGe1_theta = 135. * deg;
+	G4double HPGe1_phi = 0. * deg;
+	G4double HPGe1_theta = 90. * deg;
 
-	G4double HPGe1_AngleX = 215.264 * deg;
-	G4double HPGe1_AngleY = 150. * deg;
+	G4double HPGe1_AngleX = 0. * deg;
+	G4double HPGe1_AngleY = 90. * deg;
 
 	G4double HPGe1_Cu_Radius = 45.*mm;
 	G4double HPGe1_Cu_Thickness = 1.*1.15*mm;
@@ -374,30 +372,28 @@ void Detectors_G3::Construct(G4ThreeVector global_coordinates){
 
 	/**************** HPGE4 *******************/
 
-	G4double HPGe4_rt = 61. * mm; 
+	G4double HPGe4_rt = 117. * mm; 
 	G4double HPGe4_dy = 0. * mm; 
 	G4double HPGe4_dz = 0. * mm; 
-	G4double HPGe4_phi = 180. * deg;
-	G4double HPGe4_theta = 90. * deg;
-
-	G4double HPGe4_AngleX = 0. * deg;
-	G4double HPGe4_AngleY = 270. * deg;
-	G4double HPGe4_AngleZ = 0. * deg;
+	G4double HPGe4_phi = 315. * deg;
+	G4double HPGe4_theta = 135. * deg;
+	
+	G4double HPGe4_AngleX = 215.264 * deg;
+	G4double HPGe4_AngleY = 150. * deg;
 
 	G4double HPGe4_Cu_Radius = 45.*mm; 
-	G4double HPGe4_Cu_Thickness = 0.*mm; 
+	G4double HPGe4_Cu_Thickness = 1.*1.15*mm; 
 	G4double HPGe4_Pb_Radius = 45.*mm; 
 	G4double HPGe4_Pb_Thickness = 1.*1.2*mm; 
 	G4double HPGe4_Pb_Wrap_Thickness = 2.*1.2*mm; 
-	G4double HPGe4_Pb_Wrap_Length = 150.*mm; 
+	G4double HPGe4_Pb_Wrap_Length = 160.*mm; 
 
-	HPGe_ANL *HPGe4_Instance = new HPGe_ANL("HPGe4");
+	HPGe_60_TUNL_21033 *HPGe4_Instance = new HPGe_60_TUNL_21033("HPGe4");
 	G4LogicalVolume *HPGe4_Logical = HPGe4_Instance->Get_Logical();
 
 	G4RotationMatrix *rotateHPGe4 = new G4RotationMatrix();
 	rotateHPGe4->rotateX(HPGe4_AngleX);
 	rotateHPGe4->rotateY(HPGe4_AngleY);
-	rotateHPGe4->rotateZ(HPGe4_AngleZ);
 
 	HPGe4_rt = HPGe4_rt + HPGe4_Instance->Get_Length() * 0.5;
 
@@ -426,6 +422,19 @@ void Detectors_G3::Construct(G4ThreeVector global_coordinates){
 
 		HPGe4_rt -= HPGe4_Pb_Wrap_Length * 0.5;
 	}
+
+	FilterCase filterCase4(HPGe4_Pb_Thickness + HPGe4_Cu_Thickness, false);
+	HPGe4_rt -= filterCase4.Get_Offset_From_Detector();
+
+	new G4PVPlacement(rotateHPGe4, 
+	    global_coordinates + G4ThreeVector(HPGe4_rt * sin(HPGe4_theta) * cos(HPGe4_phi),
+	                  HPGe4_rt * sin(HPGe4_theta) * sin(HPGe4_phi) + HPGe4_dy,
+	                  HPGe4_rt * cos(HPGe4_theta) + HPGe4_dz),
+	    filterCase4.Get_Logical(), "HPGe4_FilterCase", World_Logical, false, 0, false
+	    );
+	
+	HPGe4_rt += filterCase4.Get_Offset_From_Detector();
+	HPGe4_rt -= filterCase4.Get_FilterCaseRing_Thickness();
 
 	if(HPGe4_Cu_Thickness > 0.){
 		HPGe4_rt -= HPGe4_Cu_Thickness * 0.5;
@@ -462,11 +471,11 @@ void Detectors_G3::Construct(G4ThreeVector global_coordinates){
 	G4double LaBr1_rt = 61.4 * mm; 
 	G4double LaBr1_dy = 0. * mm; 
 	G4double LaBr1_dz = 0. * mm; 
-	G4double LaBr1_phi = 0. * deg;
+	G4double LaBr1_phi = 180. * deg;
 	G4double LaBr1_theta = 90. * deg;
 
 	G4double LaBr1_AngleX = 0. * deg;
-	G4double LaBr1_AngleY = 90. * deg;
+	G4double LaBr1_AngleY = 270. * deg;
 	G4double LaBr1_AngleZ = 0. * deg;
 
 	G4double LaBr1_Cu_Radius = 45.*mm; 
