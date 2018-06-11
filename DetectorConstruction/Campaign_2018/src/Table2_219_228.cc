@@ -28,16 +28,16 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4SystemOfUnits.hh"
 
 #include "Units.hh"
-#include "Table2_219_221.hh"
+#include "Table2_219_228.hh"
 #include "Materials.hh"
 
-Table2_219_221::Table2_219_221(G4LogicalVolume *World_Log):
+Table2_219_228::Table2_219_228(G4LogicalVolume *World_Log):
 World_Logical(World_Log),
 Table2_Length(38.*inch),
 Z_Axis_Offset_Z(-2.25*inch) // This is how far the beam tube holder extends into the G3 table 
 {}
 
-void Table2_219_221::Construct(G4ThreeVector global_coordinates){
+void Table2_219_228::Construct(G4ThreeVector global_coordinates){
 	
 	G4Colour green(0., 0.5, 0.);
 	G4Colour grey(0.5, 0.5, 0.5);

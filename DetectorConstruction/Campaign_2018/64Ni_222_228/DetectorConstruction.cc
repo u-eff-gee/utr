@@ -19,7 +19,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 /*
-Setup for runs 219 - 221
+Setup for runs 222 - 228
 */
 
 #include "DetectorConstruction.hh"
@@ -122,6 +122,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	G4double Wheel_To_Target = 3.*inch;
 	G4double First_Setup_To_Wheel = 34.*inch;
 	G4double First_UTR_Wall_To_First_Setup = 4.2*inch;
+	G4double First_Setup_To_G3_Wall = 3.5*inch;
 	G3_Target_To_2nd_Target = 62.*inch; // Estimated
 	G4double ZeroDegree_To_2nd_Target = 980.*mm;
 
@@ -163,6 +164,10 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	/***************** FIRST_SETUP *****************/
 
 	first_Setup.Construct(G4ThreeVector(0., 0., Wheel_To_Target - First_Setup_To_Wheel - first_Setup.Get_Length()*0.5));
+
+	/***************** G3_WALL *****************/
+
+	g3_Wall.Construct(G4ThreeVector(0., 0., Wheel_To_Target - First_Setup_To_Wheel + First_Setup_To_G3_Wall + g3_Wall.Get_Length()*0.5));
 
 	/***************** DETECTORS_G3 *****************/
 
