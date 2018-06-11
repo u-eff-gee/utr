@@ -94,9 +94,9 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	/***************** WORLD *****************/
 
-	G4double World_x = 3000. * mm;
-	G4double World_y = 3150. * mm;
-	G4double World_z = 6000. * mm;
+	World_x = 3000. * mm;
+	World_y = 3150. * mm;
+	World_z = 6000. * mm;
 
 	G4Box *World_dim =
 	    new G4Box("World_Solid", World_x * 0.5, World_y * 0.5, World_z * 0.5);
@@ -119,7 +119,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	G4double First_Setup_To_Wheel = 34.*inch;
 	G4double First_UTR_Wall_To_First_Setup = 4.2*inch;
 	G4double First_Setup_To_G3_Wall = 3.5*inch;
-	G4double G3_Target_To_2nd_Target = 62.*inch; // Estimated
+	G3_Target_To_2nd_Target = 62.*inch; // Estimated
 	G4double ZeroDegree_To_2nd_Target = 980.*mm;
 
 	/***************************************************/
@@ -277,7 +277,7 @@ void DetectorConstruction::print_info() const {
 	printf("  DetectorConstruction: Info (all dimensions in mm)\n");
 	G4cout << G4endl;
 	printf("> Ideal position of G3 target : ( %5.2f, %5.2f, %5.2f )\n", 0., 0., 0.);
-	printf("> Ideal position of 2nd target: ( %5.2f, %5.2f, %5.2f)\n", 0., 0., G3_Target_To_2nd_Target);
-	printf("> World dimensions            : ( %5.2f, %5.2f, %5.2f)\n", World_x, World_y, World_z);
+	printf("> Ideal position of 2nd target: ( %5.2f, %5.2f, %5.2f )\n", 0., 0., G3_Target_To_2nd_Target);
+	printf("> World dimensions            : ( %5.2f, %5.2f, %5.2f )\n", World_x, World_y, World_z);
 	printf("==============================================================\n");
 }

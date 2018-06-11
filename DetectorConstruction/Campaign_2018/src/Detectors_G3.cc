@@ -38,7 +38,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 Detectors_G3::Detectors_G3(G4LogicalVolume *World_Log):
 World_Logical(World_Log)
-{};
+{}
 
 void Detectors_G3::Construct(G4ThreeVector global_coordinates){
 

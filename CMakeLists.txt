@@ -26,8 +26,10 @@ endif()
 #----------------------------------------------------------------------------
 
 # Build options
+# Choose campaign (an experimental campaign usually has a bulk geometry which is not changed, and several files like the detector arrangment which differ from run to run)
+set(CAMPAIGN "Campaign_2018" CACHE STRING "Select experimental campaign from directory DetectorConstruction/")
 # Choose geometry
-set(DETECTOR_CONSTRUCTION "82Se_82Kr_726_743" CACHE STRING "Select detector construction from directory DetectorConstruction/")
+set(DETECTOR_CONSTRUCTION "64Ni_146_227" CACHE STRING "Select detector construction from directory DetectorConstruction/$CAMPAIGN/")
 # Choose primary generator
 option(USE_GPS "Use G4GeneralParticleSource as primary generator" ON)
 
@@ -36,13 +38,14 @@ option(USE_GPS "Use G4GeneralParticleSource as primary generator" ON)
 #
 include(${Geant4_USE_FILE})
 include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${PROJECT_SOURCE_DIR}/DetectorConstruction/${DETECTOR_CONSTRUCTION})
+include_directories(${PROJECT_SOURCE_DIR}/DetectorConstruction/${CAMPAIGN}/include)
+include_directories(${PROJECT_SOURCE_DIR}/DetectorConstruction/${CAMPAIGN}/${DETECTOR_CONSTRUCTION})
 
 #----------------------------------------------------------------------------
 # Locate sources and headers for this project
 
-file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc ${PROJECT_SOURCE_DIR}/DetectorConstruction/${DETECTOR_CONSTRUCTION}/*.cc)
-file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh ${PROJECT_SOURCE_DIR}/DetectorConstruction/$(DETECTOR_CONSTRUCTION)/*.hh)
+file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc ${PROJECT_SOURCE_DIR}/DetectorConstruction/${CAMPAIGN}/src/*.cc ${PROJECT_SOURCE_DIR}/DetectorConstruction/${CAMPAIGN}/${DETECTOR_CONSTRUCTION}/*.cc)
+file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh ${PROJECT_SOURCE_DIR}/DetectorConstruction/${CAMPAIGN}/include/*.hh ${PROJECT_SOURCE_DIR}/DetectorConstruction/${CAMPAIGN}/${DETECTOR_CONSTRUCTION}/*.hh)
 
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
