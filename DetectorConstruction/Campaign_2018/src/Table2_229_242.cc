@@ -28,16 +28,16 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4SystemOfUnits.hh"
 
 #include "Units.hh"
-#include "Table2_219_228.hh"
+#include "Table2_229_242.hh"
 #include "Materials.hh"
 
-Table2_219_228::Table2_219_228(G4LogicalVolume *World_Log):
+Table2_229_242::Table2_229_242(G4LogicalVolume *World_Log):
 World_Logical(World_Log),
 Table2_Length(38.*inch),
 Z_Axis_Offset_Z(-2.25*inch) // This is how far the beam tube holder extends into the G3 table 
 {}
 
-void Table2_219_228::Construct(G4ThreeVector global_coordinates){
+void Table2_229_242::Construct(G4ThreeVector global_coordinates){
 	
 	G4Colour green(0., 0.5, 0.);
 	G4Colour grey(0.5, 0.5, 0.5);
@@ -263,11 +263,30 @@ void Table2_219_228::Construct(G4ThreeVector global_coordinates){
 	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., -Upstream_Holder_Ring_Outer_Radius + Upstream_Holder_Hole_Depth - Upstream_Holder_Base_Y - Holder_Base_To_Table + Iron_Bar_Y*0.5, -4.5*inch - Iron_Bar_Z*0.5), Iron_Bar_Logical, "Iron_Bar", World_Logical, false, 0, false);
 
 	// Lead shielding inside iron bar
-	
+	G4double Table_Plate_Offset_Y = -Upstream_Holder_Ring_Outer_Radius + Upstream_Holder_Hole_Depth - Upstream_Holder_Base_Y - Holder_Base_To_Table;
+
 	G4Box *Lead_On_Bar_Solid = new G4Box("Lead_On_Bar_Solid", 16.*inch*0.5, 5.*inch*0.5, 3.*inch*0.5);
 
 	G4LogicalVolume *Lead_On_Bar_Logical = new G4LogicalVolume(Lead_On_Bar_Solid, Pb, "Lead_On_Bar_Logical");
 	Lead_On_Bar_Logical->SetVisAttributes(green);
 
-	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., -Upstream_Holder_Ring_Outer_Radius + Upstream_Holder_Hole_Depth - Upstream_Holder_Base_Y - Holder_Base_To_Table + Iron_Bar_Wall_Thickness + 5.*inch*0.5, -4.5*inch - Iron_Bar_Z*0.5), Lead_On_Bar_Logical, "Lead_On_Bar", World_Logical, false, 0, false);
+	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., Table_Plate_Offset_Y + Iron_Bar_Wall_Thickness + 5.*inch*0.5, -4.5*inch - Iron_Bar_Z*0.5), Lead_On_Bar_Logical, "Lead_On_Bar", World_Logical, false, 0, false);
+
+	G4Box *Lead_On_Bar_2_Solid_Solid = new G4Box("Lead_On_Bar_2_Solid_Solid", 10.*inch*0.5, fabs(Table_Plate_Offset_Y) - Iron_Bar_Wall_Thickness - 5.*inch, 2.*inch*0.5);
+	G4Tubs *Lead_On_Bar_2_Hole_Solid = new G4Tubs("Lead_On_Bar_2_Hole_Solid", 0., 1.*inch, 2.*inch, 0., twopi);
+
+	G4SubtractionSolid *Lead_On_Bar_2_Solid = new G4SubtractionSolid("Lead_On_Bar_2_Solid", Lead_On_Bar_2_Solid_Solid, Lead_On_Bar_2_Hole_Solid, 0, G4ThreeVector(-2.*inch, 0., 0.));
+
+	G4LogicalVolume* Lead_On_Bar_2_Logical = new G4LogicalVolume(Lead_On_Bar_2_Solid, Pb, "Lead_On_Bar_2_Logical");
+	Lead_On_Bar_2_Logical->SetVisAttributes(green);
+
+	new G4PVPlacement(0, global_coordinates + G4ThreeVector(2.*inch, 0., -4.5*inch - Iron_Bar_Z*0.5), Lead_On_Bar_2_Logical, "Lead_On_Bar_2", World_Logical, false, 0, false);
+
+	G4Box *Lead_On_Bar_3_Solid = new G4Box("Lead_On_Bar_3_Solid", 4.*inch*0.5, 4.*inch*0.5, 2.*inch*0.5);
+
+	G4LogicalVolume *Lead_On_Bar_3_Logical = new G4LogicalVolume(Lead_On_Bar_3_Solid, Pb, "Lead_On_Bar_3_Logical");
+	Lead_On_Bar_3_Logical->SetVisAttributes(green);
+
+	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0.,fabs(Table_Plate_Offset_Y) - Iron_Bar_Wall_Thickness - 5.*inch + 4.*inch*0.5, -4.5*inch - Iron_Bar_Z*0.5), Lead_On_Bar_3_Logical, "Lead_On_Bar_3", World_Logical, false, 0, false);
+	
 }

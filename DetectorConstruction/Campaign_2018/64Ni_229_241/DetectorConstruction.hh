@@ -18,20 +18,29 @@ You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef DETECTORS_2ND_250_270_HH
-#define DETECTORS_2ND_250_270_HH 1
+#ifndef DETECTORCONSTRUCTION_HH
+#define DETECTORCONSTRUCTION_HH 1
 
-#include "G4LogicalVolume.hh"
+#include "G4SystemOfUnits.hh"
+#include "G4UnitsTable.hh"
+#include "G4VUserDetectorConstruction.hh"
 
-class Detectors_2nd_250_270{
-public:
-	Detectors_2nd_250_270(G4LogicalVolume *World_Log);
-	~Detectors_2nd_250_270(){};
+class DetectorConstruction : public G4VUserDetectorConstruction {
+  public:
+	DetectorConstruction();
+	~DetectorConstruction();
 
-	void Construct(G4ThreeVector global_coordinates);
+	virtual G4VPhysicalVolume *Construct();
+	virtual void ConstructSDandField();
+
+	void print_info() const;
 
 private:
-	G4LogicalVolume *World_Logical;
+	G4double World_x;
+	G4double World_y;
+	G4double World_z;
+
+	G4double G3_Target_To_2nd_Target;
 };
 
 #endif

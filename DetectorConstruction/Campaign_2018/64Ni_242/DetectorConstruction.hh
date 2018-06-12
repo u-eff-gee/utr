@@ -1,4 +1,5 @@
-/* utr - Geant4 simulation of the UTR at HIGS
+/*
+utr - Geant4 simulation of the UTR at HIGS
 Copyright (C) 2017 the developing team (see README.md)
 
 This file is part of utr.
@@ -17,31 +18,29 @@ You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef G3_WALL_HH
-#define G3_WALL_HH 1
+#ifndef DETECTORCONSTRUCTION_HH
+#define DETECTORCONSTRUCTION_HH 1
 
-#include "G4LogicalVolume.hh"
+#include "G4SystemOfUnits.hh"
+#include "G4UnitsTable.hh"
+#include "G4VUserDetectorConstruction.hh"
 
-class G3_Wall{
-public:
-	G3_Wall(G4LogicalVolume *World_Log);
-	~G3_Wall(){};
+class DetectorConstruction : public G4VUserDetectorConstruction {
+  public:
+	DetectorConstruction();
+	~DetectorConstruction();
 
-	void Construct(G4ThreeVector global_coordinates);
+	virtual G4VPhysicalVolume *Construct();
+	virtual void ConstructSDandField();
 
-	G4double Get_Floor_Level(){ return Floor_Level; };
-	G4double Get_Length(){ return G3_Wall_Length; };
+	void print_info() const;
 
 private:
-	G4LogicalVolume *World_Logical;
+	G4double World_x;
+	G4double World_y;
+	G4double World_z;
 
-	G4double Lead_Wall_Tunnel_Y;
-	G4double Lead_Wall_Base_Y;
-	G4double Concrete_Base_Hor_Y;
-	G4double Floor_Level;
-	G4double Concrete_Base_Hor_Z;
-	G4double Concrete_Base_Ver_Z;
-	G4double G3_Wall_Length;
+	G4double G3_Target_To_2nd_Target;
 };
 
 #endif

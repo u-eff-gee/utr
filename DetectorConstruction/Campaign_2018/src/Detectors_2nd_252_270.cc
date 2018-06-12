@@ -28,16 +28,16 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4VisAttributes.hh"
 
 #include "Units.hh"
-#include "Detectors_2nd_250_270.hh"
+#include "Detectors_2nd_252_270.hh"
 #include "HPGe_Stuttgart.hh"
 #include "HPGe_Cologne.hh"
 #include "HPGe_55_TUNL_31524.hh"
 
-Detectors_2nd_250_270::Detectors_2nd_250_270(G4LogicalVolume *World_Log):
+Detectors_2nd_252_270::Detectors_2nd_252_270(G4LogicalVolume *World_Log):
 World_Logical(World_Log)
 {}
 
-void Detectors_2nd_250_270::Construct(G4ThreeVector global_coordinates){
+void Detectors_2nd_252_270::Construct(G4ThreeVector global_coordinates){
 
 	G4Colour orange(1.0, 0.5, 0.0);
 	G4Colour green(0.0, 1.0, 0.0);
@@ -93,7 +93,7 @@ void Detectors_2nd_250_270::Construct(G4ThreeVector global_coordinates){
 	G4double HPGe_Cologne_Cu_Radius = 50.*mm; 
 	G4double HPGe_Cologne_Cu_Thickness = 1.*1.15*mm; 
 	G4double HPGe_Cologne_Pb_Radius = 50.*mm; 
-	G4double HPGe_Cologne_Pb_Thickness = (2.*1.2 + 1.*2.)*mm; 
+	G4double HPGe_Cologne_Pb_Thickness = (4.*1.2 + 1.*2.)*mm; 
 	G4double HPGe_Cologne_Pb_Wrap_Thickness = 2.*1.2*mm; 
 	G4double HPGe_Cologne_Pb_Wrap_Length = 200.*mm; 
 
@@ -176,7 +176,7 @@ void Detectors_2nd_250_270::Construct(G4ThreeVector global_coordinates){
 	G4double HPGe_Stuttgart_Cu_Radius = 50.*mm; 
 	G4double HPGe_Stuttgart_Cu_Thickness = 1.*1.15*mm; 
 	G4double HPGe_Stuttgart_Pb_Radius = 50.*mm; 
-	G4double HPGe_Stuttgart_Pb_Thickness = (3.*1.2 + 1.*2.)*mm; 
+	G4double HPGe_Stuttgart_Pb_Thickness = (5.*1.2 + 1.*2.)*mm; 
 	G4double HPGe_Stuttgart_Pb_Wrap_Thickness = 1.*1.2*mm; 
 	G4double HPGe_Stuttgart_Pb_Wrap_Length = 250.*mm; 
 
@@ -259,7 +259,7 @@ void Detectors_2nd_250_270::Construct(G4ThreeVector global_coordinates){
 	G4double HPGe12_Cu_Radius = 50.*mm; 
 	G4double HPGe12_Cu_Thickness = 1.*1.15*mm; 
 	G4double HPGe12_Pb_Radius = 50.*mm; 
-	G4double HPGe12_Pb_Thickness = (2.*1.2 + 1.*2.)*mm; 
+	G4double HPGe12_Pb_Thickness = (4.*1.2 + 1.*2.)*mm; 
 	G4double HPGe12_Pb_Wrap_Thickness = 2.*1.2*mm; 
 	G4double HPGe12_Pb_Wrap_Length = 200.*mm; 
 

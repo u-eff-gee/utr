@@ -27,10 +27,10 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4PhysicalConstants.hh"
 
 #include "Units.hh"
-#include "G3_Wall.hh"
+#include "G3_Wall_222_242.hh"
 #include "Materials.hh"
 
-G3_Wall::G3_Wall(G4LogicalVolume *World_Log):
+G3_Wall_222_242::G3_Wall_222_242(G4LogicalVolume *World_Log):
 World_Logical(World_Log),
 Lead_Wall_Tunnel_Y(8.*inch), // Estimtated
 Lead_Wall_Base_Y(6.*inch),
@@ -43,7 +43,7 @@ Concrete_Base_Ver_Z(15.5*inch)
 
 }
 
-void G3_Wall::Construct(G4ThreeVector global_coordinates){
+void G3_Wall_222_242::Construct(G4ThreeVector global_coordinates){
 
 	G4Colour green(0., 0.5, 0.);
 	G4Colour white(1.0, 1.0, 1.0);

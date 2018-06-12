@@ -738,9 +738,9 @@ void Detectors_G3_229_241::Construct(G4ThreeVector global_coordinates){
 
 	/**************** LABR4 *******************/
 
-	G4double LaBr4_rt = 69. * mm; // Estimated
-	G4double LaBr4_dy = 0. * mm; // Estimated
-	G4double LaBr4_dz = 0. * mm; // Estimated
+	G4double LaBr4_rt = 69. * mm;
+	G4double LaBr4_dy = 0. * mm;
+	G4double LaBr4_dz = 0. * mm;
 	G4double LaBr4_phi = 135. * deg;
 	G4double LaBr4_theta = 135. * deg;
 
@@ -748,12 +748,12 @@ void Detectors_G3_229_241::Construct(G4ThreeVector global_coordinates){
 	G4double LaBr4_AngleY = 210. * deg;
 	G4double LaBr4_AngleZ = 0. * deg;
 
-	G4double LaBr4_Cu_Radius = 45.*mm; // Estimated
-	G4double LaBr4_Cu_Thickness = 0.*mm; // Estimated
-	G4double LaBr4_Pb_Radius = 45.*mm; // Estimated
-	G4double LaBr4_Pb_Thickness = 0.*mm; // Estimated
-	G4double LaBr4_Pb_Wrap_Thickness = 2.*1.2*mm; // Estimated
-	G4double LaBr4_Pb_Wrap_Length = 65.*mm; // Estimated
+	G4double LaBr4_Cu_Radius = 45.*mm;
+	G4double LaBr4_Cu_Thickness = 0.*mm;
+	G4double LaBr4_Pb_Radius = 45.*mm;
+	G4double LaBr4_Pb_Thickness = 0.*mm;
+	G4double LaBr4_Pb_Wrap_Thickness = 2.*1.2*mm;
+	G4double LaBr4_Pb_Wrap_Length = 65.*mm;
 
 	LaBr_TUD *LaBr4_Instance = new LaBr_TUD("LaBr4");
 	G4LogicalVolume *LaBr4_Logical = LaBr4_Instance->Get_Logical();

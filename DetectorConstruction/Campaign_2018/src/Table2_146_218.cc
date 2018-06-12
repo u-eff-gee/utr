@@ -250,13 +250,4 @@ void Table2_146_218::Construct(G4ThreeVector global_coordinates){
 	G4LogicalVolume* Al_Bar_On_Table_Logical = new G4LogicalVolume(Al_Bar_On_Table_Solid, Al, "Al_Bar_On_Table_Logical");
 
 	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., -6.5*inch - (Table_Plate_Thickness - Table_Thin_Plate_Thickness)*0.5, -Table2_Length*0.5 + Upstream_Holder_Ring_Length + 1.*inch), Al_Bar_On_Table_Logical, "Al_Bar_On_Table", World_Logical, false, 0, false);
-	
-	// Lead wrap around beam pipe
-	
-	G4Tubs *Lead_Wrap_Solid = new G4Tubs("Lead_Wrap_Solid", 1.*inch, 1.*inch + 3.*mm, 8.*inch*0.5, 0., twopi);
-
-	G4LogicalVolume *Lead_Wrap_Logical = new G4LogicalVolume(Lead_Wrap_Solid, Pb, "Lead_Wrap_Logical");
-	Lead_Wrap_Logical->SetVisAttributes(green);
-
-	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., -Table2_Length*0.5 + Upstream_Holder_Ring_Length + 6.*inch), Lead_Wrap_Logical, "Lead_Wrap", World_Logical, false, 0, false);
 }
