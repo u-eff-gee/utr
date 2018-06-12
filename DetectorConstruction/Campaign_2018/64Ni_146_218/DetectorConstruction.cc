@@ -48,7 +48,7 @@ Materials *materials = Materials::Instance();
 #include "Wheel.hh"
 #include "G3_Table.hh"
 #include "Table2_146_218.hh"
-#include "Detectors_2nd_146_249.hh"
+#include "Detectors_2nd_146_225.hh"
 #include "ZeroDegree_Setup.hh"
 
 // Sensitive Detectors
@@ -139,7 +139,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	G3_Table g3_Table(World_Logical);
 	Table2_146_218 table2(World_Logical);
 	Beampipe_Downstream beampipe_Downstream(World_Logical);
-	Detectors_2nd_146_249 detectors_2nd(World_Logical);	
+	Detectors_2nd_146_225 detectors_2nd(World_Logical);	
 	ZeroDegree_Setup zeroDegree_Setup(World_Logical);
 
 	/***************************************************/

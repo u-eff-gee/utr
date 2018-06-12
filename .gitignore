@@ -4,6 +4,8 @@ CMakeCache.txt
 CMakeFiles/*
 cmake_install.cmake
 include/utrConfig.h
+#DetectorConstruction/Campaign_2018/CMakeCache.txt
+#DetectorConstruction/Campaign_2018/CMakeFiles/*
 
 # Compiled binaries
 utr

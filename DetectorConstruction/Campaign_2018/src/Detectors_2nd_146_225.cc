@@ -28,16 +28,16 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4VisAttributes.hh"
 
 #include "Units.hh"
-#include "Detectors_2nd_146_249.hh"
+#include "Detectors_2nd_146_225.hh"
 #include "HPGe_Stuttgart.hh"
 #include "HPGe_Cologne.hh"
 #include "HPGe_55_TUNL_31524.hh"
 
-Detectors_2nd_146_249::Detectors_2nd_146_249(G4LogicalVolume *World_Log):
+Detectors_2nd_146_225::Detectors_2nd_146_225(G4LogicalVolume *World_Log):
 World_Logical(World_Log)
 {}
 
-void Detectors_2nd_146_249::Construct(G4ThreeVector global_coordinates){
+void Detectors_2nd_146_225::Construct(G4ThreeVector global_coordinates){
 
 	G4Colour orange(1.0, 0.5, 0.0);
 	G4Colour green(0.0, 1.0, 0.0);
@@ -81,7 +81,7 @@ void Detectors_2nd_146_249::Construct(G4ThreeVector global_coordinates){
 
 	/**************** HPGE10 HPGe_Cologne *******************/
 
-	G4double HPGe_Cologne_rt = 94.4 * mm; 
+	G4double HPGe_Cologne_rt = 47.4 * mm; 
 	G4double HPGe_Cologne_dy = 0. * mm; 
 	G4double HPGe_Cologne_dz = 0. * mm; 
 	G4double HPGe_Cologne_phi = 270. * deg;
@@ -93,7 +93,7 @@ void Detectors_2nd_146_249::Construct(G4ThreeVector global_coordinates){
 	G4double HPGe_Cologne_Cu_Radius = 50.*mm; 
 	G4double HPGe_Cologne_Cu_Thickness = 1.*1.15*mm; 
 	G4double HPGe_Cologne_Pb_Radius = 50.*mm; 
-	G4double HPGe_Cologne_Pb_Thickness = (4.*1.2 + 1.*2.)*mm; 
+	G4double HPGe_Cologne_Pb_Thickness = 1.*2.*mm; 
 	G4double HPGe_Cologne_Pb_Wrap_Thickness = 2.*1.2*mm; 
 	G4double HPGe_Cologne_Pb_Wrap_Length = 200.*mm; 
 
@@ -176,7 +176,7 @@ void Detectors_2nd_146_249::Construct(G4ThreeVector global_coordinates){
 	G4double HPGe_Stuttgart_Cu_Radius = 50.*mm; 
 	G4double HPGe_Stuttgart_Cu_Thickness = 1.*1.15*mm; 
 	G4double HPGe_Stuttgart_Pb_Radius = 50.*mm; 
-	G4double HPGe_Stuttgart_Pb_Thickness = (5.*1.2 + 1.*2.)*mm; 
+	G4double HPGe_Stuttgart_Pb_Thickness = (1.*1.2 + 1.*2.)*mm; 
 	G4double HPGe_Stuttgart_Pb_Wrap_Thickness = 1.*1.2*mm; 
 	G4double HPGe_Stuttgart_Pb_Wrap_Length = 250.*mm; 
 
@@ -247,7 +247,7 @@ void Detectors_2nd_146_249::Construct(G4ThreeVector global_coordinates){
 
 	/**************** HPGE12 HPGe_55_TUNL_31524 *******************/
 
-	G4double HPGe12_rt = 89.4 * mm; 
+	G4double HPGe12_rt = 45.4 * mm; 
 	G4double HPGe12_dy = 0. * mm; 
 	G4double HPGe12_dz = 0. * mm; 
 	G4double HPGe12_phi = 90. * deg;
@@ -259,7 +259,7 @@ void Detectors_2nd_146_249::Construct(G4ThreeVector global_coordinates){
 	G4double HPGe12_Cu_Radius = 50.*mm; 
 	G4double HPGe12_Cu_Thickness = 1.*1.15*mm; 
 	G4double HPGe12_Pb_Radius = 50.*mm; 
-	G4double HPGe12_Pb_Thickness = (4.*1.2 + 1.*2.)*mm; 
+	G4double HPGe12_Pb_Thickness = 1.*2.*mm; 
 	G4double HPGe12_Pb_Wrap_Thickness = 2.*1.2*mm; 
 	G4double HPGe12_Pb_Wrap_Length = 200.*mm; 
 

@@ -28,7 +28,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4VisAttributes.hh"
 
 #include "Units.hh"
-#include "Detectors_G3_229_249.hh"
+#include "Detectors_G3_229_241.hh"
 #include "HPGe_60_TUNL_30986.hh"
 #include "HPGe_60_TUNL_31061.hh"
 #include "HPGe_60_TUNL_40663.hh"
@@ -36,11 +36,11 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "LaBr_TUD.hh"
 #include "FilterCase.hh"
 
-Detectors_G3_229_249::Detectors_G3_229_249(G4LogicalVolume *World_Log):
+Detectors_G3_229_241::Detectors_G3_229_241(G4LogicalVolume *World_Log):
 World_Logical(World_Log)
 {}
 
-void Detectors_G3_229_249::Construct(G4ThreeVector global_coordinates){
+void Detectors_G3_229_241::Construct(G4ThreeVector global_coordinates){
 
 	G4Colour orange(1.0, 0.5, 0.0);
 	G4Colour green(0.0, 1.0, 0.0);
@@ -274,7 +274,7 @@ void Detectors_G3_229_249::Construct(G4ThreeVector global_coordinates){
 
 	/**************** HPGE3 *******************/
 
-	G4double HPGe3_rt = 117. * mm;
+	G4double HPGe3_rt = 130. * mm;
 	G4double HPGe3_dy = 0. * mm; 
 	G4double HPGe3_dz = 0. * mm;
 	G4double HPGe3_phi = 45. * deg;
