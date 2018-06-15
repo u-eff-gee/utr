@@ -32,7 +32,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 Beampipe_Upstream::Beampipe_Upstream(G4LogicalVolume *World_Log):
 World_Logical(World_Log),
-Beampipe_Upstream_Upstream_Length(100.*inch), // Estimated
+Beampipe_Upstream_Upstream_Length(112.*inch), // Estimated
 Beampipe_Upstream_Downstream_Length(35.*inch) // Estimated
 {
 	Beampipe_Upstream_Length = Beampipe_Upstream_Upstream_Length + Beampipe_Upstream_Downstream_Length;
@@ -105,7 +105,7 @@ void Beampipe_Upstream::Construct(G4ThreeVector global_coordinates, G4double rel
 
 	Upstream_Exit_Window_Logical->SetVisAttributes(white);
 	
-	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., Beampipe_Upstream_Length*0.5 + Upstream_Exit_Window_Thickness*0.5), Upstream_Exit_Window_Logical, "Upstream_Exit_Window", World_Logical, false, 0, false);
+	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., -Beampipe_Upstream_Length*0.5 + Upstream_Exit_Window_Thickness*0.5), Upstream_Exit_Window_Logical, "Upstream_Exit_Window", World_Logical, false, 0, false);
 	
 	// Target Holder Tube
 	

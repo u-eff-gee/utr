@@ -31,7 +31,8 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "Room.hh"
 
 Room::Room(G4LogicalVolume *World_Log):
-World_Logical(World_Log)
+World_Logical(World_Log),
+Wall_Thickness(14.*cm) // Measured by U. Gayer
 {}
 
 void Room::Construct(G4ThreeVector global_coordinates, G4double World_x, G4double World_y, G4double World_z,
@@ -43,7 +44,6 @@ void Room::Construct(G4ThreeVector global_coordinates, G4double World_x, G4doubl
 
 	G4Material *concrete = nist->FindOrBuildMaterial("G4_CONCRETE");
 
-    Wall_Thickness = 14.*cm; // Measured by U. Gayer
     Floor_Thickness = 26.8*cm; // Estimated from drawings
 
     G4double Beampipe_Outer_Radius = 1.*inch;
