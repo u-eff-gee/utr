@@ -26,6 +26,8 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4Tubs.hh"
 #include "G4PhysicalConstants.hh"
 #include "G4SystemOfUnits.hh"
+#include "G4TwoVector.hh"
+#include "G4ExtrudedSolid.hh"
 
 #include "Units.hh"
 #include "Table2_146_218.hh"

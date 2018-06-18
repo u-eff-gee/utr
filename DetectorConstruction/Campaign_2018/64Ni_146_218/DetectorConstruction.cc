@@ -38,6 +38,7 @@ Materials *materials = Materials::Instance();
 #include "G4VisAttributes.hh"
 #include "globals.hh"
 
+#include "Collimator_Room.hh"
 #include "Room.hh"
 #include "Beampipe_Upstream.hh"
 #include "Beampipe_Downstream.hh"
@@ -65,6 +66,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	/*
 	 * Fast-forward to specific parts of the geometry by searching for
+	 * COLLIMATOR_ROOM (Collimator, paddle and shielding in collimator room)
 	 * ROOM (UTR walls and floor)
 	 * WORLD (world volume)
 	 * BEAMPIPE_UPSTREAM 
@@ -100,7 +102,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	World_x = 3000. * mm;
 	World_y = 3150. * mm;
-	World_z = 6000. * mm;
+	World_z = 8000. * mm;
 
 	G4Box *World_dim =
 	    new G4Box("World_Solid", World_x * 0.5, World_y * 0.5, World_z * 0.5);
@@ -129,6 +131,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	/***************** INITIALIZATIONS *****************/
 	/***************************************************/
 
+	Collimator_Room collimator_Room(World_Logical, 0.5*0.75*inch);
 	Room room(World_Logical);
 	Beampipe_Upstream beampipe_Upstream(World_Logical);
 	First_UTR_Wall first_UTR_Wall(World_Logical);
@@ -145,6 +148,10 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	/***************************************************/
 	/*****************  CONSTRUCTION  *****************/
 	/***************************************************/
+
+	/***************** COLLIMATOR_ROOM *****************/
+
+	collimator_Room.Construct(G4ThreeVector(0., 0., Wheel_To_Target - First_Setup_To_Wheel - first_Setup.Get_Length()- First_UTR_Wall_To_First_Setup - first_UTR_Wall.Get_Length() - room.Get_Wall_Thickness() - collimator_Room.Get_Length()*0.5));
 
 	/***************** ROOM *****************/
 

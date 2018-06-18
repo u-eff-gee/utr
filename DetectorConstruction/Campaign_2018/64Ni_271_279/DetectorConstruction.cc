@@ -132,7 +132,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	/***************** INITIALIZATIONS *****************/
 	/***************************************************/
 
-	Collimator_Room collimator_Room(World_Logical, 0.75*inch);
+	Collimator_Room collimator_Room(World_Logical, 0.5*0.75*inch);
 	Room room(World_Logical);
 	Beampipe_Upstream beampipe_Upstream(World_Logical);
 	First_UTR_Wall first_UTR_Wall(World_Logical);
