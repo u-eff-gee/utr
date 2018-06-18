@@ -68,7 +68,6 @@ void Collimator_Room::Construct(G4ThreeVector global_coordinates){
 
 	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., -Collimator_Room_Length*0.5 + Collimator_Z*0.5), Collimator_Logical, "Collimator", World_Logical, false, 0);
 
-
 	/**************** WALL1 Lead wall after paddle
 	 * *****************************/
 

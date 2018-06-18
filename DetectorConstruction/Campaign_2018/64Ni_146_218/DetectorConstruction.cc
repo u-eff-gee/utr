@@ -58,7 +58,10 @@ Materials *materials = Materials::Instance();
 #include "ParticleSD.hh"
 #include "SecondarySD.hh"
 
-DetectorConstruction::DetectorConstruction() {}
+DetectorConstruction::DetectorConstruction():
+G3_Target_To_2nd_Target(0.),
+Collimator_Entrance_To_G3_Target(0.)
+{}
 
 DetectorConstruction::~DetectorConstruction() {}
 
@@ -152,6 +155,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	/***************** COLLIMATOR_ROOM *****************/
 
 	collimator_Room.Construct(G4ThreeVector(0., 0., Wheel_To_Target - First_Setup_To_Wheel - first_Setup.Get_Length()- First_UTR_Wall_To_First_Setup - first_UTR_Wall.Get_Length() - room.Get_Wall_Thickness() - collimator_Room.Get_Length()*0.5));
+	Collimator_Entrance_To_G3_Target = Wheel_To_Target - First_Setup_To_Wheel - first_Setup.Get_Length()- First_UTR_Wall_To_First_Setup - first_UTR_Wall.Get_Length() - room.Get_Wall_Thickness() - collimator_Room.Get_Length();
 
 	/***************** ROOM *****************/
 
@@ -286,8 +290,9 @@ void DetectorConstruction::print_info() const {
 	printf("==============================================================\n");
 	printf("  DetectorConstruction: Info (all dimensions in mm)\n");
 	G4cout << G4endl;
-	printf("> Ideal position of G3 target : ( %5.2f, %5.2f, %5.2f )\n", 0., 0., 0.);
-	printf("> Ideal position of 2nd target: ( %5.2f, %5.2f, %5.2f )\n", 0., 0., G3_Target_To_2nd_Target);
-	printf("> World dimensions            : ( %5.2f, %5.2f, %5.2f )\n", World_x, World_y, World_z);
+	printf("> Collimator entrance position : ( %5.2f, %5.2f, %5.2f )\n", 0., 0., Collimator_Entrance_To_G3_Target);
+	printf("> Ideal position of G3 target  : ( %5.2f, %5.2f, %5.2f )\n", 0., 0., 0.);
+	printf("> Ideal position of 2nd target : ( %5.2f, %5.2f, %5.2f )\n", 0., 0., G3_Target_To_2nd_Target);
+	printf("> World dimensions             : ( %5.2f, %5.2f, %5.2f )\n", World_x, World_y, World_z);
 	printf("==============================================================\n");
 }
