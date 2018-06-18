@@ -1,1 +1,2 @@
 #cmakedefine USE_GPS
+#cmakedefine USE_TARGETS
