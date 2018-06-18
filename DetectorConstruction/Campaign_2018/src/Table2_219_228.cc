@@ -162,6 +162,11 @@ void Table2_219_228::Construct(G4ThreeVector global_coordinates){
 
 	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., Table_Plate_Hole_Radius + Downstream_Holder_Ring_Length*0.5), Downstream_Plexi_Ring_Logical, "Downstream_Holder_Ring", World_Logical, false, 0, false);
 
+    // Downstream holder fixture
+    // A peculiar, custom-made shape that fixes the beam pipe holder ring to the second table. It was accurately modeled by OP as an ExtrudedSolid. 
+    // However, the positioning in the world was done by visual judgment, because it is unclear to us where the zero-coordinate of the ExtrudedSolid is.
+    // It is definitely not the zero-point which all the TwoVectors have in common.
+
     std::vector<G4TwoVector> Downstream_Holder_Fixture_Shape(42);
     Downstream_Holder_Fixture_Shape[0] = G4TwoVector(34.623*mm, 181.469*mm);
     Downstream_Holder_Fixture_Shape[1] = G4TwoVector(13.592*mm, 179.986*mm);
@@ -228,10 +233,7 @@ void Table2_219_228::Construct(G4ThreeVector global_coordinates){
     G4LogicalVolume *Downstream_Holder_Fixture_Logical = new G4LogicalVolume(Downstream_Holder_Fixture_Solid, Al, "Downstream_Holder_Fixture_Logical");
 	Downstream_Holder_Fixture_Logical->SetVisAttributes(grey);
 
-    // TODO: Exact position?
-    new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., 430.), Downstream_Holder_Fixture_Logical, "Downstream_Holder_Fixture", World_Logical, false, 0, false);
-    
-
+    new G4PVPlacement(0, global_coordinates + G4ThreeVector(-30.*mm, -40.*mm, 430.*mm), Downstream_Holder_Fixture_Logical, "Downstream_Holder_Fixture", World_Logical, false, 0, false);
 
 	// Holding structure for vertical detectors
 	

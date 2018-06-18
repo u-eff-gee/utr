@@ -160,6 +160,79 @@ void Table2_146_218::Construct(G4ThreeVector global_coordinates){
 
 	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., Table_Plate_Hole_Radius + Downstream_Holder_Ring_Length*0.5), Downstream_Plexi_Ring_Logical, "Downstream_Holder_Ring", World_Logical, false, 0, false);
 
+    // Downstream holder fixture
+    // A peculiar, custom-made shape that fixes the beam pipe holder ring to the second table. It was accurately modeled by OP as an ExtrudedSolid. 
+    // However, the positioning in the world was done by visual judgment, because it is unclear to us where the zero-coordinate of the ExtrudedSolid is.
+    // It is definitely not the zero-point which all the TwoVectors have in common.
+
+    std::vector<G4TwoVector> Downstream_Holder_Fixture_Shape(42);
+    Downstream_Holder_Fixture_Shape[0] = G4TwoVector(34.623*mm, 181.469*mm);
+    Downstream_Holder_Fixture_Shape[1] = G4TwoVector(13.592*mm, 179.986*mm);
+    Downstream_Holder_Fixture_Shape[2] = G4TwoVector(-6.736*mm, 174.895*mm);
+    Downstream_Holder_Fixture_Shape[3] = G4TwoVector(-25.935*mm, 166.529*mm);
+    Downstream_Holder_Fixture_Shape[4] = G4TwoVector(-43.581*mm, 155.215*mm);
+    Downstream_Holder_Fixture_Shape[5] = G4TwoVector(-59.249*mm, 141.285*mm);
+    Downstream_Holder_Fixture_Shape[6] = G4TwoVector(-72.515*mm, 125.067*mm);
+    Downstream_Holder_Fixture_Shape[7] = G4TwoVector(-82.955*mm, 106.892*mm);
+    Downstream_Holder_Fixture_Shape[8] = G4TwoVector(-90.143*mm, 87.090*mm);
+    Downstream_Holder_Fixture_Shape[9] = G4TwoVector(-94.255*mm, 63.751*mm);
+    Downstream_Holder_Fixture_Shape[10] = G4TwoVector(-95.090*mm, 40.093*mm);
+    Downstream_Holder_Fixture_Shape[11] = G4TwoVector(-93.670*mm, -7.401*mm);
+    Downstream_Holder_Fixture_Shape[12] = G4TwoVector(-90.432*mm, -24.633*mm);
+    Downstream_Holder_Fixture_Shape[13] = G4TwoVector(-83.944*mm, -40.850*mm);
+    Downstream_Holder_Fixture_Shape[14] = G4TwoVector(-74.628*mm, -55.727*mm);
+    Downstream_Holder_Fixture_Shape[15] = G4TwoVector(-62.908*mm, -68.943*mm);
+    Downstream_Holder_Fixture_Shape[16] = G4TwoVector(-33.954*mm, -89.098*mm);
+    Downstream_Holder_Fixture_Shape[17] = G4TwoVector(-17.567*mm, -95.390*mm);
+    Downstream_Holder_Fixture_Shape[18] = G4TwoVector(-0.472*mm, -98.727*mm);
+    Downstream_Holder_Fixture_Shape[19] = G4TwoVector(34.911*mm, -105.920*mm);
+    Downstream_Holder_Fixture_Shape[20] = G4TwoVector(67.087*mm, -119.718*mm);
+    Downstream_Holder_Fixture_Shape[21] = G4TwoVector(94.708*mm, -140.327*mm);
+    Downstream_Holder_Fixture_Shape[22] = G4TwoVector(116.429*mm, -167.948*mm);
+    Downstream_Holder_Fixture_Shape[23] = G4TwoVector(126.792*mm, -171.065*mm);
+    Downstream_Holder_Fixture_Shape[24] = G4TwoVector(134.164*mm, -176.535*mm);
+    Downstream_Holder_Fixture_Shape[25] = G4TwoVector(140.233*mm, -189.220*mm);
+    Downstream_Holder_Fixture_Shape[26] = G4TwoVector(140.233*mm, -699.220*mm);
+    Downstream_Holder_Fixture_Shape[27] = G4TwoVector(241.833*mm, -699.220*mm);
+    Downstream_Holder_Fixture_Shape[28] = G4TwoVector(241.833*mm, -189.220*mm);
+    Downstream_Holder_Fixture_Shape[29] = G4TwoVector(241.861*mm, -127.860*mm);
+    Downstream_Holder_Fixture_Shape[30] = G4TwoVector(240.894*mm, -82.838*mm);
+    Downstream_Holder_Fixture_Shape[31] = G4TwoVector(238.383*mm, -56.414*mm);
+    Downstream_Holder_Fixture_Shape[32] = G4TwoVector(226.089*mm, -44.854*mm);
+    Downstream_Holder_Fixture_Shape[33] = G4TwoVector(222.797*mm, -36.936*mm);
+    Downstream_Holder_Fixture_Shape[34] = G4TwoVector(222.050*mm, -27.851*mm);
+    Downstream_Holder_Fixture_Shape[35] = G4TwoVector(222.472*mm, 10.355*mm);
+    Downstream_Holder_Fixture_Shape[36] = G4TwoVector(209.684*mm, 40.062*mm);
+    Downstream_Holder_Fixture_Shape[37] = G4TwoVector(195.141*mm, 66.242*mm);
+    Downstream_Holder_Fixture_Shape[38] = G4TwoVector(159.940*mm, 113.108*mm);
+    Downstream_Holder_Fixture_Shape[39] = G4TwoVector(130.121*mm, 141.502*mm);
+    Downstream_Holder_Fixture_Shape[40] = G4TwoVector(96.590*mm, 165.407*mm);
+    Downstream_Holder_Fixture_Shape[41] = G4TwoVector(66.622*mm, 177.358*mm);
+    G4double Downstream_Holder_Fixture_Thickness = 13.15*mm;
+    G4double Downstream_Holder_Fixture_Hole_Radius = 78.*mm;
+
+    G4ExtrudedSolid *Downstream_Holder_Fixture_Solid_Solid = new G4ExtrudedSolid(
+            "Downstream_Holder_Fixture_Solid_Solid",
+            Downstream_Holder_Fixture_Shape,
+            Downstream_Holder_Fixture_Thickness/2,
+            G4TwoVector(0, 0), 1.0, G4TwoVector(0, 0), 1.0);
+    
+	G4Tubs *Downstream_Holder_Fixture_Hole_Solid = new G4Tubs(
+            "Downstream_Holder_Fixture_Hole_Solid", 0.,
+            Downstream_Holder_Fixture_Hole_Radius,
+            Downstream_Holder_Fixture_Thickness, 0., twopi);
+	
+    G4SubtractionSolid *Downstream_Holder_Fixture_Solid = new G4SubtractionSolid(
+            "Downstream_Holder_Fixture_Solid",
+            Downstream_Holder_Fixture_Solid_Solid,
+            Downstream_Holder_Fixture_Hole_Solid,
+            0, G4ThreeVector(30., 40., 0.));
+	
+    G4LogicalVolume *Downstream_Holder_Fixture_Logical = new G4LogicalVolume(Downstream_Holder_Fixture_Solid, Al, "Downstream_Holder_Fixture_Logical");
+	Downstream_Holder_Fixture_Logical->SetVisAttributes(grey);
+
+    new G4PVPlacement(0, global_coordinates + G4ThreeVector(-30.*mm, -40.*mm, 430.*mm), Downstream_Holder_Fixture_Logical, "Downstream_Holder_Fixture", World_Logical, false, 0, false);
+
 	// Holding structure for vertical detectors
 	
 	G4double Brass_Column_Height = 24.*inch;
