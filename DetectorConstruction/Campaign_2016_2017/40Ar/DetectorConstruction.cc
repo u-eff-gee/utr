@@ -63,12 +63,10 @@ Materials *materials = Materials::Instance();
 // Detectors
 #include "Germanium1_TUD.hh"
 #include "Germanium2_TUD.hh"
-#include "HPGe1.hh"
-#include "HPGe1_55.hh"
-#include "HPGe2.hh"
-#include "HPGe2_55.hh"
-#include "HPGe3.hh"
-#include "HPGe4.hh"
+#include "HPGe_60_TUNL_30986.hh"
+#include "HPGe_60_TUNL_21033.hh"
+#include "HPGe_60_TUNL_40663.hh"
+#include "HPGe_60_TUNL_31061.hh"
 #include "LaBr_Cologne.hh"
 #include "LaBr_TUD.hh"
 #include "Polarimeter_TUD.hh"
@@ -103,12 +101,10 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	//		G4Material *vacuum = nist->FindOrBuildMaterial("G4_Galactic");
 	G4Material *air = nist->FindOrBuildMaterial("G4_AIR");
 	G4Material *Pb = nist->FindOrBuildMaterial("G4_Pb");
-	G4Material *Plexiglass = nist->FindOrBuildMaterial("G4_PLEXIGLASS");
 	G4Material *Fe = nist->FindOrBuildMaterial("G4_Fe");
 	G4Material *Concrete = nist->FindOrBuildMaterial("G4_CONCRETE");
 	G4Material *Scintillator_Plastic =
 	    nist->FindOrBuildMaterial("G4_PLASTIC_SC_VINYLTOLUENE");
-	G4Material *pump_vacuum = materials->Get_Pump_Vacuum();
 
 	/***************** World Volume *****************/
 
@@ -260,15 +256,6 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	// Tube
 
 	G4double BeamTube_Outer_Radius = 1. * inch;     // Measured
-	G4double BeamTube_Length_Upstream = 2600. * mm; // Estimated
-	G4double BeamTube_Length_Downstream =
-	    2526.5 * mm - 15. * inch; // Measured, 2526.5*mm is ZeroDegree_Z. This
-	//	                              // variable will be defined later, but for
-	//	                              // readability reasons, used only the
-	//	                              // numerical value here.
-	G4double BeamTube_Length =
-	    BeamTube_Length_Upstream + BeamTube_Length_Downstream;
-	G4double BeamTube_Thickness = 3 * mm; // Estimated
 
 	/******************* Walls and shielding ************************/
 	//                   2
@@ -955,22 +942,14 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	FilterCaseRing *fcr = new FilterCaseRing(world_log);
 	FilterCaseBottom *fcbo = new FilterCaseBottom(world_log);
 
-	Pb_41_5mm_3_64in *pbthinsmall = new Pb_41_5mm_3_64in(world_log);
-	Pb_44mm_3_64in *pbthinmedium = new Pb_44mm_3_64in(world_log);
 	Pb_45mm_23mm *pb45_23 = new Pb_45mm_23mm(world_log);
 	Pb_45mm_17_6mm *pb45_176 = new Pb_45mm_17_6mm(world_log);
 	Pb_45mm_2_3in *pbverythick = new Pb_45mm_2_3in(world_log);
 	Pb_45mm_almost_2_3in *pbalmostverythick =
 	    new Pb_45mm_almost_2_3in(world_log);
-	Pb_45mm_1_4in *pbthick = new Pb_45mm_1_4in(world_log);
-	Pb_45mm_5_64in *pbmedium = new Pb_45mm_5_64in(world_log);
-	Pb_45mm_3_64in *pbthin = new Pb_45mm_3_64in(world_log);
-	Pb_50mm_5_64in *pbmedium50 = new Pb_50mm_5_64in(world_log);
 	// Pb_70mm_5mm* pb70 = new Pb_70mm_5mm(world_log);
 
-	Cu_45mm_1_8in *cumedium = new Cu_45mm_1_8in(world_log);
 	Cu_45mm_1mm *cuthin = new Cu_45mm_1mm(world_log);
-	Cu_50mm_1mm *cuthin50 = new Cu_50mm_1mm(world_log);
 	// Cu_73mm_1_20in* cu73 = new Cu_73mm_1_20in(world_log);
 
 	/************************* ZERODEGREE ***************************/
@@ -1006,7 +985,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	G4double HPGe1_AngleX = 180. * deg;
 	G4double HPGe1_AngleY = 270. * deg;
 
-	HPGe1 *HPGe1_Instance = new HPGe1("HPGe1");
+	HPGe_60_TUNL_30986 *HPGe1_Instance = new HPGe_60_TUNL_30986("HPGe1");
 	G4LogicalVolume *HPGe1_Logical = HPGe1_Instance->Get_Logical();
 
 	G4RotationMatrix *rotateHPGe1 = new G4RotationMatrix();
@@ -1076,7 +1055,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	G4double HPGe2_phi = 0. * deg;
 	G4double HPGe2_theta = 90. * deg;
 
-	HPGe2 *HPGe2_Instance = new HPGe2("HPGe2");
+	HPGe_60_TUNL_21033 *HPGe2_Instance = new HPGe_60_TUNL_21033("HPGe2");
 	G4LogicalVolume *HPGe2_Logical = HPGe2_Instance->Get_Logical();
 
 	G4double HPGe2_AngleX = 0. * deg;
@@ -1220,12 +1199,12 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	G4double HPGe4_dy = 0. * mm;
 	G4double HPGe4_dz = 3.5 * mm;
 	G4double HPGe4_phi = 45. * deg;
-	G4double HPGe4_theta = 127. * deg;
+	G4double HPGe4_theta = 135. * deg;
 
 	G4double HPGe4_AngleX = 144.736 * deg;
 	G4double HPGe4_AngleY = 150. * deg;
 
-	HPGe4 *HPGe4_Instance = new HPGe4("HPGe4");
+	HPGe_60_TUNL_31061 *HPGe4_Instance = new HPGe_60_TUNL_31061("HPGe4");
 	G4LogicalVolume *HPGe4_Logical = HPGe4_Instance->Get_Logical();
 
 	G4RotationMatrix *rotateHPGe4 = new G4RotationMatrix();

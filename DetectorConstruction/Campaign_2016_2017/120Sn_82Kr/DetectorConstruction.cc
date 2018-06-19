@@ -18,22 +18,8 @@ You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// Geometry of 54Fe - 50Cr experiment
-// Valid from 12.12.2014 - 13.2.2015 (?)
-// ELOG entry 724 (run 455) - 814 (run 562)
-// This is just a modified geometry of the 82Se - 82Kr experiment from winter
-// 2016. The only things that were adapted to the 54Fe - 52Cr - runs are the
-// detector positions and the shielding in the second setup.
-// TODO:
-// 1) Find correct detector positions in terms of angles. At the moment, assume
-// arbitrary angles, since for an efficiency simulation, this does not matter.
-// 2) Clarify the shielding. Philipp's and Haridas' values differ. Also, don't
-// know whether the detectors were wrapped or not (this should not affect the
-// efficiency simulation too much)
-// 3) Clarify the detector numbering. At the moment, found in the ELOG that
-// there are detectors 6 and 7, and that they are called Polarimeter and
-// Detector 2. However, it is not clear which is which.By now, assume that the
-// Polarimeter is HPGe2_55
+// Geometry of 120Sn - 82Kr experiment
+// Valid for entire experiment
 
 #include "DetectorConstruction.hh"
 
@@ -76,12 +62,12 @@ Materials *materials = Materials::Instance();
 // Detectors
 #include "Germanium1_TUD.hh"
 #include "Germanium2_TUD.hh"
-#include "HPGe1.hh"
-#include "HPGe1_55.hh"
-#include "HPGe2.hh"
-#include "HPGe2_55.hh"
-#include "HPGe3.hh"
-#include "HPGe4.hh"
+#include "HPGe_60_TUNL_30986.hh"
+#include "HPGe_55_TUNL_31524.hh"
+#include "HPGe_60_TUNL_21033.hh"
+#include "HPGe_55_TUNL_21638.hh"
+#include "HPGe_60_TUNL_40663.hh"
+#include "HPGe_60_TUNL_31061.hh"
 #include "LaBr_Cologne.hh"
 #include "LaBr_TUD.hh"
 #include "Polarimeter_TUD.hh"
@@ -113,7 +99,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	G4NistManager *nist = G4NistManager::Instance();
 
 	G4Material *Al = nist->FindOrBuildMaterial("G4_Al");
-	//		G4Material *vacuum = nist->FindOrBuildMaterial("G4_Galactic");
+	//	G4Material *vacuum = nist->FindOrBuildMaterial("G4_Galactic");
 	G4Material *air = nist->FindOrBuildMaterial("G4_AIR");
 	G4Material *Pb = nist->FindOrBuildMaterial("G4_Pb");
 	G4Material *Plexiglass = nist->FindOrBuildMaterial("G4_PLEXIGLASS");
@@ -277,7 +263,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	G4double BeamTube_Length_Downstream =
 	    2526.5 * mm - 15. * inch; // Measured, 2526.5*mm is ZeroDegree_Z. This
 	                              // variable will be defined later, but for
-	                              // readability reasons, used only the
+	                              // readability reasons, I used only the
 	                              // numerical value here.
 	G4double BeamTube_Length =
 	    BeamTube_Length_Upstream + BeamTube_Length_Downstream;
@@ -421,23 +407,24 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	// WALL2: Concrete wall between collimator room and UTR (permanent)
 	// WALL3: Lead wall after concrete wall (permanent)
 	// WALL4: Second lead wall after concrete wall (permanent)
-	// WALL5: Lead shielding in front of g3 setup (nonexistent here)
+	// WALL5: Lead shielding in front of g3 setup (since 82Se/82Kr experiment
+	// run 723)
 	// WALL6: Lead shielding after g3 setup (since 82Se/82Kr experiment)
-	// WALL7: Lead + concrete shielding of 2nd setup (82Se/82Kr experiment runs
-	// 710 - 760)
+	// WALL7: Lead + concrete shielding of 2nd setup (since 150Nd/152Sm
+	// experiment)
 	//
 
 	// Load Bricks
 	NormBrick *nb = new NormBrick(world_log);
 	NormBrickWithHole *nbh = new NormBrickWithHole(world_log);
 	ShortNormBrick *snb = new ShortNormBrick(world_log);
-	// ShortBrickWithHole* sbh = new ShortBrickWithHole(world_log);
+	//	ShortBrickWithHole* sbh = new ShortBrickWithHole(world_log);
 	HalfShortBrickWithHole *hsbh = new HalfShortBrickWithHole(world_log);
 	ConcreteBrick *cb = new ConcreteBrick(world_log);
 	FlatConcreteBrick *fcb = new FlatConcreteBrick(world_log);
 	BridgeBrick *bb = new BridgeBrick(world_log);
 	ThinNormBrick *tb = new ThinNormBrick(world_log);
-	// ShortThinNormBrick *stb = new ShortThinNormBrick(world_log);
+	ShortThinNormBrick *stb = new ShortThinNormBrick(world_log);
 	FlatFlatThinNormBrick *fftb = new FlatFlatThinNormBrick(world_log);
 	ThreeQuarterShortNormBrick *tqsb =
 	    new ThreeQuarterShortNormBrick(world_log);
@@ -456,7 +443,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	                           320. * mm; // Measured
 
 	/**************** WALL0 Lead wall after collimator
-	 * **************************/
+	 * *************************/
 
 	for (int ny = -2; ny <= 2; ny++) {
 		for (int nx = -1; nx <= 1; nx++) {
@@ -544,7 +531,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	                  world_log, false, 0);
 
 	/**************** WALL3 Lead wall after concrete wall
-	 * ***********************/
+	 * **********************/
 
 	for (int ny = -2; ny <= 2; ny++) {
 		for (int nx = -1; nx <= 1; nx++) {
@@ -594,7 +581,6 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	/**************** WALL5 Lead wall in front of g3 setup
 	 * *********************/
-
 	for (int i = 0; i < 3; i++) {
 		nb->Put(-nb->L / 2., -BeamTube_Outer_Radius + nb->S * 3.5,
 		        -Wall5_To_Target - nb->M * (i + 0.5), 0., 90. * deg, 0.);
@@ -815,13 +801,51 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	                         TablePlate_Length * 0.5),
 	    TablePlate_Logical, "TablePlate", world_log, false, 0);
 
-	/**************** WALL7 *****************/
+	/**************** WALL7 Lead + concrete shielding of 2nd setup
+	 * ****************/
 
 	G4double Wall7_To_Target = Wheel_To_Target_Position +
 	                           Wheel_Total_Thickness + TablePlate_Length -
 	                           75. * mm - 3. * nb->S; // Measured
+	G4double Wall7_Width = 2. * nb->L + nb->M;
 
-	// Table for second setup
+	for (int i = 0; i < 7; i++) {
+		nb->Put(nb->L - Wall7_Width * 0.5 - nb->L * 0.5,
+		        BeamTube_Outer_Radius - hsbh->Hole_Radius + nb->S * (0.5 - i),
+		        Wall7_To_Target + nb->S + nb->M * 0.5, 0., 90. * deg, 0.);
+		nb->Put(-nb->L + Wall7_Width * 0.5 + nb->L * 0.5,
+		        BeamTube_Outer_Radius - hsbh->Hole_Radius + nb->S * (0.5 - i),
+		        Wall7_To_Target + nb->S + nb->M * 0.5, 0., 90. * deg, 0.);
+		if (i > 1) {
+			snb->Put(0., BeamTube_Outer_Radius - hsbh->Hole_Radius +
+			                 nb->S * (0.5 - i),
+			         Wall7_To_Target + nb->S + nb->M * 0.5);
+		}
+	}
+
+	nb->Put(0., BeamTube_Outer_Radius - hsbh->Hole_Radius + nb->S * 1.5,
+	        Wall7_To_Target + nb->S + nb->M * 0.5, 0., 90. * deg, 0.);
+	nb->Put(0., BeamTube_Outer_Radius - hsbh->Hole_Radius + nb->S * 2.5,
+	        Wall7_To_Target + nb->S + nb->M * 0.5, 0., 90. * deg, 0.);
+	nb->Put(0., BeamTube_Outer_Radius - hsbh->Hole_Radius + nb->S * 3.5,
+	        Wall7_To_Target + nb->S + nb->M * 0.5, 0., 90. * deg, 0.);
+	nb->Put(0., BeamTube_Outer_Radius - hsbh->Hole_Radius + nb->S * 4.5,
+	        Wall7_To_Target + nb->S + nb->M * 0.5, 0., 90. * deg, 0.);
+
+	hsbh->Put(0., BeamTube_Outer_Radius + nb->S / 2. - hsbh->Hole_Radius,
+	          Wall7_To_Target + nb->S * 0.5, -90. * deg, 90. * deg, 0.);
+	hsbh->Put(0., BeamTube_Outer_Radius - hsbh->Hole_Radius - nb->S / 2.,
+	          Wall7_To_Target + nb->S * 0.5, 90. * deg, 90. * deg, 0.);
+	hsbh->Put(0., BeamTube_Outer_Radius + nb->S / 2. - hsbh->Hole_Radius,
+	          Wall7_To_Target + nb->S * 1.5, -90. * deg, 90. * deg, 0.);
+	hsbh->Put(0., BeamTube_Outer_Radius - hsbh->Hole_Radius - nb->S / 2.,
+	          Wall7_To_Target + nb->S * 1.5, 90. * deg, 90. * deg, 0.);
+	hsbh->Put(0., BeamTube_Outer_Radius + nb->S / 2. - hsbh->Hole_Radius,
+	          Wall7_To_Target + nb->S * 2.5, -90. * deg, 90. * deg, 0.);
+	hsbh->Put(0., BeamTube_Outer_Radius - hsbh->Hole_Radius - nb->S / 2.,
+	          Wall7_To_Target + nb->S * 2.5, 90. * deg, 90. * deg, 0.);
+
+	/*********************** Table for second setup *********************/
 
 	G4double Target2_To_Target = Wheel_To_Target_Position +
 	                             Wheel_Total_Thickness + TablePlate_Length +
@@ -876,7 +900,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	    PipeHolderTubeUpStream_Logical, "PipeHolderTubeUpStream", world_log,
 	    false, 0);
 
-	G4Material *Table2_Material = Al;
+	G4Material *Table2_Material = Al; // Maybe also stainless steel
 
 	G4Tubs *Table2Plate_Solid =
 	    new G4Tubs("Table2Plate_Solid", Table2_InnerRadius, Table2_OuterRadius,
@@ -896,47 +920,111 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	/************************ WALL7 Part on the second setup table ********/
 
-	cb->Put(PipeHolderTube_OuterRadius + cb->M * 0.5 - 7. * mm, -cb->M * 0.5,
-	        Wall7_To_Target + nb->S * 3. + cb->L * 0.5, 0., 10. * deg, 0.);
-	cb->Put(-PipeHolderTube_OuterRadius - cb->M * 0.5 + 7. * mm, -cb->M * 0.5,
-	        Wall7_To_Target + nb->S * 3. + cb->L * 0.5, 0., -10. * deg, 0.);
-	// Concrete blocks were slightly rotated in the setup. The 10.*deg are
-	// estimated. The 7.*mm are chosen such that the concrete blocks barely
-	// touch the PipeHolderTube.
+	cb->Put(PipeHolderTube_OuterRadius + cb->M * 0.5, -cb->M * 0.5,
+	        Wall7_To_Target + nb->S * 3. + cb->L * 0.5);
+	cb->Put(-PipeHolderTube_OuterRadius - cb->M * 0.5, -cb->M * 0.5,
+	        Wall7_To_Target + nb->S * 3. + cb->L * 0.5);
 
+	// First layer
+	nb->Put(PipeHolderTube_OuterRadius + nb->L * 0.5, nb->S * 0.5,
+	        Wall7_To_Target + nb->S * 4., 0., 90. * deg, 0.);
+	nb->Put(-PipeHolderTube_OuterRadius - nb->L * 0.5, nb->S * 0.5,
+	        Wall7_To_Target + nb->S * 4., 0., 90. * deg, 0.);
+
+	nb->Put(PipeHolderTube_OuterRadius + nb->L * 0.5 - 55. * mm, nb->S * 1.5,
+	        Wall7_To_Target + nb->S * 4., 0., 90. * deg, 0.);
+	nb->Put(-PipeHolderTube_OuterRadius - nb->L * 0.5 + 55. * mm, nb->S * 1.5,
+	        Wall7_To_Target + nb->S * 4., 0., 90. * deg, 0.);
+
+	nb->Put(nb->L * 0.5, nb->S * 2.5, Wall7_To_Target + nb->S * 4., 0.,
+	        90. * deg, 0.);
+	nb->Put(-nb->L * 0.5, nb->S * 2.5, Wall7_To_Target + nb->S * 4., 0.,
+	        90. * deg, 0.);
+
+	// Second layer
+	nb->Put(PipeHolderTube_OuterRadius + nb->L * 0.5, nb->S * 0.5,
+	        Wall7_To_Target + nb->S * 6., 0., 90. * deg, 0.);
+	nb->Put(-PipeHolderTube_OuterRadius - nb->L * 0.5, nb->S * 0.5,
+	        Wall7_To_Target + nb->S * 6., 0., 90. * deg, 0.);
+
+	nb->Put(PipeHolderTube_OuterRadius + nb->L * 0.5, nb->S * 1.5,
+	        Wall7_To_Target + nb->S * 6., 0., 90. * deg, 0.);
+	nb->Put(-PipeHolderTube_OuterRadius - nb->L * 0.5, nb->S * 1.5,
+	        Wall7_To_Target + nb->S * 6., 0., 90. * deg, 0.);
+
+	// Third layer
 	bb->Put(0., bb->M * 0.5, Wall7_To_Target + nb->S * 3. +
 	                             PipeHolderTubeUpStream_Length + bb->S * 0.5,
 	        -90. * deg, 90. * deg, 0.);
 	bb->Put(0., bb->M * 0.5, Wall7_To_Target + nb->S * 3. +
 	                             PipeHolderTubeUpStream_Length + bb->S * 1.5,
 	        -90. * deg, 90. * deg, 0.);
+	bb->Put(0., bb->M * 0.5, Wall7_To_Target + nb->S * 3. +
+	                             PipeHolderTubeUpStream_Length + bb->S * 2.5,
+	        -90. * deg, 90. * deg, 0.);
 
-	nb->Put(0., bb->M + nb->S * 0.5,
-	        Wall7_To_Target + nb->S * 3. + PipeHolderTubeUpStream_Length +
-	            bb->S * 2. - nb->M * 0.5,
-	        0., 90. * deg, 0.);
-	nb->Put(0., bb->M + nb->S * 1.5,
-	        Wall7_To_Target + nb->S * 3. + PipeHolderTubeUpStream_Length +
-	            bb->S * 2. - nb->M * 0.5,
-	        0., 90. * deg, 0.);
-	nb->Put(0., bb->M + nb->S * 2.5,
-	        Wall7_To_Target + nb->S * 3. + PipeHolderTubeUpStream_Length +
-	            bb->S * 2. - nb->M * 0.5,
-	        0., 90. * deg, 0.);
+	snb->Put(0., bb->M + nb->M * 0.5,
+	         Wall7_To_Target + nb->S * 3. + PipeHolderTubeUpStream_Length +
+	             bb->S * 1.5,
+	         90. * deg, 0., 0.);
 
 	nb->Put(bb->L * 0.5 + nb->M * 0.5, nb->S * 0.5,
-	        Wall7_To_Target + nb->S * 3. + PipeHolderTubeUpStream_Length +
-	            bb->S * 2. - nb->L * 0.5);
-	tb->Put(bb->L * 0.5 + tb->M * 0.5, nb->S * 1.5,
-	        Wall7_To_Target + nb->S * 3. + PipeHolderTubeUpStream_Length +
-	            bb->S * 2. - tb->L * 0.5);
-
+	        Wall7_To_Target + nb->S * 3. + nb->M * 2. + nb->L * 0.5);
 	nb->Put(-bb->L * 0.5 - nb->M * 0.5, nb->S * 0.5,
-	        Wall7_To_Target + nb->S * 3. + PipeHolderTubeUpStream_Length +
-	            bb->S * 2. - nb->L * 0.5);
+	        Wall7_To_Target + nb->S * 3. + nb->M * 2. + nb->L * 0.5);
+	nb->Put(bb->L * 0.5 + nb->M * 0.5, nb->S * 1.5,
+	        Wall7_To_Target + nb->S * 3. + nb->M * 2. + nb->L * 0.5);
 	nb->Put(-bb->L * 0.5 - nb->M * 0.5, nb->S * 1.5,
-	        Wall7_To_Target + nb->S * 3. + PipeHolderTubeUpStream_Length +
-	            bb->S * 2. - nb->L * 0.5);
+	        Wall7_To_Target + nb->S * 3. + nb->M * 2. + nb->L * 0.5);
+
+	// Lead shielding below the table
+
+	G4double WallBelowTable_Distance = 110. * mm; // Distance of this lead wall
+	                                              // to the table between both
+	                                              // setups. Estimated
+
+	for (int i = 0; i < 4; i++) {
+		nb->Put(nb->L - Wall7_Width * 0.5 - nb->L * 0.5,
+		        Table2_Y - Table2_Thickness - nb->S * (0.5 + i),
+		        Wall7_To_Target + WallBelowTable_Distance + nb->S + nb->M * 1.5,
+		        0., 90. * deg, 0.);
+		tb->Put(nb->L - Wall7_Width * 0.5 - nb->L * 0.5,
+		        Table2_Y - Table2_Thickness - nb->S * (0.5 + i),
+		        Wall7_To_Target + WallBelowTable_Distance + nb->S * 1.5 +
+		            nb->M * 2.,
+		        0., 90. * deg, 0.);
+		nb->Put(-nb->L + Wall7_Width * 0.5 + nb->L * 0.5,
+		        Table2_Y - Table2_Thickness - nb->S * (0.5 + i),
+		        Wall7_To_Target + WallBelowTable_Distance + nb->S + nb->M * 1.5,
+		        0., 90. * deg, 0.);
+		tb->Put(-nb->L + Wall7_Width * 0.5 + nb->L * 0.5,
+		        Table2_Y - Table2_Thickness - nb->S * (0.5 + i),
+		        Wall7_To_Target + WallBelowTable_Distance + nb->S * 1.5 +
+		            nb->M * 2.,
+		        0., 90. * deg, 0.);
+		snb->Put(0., Table2_Y - Table2_Thickness - nb->S * (0.5 + i),
+		         Wall7_To_Target + WallBelowTable_Distance + nb->S +
+		             nb->M * 1.5);
+		stb->Put(0., Table2_Y - Table2_Thickness - nb->S * (0.5 + i),
+		         Wall7_To_Target + WallBelowTable_Distance + nb->S * 1.5 +
+		             nb->M * 2.,
+		         0., 90. * deg, 0.);
+	}
+
+	// Concrete block below the table
+
+	cb->Put(0., Table2_Y - Table2_Thickness - nb->S * 4. - cb->M * 0.5,
+	        Wall7_To_Target + WallBelowTable_Distance + nb->M * 3. -
+	            cb->M * 0.5,
+	        0., 90. * deg, 0.);
+	fcb->Put(
+	    0., Table2_Y - Table2_Thickness - nb->S * 4. - cb->M - fcb->S * 0.5,
+	    Wall7_To_Target + WallBelowTable_Distance + nb->M * 3. - cb->M * 0.5,
+	    0., 90. * deg, 0.);
+	fcb->Put(
+	    0., Table2_Y - Table2_Thickness - nb->S * 4. - cb->M - fcb->S * 1.5,
+	    Wall7_To_Target + WallBelowTable_Distance + nb->M * 3. - cb->M * 0.5,
+	    0., 90. * deg, 0.);
 
 	/******************** Target Holder Tube with cap ***********/
 
@@ -996,6 +1084,54 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	                                 TargetTubeCap_Thickness / 2.),
 	    TargetTubeCap_Logical, "TargetTubeCap", world_log, false, 0);
 
+	/******************** Lead wrapping around beam pipe ************/
+
+	G4double LeadFoil_Thickness = 1.8 * mm; // Measured
+	G4double LeadFoil_Width = 140. * mm;    // Measured
+
+	G4Tubs *LeadWrap_Solid =
+	    new G4Tubs("LeadWrap_Solid", BeamTube_Outer_Radius,
+	               BeamTube_Outer_Radius + LeadFoil_Thickness,
+	               LeadFoil_Width * 0.5, 0. * deg, 360. * deg);
+	G4LogicalVolume *LeadWrap_Logical =
+	    new G4LogicalVolume(LeadWrap_Solid, Pb, "LeadWrap_Logical", 0, 0, 0);
+
+	LeadWrap_Logical->SetVisAttributes(new G4VisAttributes(grey));
+
+	G4Tubs *DoubleLeadWrap_Solid =
+	    new G4Tubs("DoubleLeadWrap_Solid", BeamTube_Outer_Radius,
+	               BeamTube_Outer_Radius + 2 * LeadFoil_Thickness,
+	               LeadFoil_Width * 0.5, 0. * deg, 360. * deg);
+	G4LogicalVolume *DoubleLeadWrap_Logical = new G4LogicalVolume(
+	    DoubleLeadWrap_Solid, Pb, "DoubleLeadWrap_Logical", 0, 0, 0);
+
+	DoubleLeadWrap_Logical->SetVisAttributes(new G4VisAttributes(grey));
+
+	// Wrapping between Wall 4 and Wall 5
+	new G4PVPlacement(0, G4ThreeVector(0., 0., -Wall5_To_Target - nb->M * 3.5 -
+	                                               LeadFoil_Width * 0.5),
+	                  LeadWrap_Logical, "LeadWrap_Wall5", world_log, false, 0);
+
+	// Wrappings around the g3 target position
+	new G4PVPlacement(0, G4ThreeVector(0., 0., LeadFoil_Width * 0.5 + 70. * mm),
+	                  LeadWrap_Logical, "LeadWrap_G3", world_log, false,
+	                  0); // Estimated
+	new G4PVPlacement(
+	    0, G4ThreeVector(0., 0., -Wall5_To_Target + LeadFoil_Width * 1.5),
+	    LeadWrap_Logical, "LeadWrap_G3", world_log, false, 0); // Measured
+	new G4PVPlacement(
+	    0, G4ThreeVector(0., 0., -Wall5_To_Target + LeadFoil_Width * 0.5),
+	    DoubleLeadWrap_Logical, "LeadWrap_G3", world_log, false, 0); // Measured
+
+	// Wrappings around the second target position
+	new G4PVPlacement(0, G4ThreeVector(0., 0., Target2_To_Target - 70. * mm -
+	                                               LeadFoil_Width * 0.5),
+	                  LeadWrap_Logical, "LeadWrap_G3", world_log, false, 0);
+	new G4PVPlacement(0, G4ThreeVector(0., 0., Target2_To_Target + 70. * mm +
+	                                               LeadFoil_Width * 0.5),
+	                  DoubleLeadWrap_Logical, "LeadWrap_G3", world_log, false,
+	                  0);
+
 	/**************** Collimator *************************/
 
 	G4double Collimator_Length = 270. * mm;            // Measured
@@ -1028,51 +1164,6 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	    G4ThreeVector(0., 0., -Collimator_To_Target - Collimator_Length / 2.),
 	    Collimator_Logical, "Collimator", world_log, false, 0);
 
-	/************* Lead and Cadmium wrapping around beam pipe ************/
-
-	G4double LeadFoil_Thickness = 1.8 * mm; // Measured
-	G4double LeadFoil_Width = 140. * mm;    // Measured
-
-	G4Tubs *LeadWrap_Solid =
-	    new G4Tubs("LeadWrap_Solid", BeamTube_Outer_Radius,
-	               BeamTube_Outer_Radius + LeadFoil_Thickness,
-	               LeadFoil_Width * 0.5, 0. * deg, 360. * deg);
-	G4LogicalVolume *LeadWrap_Logical =
-	    new G4LogicalVolume(LeadWrap_Solid, Pb, "LeadWrap_Logical", 0, 0, 0);
-
-	LeadWrap_Logical->SetVisAttributes(new G4VisAttributes(grey));
-
-	G4Tubs *DoubleLeadWrap_Solid =
-	    new G4Tubs("DoubleLeadWrap_Solid", BeamTube_Outer_Radius,
-	               BeamTube_Outer_Radius + 2 * LeadFoil_Thickness,
-	               LeadFoil_Width * 0.25, 0. * deg, 360. * deg);
-	G4LogicalVolume *DoubleLeadWrap_Logical = new G4LogicalVolume(
-	    DoubleLeadWrap_Solid, Pb, "DoubleLeadWrap_Logical", 0, 0, 0);
-
-	DoubleLeadWrap_Logical->SetVisAttributes(new G4VisAttributes(grey));
-
-	G4Tubs *QuadrupleLeadWrap_Solid =
-	    new G4Tubs("QuadrupleLeadWrap_Solid", BeamTube_Outer_Radius,
-	               BeamTube_Outer_Radius + 4 * LeadFoil_Thickness,
-	               LeadFoil_Width * 0.5, 0. * deg, 360. * deg);
-	G4LogicalVolume *QuadrupleLeadWrap_Logical = new G4LogicalVolume(
-	    QuadrupleLeadWrap_Solid, Pb, "QuadrupleLeadWrap_Logical", 0, 0, 0);
-
-	QuadrupleLeadWrap_Logical->SetVisAttributes(new G4VisAttributes(grey));
-
-	// Wrapping between Wall4 and Wall5
-
-	new G4PVPlacement(0,
-	                  G4ThreeVector(0., 0., -Wall5_To_Target - nb->M * 3. -
-	                                            hsbh->S - LeadFoil_Width * 0.5),
-	                  LeadWrap_Logical, "LeadWrap", world_log, false, 0);
-
-	// Wrapping upstream of g3 setup
-
-	new G4PVPlacement(
-	    0, G4ThreeVector(0., 0., -Wall5_To_Target + LeadFoil_Width * 0.5),
-	    LeadWrap_Logical, "LeadWrap", world_log, false, 0);
-
 	/**************** g3 Target/Source ******************/
 
 	Se82_Target *se82_Target = new Se82_Target();
@@ -1090,66 +1181,40 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	    Se82_Target_Logical, "Se82_Target_Physical", BeamTubeVacuum_Logical,
 	    false, 0);
 
-	/**************** Second Target/Source ***************/
-
-	// g	Kr82_Target *kr82_Target = new Kr82_Target();
-	// g
-	// g	G4LogicalVolume *Kr82_Target_Logical = kr82_Target->Get_Logical();
-	// g
-	// g	G4RotationMatrix *rotateSecondTarget = new G4RotationMatrix();
-	// g	G4double SecondTarget_AngleX = -22. * deg; // Rotation angle to have
-	// the
-	// g	                                           // valve rest on the inside
-	// of
-	// g	                                           // the TargetTube
-	// g	rotateSecondTarget->rotateX(SecondTarget_AngleX);
-
-	//	new G4PVPlacement(
-	//	    rotateSecondTarget,
-	//	    G4ThreeVector(0., 20. * mm * sin(SecondTarget_AngleX),
-	//	                  -BeamTube_Length_Downstream + BeamTube_Length * 0.5 +
-	//	                      Target2_To_Target -
-	//kr82_Target->Get_Target_Center() -
-	//	                      20. * mm * (1 - cos(SecondTarget_AngleX))),
-	//	    Kr82_Target_Logical, "Kr82_Target_Physical", BeamTubeVacuum_Logical,
-	//	    false, 0);
-
 	// Box around the target/source. Inside this box, random coordinates for the
 	// AngularDistributionGenerator are sampled in order to find random points
 	// inside the target/source. The box should wrap the target/source volume as
 	// tightly as possible. Remove the box when doing an actual simulation.
 
-	//	G4double AuxBox_LengthX = 20. * mm;
-	//	G4double AuxBox_LengthY = 20. * mm;
-	//	G4double AuxBox_LengthZ = 4. * mm;
-	//
-	//	G4double AuxBox_X = 0. * mm;
-	//	G4double AuxBox_Y = 0. * mm;
-	//	G4double AuxBox_Z = 0. * mm;
-	//
-	//	G4Box *AuxiliaryBox_Solid =
-	//	    new G4Box("AuxiliaryBox_Solid", AuxBox_LengthX * 0.5,
-	//	              AuxBox_LengthY * 0.5, AuxBox_LengthZ * 0.5);
-	//	G4LogicalVolume *AuxiliaryBox_Logical =
-	//	    new G4LogicalVolume(AuxiliaryBox_Solid, vacuum,
-	//"AuxiliaryBox_Logical");
-	//
-	//	AuxiliaryBox_Logical->SetVisAttributes(new G4VisAttributes(white));
+	/*	G4double AuxBox_LengthX = 20. * mm;
+	    G4double AuxBox_LengthY = 20. * mm;
+	    G4double AuxBox_LengthZ = 4. * mm;
+
+	    G4double AuxBox_X = 0. * mm;
+	    G4double AuxBox_Y = 0. * mm;
+	    G4double AuxBox_Z = 0. * mm;
+
+	    G4Box *AuxiliaryBox_Solid =
+	        new G4Box("AuxiliaryBox_Solid", AuxBox_LengthX * 0.5,
+	                  AuxBox_LengthY * 0.5, AuxBox_LengthZ * 0.5);
+	    G4LogicalVolume *AuxiliaryBox_Logical =
+	        new G4LogicalVolume(AuxiliaryBox_Solid, vacuum,
+	   "AuxiliaryBox_Logical");
+
+	    AuxiliaryBox_Logical->SetVisAttributes(new G4VisAttributes(white));*/
 
 	// new G4PVPlacement(0, G4ThreeVector(AuxBox_X, AuxBox_Y, AuxBox_Z),
 	// AuxiliaryBox_Logical, "AuxiliaryBox", world_log, false, 0);
 
 	/************************** Detectors ***************************/
 	//
-	// 0) ZERODEGREE (=5)
+	// 0) ZERODEGREE
 	// 1) HPGE1
 	// 2) HPGE2
 	// 3) HPGE3
 	// 4) HPGE4
-	// 6) HPGe1_55
-	// 7) HPGe2_55
-	// 8) POLARIMETER
-	// 9) DETECTOR2
+	// 5) POLARIMETER
+	// 6) DETECTOR2
 	//
 	// Placement in spherical coordinate system
 	//
@@ -1183,30 +1248,25 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	FilterCaseRing *fcr = new FilterCaseRing(world_log);
 	FilterCaseBottom *fcbo = new FilterCaseBottom(world_log);
 
-	Pb_41_5mm_3_64in *pbthinsmall = new Pb_41_5mm_3_64in(world_log);
-	Pb_44mm_3_64in *pbthinmedium = new Pb_44mm_3_64in(world_log);
-	Pb_45mm_1_4in *pbthick = new Pb_45mm_1_4in(world_log);
+	// Pb_45mm_1_4in* pbthick = new Pb_45mm_1_4in(world_log);
 	Pb_45mm_5_64in *pbmedium = new Pb_45mm_5_64in(world_log);
 	Pb_45mm_3_64in *pbthin = new Pb_45mm_3_64in(world_log);
-	// Pb_50mm_5_64in *pbmedium50 = new Pb_50mm_5_64in(world_log);
-	Pb_50mm_36_64in *pb36_64_50 = new Pb_50mm_36_64in(world_log);
+	Pb_50mm_5_64in *pbmedium50 = new Pb_50mm_5_64in(world_log);
 	// Pb_70mm_5mm* pb70 = new Pb_70mm_5mm(world_log);
 
-	Cu_45mm_1_8in *cumedium = new Cu_45mm_1_8in(world_log);
+	// Cu_45mm_1_8in* cumedium = new Cu_45mm_1_8in(world_log);
 	Cu_45mm_1mm *cuthin = new Cu_45mm_1mm(world_log);
-	// Cu_50mm_1mm *cuthin50 = new Cu_50mm_1mm(world_log);
-	Cu_50mm_1_8in *cuthin50 = new Cu_50mm_1_8in(world_log);
+	Cu_50mm_1mm *cuthin50 = new Cu_50mm_1mm(world_log);
 	// Cu_73mm_1_20in* cu73 = new Cu_73mm_1_20in(world_log);
 
-	/************************* ZERODEGREE (alias HPGe5)
-	 * ***************************/
+	/************************* ZERODEGREE ***************************/
 
 	G4double ZeroDegree_X =
 	    0. * mm; // X = 0, if beam profile is measured, otherwise, X < 0
 	G4double ZeroDegree_Y = 20. * mm;                       // Measured
 	G4double ZeroDegree_Z = Target2_To_Target + 36. * inch; // Measured
 	G4double ZeroDegree_Theta = 0. * deg;
-	// G4double ZeroDegree_Phi = 0.*deg; // Should always be zero
+	// G4double ZeroDegree_Phi = 0.*deg; Should always be zero
 
 	ZeroDegree *ZeroDegree_Instance = new ZeroDegree("ZeroDegree");
 	G4LogicalVolume *ZeroDegree_Logical = ZeroDegree_Instance->Get_Logical();
@@ -1223,16 +1283,16 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	/************************* HPGe1 ********************************/
 
-	G4double HPGe1_rt = 109. * mm;
-	G4double HPGe1_dy = 17. * mm;
-	G4double HPGe1_dz = 6. * mm;
-	G4double HPGe1_phi = 0. * deg;
-	G4double HPGe1_theta = 90. * deg;
+	G4double HPGe1_rt = 143.4 * mm;
+	G4double HPGe1_dy = 0. * mm;
+	G4double HPGe1_dz = -10. * mm;
+	G4double HPGe1_phi = 135. * deg;
+	G4double HPGe1_theta = 135. * deg;
 
-	G4double HPGe1_AngleX = 180. * deg;
-	G4double HPGe1_AngleY = 90. * deg;
+	G4double HPGe1_AngleX = 144.736 * deg;
+	G4double HPGe1_AngleY = 210. * deg;
 
-	HPGe1 *HPGe1_Instance = new HPGe1("HPGe1");
+	HPGe_60_TUNL_30986 *HPGe1_Instance = new HPGe_60_TUNL_30986("HPGe1");
 	G4LogicalVolume *HPGe1_Logical = HPGe1_Instance->Get_Logical();
 
 	G4RotationMatrix *rotateHPGe1 = new G4RotationMatrix();
@@ -1254,8 +1314,8 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	G4double HPGe1_Wrapping_Length = 140. * mm;           // Measured
 
 	G4Tubs *HPGe1_Wrapping_Solid =
-	    new G4Tubs("HPGe1_Wrapping_Solid", HPGe1_Instance->Get_Radius(),
-	               HPGe1_Instance->Get_Radius() + HPGe1_Wrapping_Thickness,
+	    new G4Tubs("HPGe1_Wrapping_Solid", HPGe1_Instance->Get_Front_Radius(),
+	               HPGe1_Instance->Get_Front_Radius() + HPGe1_Wrapping_Thickness,
 	               HPGe1_Wrapping_Length * 0.5, 0. * deg, 360. * deg);
 	G4LogicalVolume *HPGe1_Wrapping_Logical = new G4LogicalVolume(
 	    HPGe1_Wrapping_Solid, Pb, "HPGe1_Wrapping_Logical", 0, 0, 0);
@@ -1288,12 +1348,26 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	            HPGe1_AngleY, 0.);
 	HPGe1_rt -= cuthin->Thickness * 0.5;
 
-	HPGe1_rt -= pbthick->Thickness * 0.5;
-	pbthick->Put(HPGe1_rt * sin(HPGe1_theta) * cos(HPGe1_phi),
-	             HPGe1_rt * sin(HPGe1_theta) * sin(HPGe1_phi) + HPGe1_dy,
-	             HPGe1_rt * cos(HPGe1_theta) + HPGe1_dz, HPGe1_AngleX,
-	             HPGe1_AngleY, 0.);
-	HPGe1_rt -= pbthick->Thickness * 0.5;
+	HPGe1_rt -= cuthin->Thickness * 0.5;
+	cuthin->Put(HPGe1_rt * sin(HPGe1_theta) * cos(HPGe1_phi),
+	            HPGe1_rt * sin(HPGe1_theta) * sin(HPGe1_phi) + HPGe1_dy,
+	            HPGe1_rt * cos(HPGe1_theta) + HPGe1_dz, HPGe1_AngleX,
+	            HPGe1_AngleY, 0.);
+	HPGe1_rt -= cuthin->Thickness * 0.5;
+
+	HPGe1_rt -= pbmedium->Thickness * 0.5;
+	pbmedium->Put(HPGe1_rt * sin(HPGe1_theta) * cos(HPGe1_phi),
+	              HPGe1_rt * sin(HPGe1_theta) * sin(HPGe1_phi) + HPGe1_dy,
+	              HPGe1_rt * cos(HPGe1_theta) + HPGe1_dz, HPGe1_AngleX,
+	              HPGe1_AngleY, 0.);
+	HPGe1_rt -= pbmedium->Thickness * 0.5;
+
+	HPGe1_rt -= pbmedium->Thickness * 0.5;
+	pbmedium->Put(HPGe1_rt * sin(HPGe1_theta) * cos(HPGe1_phi),
+	              HPGe1_rt * sin(HPGe1_theta) * sin(HPGe1_phi) + HPGe1_dy,
+	              HPGe1_rt * cos(HPGe1_theta) + HPGe1_dz, HPGe1_AngleX,
+	              HPGe1_AngleY, 0.);
+	HPGe1_rt -= pbmedium->Thickness * 0.5;
 
 	HPGe1_rt += fcw->FilterCase_Length * 0.5 - fcbo->FilterCaseBottom_Thickness;
 	fcw->Put(HPGe1_rt * sin(HPGe1_theta) * cos(HPGe1_phi),
@@ -1311,17 +1385,17 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	/************************* HPGe2 ********************************/
 
-	G4double HPGe2_rt = 78.4 * mm;
-	G4double HPGe2_dy = 18. * mm;
-	G4double HPGe2_dz = 6. * mm;
-	G4double HPGe2_phi = 90. * deg;
+	G4double HPGe2_rt = 84.5 * mm;
+	G4double HPGe2_dy = 15. * mm;
+	G4double HPGe2_dz = 0.5 * mm;
+	G4double HPGe2_phi = 0. * deg;
 	G4double HPGe2_theta = 90. * deg;
 
-	HPGe2 *HPGe2_Instance = new HPGe2("HPGe2");
+	HPGe_60_TUNL_21033 *HPGe2_Instance = new HPGe_60_TUNL_21033("HPGe2");
 	G4LogicalVolume *HPGe2_Logical = HPGe2_Instance->Get_Logical();
 
-	G4double HPGe2_AngleX = 270. * deg;
-	G4double HPGe2_AngleY = 0. * deg;
+	G4double HPGe2_AngleX = 180. * deg;
+	G4double HPGe2_AngleY = 90. * deg;
 
 	G4RotationMatrix *rotateHPGe2 = new G4RotationMatrix();
 	rotateHPGe2->rotateX(HPGe2_AngleX);
@@ -1342,8 +1416,8 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	G4double HPGe2_Wrapping_Length = 140. * mm;           // Measured
 
 	G4Tubs *HPGe2_Wrapping_Solid =
-	    new G4Tubs("HPGe2_Wrapping_Solid", HPGe2_Instance->Get_Radius(),
-	               HPGe2_Instance->Get_Radius() + HPGe2_Wrapping_Thickness,
+	    new G4Tubs("HPGe2_Wrapping_Solid", HPGe2_Instance->Get_Front_Radius(),
+	               HPGe2_Instance->Get_Front_Radius() + HPGe2_Wrapping_Thickness,
 	               HPGe2_Wrapping_Length * 0.5, 0. * deg, 360. * deg);
 	G4LogicalVolume *HPGe2_Wrapping_Logical = new G4LogicalVolume(
 	    HPGe2_Wrapping_Solid, Pb, "HPGe2_Wrapping_Logical", 0, 0, 0);
@@ -1376,33 +1450,26 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	            HPGe2_AngleY, 0.);
 	HPGe2_rt -= cuthin->Thickness * 0.5;
 
-	HPGe2_rt -= pbmedium->Thickness * 0.5;
-	pbmedium->Put(HPGe2_rt * sin(HPGe2_theta) * cos(HPGe2_phi),
-	              HPGe2_rt * sin(HPGe2_theta) * sin(HPGe2_phi) + HPGe2_dy,
-	              HPGe2_rt * cos(HPGe2_theta) + HPGe2_dz, HPGe2_AngleX,
-	              HPGe2_AngleY, 0.);
-	HPGe2_rt -= pbmedium->Thickness * 0.5;
-
-	HPGe2_rt -= pbmedium->Thickness * 0.5;
-	pbmedium->Put(HPGe2_rt * sin(HPGe2_theta) * cos(HPGe2_phi),
-	              HPGe2_rt * sin(HPGe2_theta) * sin(HPGe2_phi) + HPGe2_dy,
-	              HPGe2_rt * cos(HPGe2_theta) + HPGe2_dz, HPGe2_AngleX,
-	              HPGe2_AngleY, 0.);
-	HPGe2_rt -= pbmedium->Thickness * 0.5;
-
-	HPGe2_rt -= pbmedium->Thickness * 0.5;
-	pbmedium->Put(HPGe2_rt * sin(HPGe2_theta) * cos(HPGe2_phi),
-	              HPGe2_rt * sin(HPGe2_theta) * sin(HPGe2_phi) + HPGe2_dy,
-	              HPGe2_rt * cos(HPGe2_theta) + HPGe2_dz, HPGe2_AngleX,
-	              HPGe2_AngleY, 0.);
-	HPGe2_rt -= pbmedium->Thickness * 0.5;
-
-	HPGe2_rt -= pbthin->Thickness * 0.5;
-	pbthin->Put(HPGe2_rt * sin(HPGe2_theta) * cos(HPGe2_phi),
+	HPGe2_rt -= cuthin->Thickness * 0.5;
+	cuthin->Put(HPGe2_rt * sin(HPGe2_theta) * cos(HPGe2_phi),
 	            HPGe2_rt * sin(HPGe2_theta) * sin(HPGe2_phi) + HPGe2_dy,
 	            HPGe2_rt * cos(HPGe2_theta) + HPGe2_dz, HPGe2_AngleX,
 	            HPGe2_AngleY, 0.);
-	HPGe2_rt -= pbthin->Thickness * 0.5;
+	HPGe2_rt -= cuthin->Thickness * 0.5;
+
+	HPGe2_rt -= pbmedium->Thickness * 0.5;
+	pbmedium->Put(HPGe2_rt * sin(HPGe2_theta) * cos(HPGe2_phi),
+	              HPGe2_rt * sin(HPGe2_theta) * sin(HPGe2_phi) + HPGe2_dy,
+	              HPGe2_rt * cos(HPGe2_theta) + HPGe2_dz, HPGe2_AngleX,
+	              HPGe2_AngleY, 0.);
+	HPGe2_rt -= pbmedium->Thickness * 0.5;
+
+	HPGe2_rt -= pbmedium->Thickness * 0.5;
+	pbmedium->Put(HPGe2_rt * sin(HPGe2_theta) * cos(HPGe2_phi),
+	              HPGe2_rt * sin(HPGe2_theta) * sin(HPGe2_phi) + HPGe2_dy,
+	              HPGe2_rt * cos(HPGe2_theta) + HPGe2_dz, HPGe2_AngleX,
+	              HPGe2_AngleY, 0.);
+	HPGe2_rt -= pbmedium->Thickness * 0.5;
 
 	HPGe2_rt += fcw->FilterCase_Length * 0.5 - fcbo->FilterCaseBottom_Thickness;
 	fcw->Put(HPGe2_rt * sin(HPGe2_theta) * cos(HPGe2_phi),
@@ -1416,115 +1483,134 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	          HPGe2_rt * sin(HPGe2_theta) * sin(HPGe2_phi) + HPGe2_dy,
 	          HPGe2_rt * cos(HPGe2_theta) + HPGe2_dz, HPGe2_AngleX,
 	          HPGe2_AngleY, 0.);
-	HPGe2_rt -= fcbo->Thickness * 0.5;
 
-	/************************* HPGe3 *********************************/
+	/************************* HPGe3
+	 * ********************************/
 
-	G4double HPGe3_rt = 112.5 * mm;
-	G4double HPGe3_dy = 0. * mm;
-	G4double HPGe3_dz = -6.5 * mm;
-	G4double HPGe3_phi = 135. * deg;
-	G4double HPGe3_theta = 135. * deg;
+	G4double Polarimeter_TUD_rt = 87.2 * mm;
+	G4double Polarimeter_TUD_dy = 0. * mm;
+	G4double Polarimeter_TUD_dz = -25. * mm;
+	G4double Polarimeter_TUD_phi = 270. * deg;
+	G4double Polarimeter_TUD_theta = 90. * deg;
 
-	G4double HPGe3_AngleX = 144.736 * deg;
-	G4double HPGe3_AngleY = 210. * deg;
+	G4double Polarimeter_TUD_AngleX = 270. * deg;
+	G4double Polarimeter_TUD_AngleY = 180. * deg;
 
-	HPGe3 *HPGe3_Instance = new HPGe3("HPGe3");
-	G4LogicalVolume *HPGe3_TUD_Logical = HPGe3_Instance->Get_Logical();
+	Polarimeter_TUD *Polarimeter_TUD_Instance =
+	    new Polarimeter_TUD("Polarimeter_TUD");
+	G4LogicalVolume *Polarimeter_TUD_TUD_Logical =
+	    Polarimeter_TUD_Instance->Get_Logical();
 
-	G4RotationMatrix *rotateHPGe3 = new G4RotationMatrix();
-	rotateHPGe3->rotateX(HPGe3_AngleX);
-	rotateHPGe3->rotateY(HPGe3_AngleY);
+	G4RotationMatrix *rotatePolarimeter_TUD = new G4RotationMatrix();
+	rotatePolarimeter_TUD->rotateX(Polarimeter_TUD_AngleX);
+	rotatePolarimeter_TUD->rotateY(Polarimeter_TUD_AngleY);
 
-	HPGe3_rt = HPGe3_rt + HPGe3_Instance->Get_Length() * 0.5;
+	Polarimeter_TUD_rt =
+	    Polarimeter_TUD_rt + Polarimeter_TUD_Instance->Get_Length() * 0.5;
 
 	new G4PVPlacement(
-	    rotateHPGe3,
-	    G4ThreeVector(HPGe3_rt * sin(HPGe3_theta) * cos(HPGe3_phi),
-	                  HPGe3_rt * sin(HPGe3_theta) * sin(HPGe3_phi) + HPGe3_dy,
-	                  HPGe3_rt * cos(HPGe3_theta) + HPGe3_dz),
-	    HPGe3_TUD_Logical, "HPGe3", world_log, false, 0);
+	    rotatePolarimeter_TUD,
+	    G4ThreeVector(Polarimeter_TUD_rt * sin(Polarimeter_TUD_theta) *
+	                      cos(Polarimeter_TUD_phi),
+	                  Polarimeter_TUD_rt * sin(Polarimeter_TUD_theta) *
+	                          sin(Polarimeter_TUD_phi) +
+	                      Polarimeter_TUD_dy,
+	                  Polarimeter_TUD_rt * cos(Polarimeter_TUD_theta) +
+	                      Polarimeter_TUD_dz),
+	    Polarimeter_TUD_TUD_Logical, "LaBr_TUD", world_log, false, 0);
 
-	// HPGe3 Wrapping
+	// Polarimeter_TUD Wrapping
 
-	G4double HPGe3_Wrapping_Thickness = 2 * 0.050 * inch; // Measured
-	G4double HPGe3_Wrapping_Length = 140. * mm;           // Measured
+	G4double Polarimeter_TUD_Wrapping_Thickness = 2 * 0.050 * inch; // Measured
+	G4double Polarimeter_TUD_Wrapping_Length = 140. * mm;           // Measured
 
-	G4Tubs *HPGe3_Wrapping_Solid =
-	    new G4Tubs("HPGe3_Wrapping_Solid", HPGe3_Instance->Get_Radius(),
-	               HPGe3_Instance->Get_Radius() + HPGe3_Wrapping_Thickness,
-	               HPGe3_Wrapping_Length * 0.5, 0. * deg, 360. * deg);
-	G4LogicalVolume *HPGe3_Wrapping_Logical = new G4LogicalVolume(
-	    HPGe3_Wrapping_Solid, Pb, "HPGe3_Wrapping_Logical", 0, 0, 0);
+	G4Tubs *Polarimeter_TUD_Wrapping_Solid =
+	    new G4Tubs("Polarimeter_TUD_Wrapping_Solid",
+	               Polarimeter_TUD_Instance->Get_Radius(),
+	               Polarimeter_TUD_Instance->Get_Radius() +
+	                   Polarimeter_TUD_Wrapping_Thickness,
+	               Polarimeter_TUD_Wrapping_Length * 0.5, 0. * deg, 360. * deg);
+	G4LogicalVolume *Polarimeter_TUD_Wrapping_Logical =
+	    new G4LogicalVolume(Polarimeter_TUD_Wrapping_Solid, Pb,
+	                        "Polarimeter_TUD_Wrapping_Logical", 0, 0, 0);
 
-	HPGe3_Wrapping_Logical->SetVisAttributes(new G4VisAttributes(grey));
+	Polarimeter_TUD_Wrapping_Logical->SetVisAttributes(
+	    new G4VisAttributes(grey));
 
-	HPGe3_rt = HPGe3_rt + HPGe3_Wrapping_Length * 0.5 -
-	           HPGe3_Instance->Get_Length() * 0.5;
+	Polarimeter_TUD_rt = Polarimeter_TUD_rt +
+	                     Polarimeter_TUD_Wrapping_Length * 0.5 -
+	                     Polarimeter_TUD_Instance->Get_Length() * 0.5;
 	new G4PVPlacement(
-	    rotateHPGe3,
-	    G4ThreeVector(HPGe3_rt * sin(HPGe3_theta) * cos(HPGe3_phi),
-	                  HPGe3_rt * sin(HPGe3_theta) * sin(HPGe3_phi) + HPGe3_dy,
-	                  HPGe3_rt * cos(HPGe3_theta) + HPGe3_dz),
-	    HPGe3_Wrapping_Logical, "HPGe3_Wrapping", world_log, false, 0);
-	HPGe3_rt = HPGe3_rt - HPGe2_Wrapping_Length * 0.5;
+	    rotatePolarimeter_TUD,
+	    G4ThreeVector(Polarimeter_TUD_rt * sin(Polarimeter_TUD_theta) *
+	                      cos(Polarimeter_TUD_phi),
+	                  Polarimeter_TUD_rt * sin(Polarimeter_TUD_theta) *
+	                          sin(Polarimeter_TUD_phi) +
+	                      Polarimeter_TUD_dy,
+	                  Polarimeter_TUD_rt * cos(Polarimeter_TUD_theta) +
+	                      Polarimeter_TUD_dz),
+	    Polarimeter_TUD_Wrapping_Logical, "Polarimeter_TUD_Wrapping", world_log,
+	    false, 0);
+	Polarimeter_TUD_rt = Polarimeter_TUD_rt - HPGe2_Wrapping_Length * 0.5;
 
-	// HPGe3 Filters
+	// Polarimeter_TUD Filters
 
-	HPGe3_rt -= fcr->Thickness * 0.5;
-	fcr->Put(HPGe3_rt * sin(HPGe3_theta) * cos(HPGe3_phi),
-	         HPGe3_rt * sin(HPGe3_theta) * sin(HPGe3_phi) + HPGe3_dy,
-	         HPGe3_rt * cos(HPGe3_theta) + HPGe3_dz, HPGe3_AngleX, HPGe3_AngleY,
-	         0.);
-	HPGe3_rt -= fcr->Thickness * 0.5;
+	Polarimeter_TUD_rt -= cuthin50->Thickness * 0.5;
+	cuthin50->Put(Polarimeter_TUD_rt * sin(Polarimeter_TUD_theta) *
+	                  cos(Polarimeter_TUD_phi),
+	              Polarimeter_TUD_rt * sin(Polarimeter_TUD_theta) *
+	                      sin(Polarimeter_TUD_phi) +
+	                  Polarimeter_TUD_dy,
+	              Polarimeter_TUD_rt * cos(Polarimeter_TUD_theta) +
+	                  Polarimeter_TUD_dz,
+	              Polarimeter_TUD_AngleX, Polarimeter_TUD_AngleY, 0.);
+	Polarimeter_TUD_rt -= cuthin50->Thickness * 0.5;
 
-	HPGe3_rt -= cumedium->Thickness * 0.5;
-	cumedium->Put(HPGe3_rt * sin(HPGe3_theta) * cos(HPGe3_phi),
-	              HPGe3_rt * sin(HPGe3_theta) * sin(HPGe3_phi) + HPGe3_dy,
-	              HPGe3_rt * cos(HPGe3_theta) + HPGe3_dz, HPGe3_AngleX,
-	              HPGe3_AngleY, 0.);
-	HPGe3_rt -= cumedium->Thickness * 0.5;
+	Polarimeter_TUD_rt -= cuthin50->Thickness * 0.5;
+	cuthin50->Put(Polarimeter_TUD_rt * sin(Polarimeter_TUD_theta) *
+	                  cos(Polarimeter_TUD_phi),
+	              Polarimeter_TUD_rt * sin(Polarimeter_TUD_theta) *
+	                      sin(Polarimeter_TUD_phi) +
+	                  Polarimeter_TUD_dy,
+	              Polarimeter_TUD_rt * cos(Polarimeter_TUD_theta) +
+	                  Polarimeter_TUD_dz,
+	              Polarimeter_TUD_AngleX, Polarimeter_TUD_AngleY, 0.);
+	Polarimeter_TUD_rt -= cuthin50->Thickness * 0.5;
 
-	HPGe3_rt -= pbmedium->Thickness * 0.5;
-	pbmedium->Put(HPGe3_rt * sin(HPGe3_theta) * cos(HPGe3_phi),
-	              HPGe3_rt * sin(HPGe3_theta) * sin(HPGe3_phi) + HPGe3_dy,
-	              HPGe3_rt * cos(HPGe3_theta) + HPGe3_dz, HPGe3_AngleX,
-	              HPGe3_AngleY, 0.);
-	HPGe3_rt -= pbmedium->Thickness * 0.5;
+	Polarimeter_TUD_rt -= pbmedium50->Thickness * 0.5;
+	pbmedium50->Put(Polarimeter_TUD_rt * sin(Polarimeter_TUD_theta) *
+	                    cos(Polarimeter_TUD_phi),
+	                Polarimeter_TUD_rt * sin(Polarimeter_TUD_theta) *
+	                        sin(Polarimeter_TUD_phi) +
+	                    Polarimeter_TUD_dy,
+	                Polarimeter_TUD_rt * cos(Polarimeter_TUD_theta) +
+	                    Polarimeter_TUD_dz,
+	                Polarimeter_TUD_AngleX, Polarimeter_TUD_AngleY, 0.);
+	Polarimeter_TUD_rt -= pbmedium50->Thickness * 0.5;
 
-	HPGe3_rt -= pbthinsmall->Thickness * 0.5;
-	pbthinsmall->Put(HPGe3_rt * sin(HPGe3_theta) * cos(HPGe3_phi),
-	                 HPGe3_rt * sin(HPGe3_theta) * sin(HPGe3_phi) + HPGe3_dy,
-	                 HPGe3_rt * cos(HPGe3_theta) + HPGe3_dz, HPGe3_AngleX,
-	                 HPGe3_AngleY, 0.);
-	HPGe3_rt -= pbthinsmall->Thickness * 0.5;
-
-	HPGe3_rt += fcw->FilterCase_Length * 0.5 - fcbo->FilterCaseBottom_Thickness;
-	fcw->Put(HPGe3_rt * sin(HPGe3_theta) * cos(HPGe3_phi),
-	         HPGe3_rt * sin(HPGe3_theta) * sin(HPGe3_phi) + HPGe3_dy,
-	         HPGe3_rt * cos(HPGe3_theta) + HPGe3_dz, HPGe3_AngleX, HPGe3_AngleY,
-	         0.);
-	HPGe3_rt -= fcw->FilterCase_Length * 0.5;
-
-	HPGe3_rt += fcbo->Thickness * 0.5;
-	fcbo->Put(HPGe3_rt * sin(HPGe3_theta) * cos(HPGe3_phi),
-	          HPGe3_rt * sin(HPGe3_theta) * sin(HPGe3_phi) + HPGe3_dy,
-	          HPGe3_rt * cos(HPGe3_theta) + HPGe3_dz, HPGe3_AngleX,
-	          HPGe3_AngleY, 0.);
-	HPGe3_rt -= fcbo->Thickness * 0.5;
+	Polarimeter_TUD_rt -= pbmedium50->Thickness * 0.5;
+	pbmedium50->Put(Polarimeter_TUD_rt * sin(Polarimeter_TUD_theta) *
+	                    cos(Polarimeter_TUD_phi),
+	                Polarimeter_TUD_rt * sin(Polarimeter_TUD_theta) *
+	                        sin(Polarimeter_TUD_phi) +
+	                    Polarimeter_TUD_dy,
+	                Polarimeter_TUD_rt * cos(Polarimeter_TUD_theta) +
+	                    Polarimeter_TUD_dz,
+	                Polarimeter_TUD_AngleX, Polarimeter_TUD_AngleY, 0.);
+	Polarimeter_TUD_rt -= pbmedium50->Thickness * 0.5;
 
 	/************************* HPGe4 ********************************/
 
-	G4double HPGe4_rt = 103. * mm;
+	G4double HPGe4_rt = 142.5 * mm;
 	G4double HPGe4_dy = 0. * mm;
-	G4double HPGe4_dz = 3.5 * mm;
+	G4double HPGe4_dz = -5. * mm;
 	G4double HPGe4_phi = 45. * deg;
 	G4double HPGe4_theta = 135. * deg;
 
 	G4double HPGe4_AngleX = 144.736 * deg;
 	G4double HPGe4_AngleY = 150. * deg;
 
-	HPGe4 *HPGe4_Instance = new HPGe4("HPGe4");
+	HPGe_60_TUNL_31061 *HPGe4_Instance = new HPGe_60_TUNL_31061("HPGe4");
 	G4LogicalVolume *HPGe4_Logical = HPGe4_Instance->Get_Logical();
 
 	G4RotationMatrix *rotateHPGe4 = new G4RotationMatrix();
@@ -1546,8 +1632,8 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	G4double HPGe4_Wrapping_Length = 140. * mm;           // Measured
 
 	G4Tubs *HPGe4_Wrapping_Solid =
-	    new G4Tubs("HPGe4_Wrapping_Solid", HPGe4_Instance->Get_Radius(),
-	               HPGe4_Instance->Get_Radius() + HPGe4_Wrapping_Thickness,
+	    new G4Tubs("HPGe4_Wrapping_Solid", HPGe4_Instance->Get_Front_Radius(),
+	               HPGe4_Instance->Get_Front_Radius() + HPGe4_Wrapping_Thickness,
 	               HPGe4_Wrapping_Length * 0.5, 0. * deg, 360. * deg);
 	G4LogicalVolume *HPGe4_Wrapping_Logical = new G4LogicalVolume(
 	    HPGe4_Wrapping_Solid, Pb, "HPGe4_Wrapping_Logical", 0, 0, 0);
@@ -1573,12 +1659,26 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	         0.);
 	HPGe4_rt -= fcr->Thickness * 0.5;
 
-	HPGe4_rt -= cumedium->Thickness * 0.5;
-	cumedium->Put(HPGe4_rt * sin(HPGe4_theta) * cos(HPGe4_phi),
+	HPGe4_rt -= cuthin->Thickness * 0.5;
+	cuthin->Put(HPGe4_rt * sin(HPGe4_theta) * cos(HPGe4_phi),
+	            HPGe4_rt * sin(HPGe4_theta) * sin(HPGe4_phi) + HPGe4_dy,
+	            HPGe4_rt * cos(HPGe4_theta) + HPGe4_dz, HPGe4_AngleX,
+	            HPGe4_AngleY, 0.);
+	HPGe4_rt -= cuthin->Thickness * 0.5;
+
+	HPGe4_rt -= cuthin->Thickness * 0.5;
+	cuthin->Put(HPGe4_rt * sin(HPGe4_theta) * cos(HPGe4_phi),
+	            HPGe4_rt * sin(HPGe4_theta) * sin(HPGe4_phi) + HPGe4_dy,
+	            HPGe4_rt * cos(HPGe4_theta) + HPGe4_dz, HPGe4_AngleX,
+	            HPGe4_AngleY, 0.);
+	HPGe4_rt -= cuthin->Thickness * 0.5;
+
+	HPGe4_rt -= pbmedium->Thickness * 0.5;
+	pbmedium->Put(HPGe4_rt * sin(HPGe4_theta) * cos(HPGe4_phi),
 	              HPGe4_rt * sin(HPGe4_theta) * sin(HPGe4_phi) + HPGe4_dy,
 	              HPGe4_rt * cos(HPGe4_theta) + HPGe4_dz, HPGe4_AngleX,
 	              HPGe4_AngleY, 0.);
-	HPGe4_rt -= cumedium->Thickness * 0.5;
+	HPGe4_rt -= pbmedium->Thickness * 0.5;
 
 	HPGe4_rt -= pbmedium->Thickness * 0.5;
 	pbmedium->Put(HPGe4_rt * sin(HPGe4_theta) * cos(HPGe4_phi),
@@ -1601,17 +1701,17 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	          HPGe4_AngleY, 0.);
 	HPGe4_rt -= fcbo->Thickness * 0.5;
 
-	/************************* LaBr1 (LaBr_TUD) *
+	/************************* LaBr1 (LaBr_TUD)
 	 * ********************************/
 
-	G4double LaBr1_rt = 60. * mm;
-	G4double LaBr1_dy = 16.5 * mm;
-	G4double LaBr1_dz = -6. * mm;
+	G4double LaBr1_rt = 87.8 * mm;
+	G4double LaBr1_dy = 19. * mm;
+	G4double LaBr1_dz = 3. * mm;
 	G4double LaBr1_theta = 90. * deg;
 	G4double LaBr1_phi = 180. * deg;
 
-	G4double LaBr1_AngleX = 180. * deg;
-	G4double LaBr1_AngleY = 90. * deg;
+	G4double LaBr1_AngleX = 0. * deg;
+	G4double LaBr1_AngleY = 270. * deg;
 
 	LaBr_TUD *LaBr1_Instance = new LaBr_TUD("LaBr1");
 	G4LogicalVolume *LaBr1_TUD_Logical = LaBr1_Instance->Get_Logical();
@@ -1692,19 +1792,19 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	          LaBr1_AngleY, 0.);
 	LaBr1_rt -= fcbo->Thickness * 0.5;
 
-	/************************* LaBr2 (LaBr_TUD) *
+	/************************* LaBr2 (LaBr_TUD)
 	 * ********************************/
 
-	G4double LaBr2_rt = 71. * mm;
-	G4double LaBr2_dy = 18. * mm;
-	G4double LaBr2_dz = -2.5 * mm;
-	G4double LaBr2_phi = 270. * deg;
+	G4double LaBr2_rt = 86.4 * mm;
+	G4double LaBr2_dy = 16. * mm;
+	G4double LaBr2_dz = -7. * mm;
+	G4double LaBr2_phi = 90. * deg;
 	G4double LaBr2_theta = 90. * deg;
 
 	LaBr_TUD *LaBr2_Instance = new LaBr_TUD("LaBr2");
 	G4LogicalVolume *LaBr2_TUD_Logical = LaBr2_Instance->Get_Logical();
 
-	G4double LaBr2_AngleX = 270. * deg;
+	G4double LaBr2_AngleX = 90. * deg;
 	G4double LaBr2_AngleY = 180. * deg;
 
 	G4RotationMatrix *rotateLaBr2 = new G4RotationMatrix();
@@ -1744,7 +1844,6 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	                  LaBr2_rt * sin(LaBr2_theta) * sin(LaBr2_phi) + LaBr2_dy,
 	                  LaBr2_rt * cos(LaBr2_theta) + LaBr2_dz),
 	    LaBr2_Wrapping_Logical, "LaBr2_Wrapping", world_log, false, 0);
-
 	LaBr2_rt = LaBr2_rt - LaBr2_Wrapping_Length * 0.5;
 
 	// LaBr2 Filters
@@ -1763,12 +1862,12 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	            LaBr2_AngleY, 0.);
 	LaBr2_rt -= cuthin->Thickness * 0.5;
 
-	LaBr2_rt -= pbthinmedium->Thickness * 0.5;
-	pbthinmedium->Put(LaBr2_rt * sin(LaBr2_theta) * cos(LaBr2_phi),
-	                  LaBr2_rt * sin(LaBr2_theta) * sin(LaBr2_phi) + LaBr2_dy,
-	                  LaBr2_rt * cos(LaBr2_theta) + LaBr2_dz, LaBr2_AngleX,
-	                  LaBr2_AngleY, 0.);
-	LaBr2_rt -= pbthinmedium->Thickness * 0.5;
+	LaBr2_rt -= pbthin->Thickness * 0.5;
+	pbthin->Put(LaBr2_rt * sin(LaBr2_theta) * cos(LaBr2_phi),
+	            LaBr2_rt * sin(LaBr2_theta) * sin(LaBr2_phi) + LaBr2_dy,
+	            LaBr2_rt * cos(LaBr2_theta) + LaBr2_dz, LaBr2_AngleX,
+	            LaBr2_AngleY, 0.);
+	LaBr2_rt -= pbthin->Thickness * 0.5;
 
 	LaBr2_rt += fcw->FilterCase_Length * 0.5 - fcbo->FilterCaseBottom_Thickness;
 	fcw->Put(LaBr2_rt * sin(LaBr2_theta) * cos(LaBr2_phi),
@@ -1784,12 +1883,12 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	          LaBr2_AngleY, 0.);
 	LaBr2_rt -= fcbo->Thickness * 0.5;
 
-	/************************* LaBr3 (LaBr_TUD) *
+	/************************* LaBr3 (LaBr_TUD)
 	 * ********************************/
 
-	G4double LaBr3_rt = 117. * mm;
+	G4double LaBr3_rt = 131.8 * mm;
 	G4double LaBr3_dy = 0. * mm;
-	G4double LaBr3_dz = -1. * mm;
+	G4double LaBr3_dz = -5. * mm;
 	G4double LaBr3_phi = 315. * deg;
 	G4double LaBr3_theta = 135. * deg;
 
@@ -1859,6 +1958,13 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	            LaBr3_AngleY, 0.);
 	LaBr3_rt -= cuthin->Thickness * 0.5;
 
+	LaBr3_rt -= pbthin->Thickness * 0.5;
+	pbthin->Put(LaBr3_rt * sin(LaBr3_theta) * cos(LaBr3_phi),
+	            LaBr3_rt * sin(LaBr3_theta) * sin(LaBr3_phi) + LaBr3_dy,
+	            LaBr3_rt * cos(LaBr3_theta) + LaBr3_dz, LaBr3_AngleX,
+	            LaBr3_AngleY, 0.);
+	LaBr3_rt -= pbthin->Thickness * 0.5;
+
 	LaBr3_rt += fcw->FilterCase_Length * 0.5 - fcbo->FilterCaseBottom_Thickness;
 	fcw->Put(LaBr3_rt * sin(LaBr3_theta) * cos(LaBr3_phi),
 	         LaBr3_rt * sin(LaBr3_theta) * sin(LaBr3_phi) + LaBr3_dy,
@@ -1874,11 +1980,11 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	LaBr3_rt -= fcbo->Thickness * 0.5;
 
 	/************************* LaBr4 (LaBr_TUD)
-	 * *********************************/
+	 * ********************************/
 
-	G4double LaBr4_rt = 103. * mm;
+	G4double LaBr4_rt = 119.2 * mm;
 	G4double LaBr4_dy = 0. * mm;
-	G4double LaBr4_dz = -5.5 * mm;
+	G4double LaBr4_dz = -4. * mm;
 	G4double LaBr4_phi = 225. * deg;
 	G4double LaBr4_theta = 135. * deg;
 
@@ -1926,10 +2032,9 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	                  LaBr4_rt * sin(LaBr4_theta) * sin(LaBr4_phi) + LaBr4_dy,
 	                  LaBr4_rt * cos(LaBr4_theta) + LaBr4_dz),
 	    LaBr4_Wrapping_Logical, "LaBr4_Wrapping", world_log, false, 0);
+	LaBr4_rt -= LaBr4_Wrapping_Length * 0.5;
 
 	// LaBr4 Filters
-
-	LaBr4_rt -= LaBr4_Instance->Get_Length() * 0.5;
 
 	LaBr4_rt -= fcr->Thickness * 0.5;
 	fcr->Put(LaBr4_rt * sin(LaBr4_theta) * cos(LaBr4_phi),
@@ -1945,6 +2050,13 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	            LaBr4_AngleY, 0.);
 	LaBr4_rt -= cuthin->Thickness * 0.5;
 
+	LaBr4_rt -= pbthin->Thickness * 0.5;
+	pbthin->Put(LaBr4_rt * sin(LaBr4_theta) * cos(LaBr4_phi),
+	            LaBr4_rt * sin(LaBr4_theta) * sin(LaBr4_phi) + LaBr4_dy,
+	            LaBr4_rt * cos(LaBr4_theta) + LaBr4_dz, LaBr4_AngleX,
+	            LaBr4_AngleY, 0.);
+	LaBr4_rt -= pbthin->Thickness * 0.5;
+
 	LaBr4_rt += fcw->FilterCase_Length * 0.5 - fcbo->FilterCaseBottom_Thickness;
 	fcw->Put(LaBr4_rt * sin(LaBr4_theta) * cos(LaBr4_phi),
 	         LaBr4_rt * sin(LaBr4_theta) * sin(LaBr4_phi) + LaBr4_dy,
@@ -1959,175 +2071,20 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	          LaBr4_AngleY, 0.);
 	LaBr4_rt -= fcbo->Thickness * 0.5;
 
-	/************************* HPGe1_55 (HPGe6)
-	 * ********************************/
+	/************************* HPGe6 (Germanium2_TUD)
+	 *********************************/
 
-	G4double HPGe1_55_rt = 73. * mm + pb36_64_50->Thickness;
-	G4double HPGe1_55_dy = 0. * mm;
-	G4double HPGe1_55_dz = 0. * mm;
-	G4double HPGe1_55_phi = 180. * deg;
-	G4double HPGe1_55_theta = 90. * deg;
-
-	G4double HPGe1_55_AngleX = 0. * deg;
-	G4double HPGe1_55_AngleY = 90. * deg;
-
-	HPGe1_55 *HPGe1_55_Instance = new HPGe1_55("HPGe1_55");
-	G4LogicalVolume *HPGe1_55_Logical = HPGe1_55_Instance->Get_Logical();
-
-	G4RotationMatrix *rotateHPGe1_55 = new G4RotationMatrix();
-	rotateHPGe1_55->rotateX(HPGe1_55_AngleX);
-	rotateHPGe1_55->rotateY(HPGe1_55_AngleY);
-
-	HPGe1_55_rt = HPGe1_55_rt + HPGe1_55_Instance->Get_Length() * 0.5;
-
-	new G4PVPlacement(
-	    rotateHPGe1_55,
-	    G4ThreeVector(HPGe1_55_rt * sin(HPGe1_55_theta) * cos(HPGe1_55_phi),
-	                  HPGe1_55_rt * sin(HPGe1_55_theta) * sin(HPGe1_55_phi) +
-	                      HPGe1_55_dy,
-	                  Target2_To_Target + HPGe1_55_rt * cos(HPGe1_55_theta) +
-	                      HPGe1_55_dz),
-	    HPGe1_55_Logical, "HPGe1_55", world_log, false, 0);
-
-	// HPGe1_55 Wrapping
-
-	G4double HPGe1_55_Wrapping_Thickness = 2 * 0.050 * inch; // Measured
-	G4double HPGe1_55_Wrapping_Length = 140. * mm;           // Measured
-
-	G4Tubs *HPGe1_55_Wrapping_Solid = new G4Tubs(
-	    "HPGe1_55_Wrapping_Solid", HPGe1_55_Instance->Get_Radius(),
-	    HPGe1_55_Instance->Get_Radius() + HPGe1_55_Wrapping_Thickness,
-	    HPGe1_55_Wrapping_Length * 0.5, 0. * deg, 360. * deg);
-	G4LogicalVolume *HPGe1_55_Wrapping_Logical = new G4LogicalVolume(
-	    HPGe1_55_Wrapping_Solid, Pb, "HPGe1_55_Wrapping_Logical", 0, 0, 0);
-
-	HPGe1_55_Wrapping_Logical->SetVisAttributes(new G4VisAttributes(grey));
-
-	HPGe1_55_rt = HPGe1_55_rt + HPGe1_55_Wrapping_Length * 0.5 -
-	              HPGe1_55_Instance->Get_Length() * 0.5;
-	new G4PVPlacement(
-	    rotateHPGe1_55,
-	    G4ThreeVector(HPGe1_55_rt * sin(HPGe1_55_theta) * cos(HPGe1_55_phi),
-	                  HPGe1_55_rt * sin(HPGe1_55_theta) * sin(HPGe1_55_phi) +
-	                      HPGe1_55_dy,
-	                  Target2_To_Target + HPGe1_55_rt * cos(HPGe1_55_theta) +
-	                      HPGe1_55_dz),
-	    HPGe1_55_Wrapping_Logical, "HPGe1_55_Wrapping", world_log, false, 0);
-	HPGe1_55_rt = HPGe1_55_rt - HPGe1_55_Wrapping_Length * 0.5;
-
-	// HPGe1_55 Filters
-
-	// cuthin50
-	// HPGe1_55_rt -= cuthin50->Thickness * 0.5;
-	// cuthin50->Put(
-	//    HPGe1_55_rt * sin(HPGe1_55_theta) * cos(HPGe1_55_phi),
-	//    HPGe1_55_rt * sin(HPGe1_55_theta) *
-	//            sin(HPGe1_55_phi) +
-	//        HPGe1_55_dy,
-	//    Target2_To_Target + HPGe1_55_rt * cos(HPGe1_55_theta) +
-	//        HPGe1_55_dz,
-	//    HPGe1_55_AngleX, HPGe1_55_AngleY, 0.);
-	// HPGe1_55_rt -= cuthin50->Thickness * 0.5;
-
-	// Pb 50mm, 36/64in
-	HPGe1_55_rt -= pb36_64_50->Thickness * 0.5;
-	pb36_64_50->Put(
-	    HPGe1_55_rt * sin(HPGe1_55_theta) * cos(HPGe1_55_phi),
-	    HPGe1_55_rt * sin(HPGe1_55_theta) * sin(HPGe1_55_phi) + HPGe1_55_dy,
-	    Target2_To_Target + HPGe1_55_rt * cos(HPGe1_55_theta) + HPGe1_55_dz,
-	    HPGe1_55_AngleX, HPGe1_55_AngleY, 0.);
-	HPGe1_55_rt -= pb36_64_50->Thickness * 0.5;
-
-	/************************* HPGe2_55 (HPGe7)
-	 * ********************************/
-
-	G4double HPGe2_55_rt = 71. * mm + pb36_64_50->Thickness;
-	G4double HPGe2_55_dy = 0. * mm;
-	G4double HPGe2_55_dz = 0. * mm;
-	G4double HPGe2_55_phi = 90. * deg;
-	G4double HPGe2_55_theta = 90. * deg;
-
-	G4double HPGe2_55_AngleX = 270. * deg;
-	G4double HPGe2_55_AngleY = 0. * deg;
-
-	HPGe2_55 *HPGe2_55_Instance = new HPGe2_55("HPGe2_55");
-	G4LogicalVolume *HPGe2_55_Logical = HPGe2_55_Instance->Get_Logical();
-
-	G4RotationMatrix *rotateHPGe2_55 = new G4RotationMatrix();
-	rotateHPGe2_55->rotateX(HPGe2_55_AngleX);
-	rotateHPGe2_55->rotateY(HPGe2_55_AngleY);
-
-	HPGe2_55_rt = HPGe2_55_rt + HPGe2_55_Instance->Get_Length() * 0.5;
-
-	new G4PVPlacement(
-	    rotateHPGe2_55,
-	    G4ThreeVector(HPGe2_55_rt * sin(HPGe2_55_theta) * cos(HPGe2_55_phi),
-	                  HPGe2_55_rt * sin(HPGe2_55_theta) * sin(HPGe2_55_phi) +
-	                      HPGe2_55_dy,
-	                  Target2_To_Target + HPGe2_55_rt * cos(HPGe2_55_theta) +
-	                      HPGe2_55_dz),
-	    HPGe2_55_Logical, "HPGe2_55", world_log, false, 0);
-
-	// HPGe2_55 Wrapping
-
-	G4double HPGe2_55_Wrapping_Thickness = 2 * 0.050 * inch; // Measured
-	G4double HPGe2_55_Wrapping_Length = 140. * mm;           // Measured
-
-	G4Tubs *HPGe2_55_Wrapping_Solid = new G4Tubs(
-	    "HPGe2_55_Wrapping_Solid", HPGe2_55_Instance->Get_Radius(),
-	    HPGe2_55_Instance->Get_Radius() + HPGe2_55_Wrapping_Thickness,
-	    HPGe2_55_Wrapping_Length * 0.5, 0. * deg, 360. * deg);
-	G4LogicalVolume *HPGe2_55_Wrapping_Logical = new G4LogicalVolume(
-	    HPGe2_55_Wrapping_Solid, Pb, "HPGe2_55_Wrapping_Logical", 0, 0, 0);
-
-	HPGe2_55_Wrapping_Logical->SetVisAttributes(new G4VisAttributes(grey));
-
-	HPGe2_55_rt = HPGe2_55_rt + HPGe2_55_Wrapping_Length * 0.5 -
-	              HPGe2_55_Instance->Get_Length() * 0.5;
-	new G4PVPlacement(
-	    rotateHPGe2_55,
-	    G4ThreeVector(HPGe2_55_rt * sin(HPGe2_55_theta) * cos(HPGe2_55_phi),
-	                  HPGe2_55_rt * sin(HPGe2_55_theta) * sin(HPGe2_55_phi) +
-	                      HPGe2_55_dy,
-	                  Target2_To_Target + HPGe2_55_rt * cos(HPGe2_55_theta) +
-	                      HPGe2_55_dz),
-	    HPGe2_55_Wrapping_Logical, "HPGe2_55_Wrapping", world_log, false, 0);
-	HPGe2_55_rt = HPGe2_55_rt - HPGe2_55_Wrapping_Length * 0.5;
-
-	// HPGe2_55 Filters
-
-	// cuthin50
-	// HPGe2_55_rt -= cuthin50->Thickness * 0.5;
-	// cuthin50->Put(
-	//    HPGe2_55_rt * sin(HPGe2_55_theta) * cos(HPGe2_55_phi),
-	//    HPGe2_55_rt * sin(HPGe2_55_theta) *
-	//            sin(HPGe2_55_phi) +
-	//        HPGe2_55_dy,
-	//    Target2_To_Target + HPGe2_55_rt * cos(HPGe2_55_theta) +
-	//        HPGe2_55_dz,
-	//    HPGe2_55_AngleX, HPGe2_55_AngleY, 0.);
-	// HPGe2_55_rt -= cuthin50->Thickness * 0.5;
-
-	// Pb 50mm, 36/64in
-	HPGe2_55_rt -= pb36_64_50->Thickness * 0.5;
-	pb36_64_50->Put(
-	    HPGe2_55_rt * sin(HPGe2_55_theta) * cos(HPGe2_55_phi),
-	    HPGe2_55_rt * sin(HPGe2_55_theta) * sin(HPGe2_55_phi) + HPGe2_55_dy,
-	    Target2_To_Target + HPGe2_55_rt * cos(HPGe2_55_theta) + HPGe2_55_dz,
-	    HPGe2_55_AngleX, HPGe2_55_AngleY, 0.);
-	HPGe2_55_rt -= pb36_64_50->Thickness * 0.5;
-
-	/************************* HPGe8 (Germanium2_TUD)
-	 * *********************************/
-
-	G4double Germanium2_TUD_rt = 75. * mm + cuthin50->Thickness;
+	G4double Germanium2_TUD_rt =
+	    BeamTube_Outer_Radius + 50. * mm + cuthin->Thickness * 2. +
+	    pbmedium->Thickness * 2.; // Only the distance of the shielded detector
+	                              // face to the beam pipe (50.*mm) was measured
 	G4double Germanium2_TUD_dy = 0. * mm;
 	G4double Germanium2_TUD_dz = 0. * mm;
-	G4double Germanium2_TUD_phi = 0. * deg;
+	G4double Germanium2_TUD_phi = 90. * deg;
 	G4double Germanium2_TUD_theta = 90. * deg;
 
-	G4double Germanium2_TUD_AngleX = 0. * deg;
-	G4double Germanium2_TUD_AngleY = 90. * deg;
+	G4double Germanium2_TUD_AngleX = 90. * deg;
+	G4double Germanium2_TUD_AngleY = 180. * deg;
 
 	Germanium2_TUD *Germanium2_TUD_Instance =
 	    new Germanium2_TUD("Germanium2_TUD");
@@ -2193,7 +2150,6 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	// Germanium2_TUD Filters
 
-	// cuthin50
 	Germanium2_TUD_rt -= cuthin50->Thickness * 0.5;
 	cuthin50->Put(
 	    Germanium2_TUD_rt * sin(Germanium2_TUD_theta) * cos(Germanium2_TUD_phi),
@@ -2205,9 +2161,8 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	    Germanium2_TUD_AngleX, Germanium2_TUD_AngleY, 0.);
 	Germanium2_TUD_rt -= cuthin50->Thickness * 0.5;
 
-	// Pb 50mm, 36/64in
-	Germanium2_TUD_rt -= pb36_64_50->Thickness * 0.5;
-	pb36_64_50->Put(
+	Germanium2_TUD_rt -= cuthin50->Thickness * 0.5;
+	cuthin50->Put(
 	    Germanium2_TUD_rt * sin(Germanium2_TUD_theta) * cos(Germanium2_TUD_phi),
 	    Germanium2_TUD_rt * sin(Germanium2_TUD_theta) *
 	            sin(Germanium2_TUD_phi) +
@@ -2215,96 +2170,272 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	    Target2_To_Target + Germanium2_TUD_rt * cos(Germanium2_TUD_theta) +
 	        Germanium2_TUD_dz,
 	    Germanium2_TUD_AngleX, Germanium2_TUD_AngleY, 0.);
-	Germanium2_TUD_rt -= pb36_64_50->Thickness * 0.5;
+	Germanium2_TUD_rt -= cuthin50->Thickness * 0.5;
 
-	/************************* HPGe9 (Polarimeter_TUD)
-	 * *********************************/
+	Germanium2_TUD_rt -= pbmedium50->Thickness * 0.5;
+	pbmedium50->Put(
+	    Germanium2_TUD_rt * sin(Germanium2_TUD_theta) * cos(Germanium2_TUD_phi),
+	    Germanium2_TUD_rt * sin(Germanium2_TUD_theta) *
+	            sin(Germanium2_TUD_phi) +
+	        Germanium2_TUD_dy,
+	    Target2_To_Target + Germanium2_TUD_rt * cos(Germanium2_TUD_theta) +
+	        Germanium2_TUD_dz,
+	    Germanium2_TUD_AngleX, Germanium2_TUD_AngleY, 0.);
+	Germanium2_TUD_rt -= pbmedium50->Thickness * 0.5;
 
-	G4double Polarimeter_TUD_rt = 75. * mm + cuthin50->Thickness;
-	G4double Polarimeter_TUD_dy = 0. * mm;
-	G4double Polarimeter_TUD_dz = 0. * mm;
-	G4double Polarimeter_TUD_phi = 270. * deg;
-	G4double Polarimeter_TUD_theta = 90. * deg;
+	Germanium2_TUD_rt -= pbmedium50->Thickness * 0.5;
+	pbmedium50->Put(
+	    Germanium2_TUD_rt * sin(Germanium2_TUD_theta) * cos(Germanium2_TUD_phi),
+	    Germanium2_TUD_rt * sin(Germanium2_TUD_theta) *
+	            sin(Germanium2_TUD_phi) +
+	        Germanium2_TUD_dy,
+	    Target2_To_Target + Germanium2_TUD_rt * cos(Germanium2_TUD_theta) +
+	        Germanium2_TUD_dz,
+	    Germanium2_TUD_AngleX, Germanium2_TUD_AngleY, 0.);
+	Germanium2_TUD_rt -= pbmedium50->Thickness * 0.5;
 
-	G4double Polarimeter_TUD_AngleX = 270. * deg;
-	G4double Polarimeter_TUD_AngleY = 180. * deg;
+	/************************* HPGe7 (HPGe1_55)
+	 * ********************************/
 
-	Polarimeter_TUD *Polarimeter_TUD_Instance =
-	    new Polarimeter_TUD("Polarimeter_TUD");
-	G4LogicalVolume *Polarimeter_TUD_TUD_Logical =
-	    Polarimeter_TUD_Instance->Get_Logical();
+	G4double HPGe1_55_rt =
+	    BeamTube_Outer_Radius + 50. * mm + fcbo->FilterCaseBottom_Thickness +
+	    cuthin->Thickness * 2. + pbmedium->Thickness * 2. +
+	    fcr->FilterCaseRing_Thickness; // Only the distance of the shielded
+	                                   // detector face to the beam pipe
+	                                   // (50.*mm) was measured
 
-	G4RotationMatrix *rotatePolarimeter_TUD = new G4RotationMatrix();
-	rotatePolarimeter_TUD->rotateX(Polarimeter_TUD_AngleX);
-	rotatePolarimeter_TUD->rotateY(Polarimeter_TUD_AngleY);
+	G4double HPGe1_55_dy = 0. * mm;
+	G4double HPGe1_55_dz = 0. * mm;
+	G4double HPGe1_55_phi = 0. * deg;
+	G4double HPGe1_55_theta = 90. * deg;
 
-	Polarimeter_TUD_rt =
-	    Polarimeter_TUD_rt + Polarimeter_TUD_Instance->Get_Length() * 0.5;
+	G4double HPGe1_55_AngleX = 180. * deg;
+	G4double HPGe1_55_AngleY = 90. * deg;
 
-	new G4PVPlacement(
-	    rotatePolarimeter_TUD,
-	    G4ThreeVector(Polarimeter_TUD_rt * sin(Polarimeter_TUD_theta) *
-	                      cos(Polarimeter_TUD_phi),
-	                  Polarimeter_TUD_rt * sin(Polarimeter_TUD_theta) *
-	                          sin(Polarimeter_TUD_phi) +
-	                      Polarimeter_TUD_dy,
-	                  Target2_To_Target +
-	                      Polarimeter_TUD_rt * cos(Polarimeter_TUD_theta) +
-	                      Polarimeter_TUD_dz),
-	    Polarimeter_TUD_TUD_Logical, "Polarimeter_TUD", world_log, false, 0);
+	HPGe_55_TUNL_31524 *HPGe1_55_Instance = new HPGe_55_TUNL_31524("HPGe1_55");
+	G4LogicalVolume *HPGe1_55_TUD_Logical = HPGe1_55_Instance->Get_Logical();
 
-	// Polarimeter_TUD Wrapping
+	G4RotationMatrix *rotateHPGe1_55 = new G4RotationMatrix();
+	rotateHPGe1_55->rotateX(HPGe1_55_AngleX);
+	rotateHPGe1_55->rotateY(HPGe1_55_AngleY);
 
-	G4double Polarimeter_TUD_Wrapping_Thickness = 2 * 0.050 * inch;
-	// Measured
-	G4double Polarimeter_TUD_Wrapping_Length = 140. * mm;
-	// Measured
-
-	G4Tubs *Polarimeter_TUD_Wrapping_Solid =
-	    new G4Tubs("Polarimeter_TUD_Wrapping_Solid",
-	               Polarimeter_TUD_Instance->Get_Radius(),
-	               Polarimeter_TUD_Instance->Get_Radius() +
-	                   Polarimeter_TUD_Wrapping_Thickness,
-	               Polarimeter_TUD_Wrapping_Length * 0.5, 0. * deg, 360. * deg);
-	G4LogicalVolume *Polarimeter_TUD_Wrapping_Logical =
-	    new G4LogicalVolume(Polarimeter_TUD_Wrapping_Solid, Pb,
-	                        "Polarimeter_TUD_Wrapping_Logical", 0, 0, 0);
-
-	Polarimeter_TUD_Wrapping_Logical->SetVisAttributes(
-	    new G4VisAttributes(grey));
-
-	Polarimeter_TUD_rt = Polarimeter_TUD_rt +
-	                     Polarimeter_TUD_Wrapping_Length * 0.5 -
-	                     Polarimeter_TUD_Instance->Get_Length() * 0.5;
+	HPGe1_55_rt = HPGe1_55_rt + HPGe1_55_Instance->Get_Length() * 0.5;
 
 	new G4PVPlacement(
-	    rotatePolarimeter_TUD,
-	    G4ThreeVector(Polarimeter_TUD_rt * sin(Polarimeter_TUD_theta) *
-	                      cos(Polarimeter_TUD_phi),
-	                  Polarimeter_TUD_rt * sin(Polarimeter_TUD_theta) *
-	                          sin(Polarimeter_TUD_phi) +
-	                      Polarimeter_TUD_dy,
-	                  Target2_To_Target +
-	                      Polarimeter_TUD_rt * cos(Polarimeter_TUD_theta) +
-	                      Polarimeter_TUD_dz),
-	    Polarimeter_TUD_Wrapping_Logical, "Polarimeter_TUD_Wrapping", world_log,
-	    false, 0);
-	Polarimeter_TUD_rt =
-	    Polarimeter_TUD_rt - Polarimeter_TUD_Wrapping_Length * 0.5;
+	    rotateHPGe1_55,
+	    G4ThreeVector(HPGe1_55_rt * sin(HPGe1_55_theta) * cos(HPGe1_55_phi),
+	                  HPGe1_55_rt * sin(HPGe1_55_theta) * sin(HPGe1_55_phi) +
+	                      HPGe1_55_dy,
+	                  Target2_To_Target + HPGe1_55_rt * cos(HPGe1_55_theta) +
+	                      HPGe1_55_dz),
+	    HPGe1_55_TUD_Logical, "HPGe1_55", world_log, false, 0);
 
-	// Polarimeter_TUD Filters
-	// Pb 50mm, 36/64in
-	Polarimeter_TUD_rt -= pb36_64_50->Thickness * 0.5;
-	pb36_64_50->Put(Polarimeter_TUD_rt * sin(Polarimeter_TUD_theta) *
-	                    cos(Polarimeter_TUD_phi),
-	                Polarimeter_TUD_rt * sin(Polarimeter_TUD_theta) *
-	                        sin(Polarimeter_TUD_phi) +
-	                    Polarimeter_TUD_dy,
-	                Target2_To_Target +
-	                    Polarimeter_TUD_rt * cos(Polarimeter_TUD_theta) +
-	                    Polarimeter_TUD_dz,
-	                Polarimeter_TUD_AngleX, Polarimeter_TUD_AngleY, 0.);
-	Polarimeter_TUD_rt -= pb36_64_50->Thickness * 0.5;
+	// HPGe1_55 Wrapping
+
+	G4double HPGe1_55_Wrapping_Thickness = 2 * 0.050 * inch; // Measured
+	G4double HPGe1_55_Wrapping_Length = 140. * mm;           // Measured
+
+	G4Tubs *HPGe1_55_Wrapping_Solid = new G4Tubs(
+	    "HPGe1_55_Wrapping_Solid", HPGe1_55_Instance->Get_Front_Radius(),
+	    HPGe1_55_Instance->Get_Front_Radius() + HPGe1_55_Wrapping_Thickness,
+	    HPGe1_55_Wrapping_Length * 0.5, 0. * deg, 360. * deg);
+	G4LogicalVolume *HPGe1_55_Wrapping_Logical = new G4LogicalVolume(
+	    HPGe1_55_Wrapping_Solid, Pb, "HPGe1_55_Wrapping_Logical", 0, 0, 0);
+
+	HPGe1_55_Wrapping_Logical->SetVisAttributes(new G4VisAttributes(grey));
+
+	HPGe1_55_rt = HPGe1_55_rt + HPGe1_55_Wrapping_Length * 0.5 -
+	              HPGe1_55_Instance->Get_Length() * 0.5;
+
+	new G4PVPlacement(
+	    rotateHPGe1_55,
+	    G4ThreeVector(HPGe1_55_rt * sin(HPGe1_55_theta) * cos(HPGe1_55_phi),
+	                  HPGe1_55_rt * sin(HPGe1_55_theta) * sin(HPGe1_55_phi) +
+	                      HPGe1_55_dy,
+	                  Target2_To_Target + HPGe1_55_rt * cos(HPGe1_55_theta) +
+	                      HPGe1_55_dz),
+	    HPGe1_55_Wrapping_Logical, "HPGe1_55_Wrapping", world_log, false, 0);
+	HPGe1_55_rt = HPGe1_55_rt - HPGe1_55_Wrapping_Length * 0.5;
+
+	// HPGe1_55 Filters
+
+	HPGe1_55_rt -= fcr->Thickness * 0.5;
+	fcr->Put(
+	    HPGe1_55_rt * sin(HPGe1_55_theta) * cos(HPGe1_55_phi),
+	    HPGe1_55_rt * sin(HPGe1_55_theta) * sin(HPGe1_55_phi) + HPGe1_55_dy,
+	    Target2_To_Target + HPGe1_55_rt * cos(HPGe1_55_theta) + HPGe1_55_dz,
+	    HPGe1_55_AngleX, HPGe1_55_AngleY, 0.);
+	HPGe1_55_rt -= fcr->Thickness * 0.5;
+
+	HPGe1_55_rt -= cuthin->Thickness * 0.5;
+	cuthin->Put(
+	    HPGe1_55_rt * sin(HPGe1_55_theta) * cos(HPGe1_55_phi),
+	    HPGe1_55_rt * sin(HPGe1_55_theta) * sin(HPGe1_55_phi) + HPGe1_55_dy,
+	    Target2_To_Target + HPGe1_55_rt * cos(HPGe1_55_theta) + HPGe1_55_dz,
+	    HPGe1_55_AngleX, HPGe1_55_AngleY, 0.);
+	HPGe1_55_rt -= cuthin->Thickness * 0.5;
+
+	HPGe1_55_rt -= cuthin->Thickness * 0.5;
+	cuthin->Put(
+	    HPGe1_55_rt * sin(HPGe1_55_theta) * cos(HPGe1_55_phi),
+	    HPGe1_55_rt * sin(HPGe1_55_theta) * sin(HPGe1_55_phi) + HPGe1_55_dy,
+	    Target2_To_Target + HPGe1_55_rt * cos(HPGe1_55_theta) + HPGe1_55_dz,
+	    HPGe1_55_AngleX, HPGe1_55_AngleY, 0.);
+	HPGe1_55_rt -= cuthin->Thickness * 0.5;
+
+	HPGe1_55_rt -= pbmedium->Thickness * 0.5;
+	pbmedium->Put(
+	    HPGe1_55_rt * sin(HPGe1_55_theta) * cos(HPGe1_55_phi),
+	    HPGe1_55_rt * sin(HPGe1_55_theta) * sin(HPGe1_55_phi) + HPGe1_55_dy,
+	    Target2_To_Target + HPGe1_55_rt * cos(HPGe1_55_theta) + HPGe1_55_dz,
+	    HPGe1_55_AngleX, HPGe1_55_AngleY, 0.);
+	HPGe1_55_rt -= pbmedium->Thickness * 0.5;
+
+	HPGe1_55_rt -= pbmedium->Thickness * 0.5;
+	pbmedium->Put(
+	    HPGe1_55_rt * sin(HPGe1_55_theta) * cos(HPGe1_55_phi),
+	    HPGe1_55_rt * sin(HPGe1_55_theta) * sin(HPGe1_55_phi) + HPGe1_55_dy,
+	    Target2_To_Target + HPGe1_55_rt * cos(HPGe1_55_theta) + HPGe1_55_dz,
+	    HPGe1_55_AngleX, HPGe1_55_AngleY, 0.);
+	HPGe1_55_rt -= pbmedium->Thickness * 0.5;
+
+	HPGe1_55_rt +=
+	    fcw->FilterCase_Length * 0.5 - fcbo->FilterCaseBottom_Thickness;
+	fcw->Put(
+	    HPGe1_55_rt * sin(HPGe1_55_theta) * cos(HPGe1_55_phi),
+	    HPGe1_55_rt * sin(HPGe1_55_theta) * sin(HPGe1_55_phi) + HPGe1_55_dy,
+	    Target2_To_Target + HPGe1_55_rt * cos(HPGe1_55_theta) + HPGe1_55_dz,
+	    HPGe1_55_AngleX, HPGe1_55_AngleY, 0.);
+	HPGe1_55_rt -= fcw->FilterCase_Length * 0.5;
+
+	HPGe1_55_rt += fcbo->Thickness * 0.5;
+	fcbo->Put(
+	    HPGe1_55_rt * sin(HPGe1_55_theta) * cos(HPGe1_55_phi),
+	    HPGe1_55_rt * sin(HPGe1_55_theta) * sin(HPGe1_55_phi) + HPGe1_55_dy,
+	    Target2_To_Target + HPGe1_55_rt * cos(HPGe1_55_theta) + HPGe1_55_dz,
+	    HPGe1_55_AngleX, HPGe1_55_AngleY, 0.);
+	HPGe1_55_rt -= fcbo->Thickness * 0.5;
+
+	/************************* HPGe8 (HPGe2_55)
+	 * ********************************/
+
+	G4double HPGe2_55_rt =
+	    BeamTube_Outer_Radius + 50. * mm + fcbo->FilterCaseBottom_Thickness +
+	    cuthin->Thickness * 2. + pbmedium->Thickness * 2. +
+	    fcr->FilterCaseRing_Thickness; // Only the distance of the shielded
+	                                   // detector face to the beam pipe
+	                                   // (50.*mm) was measured
+	G4double HPGe2_55_dy = 0. * mm;
+	G4double HPGe2_55_dz = 0. * mm;
+	G4double HPGe2_55_phi = 180. * deg;
+	G4double HPGe2_55_theta = 90. * deg;
+
+	G4double HPGe2_55_AngleX = 180. * deg;
+	G4double HPGe2_55_AngleY = 270. * deg;
+
+	HPGe_55_TUNL_21638 *HPGe2_55_Instance = new HPGe_55_TUNL_21638("HPGe2_55");
+	G4LogicalVolume *HPGe2_55_TUD_Logical = HPGe2_55_Instance->Get_Logical();
+
+	G4RotationMatrix *rotateHPGe2_55 = new G4RotationMatrix();
+	rotateHPGe2_55->rotateX(HPGe2_55_AngleX);
+	rotateHPGe2_55->rotateY(HPGe2_55_AngleY);
+
+	HPGe2_55_rt = HPGe2_55_rt + HPGe2_55_Instance->Get_Length() * 0.5;
+
+	new G4PVPlacement(
+	    rotateHPGe2_55,
+	    G4ThreeVector(HPGe2_55_rt * sin(HPGe2_55_theta) * cos(HPGe2_55_phi),
+	                  HPGe2_55_rt * sin(HPGe2_55_theta) * sin(HPGe2_55_phi) +
+	                      HPGe2_55_dy,
+	                  Target2_To_Target + HPGe2_55_rt * cos(HPGe2_55_theta) +
+	                      HPGe2_55_dz),
+	    HPGe2_55_TUD_Logical, "HPGe2_55", world_log, false, 0);
+
+	// HPGe2_55 Wrapping
+
+	G4double HPGe2_55_Wrapping_Thickness = 2 * 0.050 * inch; // Measured
+	G4double HPGe2_55_Wrapping_Length = 140. * mm;           // Measured
+
+	G4Tubs *HPGe2_55_Wrapping_Solid = new G4Tubs(
+	    "HPGe2_55_Wrapping_Solid", HPGe2_55_Instance->Get_Front_Radius(),
+	    HPGe2_55_Instance->Get_Front_Radius() + HPGe2_55_Wrapping_Thickness,
+	    HPGe2_55_Wrapping_Length * 0.5, 0. * deg, 360. * deg);
+	G4LogicalVolume *HPGe2_55_Wrapping_Logical = new G4LogicalVolume(
+	    HPGe2_55_Wrapping_Solid, Pb, "HPGe2_55_Wrapping_Logical", 0, 0, 0);
+
+	HPGe2_55_Wrapping_Logical->SetVisAttributes(new G4VisAttributes(grey));
+
+	HPGe2_55_rt = HPGe2_55_rt + HPGe2_55_Wrapping_Length * 0.5 -
+	              HPGe2_55_Instance->Get_Length() * 0.5;
+
+	new G4PVPlacement(
+	    rotateHPGe2_55,
+	    G4ThreeVector(HPGe2_55_rt * sin(HPGe2_55_theta) * cos(HPGe2_55_phi),
+	                  HPGe2_55_rt * sin(HPGe2_55_theta) * sin(HPGe2_55_phi) +
+	                      HPGe2_55_dy,
+	                  Target2_To_Target + HPGe2_55_rt * cos(HPGe2_55_theta) +
+	                      HPGe2_55_dz),
+	    HPGe2_55_Wrapping_Logical, "HPGe2_55_Wrapping", world_log, false, 0);
+	HPGe2_55_rt = HPGe2_55_rt - HPGe2_55_Wrapping_Length * 0.5;
+
+	// HPGe2_55 Filters
+
+	HPGe2_55_rt -= fcr->Thickness * 0.5;
+	fcr->Put(
+	    HPGe2_55_rt * sin(HPGe2_55_theta) * cos(HPGe2_55_phi),
+	    HPGe2_55_rt * sin(HPGe2_55_theta) * sin(HPGe2_55_phi) + HPGe2_55_dy,
+	    Target2_To_Target + HPGe2_55_rt * cos(HPGe2_55_theta) + HPGe2_55_dz,
+	    HPGe2_55_AngleX, HPGe2_55_AngleY, 0.);
+	HPGe2_55_rt -= fcr->Thickness * 0.5;
+
+	HPGe2_55_rt -= cuthin->Thickness * 0.5;
+	cuthin->Put(
+	    HPGe2_55_rt * sin(HPGe2_55_theta) * cos(HPGe2_55_phi),
+	    HPGe2_55_rt * sin(HPGe2_55_theta) * sin(HPGe2_55_phi) + HPGe2_55_dy,
+	    Target2_To_Target + HPGe2_55_rt * cos(HPGe2_55_theta) + HPGe2_55_dz,
+	    HPGe2_55_AngleX, HPGe2_55_AngleY, 0.);
+	HPGe2_55_rt -= cuthin->Thickness * 0.5;
+
+	HPGe2_55_rt -= cuthin->Thickness * 0.5;
+	cuthin->Put(
+	    HPGe2_55_rt * sin(HPGe2_55_theta) * cos(HPGe2_55_phi),
+	    HPGe2_55_rt * sin(HPGe2_55_theta) * sin(HPGe2_55_phi) + HPGe2_55_dy,
+	    Target2_To_Target + HPGe2_55_rt * cos(HPGe2_55_theta) + HPGe2_55_dz,
+	    HPGe2_55_AngleX, HPGe2_55_AngleY, 0.);
+	HPGe2_55_rt -= cuthin->Thickness * 0.5;
+
+	HPGe2_55_rt -= pbmedium->Thickness * 0.5;
+	pbmedium->Put(
+	    HPGe2_55_rt * sin(HPGe2_55_theta) * cos(HPGe2_55_phi),
+	    HPGe2_55_rt * sin(HPGe2_55_theta) * sin(HPGe2_55_phi) + HPGe2_55_dy,
+	    Target2_To_Target + HPGe2_55_rt * cos(HPGe2_55_theta) + HPGe2_55_dz,
+	    HPGe2_55_AngleX, HPGe2_55_AngleY, 0.);
+	HPGe2_55_rt -= pbmedium->Thickness * 0.5;
+
+	HPGe2_55_rt -= pbmedium->Thickness * 0.5;
+	pbmedium->Put(
+	    HPGe2_55_rt * sin(HPGe2_55_theta) * cos(HPGe2_55_phi),
+	    HPGe2_55_rt * sin(HPGe2_55_theta) * sin(HPGe2_55_phi) + HPGe2_55_dy,
+	    Target2_To_Target + HPGe2_55_rt * cos(HPGe2_55_theta) + HPGe2_55_dz,
+	    HPGe2_55_AngleX, HPGe2_55_AngleY, 0.);
+	HPGe2_55_rt -= pbmedium->Thickness * 0.5;
+
+	HPGe2_55_rt +=
+	    fcw->FilterCase_Length * 0.5 - fcbo->FilterCaseBottom_Thickness;
+	fcw->Put(
+	    HPGe2_55_rt * sin(HPGe2_55_theta) * cos(HPGe2_55_phi),
+	    HPGe2_55_rt * sin(HPGe2_55_theta) * sin(HPGe2_55_phi) + HPGe2_55_dy,
+	    Target2_To_Target + HPGe2_55_rt * cos(HPGe2_55_theta) + HPGe2_55_dz,
+	    HPGe2_55_AngleX, HPGe2_55_AngleY, 0.);
+	HPGe2_55_rt -= fcw->FilterCase_Length * 0.5;
+
+	HPGe2_55_rt += fcbo->Thickness * 0.5;
+	fcbo->Put(
+	    HPGe2_55_rt * sin(HPGe2_55_theta) * cos(HPGe2_55_phi),
+	    HPGe2_55_rt * sin(HPGe2_55_theta) * sin(HPGe2_55_phi) + HPGe2_55_dy,
+	    Target2_To_Target + HPGe2_55_rt * cos(HPGe2_55_theta) + HPGe2_55_dz,
+	    HPGe2_55_AngleX, HPGe2_55_AngleY, 0.);
+	HPGe2_55_rt -= fcbo->Thickness * 0.5;
 
 	return world_phys;
 }
@@ -2322,10 +2453,11 @@ void DetectorConstruction::ConstructSDandField() {
 	HPGe2SD->SetDetectorID(2);
 	SetSensitiveDetector("HPGe2", HPGe2SD, true);
 
-	EnergyDepositionSD *HPGe3SD = new EnergyDepositionSD("HPGe3", "HPGe3");
-	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe3SD);
-	HPGe3SD->SetDetectorID(3);
-	SetSensitiveDetector("HPGe3", HPGe3SD, true);
+	EnergyDepositionSD *Polarimeter_TUDSD =
+	    new EnergyDepositionSD("Polarimeter_TUD", "Polarimeter_TUD");
+	G4SDManager::GetSDMpointer()->AddNewDetector(Polarimeter_TUDSD);
+	Polarimeter_TUDSD->SetDetectorID(3);
+	SetSensitiveDetector("Polarimeter_TUD", Polarimeter_TUDSD, true);
 
 	EnergyDepositionSD *HPGe4SD = new EnergyDepositionSD("HPGe4", "HPGe4");
 	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe4SD);
@@ -2354,34 +2486,25 @@ void DetectorConstruction::ConstructSDandField() {
 	SetSensitiveDetector("LaBr4", LaBr4SD, true);
 
 	// HPGe detectors in second setup
-	EnergyDepositionSD *Germanium2_TUDSD =
-	    new EnergyDepositionSD("Germanium2_TUD", "Germanium2_TUD");
-	G4SDManager::GetSDMpointer()->AddNewDetector(Germanium2_TUDSD);
-	Germanium2_TUDSD->SetDetectorID(6);
-	SetSensitiveDetector("Germanium2_TUD", Germanium2_TUDSD, true);
-
-	EnergyDepositionSD *HPGe1_55SD =
-	    new EnergyDepositionSD("HPGe1_55", "HPGe1_55");
+	EnergyDepositionSD *HPGe1_55SD = new EnergyDepositionSD("HPGe1_55", "HPGe1_55");
 	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe1_55SD);
 	HPGe1_55SD->SetDetectorID(7);
 	SetSensitiveDetector("HPGe1_55", HPGe1_55SD, true);
 
-	EnergyDepositionSD *HPGe2_55SD =
-	    new EnergyDepositionSD("HPGe2_55", "HPGe2_55");
+	EnergyDepositionSD *HPGe2_55SD = new EnergyDepositionSD("HPGe2_55", "HPGe2_55");
 	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe2_55SD);
 	HPGe2_55SD->SetDetectorID(8);
 	SetSensitiveDetector("HPGe2_55", HPGe2_55SD, true);
 
-	EnergyDepositionSD *Polarimeter_TUDSD =
-	    new EnergyDepositionSD("Polarimeter_TUD", "Polarimeter_TUD");
-	G4SDManager::GetSDMpointer()->AddNewDetector(Polarimeter_TUDSD);
-	Polarimeter_TUDSD->SetDetectorID(7);
-	SetSensitiveDetector("Polarimeter_TUD", Polarimeter_TUDSD, true);
+	EnergyDepositionSD *Germanium2_TUDSD =
+	    new EnergyDepositionSD("Germanium2_TUD", "Germanium2_TUD");
+	G4SDManager::GetSDMpointer()->AddNewDetector(Germanium2_TUDSD);
+	Germanium2_TUDSD->SetDetectorID(9);
+	SetSensitiveDetector("Germanium2_TUD", Germanium2_TUDSD, true);
 
 	// ZeroDegree detector
-	// g	EnergyDepositionSD *ZeroDegreeSD =
-	// g	    new EnergyDepositionSD("ZeroDegree", "ZeroDegree");
-	// g	G4SDManager::GetSDMpointer()->AddNewDetector(ZeroDegreeSD);
-	// g	ZeroDegreeSD->SetDetectorID(5);
-	// g	SetSensitiveDetector("ZeroDegree", ZeroDegreeSD, true);
+	EnergyDepositionSD *ZeroDegreeSD = new EnergyDepositionSD("ZeroDegree", "ZeroDegree");
+	G4SDManager::GetSDMpointer()->AddNewDetector(ZeroDegreeSD);
+	ZeroDegreeSD->SetDetectorID(5);
+	SetSensitiveDetector("ZeroDegree", ZeroDegreeSD, true);
 }

@@ -60,12 +60,12 @@ Materials *materials = Materials::Instance();
 #include "G4UnitsTable.hh"
 
 // Detectors
-#include "HPGe1.hh"
-#include "HPGe1_55.hh"
-#include "HPGe2.hh"
-#include "HPGe2_55.hh"
-#include "HPGe3.hh"
-#include "HPGe4.hh"
+#include "HPGe_60_TUNL_30986.hh"
+#include "HPGe_55_TUNL_31524.hh"
+#include "HPGe_60_TUNL_21033.hh"
+#include "HPGe_55_TUNL_21638.hh"
+#include "HPGe_60_TUNL_40663.hh"
+#include "HPGe_60_TUNL_31061.hh"
 #include "LaBr_Cologne.hh"
 #include "LaBr_TUD.hh"
 #include "ZeroDegree.hh"
@@ -845,17 +845,17 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	/**************** Second Target/Source ***************/
 
-	// g	Kr82_Target *kr82_Target = new Kr82_Target();
-	// g
-	// g	G4LogicalVolume *Kr82_Target_Logical = kr82_Target->Get_Logical();
-	// g
-	// g	G4RotationMatrix *rotateSecondTarget = new G4RotationMatrix();
-	// g	G4double SecondTarget_AngleX = -22. * deg; // Rotation angle to have
+	//	Kr82_Target *kr82_Target = new Kr82_Target();
+	// 
+	// 	G4LogicalVolume *Kr82_Target_Logical = kr82_Target->Get_Logical();
+	// 
+	// 	G4RotationMatrix *rotateSecondTarget = new G4RotationMatrix();
+	// 	G4double SecondTarget_AngleX = -22. * deg; // Rotation angle to have
 	// the
-	// g	                                           // valve rest on the inside
+	// 	                                           // valve rest on the inside
 	// of
-	// g	                                           // the TargetTube
-	// g	rotateSecondTarget->rotateX(SecondTarget_AngleX);
+	// 	                                           // the TargetTube
+	// 	rotateSecondTarget->rotateX(SecondTarget_AngleX);
 
 	//	new G4PVPlacement(
 	//	    rotateSecondTarget,
@@ -978,7 +978,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	G4double HPGe1_AngleX = 180. * deg;
 	G4double HPGe1_AngleY = 90. * deg;
 
-	HPGe1 *HPGe1_Instance = new HPGe1("HPGe1");
+	HPGe_60_TUNL_30986 *HPGe1_Instance = new HPGe_60_TUNL_30986("HPGe1");
 	G4LogicalVolume *HPGe1_Logical = HPGe1_Instance->Get_Logical();
 
 	G4RotationMatrix *rotateHPGe1 = new G4RotationMatrix();
@@ -1000,8 +1000,8 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	G4double HPGe1_Wrapping_Length = 140. * mm;           // Measured
 
 	G4Tubs *HPGe1_Wrapping_Solid =
-	    new G4Tubs("HPGe1_Wrapping_Solid", HPGe1_Instance->Get_Radius(),
-	               HPGe1_Instance->Get_Radius() + HPGe1_Wrapping_Thickness,
+	    new G4Tubs("HPGe1_Wrapping_Solid", HPGe1_Instance->Get_Front_Radius(),
+	               HPGe1_Instance->Get_Front_Radius() + HPGe1_Wrapping_Thickness,
 	               HPGe1_Wrapping_Length * 0.5, 0. * deg, 360. * deg);
 	G4LogicalVolume *HPGe1_Wrapping_Logical = new G4LogicalVolume(
 	    HPGe1_Wrapping_Solid, Pb, "HPGe1_Wrapping_Logical", 0, 0, 0);
@@ -1044,7 +1044,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	G4double HPGe2_phi = 90. * deg;
 	G4double HPGe2_theta = 90. * deg;
 
-	HPGe2 *HPGe2_Instance = new HPGe2("HPGe2");
+	HPGe_60_TUNL_21033 *HPGe2_Instance = new HPGe_60_TUNL_21033("HPGe2");
 	G4LogicalVolume *HPGe2_Logical = HPGe2_Instance->Get_Logical();
 
 	G4double HPGe2_AngleX = 270. * deg;
@@ -1069,8 +1069,8 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	G4double HPGe2_Wrapping_Length = 140. * mm;           // Measured
 
 	G4Tubs *HPGe2_Wrapping_Solid =
-	    new G4Tubs("HPGe2_Wrapping_Solid", HPGe2_Instance->Get_Radius(),
-	               HPGe2_Instance->Get_Radius() + HPGe2_Wrapping_Thickness,
+	    new G4Tubs("HPGe2_Wrapping_Solid", HPGe2_Instance->Get_Front_Radius(),
+	               HPGe2_Instance->Get_Front_Radius() + HPGe2_Wrapping_Thickness,
 	               HPGe2_Wrapping_Length * 0.5, 0. * deg, 360. * deg);
 	G4LogicalVolume *HPGe2_Wrapping_Logical = new G4LogicalVolume(
 	    HPGe2_Wrapping_Solid, Pb, "HPGe2_Wrapping_Logical", 0, 0, 0);
@@ -1117,7 +1117,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	G4double HPGe3_AngleX = 215.264 * deg;
 	G4double HPGe3_AngleY = 150. * deg;
 
-	HPGe3 *HPGe3_Instance = new HPGe3("HPGe3");
+	HPGe_60_TUNL_40663 *HPGe3_Instance = new HPGe_60_TUNL_40663("HPGe3");
 	G4LogicalVolume *HPGe3_TUD_Logical = HPGe3_Instance->Get_Logical();
 
 	G4RotationMatrix *rotateHPGe3 = new G4RotationMatrix();
@@ -1139,8 +1139,8 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	G4double HPGe3_Wrapping_Length = 140. * mm;           // Measured
 
 	G4Tubs *HPGe3_Wrapping_Solid =
-	    new G4Tubs("HPGe3_Wrapping_Solid", HPGe3_Instance->Get_Radius(),
-	               HPGe3_Instance->Get_Radius() + HPGe3_Wrapping_Thickness,
+	    new G4Tubs("HPGe3_Wrapping_Solid", HPGe3_Instance->Get_Front_Radius(),
+	               HPGe3_Instance->Get_Front_Radius() + HPGe3_Wrapping_Thickness,
 	               HPGe3_Wrapping_Length * 0.5, 0. * deg, 360. * deg);
 	G4LogicalVolume *HPGe3_Wrapping_Logical = new G4LogicalVolume(
 	    HPGe3_Wrapping_Solid, Pb, "HPGe3_Wrapping_Logical", 0, 0, 0);
@@ -1186,7 +1186,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	G4double HPGe4_AngleX = 215.264 * deg;
 	G4double HPGe4_AngleY = 210. * deg;
 
-	HPGe4 *HPGe4_Instance = new HPGe4("HPGe4");
+	HPGe_60_TUNL_31061 *HPGe4_Instance = new HPGe_60_TUNL_31061("HPGe4");
 	G4LogicalVolume *HPGe4_Logical = HPGe4_Instance->Get_Logical();
 
 	G4RotationMatrix *rotateHPGe4 = new G4RotationMatrix();
@@ -1208,8 +1208,8 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	G4double HPGe4_Wrapping_Length = 140. * mm;           // Measured
 
 	G4Tubs *HPGe4_Wrapping_Solid =
-	    new G4Tubs("HPGe4_Wrapping_Solid", HPGe4_Instance->Get_Radius(),
-	               HPGe4_Instance->Get_Radius() + HPGe4_Wrapping_Thickness,
+	    new G4Tubs("HPGe4_Wrapping_Solid", HPGe4_Instance->Get_Front_Radius(),
+	               HPGe4_Instance->Get_Front_Radius() + HPGe4_Wrapping_Thickness,
 	               HPGe4_Wrapping_Length * 0.5, 0. * deg, 360. * deg);
 	G4LogicalVolume *HPGe4_Wrapping_Logical = new G4LogicalVolume(
 	    HPGe4_Wrapping_Solid, Pb, "HPGe4_Wrapping_Logical", 0, 0, 0);
@@ -1401,12 +1401,8 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	LaBr_TUD *LaBr3_Instance = new LaBr_TUD("LaBr3");
 	G4LogicalVolume *LaBr3_TUD_Logical = LaBr3_Instance->Get_Logical();
 
-	/*G4double LaBr3_X = LaBr3_rt*sin(LaBr3_theta)*cos(LaBr3_phi);
-	G4double LaBr3_Y = LaBr3_rt*sin(LaBr3_theta)*sin(LaBr3_phi);
-	G4double LaBr3_Z = LaBr3_rt*cos(LaBr3_theta);
-*/
 	G4double LaBr3_AngleX = 180. * deg;
-	G4double LaBr3_AngleY = 90. * deg;
+	G4double LaBr3_AngleY = 270. * deg;
 
 	G4RotationMatrix *rotateLaBr3 = new G4RotationMatrix();
 	rotateLaBr3->rotateX(LaBr3_AngleX);

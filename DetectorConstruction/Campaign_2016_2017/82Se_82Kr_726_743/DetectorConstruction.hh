@@ -25,8 +25,6 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4UnitsTable.hh"
 #include "G4VUserDetectorConstruction.hh"
 
-const G4double inch = 0.0254 * m;
-
 class DetectorConstruction : public G4VUserDetectorConstruction {
   public:
 	DetectorConstruction();
