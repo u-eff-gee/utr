@@ -29,7 +29,7 @@ endif()
 # Choose campaign (an experimental campaign usually has a bulk geometry which is not changed, and several files like the detector arrangment which differ from run to run)
 set(CAMPAIGN "Campaign_2018" CACHE STRING "Select experimental campaign from directory DetectorConstruction/")
 # Choose geometry
-set(DETECTOR_CONSTRUCTION "64Ni_146_227" CACHE STRING "Select detector construction from directory DetectorConstruction/$CAMPAIGN/")
+set(DETECTOR_CONSTRUCTION "64Ni_271_279" CACHE STRING "Select detector construction from directory DetectorConstruction/$CAMPAIGN/")
 # Choose primary generator
 option(USE_GPS "Use G4GeneralParticleSource as primary generator" ON)
 option(USE_TARGETS "Use G4GeneralParticleSource as primary generator" ON)

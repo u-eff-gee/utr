@@ -90,15 +90,46 @@ See section [5 Output Processing](#output)
 ## 2 Features <a name="features"></a>
 
 ### 2.1 Geometry <a name="geometry"></a>
-The `DetectorConstruction.cc` has to be adapted by the user for their experiment. Several pre-defined geometries from various experiments already exist in the `DetectorConstruction/` directory. The most recent geometries are from the experiments on 82Kr/82Se and 120Sn/82Kr. Those have implementations of the most relevant parts of the collimator room and the UTR (γ³ setup [[5]](#ref-g3) and second setup).
+In Geant4, all geometry is implemented in a class which is derived from `G4VUserDetectorConstruction`. In `utr`, the user-implemented geometry can be found in files called `DetectorConstruction.hh` or `DetectorConstruction.cc`. Since the setup at HIGS is subject to many changes in between, and also during experiments, many different geometry implementations exist.
 
-By default, `utr` will use the geometry in `DetectorConstruction/82Se_82Kr_726_743` for no particular reason. To use the geometry in "DetectorConstruction/DetectorConstructionXY", set the corresponding CMake build variable when building the source code (see also [3 Installation](#installation)).
+Since the 2018 campaign, we encourage to stick to the following directory structure and naming convention for the geometry files:
+
+```
+utr/
+    utr.cc      # main()
+    include/    # user actions and auxiliary permanent geometry
+    src/        # user actions and auxiliary permanent geometry
+    DetectorConstruction/
+        Campaign_YEAR/
+            include/    # auxiliary campaign- and run-specific geometry
+                Setup_RUNS.hh
+            src/        # auxiliary campaign- and run-specific geometry
+                Setup_RUNS.cc
+            TARGETS_RUNS/
+                DetectorConstruction.hh
+                DetectorConstruction.cc
+```
+
+As in reality, a geometry file only holds for a certain number of runs, which are part of a campaign. Therefore, unique `DetectorConstruction.cc` files can be found at the run-level. In principle, one could put all the geometry into this file, and before the 2018 campaign, it was done like that because the file was growing and growing. In the meantime, UG has tried to learn from his mistakes: The `DetectorConstructiion.cc` files should be as short as possible, delegating all the low-level construction jobs to auxiliary classes (please see [2.1.1 Note on auxiliary files](#auxiliary_files)). The auxiliary classes can be placed into different directories, depending on their nature:
+Geometry which is expected to be permanent (for example detectors, or furniture), even between different campaigns, should be placed in the `utr/include` and `utr/src` directories.
+More volatile geometry should be placed in the corresponding campaign, i.e. `utr/DetectorConstruction/Campaign_YEAR/include` and `utr/DetectorConstruction/Campaign_YEAR/src`.
+*Sometimes, the difference may not be so clear, and at the moment the sorting is probably not consistent, but our team is still tidying up the 2018 campaign. Everything before 2018 does not follow these conventions, but has been sorted according to the directory structure above anyway to ensure backward compatibility.*
+
+At the moment, detailed implementations of the geometry of the 2016/2017 campaign and parts of the 2018 campaign exist. They include geometry close to the beamline in the collimator room and the UTR including, of course, the experimental setups (γ³ setup [[5]](#ref-g3) and second setup). Less detailed geometries exist for selected experiments in older campaigns. They are based on the geometry from 2016/2017.
+
+By default, `utr` will use the geometry in `DetectorConstruction/Campaign_2018/64Ni_271_279`. Existing geometries can be switched very quickly using cmake build variables. For example, to use the geometry in `utr/DetectorConstruction/Campaign_YEAR/TARGETS_RUNS`, set the corresponding CMake variables and re-build the code (see also [3 Installation](#installation)):
 
 ```bash
-$ cmake -DDETECTOR_CONSTRUCTION="DetectorConstructionXY" .
+$ cmake -DCAMPAIGN="Campaign_YEAR" -DDETECTOR_CONSTRUCTION="TARGETS_RUNS" .
 ```
 
 Several pre-defined classes exist to simplify the geometry construction which are explained in the following.
+
+#### 2.1.1 Note on auxiliary files <a name="auxiliary_files"></a>
+
+In order to prevent the geometry files from growing too large, it is very helpful to divide the setup into logical parts and implement them im separate auxiliary classes. This also makes it easy to switch parts of the geometry on and off without having to comment hundreds of lines.
+
+A common practice is to create `LogicalVolume` objects (pointers) in the auxiliary files that contain several parts, import their mother volume into `DetectorConstruction.cc`, and place it. However, this 
 
 #### 2.1.1 Detectors
 Classes for several different detectors exist. In all of those, a G4LogicalVolume that contains all the parts of a detector is implemented which is returned by the class' Get_Logical() method. Furthermore, each detector class can return its mother volume's length and radius.
@@ -466,7 +497,7 @@ To build and run the simulation, the following dependencies are required:
 
 Furthermore, to use the analysis scripts:
 
-* [ROOT](https://root.cern.ch/) (tested with version 5.34/36)
+* [ROOT 6](https://root.cern.ch/)
 
 Optional components:
 
