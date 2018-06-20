@@ -51,8 +51,8 @@ See section [4 Usage and Visualization](#usage)
 
 ### 1.3 Create a DetectorConstruction
 
- 1. Create a directory in `DetectorConstruction`.
- 2. Implement a geometry in a `DetectorConstruction.hh` and `DetectorConstruction.cc` file in this directory.
+ 1. Create a new campaign in `DetectorConstruction/` and/or a new directory in `DetectorConstruction/Campaign_YEAR`.
+ 2. Implement a geometry in a `DetectorConstruction.hh` and `DetectorConstruction.cc` file in this directory and maybe some auxiliary files following the conventions (see section [2.1 Geometry](#geometry)).
  3. Configure `utr` to use the new geometry using the cmake build option (see sections [2.1 Geometry](#geometry) or [3 Installation](#installation))
 
 ### 1.4 Define sensitive volumes
@@ -129,9 +129,89 @@ Several pre-defined classes exist to simplify the geometry construction which ar
 
 In order to prevent the geometry files from growing too large, it is very helpful to divide the setup into logical parts and implement them im separate auxiliary classes. This also makes it easy to switch parts of the geometry on and off without having to comment hundreds of lines.
 
-A common practice is to create `LogicalVolume` objects (pointers) in the auxiliary files that contain several parts, import their mother volume into `DetectorConstruction.cc`, and place it. However, this 
+A common practice is to create `LogicalVolume` objects (pointers) in the auxiliary files that contain several parts, import their mother volume into `DetectorConstruction.cc`, and place it:
 
-#### 2.1.1 Detectors
+```
+// Auxiliary.hh
+    ...
+    class Auxiliary{
+        ...
+        Auxiliary();
+        G4LogicalVolume* Auxiliary_Logical;
+        G4LogicalVolume* Get_Logical(){ return Auxiliary_Logical };
+        ...
+    };
+    ...
+// Auxiliary.cc
+    ...
+    Auxiliary::Auxiliary(){
+        ...
+        Auxiliary_Logical = new G4LogicalVolume(...);
+        ...
+    }
+    ...
+// DetectorConstruction.cc
+    ...
+    Auxiliary_Logical aux;
+    G4LogicalVolume* aux_log = aux.Get_Logical();
+    new G4PVPlacement(rot, pos, aux_log, "aux", ... );
+    ...
+```
+
+However, this caused some problems in the case of `utr`. 
+For example, the floor and the walls are clearly a logical unit that can be implemented in a separate file. Since the floor and the walls are as long and wide as the whole setup, the mother volume of this auxiliary class would unnecessarily overlap with everything.
+
+Here, instead (except for the detectors, see also [2.1.2 Detectors](#detectors)), we chose to pass the global mother volume to the auxiliary classes and let them make the placements in a `Construct(G4ThreeVector global_coordinates)` method.
+
+```
+// Auxiliary.hh
+    ...
+    class Auxiliary{
+        ...
+        Auxiliary(G4LogicalVolume* World_Log){World_Logical = World_Log};
+        Construct(G4ThreeVector global_coordinates);
+        G4LogicalVolume* World_Logical;
+        ...
+    }
+    ...
+// Auxiliary.cc
+    ...
+    Auxiliary::Construct(G4ThreeVector global_coordinates){
+        ...
+        new G4PVPlacement(rot, global_coordinates + pos, Aux_Logical, "aux", World_Logical, ...);
+        ...
+    }
+    ...
+// DetectorConstruction.cc
+    ...
+    Auxiliary_Logical aux(World_Logical);
+    aux.Construct(global_Coordinates);
+    ...
+```
+
+By passing the global coordinates to the auxiliary file, the placements there can still be done in a local coordinate system.  These examples are only to illustrate the differences, have a look at the geometry from the 2018 campaign for more details.
+
+This positioning scheme prevents overlaps of mother volumes. **However, the order of placements is still important!** The last element placed will be at the top of the hierarchy. For example, if there is a target mounted inside the beam pipe (i.e. the volume of the pipe completely covers the target), the following would be the correct order of placements:
+
+```
+// DetectorConstruction.cc
+    beamPipe.Construct(global_coordinates_beamPipe);
+    target.Construct(global_coordinates_target);
+```
+
+The alternative order
+
+```
+// DetectorConstruction.cc
+    target.Construct(global_coordinates_target);
+    beamPipe.Construct(global_coordinates_beamPipe);
+```
+
+would place the beam pipe on top of the target, and therefore ignore the target when tracking particles. Note that this problem would also occur if we used the other placement scheme.
+
+A disadvantage of this placement scheme is that the volume hierarchy is very flat, because everything is placed inside the global mother volume. This makes it harder, to find a specific volume in the UI mode and easier to have name clashes. Nevertheless, we think that the advantages are more important.
+
+#### 2.1.2 Detectors <a name="detectors"></a>
 Classes for several different detectors exist. In all of those, a G4LogicalVolume that contains all the parts of a detector is implemented which is returned by the class' Get_Logical() method. Furthermore, each detector class can return its mother volume's length and radius.
 
 To place a detector DetectorXY in the geometry, create an instance of the detector class in DetectorConstruction.cc, get the logical volume and place it in the geometry (using Get_Length() and Get_Radius() if necessary):
@@ -159,18 +239,31 @@ At the moment, the following detectors are implemented:
 * Darmstadt HPGe "2" (Eurisys Mesures serial number 10PC447589-A)
 * Darmstadt Clover "Polarimeter" (Eurisys Mesures serial number 10PC447590-a)
 
-#### 2.1.2 Bricks
+#### 2.1.3 Why so much code?
+
+When looking at the code, even at the latest campaign, you may notice that parts of the code are redundant (for example several `Table2_XY.cc` files which contain almost the same information except for little changes). Furthermore, if you are used to codes like the [Agata Simulation Code](http://agata.pd.infn.it/documents/simulations/agataCode.html) or [G4Horus]{https://gitlab.ikp.uni-koeln.de/jmayer/g4horus.git}, you may notice that they heavily employ templates or abstract classes to reduce the code volume, for example for HPGe detectors, which all have about the same topology (a crystal, a cold finger, some housing ...).
+
+However, if there is one thing we have learned about the UTR over the years, it is that anything can change. We are using different detectors every time, which have to be moved/shielded/exchanged between runs, shielding on the tables is reinforced or removed, new things are very often custom-made and don't have simple shapes, ...
+The code somehow reflects this volatility of the setup, therefore it includes some more copy & paste and less abstract programming than other simulations.
+
+#### 2.1.4 Bricks
+*Deprecated! Only valid for geometries before 2018 campaign*
+
 For maximum flexibility, the shielding of the setup can be constructed brick by brick. To avoid the `G4Solid->G4LogicalVolume->G4PhysicalVolume` procedure each time one would like to place a standardized brick, a lot of them are predefined as classes in `Bricks.hh`.
 
 Once instantiated in DetectorConstruction.cc, bricks can be placed inside the G4LogicalVolume which was defined to be their mother volume via their constructor. To place a brick, use the `Put(x, y, z, angle_x, angle_y, angle_z)` method in which the coordinates and rotation angles around the coordinate axes can be specified.
 
 Bricks are assumed to be cuboid objects, i.e. they can have 3 different side lengths. In `Bricks.hh`, the convention is that the long side points in z-direction, the medium side in x-direction and the short side in y-direction, if they can be distinguished. The respective lengths can be accessed via the member variables L, M and S.
 
-#### 2.1.3 Filters
+#### 2.1.5 Filters
+*Deprecated! Only valid for geometries before 2018 campaign*
+
 Similar to bricks, filters and filter cases in front of detectors are implemented in `Filters.hh` and can be placed using their `Put()` methods.
 The intent of this was to give the user an overview which filters are really there at the UTR. Sometimes, the documentation of experiments only mentions "thin", "medium" and "thick" filters, but no actual dimensions. Providing fixed filter types hopefully helps with such issues.
 
-#### 2.1.4 Targets
+#### 2.1.6 Targets
+*Deprecated! Only valid for geometries before 2018 campaign*
+
 Complicated targets can be implemented in `Targets.hh`. The placement in DetectorConstruction.cc works analog to the placement of detectors. Relevant properties of the targets can be made accessible by implementing Get() methods.
 
 ### 2.2 Sensitive Detectors <a name="sensitivedetectors"></a>
@@ -515,11 +608,18 @@ $ make
 
 This will compile the simulation using a default geometry (see [2.1 Geometry](#geometry)) and the GeneralParticleSource as a primary generator (see [2.3 Event Generation](#eventgeneration)).
 
-To use another geometry in the directory `DetectorConstruction/DetectorConstructionXY`, set the `DETECTOR_CONSTRUCTION` build variable when executing the `cmake` command:
+To use another geometry in the directory `DetectorConstruction/`, set the `CAMPAIGN` and the `DETECTOR_CONSTRUCTION` build variable when executing the `cmake` command:
 
 ```bash
-$ cmake -DDETECTOR_CONSTRUCTION="DetectorConstructionXY" .
+$ cmake -DCAMPAIGN="Campaign_YEAR" -DDETECTOR_CONSTRUCTION="TARGETS_RUNS" .
 ```
+
+Since the 2018 campaign, there is also a build variable to quickly remove the targets in the geometry, for example if one would like to simulate detector efficiencies:
+
+```bash
+$ cmake -DUSE_TARGETS=OFF .
+```
+Have a look at the `DetectorConstruction.cc` files of the 2018 campaign to see how this option influences the compilation.
 
 To use the AngularDistributionGenerator instead of the GeneralParticleSource, set the `USE_GPS` variable
 
@@ -542,6 +642,27 @@ The compiled `utr` binary can be run with different arguments. To get an overvie
 ```bash
 $ ./utr --help
 ```
+Any execuation of `utr` will print (amongst the output of Geant4 itself) information about the output quantities and (since the 2018 campaign) about the position of important parts in the geometry:
+
+```bash
+==============================================================
+  DetectorConstruction: Info (all dimensions in mm)
+> Collimator entrance position : (  0.00,  0.00, -3894.18 )
+> Ideal position of G3 target  : (  0.00,  0.00,  0.00 )
+> Ideal position of 2nd target : (  0.00,  0.00, 1574.80 )
+> World dimensions             : ( 3000.00, 3150.00, 8000.00 )
+==============================================================
+G4WT0 > ================================================================================
+G4WT0 > ActionInitialization: The following quantities will be saved to the output file:
+G4WT0 > EDEP
+G4WT0 > PARTICLE
+G4WT0 > VOLUME
+G4WT0 > MOMX
+G4WT0 > MOMY
+G4WT0 > MOMZ
+G4WT0 > ================================================================================
+```
+
 Important optional arguments besides `--help` are:
 ```bash
 $ ./utr -m MACROFILE
@@ -709,11 +830,11 @@ The shell script `loopHistogramToTxt.sh` shows how to loop the script over a lar
 
 ## 6.1 AngularDistributionGenerator <a name="angulardistributiongenerator"></a>
 
-For testing the `AngularDistributionGenerator`, a dedicated geometry can be found in `/DetectorConstruction/AngularDistributionGenerator_Test/` and a macro file and output processing script are located in `/unit_tests/AngularDistributionGenerator/`. The test geometry consists of a very small spherical particle source surrounded by a large hollow sphere which acts as a **ParticleSD**. Geantino particles emitted by this source and detected by the hollow sphere should have the desired angular distribution. This test was originally implemented to test the built-in angular distributions which are manually coded from the output of a computer algebra program, and to get a feeling of how large the value of `W_max` has to be.
+For testing the `AngularDistributionGenerator`, a dedicated geometry can be found in `/DetectorConstruction/unit_tests/AngularDistributionGenerator_Test/` and a macro file and output processing script are located in `/unit_tests/AngularDistributionGenerator_Test/`. The test geometry consists of a very small spherical particle source surrounded by a large hollow sphere which acts as a **ParticleSD**. Geantino particles emitted by this source and detected by the hollow sphere should have the desired angular distribution. This test was originally implemented to test the built-in angular distributions which are manually coded from the output of a computer algebra program, and to get a feeling of how large the value of `W_max` has to be.
 
 In order to use the unit test, the following things have to be prepared:
 
-  1. Build the correct geometry by setting the build variable `DETECTOR_CONSTRUCTION` to `AngularDistributionGenerator_Test` (see [3.2 Compilation](#compilation)).
+  1. Build the correct geometry by setting the build variables `CAMPAIGN` to `unit_tests` and `DETECTOR_CONSTRUCTION` to `AngularDistributionGenerator_Test` (see [3.2 Compilation](#compilation)).
   2. Ensure that the momentum vectors of the particles are written to a ROOT file by enabling the correct flags in `ActionInitialization.hh` (see [2.6 Output File Format](#outputfileformat))
   3. Run a simulation with geantinos and the desired angular distribution. A sample macro is `/unit_tests/AngularDistributionGenerator/angdist_test.mac`
   4. Compile the analysis script `AngularDistributionGenerator_Test.cpp` in the same directory by typing `make`. It can be executed with a number of simulation output files similar to `GetHistogram` (see [5. Output Processing](#outputprocessing)).
