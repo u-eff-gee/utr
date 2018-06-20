@@ -1,6 +1,6 @@
 # Geant4 simulation of the UTR at HIγS
 
-![Geometry of the UTR Geant4 simulation](.media/blender.png)
+![Geometry of the UTR Geant4 simulation](.media/wallpaper_resize.png)
 
 This is a [Geant4](https://geant4.web.cern.ch/) [[1]](#ref-g4_1) [[2]](#ref-g4_2) [[3]](#ref-g4_3) simulation of the Upstream Target Room (UTR) at the High Intensity γ-ray Source (HIγS) facility [[4]](#ref-higs), located at the Duke Free Electron Laser Laboratory (DFELL) of the Triangle University Nuclear Laboratory (TUNL) at Duke University, Durham, NC, USA.
 
