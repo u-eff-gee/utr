@@ -32,7 +32,7 @@ set(CAMPAIGN "Campaign_2018" CACHE STRING "Select experimental campaign from dir
 set(DETECTOR_CONSTRUCTION "64Ni_271_279" CACHE STRING "Select detector construction from directory DetectorConstruction/$CAMPAIGN/")
 # Choose primary generator
 option(USE_GPS "Use G4GeneralParticleSource as primary generator" ON)
-option(USE_TARGETS "Use G4GeneralParticleSource as primary generator" ON)
+option(USE_TARGETS "Use Targets in the geometry" ON)
 
 #----------------------------------------------------------------------------
 # Setup Geant4 include directories and compile definitions

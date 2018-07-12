@@ -51,6 +51,8 @@ Materials *materials = Materials::Instance();
 #include "Table2_146_218.hh"
 #include "Detectors_2nd_146_225.hh"
 #include "ZeroDegree_Setup.hh"
+#include "Ni64_Target.hh"
+#include "Ni64_Sobotka_Target.hh"
 
 // Sensitive Detectors
 #include "G4SDManager.hh"
@@ -83,6 +85,8 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	 * TABLE_2 (the table on which the second setup is mounted)
 	 * DETECTORS_2ND (detectors in second setup)
 	 * ZERODEGREE_SETUP (zero-degree detector)
+	 * G3_TARGET
+	 * SECOND_TARGET
 	 */
 
 	G4Colour white(1.0, 1.0, 1.0);
@@ -147,6 +151,8 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	Beampipe_Downstream beampipe_Downstream(World_Logical);
 	Detectors_2nd_146_225 detectors_2nd(World_Logical);	
 	ZeroDegree_Setup zeroDegree_Setup(World_Logical);
+	Ni64_Target g3_Target(World_Logical);
+	Ni64_Sobotka_Target second_Target(World_Logical);
 
 	/***************************************************/
 	/*****************  CONSTRUCTION  *****************/
@@ -206,6 +212,16 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	/***************** ZERODEGREE_SETUP *****************/
 
 	zeroDegree_Setup.Construct(G4ThreeVector(0., 0., G3_Target_To_2nd_Target + ZeroDegree_To_2nd_Target));
+
+#ifdef USE_TARGETS	
+	/***************** G3_TARGET *****************/
+
+	g3_Target.Construct(G4ThreeVector(0., 0., 0.));
+
+	/***************** SECOND_TARGET *****************/
+
+	second_Target.Construct(G4ThreeVector(0., 0., G3_Target_To_2nd_Target));
+#endif
 
 	print_info();
 
