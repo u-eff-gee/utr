@@ -241,7 +241,7 @@ At the moment, the following detectors are implemented:
 
 #### 2.1.3 Why so much code?
 
-When looking at the code, even at the latest campaign, you may notice that parts of the code are redundant (for example several `Table2_XY.cc` files which contain almost the same information except for little changes). Furthermore, if you are used to codes like the [Agata Simulation Code](http://agata.pd.infn.it/documents/simulations/agataCode.html) or [G4Horus]{https://gitlab.ikp.uni-koeln.de/jmayer/g4horus.git}, you may notice that they heavily employ templates or abstract classes to reduce the code volume, for example for HPGe detectors, which all have about the same topology (a crystal, a cold finger, some housing ...).
+When looking at the code, even at the latest campaign, you may notice that parts of the code are redundant (for example several `Table2_XY.cc` files which contain almost the same information except for little changes). Furthermore, if you are used to codes like the [Agata Simulation Code](http://agata.pd.infn.it/documents/simulations/agataCode.html) or [G4Horus](https://gitlab.ikp.uni-koeln.de/jmayer/g4horus.git), you may notice that they heavily employ templates or abstract classes to reduce the code volume, for example for HPGe detectors, which all have about the same topology (a crystal, a cold finger, some housing ...).
 
 However, if there is one thing we have learned about the UTR over the years, it is that anything can change. We are using different detectors every time, which have to be moved/shielded/exchanged between runs, shielding on the tables is reinforced or removed, new things are very often custom-made and don't have simple shapes, ...
 The code somehow reflects this volatility of the setup, therefore it includes some more copy & paste and less abstract programming than other simulations.
@@ -512,15 +512,15 @@ The physics processes are defined in `/src/Physics.cc`. In the Physics::Construc
 At the moment, physics processes for gammas, electrons/positrons, neutrons and other charged particles are available. Check Physics.cc to see which processes are defined.
 A description of the processes can be found in the [GEANT4 Physics Reference Manual](http://geant4.web.cern.ch/geant4/UserDocumentation/UsersGuides/PhysicsReferenceManual/fo/PhysicsReferenceManual.pdf)
 
-The physics list is optimized for NRF applications and largely inspired by the GEANT4 examples `TestEm7` and `Hadr04`.
+The physics list is optimized for NRF applications at HIGS and largely inspired by the GEANT4 examples `TestEm7` and `Hadr04`.
 
 #### 2.4.1 Transportation
 Mandatory for all particles. Without this, the simulation will do almost nothing.
 
 #### 2.4.2 EMPenelope, EMLivermore
-Uses the Penelope OR Livermore low-energy electromagnetic physics framework for gammas, electrons and positrons. Only one of them can be active at the same time. 
+Uses the Penelope OR Livermore low-energy electromagnetic physics framework for gammas, electrons and positrons. Only one of them can be active at the same time. Both frameworks aim at a more precise description of these processes than the standard G4 physics which are optimized for particle physics applications at CERN.
 
-Both frameworks aim at a more precise description of these processes than the standard G4 physics which are optimized for particle physics applications at CERN.
+At the moment, only EMLivermore provides models for the interaction of polarized photons with matter, therefore, G4LivermorePolarized* is used by default.
 
 #### 2.4.3 HPNeutron
 A specialized neutron physics framework for low energies.
