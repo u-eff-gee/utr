@@ -28,7 +28,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4VisAttributes.hh"
 
 #include "Units.hh"
-#include "Detectors_G3_3_9.hh"
+#include "Detectors_G3_10_33.hh"
 #include "HPGe_60_TUNL_30986.hh"
 #include "HPGe_60_TUNL_31061.hh"
 #include "HPGe_60_TUNL_40663.hh"
@@ -36,11 +36,11 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "LaBr_TUD.hh"
 #include "FilterCase.hh"
 
-Detectors_G3_3_9::Detectors_G3_3_9(G4LogicalVolume *World_Log):
+Detectors_G3_10_33::Detectors_G3_10_33(G4LogicalVolume *World_Log):
 World_Logical(World_Log)
 {}
 
-void Detectors_G3_3_9::Construct(G4ThreeVector global_coordinates){
+void Detectors_G3_10_33::Construct(G4ThreeVector global_coordinates){
 
 	G4Colour orange(1.0, 0.5, 0.0);
 	G4Colour green(0.0, 1.0, 0.0);
@@ -92,7 +92,7 @@ void Detectors_G3_3_9::Construct(G4ThreeVector global_coordinates){
 	G4double HPGe1_Cu_Radius = 45.*mm;
 	G4double HPGe1_Cu_Thickness = 5.*mm;
 	G4double HPGe1_Pb_Radius = 45.*mm;
-	G4double HPGe1_Pb_Thickness = 10.*mm;
+	G4double HPGe1_Pb_Thickness = 13.*mm;
 	G4double HPGe1_Wrap_Offset = 10.5*mm;
 	G4double HPGe1_Cu_Wrap_Thickness = 3.*mm;
 	G4double HPGe1_Cu_Wrap_Length = 102.*mm;
@@ -196,7 +196,7 @@ void Detectors_G3_3_9::Construct(G4ThreeVector global_coordinates){
 	G4double HPGe2_Cu_Radius = 45.*mm;
 	G4double HPGe2_Cu_Thickness = 5.*mm;
 	G4double HPGe2_Pb_Radius = 45.*mm;
-	G4double HPGe2_Pb_Thickness = 10.*mm;
+	G4double HPGe2_Pb_Thickness = 13.*mm;
 	G4double HPGe2_Wrap_Offset = 10.5*mm;
 	G4double HPGe2_Cu_Wrap_Thickness = 3.*mm;
 	G4double HPGe2_Cu_Wrap_Length = 102.*mm;
@@ -301,7 +301,7 @@ void Detectors_G3_3_9::Construct(G4ThreeVector global_coordinates){
 	G4double HPGe3_Cu_Radius = 45.*mm;
 	G4double HPGe3_Cu_Thickness = 5.*mm;
 	G4double HPGe3_Pb_Radius = 45.*mm;
-	G4double HPGe3_Pb_Thickness = 10.*mm;
+	G4double HPGe3_Pb_Thickness = 13.*mm;
 	G4double HPGe3_Wrap_Offset = 10.5*mm;
 	G4double HPGe3_Cu_Wrap_Thickness = 3.*mm;
 	G4double HPGe3_Cu_Wrap_Length = 102.*mm;
@@ -405,7 +405,7 @@ void Detectors_G3_3_9::Construct(G4ThreeVector global_coordinates){
 	G4double HPGe4_Cu_Radius = 45.*mm;
 	G4double HPGe4_Cu_Thickness = 5.*mm;
 	G4double HPGe4_Pb_Radius = 45.*mm;
-	G4double HPGe4_Pb_Thickness = 10.*mm;
+	G4double HPGe4_Pb_Thickness = 13.*mm;
 	G4double HPGe4_Wrap_Offset = 10.5*mm;
 	G4double HPGe4_Cu_Wrap_Thickness = 3.*mm;
 	G4double HPGe4_Cu_Wrap_Length = 102.*mm;

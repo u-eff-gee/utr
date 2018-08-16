@@ -19,7 +19,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 /*
-Setup for runs 4 - 9
+Setup for runs 10 - 33
 */
 
 #include "DetectorConstruction.hh"
@@ -42,7 +42,7 @@ Materials *materials = Materials::Instance();
 #include "Room.hh"
 #include "First_UTR_Wall.hh"
 #include "First_Setup.hh"
-#include "Detectors_G3_3_9.hh"
+#include "Detectors_G3_10_33.hh"
 #include "ZeroDegree_Setup.hh"
 
 // Sensitive Detectors
@@ -128,7 +128,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	Room room(World_Logical);
 	First_UTR_Wall first_UTR_Wall(World_Logical);
 	First_Setup first_Setup(World_Logical);
-	Detectors_G3_3_9 detectors_G3(World_Logical);
+	Detectors_G3_10_33 detectors_G3(World_Logical);
 	ZeroDegree_Setup zeroDegree_Setup(World_Logical);
 	//Ni64_Target g3_Target(World_Logical);
 
