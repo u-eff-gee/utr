@@ -44,6 +44,7 @@ Materials *materials = Materials::Instance();
 #include "First_Setup.hh"
 #include "Detectors_G3_10_33.hh"
 #include "ZeroDegree_Setup.hh"
+#include "Ar40_Target.hh"
 
 // Sensitive Detectors
 #include "G4SDManager.hh"
@@ -130,7 +131,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	First_Setup first_Setup(World_Logical);
 	Detectors_G3_10_33 detectors_G3(World_Logical);
 	ZeroDegree_Setup zeroDegree_Setup(World_Logical);
-	//Ni64_Target g3_Target(World_Logical);
+	Ar40_Target g3_Target(World_Logical);
 
 	/***************************************************/
 	/*****************  CONSTRUCTION  *****************/
@@ -166,7 +167,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 #ifdef USE_TARGETS	
 	/***************** G3_TARGET *****************/
 
-	//g3_Target.Construct(G4ThreeVector(0., 0., 0.));
+	g3_Target.Construct(G4ThreeVector(0., 0., 0.));
 #endif
 
 	print_info();
