@@ -142,7 +142,6 @@ void Detectors_G3_271_279::Construct(G4ThreeVector global_coordinates){
 	    );
 	
 	HPGe1_rt += filterCase1.Get_Offset_From_Detector();
-	HPGe1_rt -= filterCase1.Get_FilterCaseRing_Thickness();
 
 	if(HPGe1_Cu_Thickness > 0.){
 		HPGe1_rt -= HPGe1_Cu_Thickness * 0.5;
@@ -240,7 +239,6 @@ void Detectors_G3_271_279::Construct(G4ThreeVector global_coordinates){
 	    );
 	
 	HPGe2_rt += filterCase2.Get_Offset_From_Detector();
-	HPGe2_rt -= filterCase2.Get_FilterCaseRing_Thickness();
 
 	if(HPGe2_Cu_Thickness > 0.){
 		HPGe2_rt -= HPGe2_Cu_Thickness * 0.5;
@@ -338,7 +336,6 @@ void Detectors_G3_271_279::Construct(G4ThreeVector global_coordinates){
 	    );
 	
 	HPGe3_rt += filterCase3.Get_Offset_From_Detector();
-	HPGe3_rt -= filterCase3.Get_FilterCaseRing_Thickness();
 
 	if(HPGe3_Cu_Thickness > 0.){
 		HPGe3_rt -= HPGe3_Cu_Thickness * 0.5;
@@ -619,7 +616,6 @@ void Detectors_G3_271_279::Construct(G4ThreeVector global_coordinates){
 	    );
 	
 	LaBr2_rt += filterCaseL2.Get_Offset_From_Detector();
-	LaBr2_rt -= filterCaseL2.Get_FilterCaseRing_Thickness();
 
 	if(LaBr2_Cu_Thickness > 0.){
 		LaBr2_rt -= LaBr2_Cu_Thickness * 0.5;

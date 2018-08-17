@@ -238,6 +238,8 @@ At the moment, the following detectors are implemented:
 * Darmstadt HPGe "1" (Canberra serial number 10PC473156-A)
 * Darmstadt HPGe "2" (Eurisys Mesures serial number 10PC447589-A)
 * Darmstadt Clover "Polarimeter" (Eurisys Mesures serial number 10PC447590-a)
+* Cologne 100% HPGe (Ortec serial number 73954)
+* Stuttgart 86.2% HPGe (Canberra serial number 37-N311204)
 
 #### 2.1.3 Why so much code?
 
