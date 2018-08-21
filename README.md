@@ -499,6 +499,14 @@ At the moment, the following distributions are implemented:
     5/2+- -> 3/2+- -> 5/2+-
 * `states == {2.5, -1.5, 2.5} or {-2.5, 1.5, -2.5}`
     5/2+- -> 3/2-+ -> 5/2+-
+* `states == {2.5, 2.5, 2.5} or {-2.5, -2.5, -2.5}`
+    5/2+- -> 5/2+- -> 5/2+-
+* `states == {2.5, -2.5, 2.5} or {-2.5, 2.5, -2.5}`
+    5/2+- -> 5/2-+ -> 5/2+-
+* `states == {2.5, 3.5, 2.5} or {-2.5, -3.5, -2.5}`
+    5/2+- -> 7/2+- -> 5/2+-
+* `states == {2.5, -3.5, 2.5} or {-2.5, 3.5, -2.5}`
+    5/2+- -> 7/2-+ -> 5/2+-
 
 Finding the correct dimensions of the container box might need visualization. Try placing a `G4Box` with the desired dimensions at the desired position in the geometry and see whether it encloses the source volume completely and as close as possible. In fact, most of the predefined geometries have such a `G4Box` called `AuxBox` which is commented out. After using it to determine the size and position of the container box, remember to comment out the code again.
 
