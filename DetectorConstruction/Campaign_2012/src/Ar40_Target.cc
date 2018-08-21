@@ -46,15 +46,15 @@ void Ar40_Target::Construct(G4ThreeVector global_coordinates){
 	G4NistManager *nist = G4NistManager::Instance();
 
 	// Target material: natural argon
-	G4double Cylinder_Mass = 1408 * g;
-	G4double Cylinder_Empty_Mass = 1028 * g;
+	G4double Cylinder_Mass = 1408. * g;
+	G4double Cylinder_Empty_Mass = 1028. * g;
 	G4double Argon_Volume = 0.7e6 * mm3;
 	G4double Argon_Mass = Cylinder_Mass - Cylinder_Empty_Mass;
 
 	G4double Argon_Density = Argon_Mass/Argon_Volume;
-	G4Isotope *Ar36 = new G4Isotope("36Ar", 18, 18);
-	G4Isotope *Ar38 = new G4Isotope("38Ar", 18, 20);
-	G4Isotope *Ar40 = new G4Isotope("40Ar", 18, 22);
+	G4Isotope *Ar36 = new G4Isotope("36Ar", 18, 18, 35.967545*g/mole);
+	G4Isotope *Ar38 = new G4Isotope("38Ar", 18, 20, 37.962732*g/mole);
+	G4Isotope *Ar40 = new G4Isotope("40Ar", 18, 22, 39.962383*g/mole);
 
 	G4Element *elAr = new G4Element("elemental_Argon", "elAr", 3);
 	elAr->AddIsotope(Ar36,  0.333*perCent);
@@ -68,8 +68,8 @@ void Ar40_Target::Construct(G4ThreeVector global_coordinates){
 	G4Material *Al = nist->FindOrBuildMaterial("G4_Al");
 
 	G4double Carbon_Fiber_Density = 1.8 * g/cm3; // Wikipedia
-	G4Isotope *C12 = new G4Isotope("12C", 6, 6);
-	G4Isotope *C13 = new G4Isotope("13C", 6, 7);
+	G4Isotope *C12 = new G4Isotope("12C", 6, 6, 12.      *g/mole);
+	G4Isotope *C13 = new G4Isotope("13C", 6, 7, 13.003354*g/mole);
 
 	G4Element *elC = new G4Element("elemental_Carbon", "elC", 2);
 	elC->AddIsotope(C12, 98.9*perCent);
@@ -124,15 +124,17 @@ void Ar40_Target::Construct(G4ThreeVector global_coordinates){
 
 G4UnionSolid* Ar40_Target::Create_Pill_Shape(const G4String &Solid_Name, G4double Pill_Length, G4double Pill_Rmin, G4double Pill_Rmax){
 
+	G4double safety_distance = 0.;
+
 	G4Tubs *Pill_Cylinder_Solid = new G4Tubs("Pill_Cylinder_Solid", Pill_Rmin, Pill_Rmax, Pill_Length, 0., twopi);
 	G4Sphere *Pill_Semisphere_Solid = new G4Sphere("Pill_Semisphere_Solid", Pill_Rmin, Pill_Rmax, 0., twopi, 0., 0.5*pi);
 
-	G4UnionSolid *Pill_Temp = new G4UnionSolid("Pill_Temp", Pill_Cylinder_Solid, Pill_Semisphere_Solid, 0, G4ThreeVector(0., 0., Pill_Length));
+	G4UnionSolid *Pill_Temp = new G4UnionSolid("Pill_Temp", Pill_Cylinder_Solid, Pill_Semisphere_Solid, 0, G4ThreeVector(0., 0., Pill_Length - safety_distance));
 
 	G4RotationMatrix *rot = new G4RotationMatrix();
 	rot->rotateY(180.*deg);
 
-	G4UnionSolid *Pill_Solid = new G4UnionSolid(Solid_Name, Pill_Temp, Pill_Semisphere_Solid, rot, G4ThreeVector(0., 0., -Pill_Length));
+	G4UnionSolid *Pill_Solid = new G4UnionSolid(Solid_Name, Pill_Temp, Pill_Semisphere_Solid, rot, G4ThreeVector(0., 0., -Pill_Length + safety_distance));
 
 	return Pill_Solid;
 }
