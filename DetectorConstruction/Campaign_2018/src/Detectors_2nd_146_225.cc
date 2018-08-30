@@ -176,7 +176,7 @@ void Detectors_2nd_146_225::Construct(G4ThreeVector global_coordinates){
 	G4double HPGe_Stuttgart_Cu_Radius = 50.*mm; 
 	G4double HPGe_Stuttgart_Cu_Thickness = 1.*1.15*mm; 
 	G4double HPGe_Stuttgart_Pb_Radius = 50.*mm; 
-	G4double HPGe_Stuttgart_Pb_Thickness = (1.*1.2 + 1.*2.)*mm; 
+	G4double HPGe_Stuttgart_Pb_Thickness = 1.*2.*mm; 
 	G4double HPGe_Stuttgart_Pb_Wrap_Thickness = 1.*1.2*mm; 
 	G4double HPGe_Stuttgart_Pb_Wrap_Length = 250.*mm; 
 
