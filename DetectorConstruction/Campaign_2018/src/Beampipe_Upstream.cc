@@ -48,7 +48,6 @@ void Beampipe_Upstream::Construct(G4ThreeVector global_coordinates, G4double rel
 
 	G4NistManager *nist = G4NistManager::Instance();
 
-	G4cout << "Creating vacuum" << G4endl;
 	Vacuum vac(relative_density);
 	G4Material *vacuum = vac.Get_Material();
 	G4Material *plexiglass = nist->FindOrBuildMaterial("G4_PLEXIGLASS");

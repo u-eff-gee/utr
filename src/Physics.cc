@@ -47,6 +47,10 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4eIonisation.hh"
 #include "G4eMultipleScattering.hh"
 
+#include "G4MuIonisation.hh"
+#include "G4MuBremsstrahlung.hh"
+#include "G4MuPairProduction.hh"
+
 #include "G4EmProcessOptions.hh"
 #include "G4eplusAnnihilation.hh"
 
@@ -124,6 +128,7 @@ void Physics::ConstructProcess() {
 	AddTransportation();
 	// ConstructEMPenelope();
 	// ConstructEMLivermore();
+	// ConstructMuons();
 	ConstructEMLivermorePolarized();
 	// ConstructHPNeutron();
 	// ConstructChargedParticle();
@@ -275,7 +280,7 @@ void Physics::ConstructEMLivermore() {
 
 void Physics::ConstructEMLivermorePolarized() {
 	G4PhysicsListHelper *ph = G4PhysicsListHelper::GetPhysicsListHelper();
-	G4ProcessManager *procMan = G4Gamma::Gamma()->GetProcessManager();
+	G4ProcessManager *procMan = nullptr;
 
 	G4ParticleTableIterator<G4String, G4ParticleDefinition *>
 	    *particleIterator = G4ParticleTable::GetParticleTable()->GetIterator();
@@ -285,6 +290,7 @@ void Physics::ConstructEMLivermorePolarized() {
 		G4String particleName = particle->GetParticleName();
 
 		if (particleName == "gamma") {
+			procMan = G4Gamma::Gamma()->GetProcessManager();
 
 			G4ComptonScattering *cs = new G4ComptonScattering;
 			cs->SetEmModel(new G4LivermorePolarizedComptonModel(), 1);
@@ -378,6 +384,31 @@ void Physics::ConstructHPNeutron() {
 			G4NeutronHPCapture *captureModel = new G4NeutronHPCapture();
 			hadronCapture->RegisterMe(captureModel);
 			ph->RegisterProcess(hadronCapture, particle);
+		}
+	}
+}
+
+void Physics::ConstructMuons() {
+
+	G4ProcessManager *procMan = nullptr;
+
+	G4ParticleTableIterator<G4String, G4ParticleDefinition *>
+	    *particleIterator = G4ParticleTable::GetParticleTable()->GetIterator();
+	particleIterator->reset();
+	while ((*particleIterator)()) {
+		G4ParticleDefinition *particle = particleIterator->value();
+		G4String particleName = particle->GetParticleName();
+		if(particleName == "mu+") {
+			procMan = G4MuonPlus::MuonPlus()->GetProcessManager();
+			procMan->AddProcess(new G4MuIonisation(), -1, 2, 2);
+			procMan->AddProcess(new G4MuBremsstrahlung(), -1, 3, 3);
+			procMan->AddProcess(new G4MuPairProduction(), -1, 4, 4);
+
+		} else if(particleName == "mu-") {
+			procMan = G4MuonMinus::MuonMinus()->GetProcessManager();
+			procMan->AddProcess(new G4MuIonisation(), -1, 2, 2);
+			procMan->AddProcess(new G4MuBremsstrahlung(), -1, 3, 3);
+			procMan->AddProcess(new G4MuPairProduction(), -1, 4, 4);
 		}
 	}
 }
