@@ -30,6 +30,10 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Ni64_Target.hh"
 
+Ni64_Target::Ni64_Target():
+World_Logical(nullptr)
+{}
+
 Ni64_Target::Ni64_Target(G4LogicalVolume *World_Log):
 World_Logical(World_Log)
 {}

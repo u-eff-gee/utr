@@ -56,7 +56,7 @@ void Beampipe_Downstream::Construct(G4ThreeVector global_coordinates, G4double r
 	
 	// Beam pipe vacuum
 	G4Tubs *Vacuum_Solid = new G4Tubs("Vacuum_Solid", 0., Beampipe_Inner_Radius, Beampipe_Downstream_Length*0.5, 0., twopi);
-	G4LogicalVolume *Vacuum_Logical = new G4LogicalVolume(Vacuum_Solid, vacuum, "Vacuum_Logical");
+	Vacuum_Logical = new G4LogicalVolume(Vacuum_Solid, vacuum, "Vacuum_Logical");
 
 	Vacuum_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());	
 	

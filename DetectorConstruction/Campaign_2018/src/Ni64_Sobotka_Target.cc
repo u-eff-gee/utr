@@ -30,6 +30,10 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Ni64_Sobotka_Target.hh"
 
+Ni64_Sobotka_Target::Ni64_Sobotka_Target():
+World_Logical(nullptr)
+{}
+
 Ni64_Sobotka_Target::Ni64_Sobotka_Target(G4LogicalVolume *World_Log):
 World_Logical(World_Log)
 {}

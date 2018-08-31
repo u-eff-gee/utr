@@ -25,10 +25,12 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 class Ni64_Sobotka_Target{
 public:
+	Ni64_Sobotka_Target();
 	Ni64_Sobotka_Target(G4LogicalVolume *World_Log);
 	~Ni64_Sobotka_Target(){};
 
 	void Construct(G4ThreeVector global_coordinates);
+	void Set_Containing_Volume(G4LogicalVolume *World_Log){ World_Logical = World_Log; };
 
 private:
 	G4LogicalVolume *World_Logical;

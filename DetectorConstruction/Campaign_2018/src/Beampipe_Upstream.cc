@@ -60,9 +60,11 @@ void Beampipe_Upstream::Construct(G4ThreeVector global_coordinates, G4double rel
 	
 	// Beam pipe vacuum
 	G4Tubs *Vacuum_Solid = new G4Tubs("Vacuum_Solid", 0., Beampipe_Inner_Radius, Beampipe_Upstream_Length*0.5, 0., twopi);
-	G4LogicalVolume *Vacuum_Logical = new G4LogicalVolume(Vacuum_Solid, vacuum, "Vacuum_Logical");
+	Vacuum_Logical = new G4LogicalVolume(Vacuum_Solid, vacuum, "Vacuum_Logical");
+	G4cout << Vacuum_Logical->GetName() << G4endl;
 
-	Vacuum_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());	
+	//Vacuum_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());
+	Vacuum_Logical->SetVisAttributes(red);
 	
 	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., 0.), Vacuum_Logical, "Vacuum", World_Logical, false, 0, false);
 

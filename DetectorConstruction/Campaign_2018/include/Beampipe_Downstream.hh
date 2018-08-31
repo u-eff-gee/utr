@@ -31,9 +31,11 @@ public:
 
 	G4double Get_Length(){ return Beampipe_Downstream_Length; };
 	G4double Get_Z_Axis_Offset_Z(){ return Z_Axis_Offset_Z; };
+	G4LogicalVolume* Get_Beampipe_Vacuum(){ return Vacuum_Logical; };
 
 private:
 	G4LogicalVolume *World_Logical;
+	G4LogicalVolume *Vacuum_Logical;
 	G4double Beampipe_Downstream_Upstream_Length;
 	G4double Beampipe_Downstream_Downstream_Length;
 	G4double Beampipe_Downstream_Length;

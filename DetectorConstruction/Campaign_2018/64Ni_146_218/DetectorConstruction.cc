@@ -151,8 +151,8 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	Beampipe_Downstream beampipe_Downstream(World_Logical);
 	Detectors_2nd_146_225 detectors_2nd(World_Logical);	
 	ZeroDegree_Setup zeroDegree_Setup(World_Logical);
-	Ni64_Target g3_Target(World_Logical);
-	Ni64_Sobotka_Target second_Target(World_Logical);
+	Ni64_Target g3_Target;
+	Ni64_Sobotka_Target second_Target;
 
 	/***************************************************/
 	/*****************  CONSTRUCTION  *****************/
@@ -216,11 +216,13 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 #ifdef USE_TARGETS	
 	/***************** G3_TARGET *****************/
 
-	g3_Target.Construct(G4ThreeVector(0., 0., 0.));
+	g3_Target.Set_Containing_Volume(beampipe_Upstream.Get_Beampipe_Vacuum());
+	g3_Target.Construct(G4ThreeVector(0., 0., -beampipe_Upstream.Get_Z_Axis_Offset_Z()));
 
 	/***************** SECOND_TARGET *****************/
 
-	second_Target.Construct(G4ThreeVector(0., 0., G3_Target_To_2nd_Target));
+	second_Target.Set_Containing_Volume(beampipe_Downstream.Get_Beampipe_Vacuum());
+	second_Target.Construct(G4ThreeVector(0., 0., -beampipe_Downstream.Get_Z_Axis_Offset_Z()));
 #endif
 
 	print_info();
