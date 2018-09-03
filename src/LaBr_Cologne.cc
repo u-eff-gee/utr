@@ -35,8 +35,6 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4UnitsTable.hh"
 #include "G4VisAttributes.hh"
 
-#include "Materials.hh"
-
 LaBr_Cologne::LaBr_Cologne(G4String Detector_Name)
     : lengthCrystal(38.1 * mm), radiusCrystal(38.1 / 2. * mm),
       thicknessHousing(1 * mm), radiusHousing(20.75 * mm),
@@ -56,11 +54,11 @@ LaBr_Cologne::LaBr_Cologne(G4String Detector_Name)
 	G4Colour light_orange(1.0, 0.82, 0.36);
 
 	G4NistManager *nist = G4NistManager::Instance();
-	Materials *mat = Materials::Instance();
 
 	G4Material *vacuum = nist->FindOrBuildMaterial("G4_Galactic");
 	G4Material *Al = nist->FindOrBuildMaterial("G4_Al");
-	G4Material *LaBr3Ce = mat->Get_LaBr3Ce();
+
+	G4Material *LaBr3Ce = nist->FindOrBuildMaterial("Brillance380");
 	G4Material *air = nist->FindOrBuildMaterial("G4_AIR");
 
 	G4double zPos = 0.;

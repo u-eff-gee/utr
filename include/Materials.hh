@@ -29,17 +29,17 @@ class Materials {
   private:
 	~Materials();
 
-	static Materials *instance;
-
   public:
 	Materials();
 
 	static Materials *Instance() {
-		if (instance == NULL) {
+		if (instance == nullptr) {
 			instance = new Materials();
 		}
 		return instance;
 	}
+
+	static Materials *instance;
 
 	void ConstructMaterials();
 

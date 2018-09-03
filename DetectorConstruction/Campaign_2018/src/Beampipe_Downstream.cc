@@ -46,7 +46,7 @@ void Beampipe_Downstream::Construct(G4ThreeVector global_coordinates, G4double r
 
 	G4NistManager *nist = G4NistManager::Instance();
 
-	Vacuum vac(relative_density);
+	Vacuum vac(relative_density, "beampipe_downstrean_vacuum");
 	G4Material *vacuum = vac.Get_Material();
 	G4Material *plexiglass = nist->FindOrBuildMaterial("G4_PLEXIGLASS");
 

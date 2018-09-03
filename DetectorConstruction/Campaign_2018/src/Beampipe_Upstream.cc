@@ -48,7 +48,7 @@ void Beampipe_Upstream::Construct(G4ThreeVector global_coordinates, G4double rel
 
 	G4NistManager *nist = G4NistManager::Instance();
 
-	Vacuum vac(relative_density);
+	Vacuum vac(relative_density, "beampipe_upstream_vacuum");
 	G4Material *vacuum = vac.Get_Material();
 	G4Material *plexiglass = nist->FindOrBuildMaterial("G4_PLEXIGLASS");
 
@@ -60,7 +60,6 @@ void Beampipe_Upstream::Construct(G4ThreeVector global_coordinates, G4double rel
 	// Beam pipe vacuum
 	G4Tubs *Vacuum_Solid = new G4Tubs("Vacuum_Solid", 0., Beampipe_Inner_Radius, Beampipe_Upstream_Length*0.5, 0., twopi);
 	Vacuum_Logical = new G4LogicalVolume(Vacuum_Solid, vacuum, "Vacuum_Logical");
-	G4cout << Vacuum_Logical->GetName() << G4endl;
 
 	//Vacuum_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());
 	Vacuum_Logical->SetVisAttributes(red);

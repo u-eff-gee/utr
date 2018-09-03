@@ -24,7 +24,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 class Vacuum{
 public:
-	Vacuum(G4double relative_density);
+	Vacuum(G4double relative_density, G4String material_name);
 	~Vacuum(){};
 
 	G4Material *Get_Material(){ return Vacuum_Material; }

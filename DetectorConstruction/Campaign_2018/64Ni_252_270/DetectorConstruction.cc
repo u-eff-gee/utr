@@ -28,7 +28,6 @@ Setup for runs 252 - 270
 #include "G4Material.hh"
 #include "G4NistManager.hh"
 #include "Materials.hh"
-Materials *Materials::instance = NULL;
 Materials *materials = Materials::Instance();
 
 // Geometry

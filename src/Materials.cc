@@ -29,7 +29,11 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 #define PI 3.141592
 
-Materials::Materials() { ConstructMaterials(); }
+Materials *Materials::instance = nullptr;
+
+Materials::Materials() { 
+	ConstructMaterials(); 
+}
 
 Materials::~Materials() {}
 

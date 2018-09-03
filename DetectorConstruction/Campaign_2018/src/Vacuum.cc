@@ -23,7 +23,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Vacuum.hh"
 
-Vacuum::Vacuum(G4double relative_density){
+	Vacuum::Vacuum(G4double relative_density, G4String material_name){
 
 	G4NistManager *nist = G4NistManager::Instance();
 
@@ -35,7 +35,7 @@ Vacuum::Vacuum(G4double relative_density){
 
 	G4double density_of_air = 1.225e-3 * g / cm3; // Density of air at sea level and 288K, Wikipedia
 	G4double density = relative_density*density_of_air;
-	Vacuum_Material = new G4Material("vacuum", density, 4); 
+	Vacuum_Material = new G4Material(material_name, density, 4); 
 
 	Vacuum_Material->AddElement(nat_O, 23.1781 * perCent);
 	Vacuum_Material->AddElement(nat_N, 75.5268 * perCent);

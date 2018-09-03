@@ -48,11 +48,11 @@ void Ni64_Target::Construct(G4ThreeVector global_coordinates){
 	G4double Target_Radius = 9.5*mm;
 	G4double Target_Length = Target_Mass/(Target_Density*pi*Target_Radius*Target_Radius);
 
-	G4Isotope *Ni58 = new G4Isotope("58Ni", 28, 58, 57.935341780);
-	G4Isotope *Ni60 = new G4Isotope("60Ni", 28, 60, 59.930785256);
-	G4Isotope *Ni61 = new G4Isotope("61Ni", 28, 61, 60.931054945);
-	G4Isotope *Ni62 = new G4Isotope("62Ni", 28, 62, 61.928344871);
-	G4Isotope *Ni64 = new G4Isotope("64Ni", 28, 64, 63.927966341);
+	G4Isotope *Ni58 = new G4Isotope("58Ni", 28, 58, 57.935341780*g/mole);
+	G4Isotope *Ni60 = new G4Isotope("60Ni", 28, 60, 59.930785256*g/mole);
+	G4Isotope *Ni61 = new G4Isotope("61Ni", 28, 61, 60.931054945*g/mole);
+	G4Isotope *Ni62 = new G4Isotope("62Ni", 28, 62, 61.928344871*g/mole);
+	G4Isotope *Ni64 = new G4Isotope("64Ni", 28, 64, 63.927966341*g/mole);
 
 	G4Element *Target_Element = new G4Element("64Ni_Element", "Ni", 5);
 

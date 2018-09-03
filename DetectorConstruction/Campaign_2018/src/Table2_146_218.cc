@@ -31,7 +31,6 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Units.hh"
 #include "Table2_146_218.hh"
-#include "Materials.hh"
 
 Table2_146_218::Table2_146_218(G4LogicalVolume *World_Log):
 World_Logical(World_Log),
@@ -49,11 +48,10 @@ void Table2_146_218::Construct(G4ThreeVector global_coordinates){
 
 	G4NistManager *nist = G4NistManager::Instance();
 
-	Materials *materials = new Materials();
 	G4Material *Pb = nist->FindOrBuildMaterial("G4_Pb");
 	G4Material *Al = nist->FindOrBuildMaterial("G4_Al");
 	G4Material *Plexiglass = nist->FindOrBuildMaterial("G4_PLEXIGLASS");
-	G4Material *one_third_density_brass = materials->Get_One_Third_Density_Brass();
+	G4Material *one_third_density_brass = nist->FindOrBuildMaterial("one_third_density_brass");
 
 	G4double Table_Plate_Radius = 17.*inch;
 	G4double Table_Plate_Hole_Radius = 9.*inch;

@@ -25,10 +25,9 @@ Setup for runs 271 - 279
 #include "DetectorConstruction.hh"
 
 // Materials
-#include "G4Material.hh"
 #include "G4NistManager.hh"
+#include "Units.hh"
 #include "Materials.hh"
-Materials *Materials::instance = NULL;
 Materials *materials = Materials::Instance();
 
 // Geometry
@@ -99,7 +98,6 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	G4Colour light_orange(1.0, 0.82, 0.36);
 
 	G4NistManager *nist = G4NistManager::Instance();
-
 	G4Material *air = nist->FindOrBuildMaterial("G4_AIR");
 
 	/***************** WORLD *****************/

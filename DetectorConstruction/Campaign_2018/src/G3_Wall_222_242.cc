@@ -28,7 +28,6 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Units.hh"
 #include "G3_Wall_222_242.hh"
-#include "Materials.hh"
 
 G3_Wall_222_242::G3_Wall_222_242(G4LogicalVolume *World_Log):
 World_Logical(World_Log),

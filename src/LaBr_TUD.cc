@@ -36,7 +36,6 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4Tubs.hh"
 #include "G4Cons.hh"
 #include "G4VisAttributes.hh"
-#include "Materials.hh"
 
 #include "G4SystemOfUnits.hh"
 #include "G4UnitsTable.hh"
@@ -57,12 +56,11 @@ LaBr_TUD::LaBr_TUD(G4String Detector_Name){
 	G4Colour light_orange(1.0, 0.82, 0.36);
 
 	G4NistManager *nist = G4NistManager::Instance();
-	Materials *mat = Materials::Instance();
 
 	G4Material *vacuum = nist->FindOrBuildMaterial("G4_Galactic");
 	G4Material *air= nist->FindOrBuildMaterial("G4_AIR");
 	G4Material *Al = nist->FindOrBuildMaterial("G4_Al");
-	G4Material *LaBr3Ce = mat->Get_LaBr3Ce();
+	G4Material *LaBr3Ce = nist->FindOrBuildMaterial("Brillance380");//mat->Get_LaBr3Ce();
 
 	// Dimensions from previous implementation by B. Loeher and J. Isaak (especially the inner parts) or measured in 2018
 

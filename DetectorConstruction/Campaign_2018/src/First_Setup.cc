@@ -29,7 +29,6 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Units.hh"
 #include "First_Setup.hh"
-#include "Materials.hh"
 
 First_Setup::First_Setup(G4LogicalVolume *World_Log):
 World_Logical(World_Log),
@@ -44,13 +43,11 @@ void First_Setup::Construct(G4ThreeVector global_coordinates){
 	G4Colour green(0., 0.5, 0.);
 	G4Colour white(1.0, 1.0, 1.0);
 
-	Materials *materials = new Materials();
-
 	G4NistManager *nist = G4NistManager::Instance();
 	G4Material *Al = nist->FindOrBuildMaterial("G4_Al");
 	G4Material *Pb = nist->FindOrBuildMaterial("G4_Pb");
-	G4Material *one_third_density_Al = materials->Get_One_Third_Density_Al();
 	G4Material *concrete = nist->FindOrBuildMaterial("G4_CONCRETE");
+	G4Material *one_third_density_Al = nist->FindOrBuildMaterial("one_third_density_Al");
 
 	// Lead and concrete wall
 	
