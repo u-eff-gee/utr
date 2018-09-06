@@ -28,7 +28,6 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4Material.hh"
 #include "G4NistManager.hh"
 #include "Materials.hh"
-Materials *Materials::instance = NULL;
 Materials *materials = Materials::Instance();
 
 // Geometry
@@ -2612,26 +2611,26 @@ void DetectorConstruction::ConstructSDandField() {
 	SetSensitiveDetector("LaBr4", LaBr4SD, true);
 
 	// HPGe detectors in second setup
-	EnergyDepositionSD *Germanium2_TUDSD =
-	    new EnergyDepositionSD("Germanium2_TUD", "Germanium2_TUD");
+	ParticleSD *Germanium2_TUDSD =
+	    new ParticleSD("Germanium2_TUD", "Germanium2_TUD");
 	G4SDManager::GetSDMpointer()->AddNewDetector(Germanium2_TUDSD);
 	Germanium2_TUDSD->SetDetectorID(6);
 	SetSensitiveDetector("Germanium2_TUD", Germanium2_TUDSD, true);
 
-	EnergyDepositionSD *HPGe1_55SD =
-	    new EnergyDepositionSD("HPGe1_55", "HPGe1_55");
+	ParticleSD *HPGe1_55SD =
+	    new ParticleSD("HPGe1_55", "HPGe1_55");
 	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe1_55SD);
 	HPGe1_55SD->SetDetectorID(7);
 	SetSensitiveDetector("HPGe1_55", HPGe1_55SD, true);
 
-	EnergyDepositionSD *HPGe2_55SD =
-	    new EnergyDepositionSD("HPGe2_55", "HPGe2_55");
+	ParticleSD *HPGe2_55SD =
+	    new ParticleSD("HPGe2_55", "HPGe2_55");
 	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe2_55SD);
 	HPGe2_55SD->SetDetectorID(8);
 	SetSensitiveDetector("HPGe2_55", HPGe2_55SD, true);
 
-	EnergyDepositionSD *Polarimeter_TUDSD =
-	    new EnergyDepositionSD("Polarimeter_TUD", "Polarimeter_TUD");
+	ParticleSD *Polarimeter_TUDSD =
+	    new ParticleSD("Polarimeter_TUD", "Polarimeter_TUD");
 	G4SDManager::GetSDMpointer()->AddNewDetector(Polarimeter_TUDSD);
 	Polarimeter_TUDSD->SetDetectorID(9);
 	SetSensitiveDetector("Polarimeter_TUD", Polarimeter_TUDSD, true);
