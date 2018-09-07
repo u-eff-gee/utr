@@ -78,7 +78,12 @@ Materials *materials = Materials::Instance();
 
 #define PI 3.141592
 
-DetectorConstruction::DetectorConstruction() {}
+DetectorConstruction::DetectorConstruction() :
+world_x(4000.*mm),
+world_y(4000.*mm),
+world_z(9000.*mm),
+Collimator_Length(270.*mm)
+{}
 
 DetectorConstruction::~DetectorConstruction() {}
 
@@ -111,9 +116,9 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	/***************** World Volume *****************/
 
-	G4double world_x = 4000. * mm;
-	G4double world_y = 4000. * mm;
-	G4double world_z = 9000. * mm;
+	world_x = 4000. * mm;
+	world_y = 4000. * mm;
+	world_z = 9000. * mm;
 
 	G4Box *world_dim =
 	    new G4Box("world_dim", world_x * 0.5, world_y * 0.5, world_z * 0.5);
@@ -854,7 +859,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	/**************** Collimator *************************/
 
-	G4double Collimator_Length = 270. * mm;            // Measured
+	Collimator_Length = 270. * mm;            // Measured
 	G4double Collimator_XY = 60. * mm;                 // Measured
 	G4double CollimatorHole_Radius = 0.75 * inch / 2.; // Measured
 	G4Material *Collimator_Material = Pb;
@@ -2284,6 +2289,8 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	              Polarimeter_TUD_AngleX, Polarimeter_TUD_AngleY, 0.);
 	Polarimeter_TUD_rt -= pbmedium->Thickness * 0.5;
 
+	print_info(Target2_To_Target, Collimator_To_Target);
+
 	return world_phys;
 }
 
@@ -2359,4 +2366,15 @@ void DetectorConstruction::ConstructSDandField() {
 	G4SDManager::GetSDMpointer()->AddNewDetector(ZeroDegreeSD);
 	ZeroDegreeSD->SetDetectorID(5);
 	SetSensitiveDetector("ZeroDegree", ZeroDegreeSD, true);
+}
+
+void DetectorConstruction::print_info(G4double Target2_To_Target, G4double Collimator_To_Target) const {
+	printf("==============================================================\n");
+	printf("  DetectorConstruction: Info (all dimensions in mm)\n");
+	G4cout << G4endl;
+	printf("> Collimator entrance position : ( %5.2f, %5.2f, %5.2f )\n", 0., 0., -Collimator_To_Target - Collimator_Length*0.5);
+	printf("> Ideal position of G3 target  : ( %5.2f, %5.2f, %5.2f )\n", 0., 0., 0.);
+	printf("> Ideal position of 2nd target : ( %5.2f, %5.2f, %5.2f )\n", 0., 0., Target2_To_Target);
+	printf("> World dimensions             : ( %5.2f, %5.2f, %5.2f )\n", world_x, world_y, world_z);
+	printf("==============================================================\n");
 }
