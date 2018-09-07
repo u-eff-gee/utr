@@ -16,5 +16,4 @@
 #/gps/hist/file HISTOGRAMFILE
 #/gps/hist/inter Lin
 
-/run/printProgress 10000
 /run/beamOn 10

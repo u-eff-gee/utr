@@ -14,6 +14,8 @@
 /ang/sourceX 0. mm
 /ang/sourceY 0. mm
 /ang/sourceZ 0. mm
+#/ang/sourceZ 1574.80 mm # Ideal position of 2nd target in generation '18 geometries
+#/ang/sourceZ 1612.10 mm # Ideal position of 2nd target in generation '16/17 geometries
 
 /ang/sourceDX 20. mm
 /ang/sourceDY 20. mm
@@ -22,5 +24,4 @@
 /ang/sourcePV Dy164_Target
 #/ang/sourcePV Dy164_2O3_Target
 
-/run/printProgress 100000
 /run/beamOn 20

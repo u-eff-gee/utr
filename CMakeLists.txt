@@ -5,13 +5,6 @@ cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 project(utr)
 
 #----------------------------------------------------------------------------
-# Enable configuration of the source code by cmake
-configure_file(
-	"${PROJECT_SOURCE_DIR}/utrConfig.h.in"
-	"${PROJECT_SOURCE_DIR}/include/utrConfig.h"
-)
-
-#----------------------------------------------------------------------------
 # Find Geant4 package, activating all available UI and Vis drivers by default
 # You can set WITH_GEANT4_UIVIS to OFF via the command line or ccmake/cmake-gui
 # to build a batch mode only executable
@@ -36,6 +29,14 @@ option(USE_GPS "Use G4GeneralParticleSource as primary generator" ON)
 option(USE_TARGETS "Use Targets in the geometry" ON)
 
 #----------------------------------------------------------------------------
+# Enable configuration of the source code by cmake
+configure_file(
+	"${PROJECT_SOURCE_DIR}/utrConfig.h.in"
+	"${PROJECT_SOURCE_DIR}/include/utrConfig.h"
+)
+
+#----------------------------------------------------------------------------
+
 # Setup Geant4 include directories and compile definitions
 #
 include(${Geant4_USE_FILE})

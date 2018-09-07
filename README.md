@@ -685,7 +685,20 @@ Sets the number of threads in multithreaded mode (default: 1)
 ```bash
 $ ./utr -o OUTPUTDIR
 ```
+
 Sets the output directory of `utr` where the ROOT files will be placed.
+
+While running a simulation, `utr` will automatically print information about the progress in the following format, using the `G4VUserSteppingAction` class:
+
+```bash
+Progresss: [          160000/100000000]  0.16 %  Running time:   0d  0h   0mn   4s   Estimated remaining time:   0d  0h  2mn    4s
+```
+
+That means there is no need to use the `/run/printProgress` macro of Geant4 any more. The number of events `NEVENTS` after which a new progress update is printed can be set using the `PRINT_PROGRESS` preprocessor variable at compile-time (see also [3 Installation](#installation)):
+
+```bash
+$ cmake -DPRINT_PROGRESS=NEVENTS.
+```
 
 Running `utr` without any argument will launch a UI session where macro commands can be entered. It should also automatically execute the macro file `init_vis.mac`, which visualizes the geometry.
 
@@ -910,4 +923,3 @@ UG would like to acknowledge the untiring effort of user Jörn Kleemann in debug
 <a name="ref-g4_3">[3]</a> J. Allison *et al.*, “Recent developments in GEANT4”, Nucl. Inst. Meth. A **835**, 186 (2016). [`doi:10.1016/j.nima.2016.06.125`](https://doi.org/10.1016/j.nima.2016.06.125).  
 <a name="ref-higs">[4]</a> H. R. Weller *et al.*, “Research opportunities at the upgraded HIγS facility”, Prog. Part. Nucl. Phys. **62.1**, 257 (2009). [`doi:10.1016/j.ppnp.2008.07.001`](https://doi.org/10.1016/j.ppnp.2008.07.001).  
 <a name="ref-g3">[5]</a> B. Löher *et al.*, “The high-efficiency γ-ray spectroscopy setup γ³ at HIγS”, Nucl. Instr. Meth. Phys. Res. A **723**, 136 (2013). [`doi:10.1016/j.nima.2013.04.087`](https://doi.org/10.1016/j.nima.2013.04.087).  
-

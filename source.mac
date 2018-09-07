@@ -3,10 +3,11 @@
 /gps/particle gamma
 /gps/pos/type Point
 /gps/pos/centre 0. 0. 0. mm
+#/gps/pos/centre 0. 0. 1574.80 mm # Ideal position of 2nd target in generation '18 geometries
+#/gps/pos/centre 0. 0. 1612.10 mm # Ideal position of 2nd target in generation '16/17 geometries
 /gps/ang/type iso
 
 /gps/ene/type Mono
 /gps/ene/mono {E} MeV
 
-/run/printProgress 1000000
 /run/beamOn 100000000
