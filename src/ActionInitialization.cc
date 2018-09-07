@@ -29,7 +29,9 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "RunAction.hh"
 #include "SteppingAction.hh"
 
-ActionInitialization::ActionInitialization() : G4VUserActionInitialization() {}
+ActionInitialization::ActionInitialization() : 
+G4VUserActionInitialization(), 
+n_threads(1) {}
 
 ActionInitialization::~ActionInitialization() {}
 
@@ -43,7 +45,12 @@ void ActionInitialization::Build() const {
 #else
 	SetUserAction(new AngularDistributionGenerator);
 #endif
-	// SetUserAction(new SteppingAction); // Useful for debugging
+
+	SteppingAction *steppingAction = new SteppingAction();
+	SetUserAction(steppingAction);
+#ifdef G4MULTITHREADED
+	steppingAction->setNThreads(n_threads);
+#endif
 
 	RunAction *runAction = new RunAction();
 	runAction->setOutputDir(outputdir);

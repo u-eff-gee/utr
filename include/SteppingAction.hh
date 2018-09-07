@@ -21,6 +21,8 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef SteppingAction_h
 #define SteppingAction_h 1
 
+#include <time.h>
+
 #include "G4Step.hh"
 #include "G4UserSteppingAction.hh"
 #include "globals.hh"
@@ -32,7 +34,10 @@ class SteppingAction : public G4UserSteppingAction {
 
 	virtual void UserSteppingAction(const G4Step *);
 
+	void setNThreads(const int nt){ n_threads = (G4double) nt; };
+
   private:
+	G4int n_threads;
 };
 
 #endif

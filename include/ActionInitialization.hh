@@ -25,6 +25,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "G4VUserActionInitialization.hh"
 #include "utrConfig.h"
+#include "globals.hh"
 
 using std::string;
 
@@ -38,9 +39,11 @@ class ActionInitialization : public G4VUserActionInitialization {
 	virtual void Build() const;
 
 	void setOutputDir(string output) { outputdir = output; };
+	void setNThreads(const int nt) { n_threads = nt; };
 
   private:
 	string outputdir;
+	G4int n_threads;
 };
 
 #endif

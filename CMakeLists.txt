@@ -30,6 +30,7 @@ endif()
 set(CAMPAIGN "Campaign_2018" CACHE STRING "Select experimental campaign from directory DetectorConstruction/")
 # Choose geometry
 set(DETECTOR_CONSTRUCTION "64Ni_271_279" CACHE STRING "Select detector construction from directory DetectorConstruction/$CAMPAIGN/")
+set(PRINT_PROGRESS 100000 CACHE STRING "Set the frequency of printed updates about the progress of utr (unit: number of events processed)")
 # Choose primary generator
 option(USE_GPS "Use G4GeneralParticleSource as primary generator" ON)
 option(USE_TARGETS "Use Targets in the geometry" ON)

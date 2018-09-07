@@ -1,2 +1,8 @@
+#ifndef UTR_CONFIG_H
+#define UTR_CONFIG_H 1
+
 #cmakedefine USE_GPS
 #cmakedefine USE_TARGETS
+const int print_progress = ${PRINT_PROGRESS};
+
+#endif

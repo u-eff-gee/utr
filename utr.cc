@@ -104,6 +104,7 @@ int main(int argc, char *argv[]) {
 
 	G4cout << "ActionInitialization..." << G4endl;
 	ActionInitialization *actionInitialization = new ActionInitialization();
+	actionInitialization->setNThreads(arguments.nthreads);
 	// Pass output directory to RunAction via ActionInitialization
 	if (arguments.outputdir) {
 		actionInitialization->setOutputDir(arguments.outputdir);
