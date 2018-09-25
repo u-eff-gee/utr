@@ -166,7 +166,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 #ifdef USE_TARGETS	
 	/***************** G3_TARGET *****************/
 
-	g3_Target.Construct(G4ThreeVector(0., 0., 0.));
+	g3_Target.Construct(G4ThreeVector(0., 0., 60.));
 #endif
 
 	print_info();
