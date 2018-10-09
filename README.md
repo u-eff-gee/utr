@@ -472,41 +472,245 @@ At the moment, the following distributions are implemented:
 * `states == {0., 0., 0.}`
     Isotropic distribution
 * `states == {0., 1., 0.} or {-0.1, -1., -0.1}`
-    0+- -> 1+- -> 0+-
+    0<sup>±</sup> → 1<sup>±</sup> → 0<sup>±</sup>
 * `states == {0., -1., 0.} or {-0.1, 1., -0.1}`
-    0+- -> 1-+ -> 0+-
+    0<sup>±</sup> → 1<sup>∓</sup> → 0<sup>±</sup>
 * `states == {0., 2., 0.} or {-0.1, -2., -0.1}`
-    0+- -> 2+- -> 0+-
+    0<sup>±</sup> → 2<sup>±</sup> → 0<sup>±</sup>
 * `states == {0., 2., 2.} or {-0.1, -2., -2.}`
-    0+- -> 2+- -> 2+-
+    0<sup>±</sup> → 2<sup>±</sup> → 2<sup>±</sup>
 * `states == {0., 1., 2.} or {-0.1, -1., -2.}`
-    0+- -> 1+- -> 2+-
+    0<sup>±</sup> → 1<sup>±</sup> → 2<sup>±</sup>
 * `states == {0., -1., 2.} or {-0.1, 1., -2.}`
-    0+- -> 1-+ -> 2+-
+    0<sup>±</sup> → 1<sup>∓</sup> → 2<sup>±</sup>
 * `states == {1.5, -2.5, 1.5} or {-1.5, 2.5, -1.5}`
-    3/2+- -> 5/2-+ -> 3/2+-
+    3/2<sup>±</sup> → 5/2<sup>∓</sup> → 3/2<sup>±</sup>
 * `states == {1.5, 2.5, 1.5} or {-1.5, -2.5, -1.5}`
-    3/2+- -> 5/2+- -> 3/2+-
+    3/2<sup>±</sup> → 5/2<sup>±</sup> → 3/2<sup>±</sup>
 * `states == {1.5, 1.5, 1.5} or {-1.5, -1.5, -1.5}`
-    3/2+- -> 3/2+- -> 3/2+-
+    3/2<sup>±</sup> → 3/2<sup>±</sup> → 3/2<sup>±</sup>
 * `states == {1.5, -1.5, 1.5} or {-1.5, 1.5, -1.5}`
-    3/2+- -> 3/2-+ -> 3/2+-
+    3/2<sup>±</sup> → 3/2<sup>∓</sup> → 3/2<sup>±</sup>
 * `states == {0.5, 1.5, 0.5} or {-0.5, -1.5, -0.5}`
-    1/2+- -> 3/2+- -> 1/2+-
+    1/2<sup>±</sup> → 3/2<sup>±</sup> → 1/2<sup>±</sup>
 * `states == {0.5, -1.5, 0.5} or {-0.5, 1.5, -0.5}`
-    1/2+- -> 3/2-+ -> 1/2+-
+    1/2<sup>±</sup> → 3/2<sup>∓</sup> → 1/2<sup>±</sup>
 * `states == {2.5, 1.5, 2.5} or {-2.5, -1.5, -2.5}`
-    5/2+- -> 3/2+- -> 5/2+-
+    5/2<sup>±</sup> → 3/2<sup>±</sup> → 5/2<sup>±</sup>
 * `states == {2.5, -1.5, 2.5} or {-2.5, 1.5, -2.5}`
-    5/2+- -> 3/2-+ -> 5/2+-
+    5/2<sup>±</sup> → 3/2<sup>∓</sup> → 5/2<sup>±</sup>
 * `states == {2.5, 2.5, 2.5} or {-2.5, -2.5, -2.5}`
-    5/2+- -> 5/2+- -> 5/2+-
+    5/2<sup>±</sup> → 5/2<sup>±</sup> → 5/2<sup>±</sup>
 * `states == {2.5, -2.5, 2.5} or {-2.5, 2.5, -2.5}`
-    5/2+- -> 5/2-+ -> 5/2+-
+    5/2<sup>±</sup> → 5/2<sup>∓</sup> → 5/2<sup>±</sup>
 * `states == {2.5, 3.5, 2.5} or {-2.5, -3.5, -2.5}`
-    5/2+- -> 7/2+- -> 5/2+-
+    5/2<sup>±</sup> → 7/2<sup>±</sup> → 5/2<sup>±</sup>
 * `states == {2.5, -3.5, 2.5} or {-2.5, 3.5, -2.5}`
-    5/2+- -> 7/2-+ -> 5/2+-
+    5/2<sup>±</sup> → 7/2<sup>∓</sup> → 5/2<sup>±</sup>
+* `states == {0., -1.0, 0.0, 1.0} or states == {-0.1, 1.0, 0.0, 1.0}`
+    0<sup>±</sup> → 1<sup>∓</sup> → 0 → 1
+* `states == {0., -1.0, 0.0, 2.0} or states == {-0.1, 1.0, 0.0, 2.0}`
+    0<sup>±</sup> → 1<sup>∓</sup> → 0 → 2
+* `states == {0., -1.0, 0.0, 3.0} or states == {-0.1, 1.0, 0.0, 3.0}`
+    0<sup>±</sup> → 1<sup>∓</sup> → 0 → 3
+* `states == {0., -1.0, 0.0, 4.0} or states == {-0.1, 1.0, 0.0, 4.0}`
+    0<sup>±</sup> → 1<sup>∓</sup> → 0 → 4
+* `states == {0., -1.0, 0.0, 5.0} or states == {-0.1, 1.0, 0.0, 5.0}`
+    0<sup>±</sup> → 1<sup>∓</sup> → 0 → 5
+* `states == {0., -1.0, 0.0, 6.0} or states == {-0.1, 1.0, 0.0, 6.0}`
+    0<sup>±</sup> → 1<sup>∓</sup> → 0 → 6
+* `states == {0., -1.0, 1.0, 0.0} or states == {-0.1, 1.0, 1.0, 0.0}`
+    0<sup>±</sup> → 1<sup>∓</sup> → 1 → 0
+* `states == {0., -1.0, 1.0, 1.0} or states == {-0.1, 1.0, 1.0, 1.0}`
+    0<sup>±</sup> → 1<sup>∓</sup> → 1 → 1
+* `states == {0., -1.0, 1.0, 2.0} or states == {-0.1, 1.0, 1.0, 2.0}`
+    0<sup>±</sup> → 1<sup>∓</sup> → 1 → 2
+* `states == {0., -1.0, 1.0, 3.0} or states == {-0.1, 1.0, 1.0, 3.0}`
+    0<sup>±</sup> → 1<sup>∓</sup> → 1 → 3
+* `states == {0., -1.0, 1.0, 4.0} or states == {-0.1, 1.0, 1.0, 4.0}`
+    0<sup>±</sup> → 1<sup>∓</sup> → 1 → 4
+* `states == {0., -1.0, 1.0, 5.0} or states == {-0.1, 1.0, 1.0, 5.0}`
+    0<sup>±</sup> → 1<sup>∓</sup> → 1 → 5
+* `states == {0., -1.0, 1.0, 6.0} or states == {-0.1, 1.0, 1.0, 6.0}`
+    0<sup>±</sup> → 1<sup>∓</sup> → 1 → 6
+* `states == {0., -1.0, 2.0, 0.0} or states == {-0.1, 1.0, 2.0, 0.0}`
+    0<sup>±</sup> → 1<sup>∓</sup> → 2 → 0
+* `states == {0., -1.0, 2.0, 1.0} or states == {-0.1, 1.0, 2.0, 1.0}`
+    0<sup>±</sup> → 1<sup>∓</sup> → 2 → 1
+* `states == {0., -1.0, 2.0, 2.0} or states == {-0.1, 1.0, 2.0, 2.0}`
+    0<sup>±</sup> → 1<sup>∓</sup> → 2 → 2
+* `states == {0., -1.0, 2.0, 3.0} or states == {-0.1, 1.0, 2.0, 3.0}`
+    0<sup>±</sup> → 1<sup>∓</sup> → 2 → 3
+* `states == {0., -1.0, 2.0, 4.0} or states == {-0.1, 1.0, 2.0, 4.0}`
+    0<sup>±</sup> → 1<sup>∓</sup> → 2 → 4
+* `states == {0., -1.0, 2.0, 5.0} or states == {-0.1, 1.0, 2.0, 5.0}`
+    0<sup>±</sup> → 1<sup>∓</sup> → 2 → 5
+* `states == {0., -1.0, 2.0, 6.0} or states == {-0.1, 1.0, 2.0, 6.0}`
+    0<sup>±</sup> → 1<sup>∓</sup> → 2 → 6
+* `states == {0., -1.0, 3.0, 0.0} or states == {-0.1, 1.0, 3.0, 0.0}`
+    0<sup>±</sup> → 1<sup>∓</sup> → 3 → 0
+* `states == {0., -1.0, 3.0, 1.0} or states == {-0.1, 1.0, 3.0, 1.0}`
+    0<sup>±</sup> → 1<sup>∓</sup> → 3 → 1
+* `states == {0., -1.0, 3.0, 2.0} or states == {-0.1, 1.0, 3.0, 2.0}`
+    0<sup>±</sup> → 1<sup>∓</sup> → 3 → 2
+* `states == {0., -1.0, 3.0, 3.0} or states == {-0.1, 1.0, 3.0, 3.0}`
+    0<sup>±</sup> → 1<sup>∓</sup> → 3 → 3
+* `states == {0., -1.0, 3.0, 4.0} or states == {-0.1, 1.0, 3.0, 4.0}`
+    0<sup>±</sup> → 1<sup>∓</sup> → 3 → 4
+* `states == {0., -1.0, 3.0, 5.0} or states == {-0.1, 1.0, 3.0, 5.0}`
+    0<sup>±</sup> → 1<sup>∓</sup> → 3 → 5
+* `states == {0., -1.0, 3.0, 6.0} or states == {-0.1, 1.0, 3.0, 6.0}`
+    0<sup>±</sup> → 1<sup>∓</sup> → 3 → 6
+* `states == {0., -1.0, 4.0, 0.0} or states == {-0.1, 1.0, 4.0, 0.0}`
+    0<sup>±</sup> → 1<sup>∓</sup> → 4 → 0
+* `states == {0., -1.0, 4.0, 1.0} or states == {-0.1, 1.0, 4.0, 1.0}`
+    0<sup>±</sup> → 1<sup>∓</sup> → 4 → 1
+* `states == {0., -1.0, 4.0, 2.0} or states == {-0.1, 1.0, 4.0, 2.0}`
+    0<sup>±</sup> → 1<sup>∓</sup> → 4 → 2
+* `states == {0., -1.0, 4.0, 3.0} or states == {-0.1, 1.0, 4.0, 3.0}`
+    0<sup>±</sup> → 1<sup>∓</sup> → 4 → 3
+* `states == {0., -1.0, 4.0, 4.0} or states == {-0.1, 1.0, 4.0, 4.0}`
+    0<sup>±</sup> → 1<sup>∓</sup> → 4 → 4
+* `states == {0., -1.0, 4.0, 5.0} or states == {-0.1, 1.0, 4.0, 5.0}`
+    0<sup>±</sup> → 1<sup>∓</sup> → 4 → 5
+* `states == {0., -1.0, 4.0, 6.0} or states == {-0.1, 1.0, 4.0, 6.0}`
+    0<sup>±</sup> → 1<sup>∓</sup> → 4 → 6
+* `states == {0., 1.0, 0.0, 1.0} or states == {-0.1, -1.0, 0.0, 1.0}`
+    0<sup>±</sup> → 1<sup>±</sup> → 0 → 1
+* `states == {0., 1.0, 0.0, 2.0} or states == {-0.1, -1.0, 0.0, 2.0}`
+    0<sup>±</sup> → 1<sup>±</sup> → 0 → 2
+* `states == {0., 1.0, 0.0, 3.0} or states == {-0.1, -1.0, 0.0, 3.0}`
+    0<sup>±</sup> → 1<sup>±</sup> → 0 → 3
+* `states == {0., 1.0, 0.0, 4.0} or states == {-0.1, -1.0, 0.0, 4.0}`
+    0<sup>±</sup> → 1<sup>±</sup> → 0 → 4
+* `states == {0., 1.0, 0.0, 5.0} or states == {-0.1, -1.0, 0.0, 5.0}`
+    0<sup>±</sup> → 1<sup>±</sup> → 0 → 5
+* `states == {0., 1.0, 0.0, 6.0} or states == {-0.1, -1.0, 0.0, 6.0}`
+    0<sup>±</sup> → 1<sup>±</sup> → 0 → 6
+* `states == {0., 1.0, 1.0, 0.0} or states == {-0.1, -1.0, 1.0, 0.0}`
+    0<sup>±</sup> → 1<sup>±</sup> → 1 → 0
+* `states == {0., 1.0, 1.0, 1.0} or states == {-0.1, -1.0, 1.0, 1.0}`
+    0<sup>±</sup> → 1<sup>±</sup> → 1 → 1
+* `states == {0., 1.0, 1.0, 2.0} or states == {-0.1, -1.0, 1.0, 2.0}`
+    0<sup>±</sup> → 1<sup>±</sup> → 1 → 2
+* `states == {0., 1.0, 1.0, 3.0} or states == {-0.1, -1.0, 1.0, 3.0}`
+    0<sup>±</sup> → 1<sup>±</sup> → 1 → 3
+* `states == {0., 1.0, 1.0, 4.0} or states == {-0.1, -1.0, 1.0, 4.0}`
+    0<sup>±</sup> → 1<sup>±</sup> → 1 → 4
+* `states == {0., 1.0, 1.0, 5.0} or states == {-0.1, -1.0, 1.0, 5.0}`
+    0<sup>±</sup> → 1<sup>±</sup> → 1 → 5
+* `states == {0., 1.0, 1.0, 6.0} or states == {-0.1, -1.0, 1.0, 6.0}`
+    0<sup>±</sup> → 1<sup>±</sup> → 1 → 6
+* `states == {0., 1.0, 2.0, 0.0} or states == {-0.1, -1.0, 2.0, 0.0}`
+    0<sup>±</sup> → 1<sup>±</sup> → 2 → 0
+* `states == {0., 1.0, 2.0, 1.0} or states == {-0.1, -1.0, 2.0, 1.0}`
+    0<sup>±</sup> → 1<sup>±</sup> → 2 → 1
+* `states == {0., 1.0, 2.0, 2.0} or states == {-0.1, -1.0, 2.0, 2.0}`
+    0<sup>±</sup> → 1<sup>±</sup> → 2 → 2
+* `states == {0., 1.0, 2.0, 3.0} or states == {-0.1, -1.0, 2.0, 3.0}`
+    0<sup>±</sup> → 1<sup>±</sup> → 2 → 3
+* `states == {0., 1.0, 2.0, 4.0} or states == {-0.1, -1.0, 2.0, 4.0}`
+    0<sup>±</sup> → 1<sup>±</sup> → 2 → 4
+* `states == {0., 1.0, 2.0, 5.0} or states == {-0.1, -1.0, 2.0, 5.0}`
+    0<sup>±</sup> → 1<sup>±</sup> → 2 → 5
+* `states == {0., 1.0, 2.0, 6.0} or states == {-0.1, -1.0, 2.0, 6.0}`
+    0<sup>±</sup> → 1<sup>±</sup> → 2 → 6
+* `states == {0., 1.0, 3.0, 0.0} or states == {-0.1, -1.0, 3.0, 0.0}`
+    0<sup>±</sup> → 1<sup>±</sup> → 3 → 0
+* `states == {0., 1.0, 3.0, 1.0} or states == {-0.1, -1.0, 3.0, 1.0}`
+    0<sup>±</sup> → 1<sup>±</sup> → 3 → 1
+* `states == {0., 1.0, 3.0, 2.0} or states == {-0.1, -1.0, 3.0, 2.0}`
+    0<sup>±</sup> → 1<sup>±</sup> → 3 → 2
+* `states == {0., 1.0, 3.0, 3.0} or states == {-0.1, -1.0, 3.0, 3.0}`
+    0<sup>±</sup> → 1<sup>±</sup> → 3 → 3
+* `states == {0., 1.0, 3.0, 4.0} or states == {-0.1, -1.0, 3.0, 4.0}`
+    0<sup>±</sup> → 1<sup>±</sup> → 3 → 4
+* `states == {0., 1.0, 3.0, 5.0} or states == {-0.1, -1.0, 3.0, 5.0}`
+    0<sup>±</sup> → 1<sup>±</sup> → 3 → 5
+* `states == {0., 1.0, 3.0, 6.0} or states == {-0.1, -1.0, 3.0, 6.0}`
+    0<sup>±</sup> → 1<sup>±</sup> → 3 → 6
+* `states == {0., 1.0, 4.0, 0.0} or states == {-0.1, -1.0, 4.0, 0.0}`
+    0<sup>±</sup> → 1<sup>±</sup> → 4 → 0
+* `states == {0., 1.0, 4.0, 1.0} or states == {-0.1, -1.0, 4.0, 1.0}`
+    0<sup>±</sup> → 1<sup>±</sup> → 4 → 1
+* `states == {0., 1.0, 4.0, 2.0} or states == {-0.1, -1.0, 4.0, 2.0}`
+    0<sup>±</sup> → 1<sup>±</sup> → 4 → 2
+* `states == {0., 1.0, 4.0, 3.0} or states == {-0.1, -1.0, 4.0, 3.0}`
+    0<sup>±</sup> → 1<sup>±</sup> → 4 → 3
+* `states == {0., 1.0, 4.0, 4.0} or states == {-0.1, -1.0, 4.0, 4.0}`
+    0<sup>±</sup> → 1<sup>±</sup> → 4 → 4
+* `states == {0., 1.0, 4.0, 5.0} or states == {-0.1, -1.0, 4.0, 5.0}`
+    0<sup>±</sup> → 1<sup>±</sup> → 4 → 5
+* `states == {0., 1.0, 4.0, 6.0} or states == {-0.1, -1.0, 4.0, 6.0}`
+    0<sup>±</sup> → 1<sup>±</sup> → 4 → 6
+* `states == {0., 2.0, 0.0, 1.0} or states == {-0.1, -2.0, 0.0, 1.0}`
+    0<sup>±</sup> → 2<sup>±</sup> → 0 → 1
+* `states == {0., 2.0, 0.0, 2.0} or states == {-0.1, -2.0, 0.0, 2.0}`
+    0<sup>±</sup> → 2<sup>±</sup> → 0 → 2
+* `states == {0., 2.0, 0.0, 3.0} or states == {-0.1, -2.0, 0.0, 3.0}`
+    0<sup>±</sup> → 2<sup>±</sup> → 0 → 3
+* `states == {0., 2.0, 0.0, 4.0} or states == {-0.1, -2.0, 0.0, 4.0}`
+    0<sup>±</sup> → 2<sup>±</sup> → 0 → 4
+* `states == {0., 2.0, 0.0, 5.0} or states == {-0.1, -2.0, 0.0, 5.0}`
+    0<sup>±</sup> → 2<sup>±</sup> → 0 → 5
+* `states == {0., 2.0, 0.0, 6.0} or states == {-0.1, -2.0, 0.0, 6.0}`
+    0<sup>±</sup> → 2<sup>±</sup> → 0 → 6
+* `states == {0., 2.0, 1.0, 0.0} or states == {-0.1, -2.0, 1.0, 0.0}`
+    0<sup>±</sup> → 2<sup>±</sup> → 1 → 0
+* `states == {0., 2.0, 1.0, 1.0} or states == {-0.1, -2.0, 1.0, 1.0}`
+    0<sup>±</sup> → 2<sup>±</sup> → 1 → 1
+* `states == {0., 2.0, 1.0, 2.0} or states == {-0.1, -2.0, 1.0, 2.0}`
+    0<sup>±</sup> → 2<sup>±</sup> → 1 → 2
+* `states == {0., 2.0, 1.0, 3.0} or states == {-0.1, -2.0, 1.0, 3.0}`
+    0<sup>±</sup> → 2<sup>±</sup> → 1 → 3
+* `states == {0., 2.0, 1.0, 4.0} or states == {-0.1, -2.0, 1.0, 4.0}`
+    0<sup>±</sup> → 2<sup>±</sup> → 1 → 4
+* `states == {0., 2.0, 1.0, 5.0} or states == {-0.1, -2.0, 1.0, 5.0}`
+    0<sup>±</sup> → 2<sup>±</sup> → 1 → 5
+* `states == {0., 2.0, 1.0, 6.0} or states == {-0.1, -2.0, 1.0, 6.0}`
+    0<sup>±</sup> → 2<sup>±</sup> → 1 → 6
+* `states == {0., 2.0, 2.0, 0.0} or states == {-0.1, -2.0, 2.0, 0.0}`
+    0<sup>±</sup> → 2<sup>±</sup> → 2 → 0
+* `states == {0., 2.0, 2.0, 1.0} or states == {-0.1, -2.0, 2.0, 1.0}`
+    0<sup>±</sup> → 2<sup>±</sup> → 2 → 1
+* `states == {0., 2.0, 2.0, 2.0} or states == {-0.1, -2.0, 2.0, 2.0}`
+    0<sup>±</sup> → 2<sup>±</sup> → 2 → 2
+* `states == {0., 2.0, 2.0, 3.0} or states == {-0.1, -2.0, 2.0, 3.0}`
+    0<sup>±</sup> → 2<sup>±</sup> → 2 → 3
+* `states == {0., 2.0, 2.0, 4.0} or states == {-0.1, -2.0, 2.0, 4.0}`
+    0<sup>±</sup> → 2<sup>±</sup> → 2 → 4
+* `states == {0., 2.0, 2.0, 5.0} or states == {-0.1, -2.0, 2.0, 5.0}`
+    0<sup>±</sup> → 2<sup>±</sup> → 2 → 5
+* `states == {0., 2.0, 2.0, 6.0} or states == {-0.1, -2.0, 2.0, 6.0}`
+    0<sup>±</sup> → 2<sup>±</sup> → 2 → 6
+* `states == {0., 2.0, 3.0, 0.0} or states == {-0.1, -2.0, 3.0, 0.0}`
+    0<sup>±</sup> → 2<sup>±</sup> → 3 → 0
+* `states == {0., 2.0, 3.0, 1.0} or states == {-0.1, -2.0, 3.0, 1.0}`
+    0<sup>±</sup> → 2<sup>±</sup> → 3 → 1
+* `states == {0., 2.0, 3.0, 2.0} or states == {-0.1, -2.0, 3.0, 2.0}`
+    0<sup>±</sup> → 2<sup>±</sup> → 3 → 2
+* `states == {0., 2.0, 3.0, 3.0} or states == {-0.1, -2.0, 3.0, 3.0}`
+    0<sup>±</sup> → 2<sup>±</sup> → 3 → 3
+* `states == {0., 2.0, 3.0, 4.0} or states == {-0.1, -2.0, 3.0, 4.0}`
+    0<sup>±</sup> → 2<sup>±</sup> → 3 → 4
+* `states == {0., 2.0, 3.0, 5.0} or states == {-0.1, -2.0, 3.0, 5.0}`
+    0<sup>±</sup> → 2<sup>±</sup> → 3 → 5
+* `states == {0., 2.0, 3.0, 6.0} or states == {-0.1, -2.0, 3.0, 6.0}`
+    0<sup>±</sup> → 2<sup>±</sup> → 3 → 6
+* `states == {0., 2.0, 4.0, 0.0} or states == {-0.1, -2.0, 4.0, 0.0}`
+    0<sup>±</sup> → 2<sup>±</sup> → 4 → 0
+* `states == {0., 2.0, 4.0, 1.0} or states == {-0.1, -2.0, 4.0, 1.0}`
+    0<sup>±</sup> → 2<sup>±</sup> → 4 → 1
+* `states == {0., 2.0, 4.0, 2.0} or states == {-0.1, -2.0, 4.0, 2.0}`
+    0<sup>±</sup> → 2<sup>±</sup> → 4 → 2
+* `states == {0., 2.0, 4.0, 3.0} or states == {-0.1, -2.0, 4.0, 3.0}`
+    0<sup>±</sup> → 2<sup>±</sup> → 4 → 3
+* `states == {0., 2.0, 4.0, 4.0} or states == {-0.1, -2.0, 4.0, 4.0}`
+    0<sup>±</sup> → 2<sup>±</sup> → 4 → 4
+* `states == {0., 2.0, 4.0, 5.0} or states == {-0.1, -2.0, 4.0, 5.0}`
+    0<sup>±</sup> → 2<sup>±</sup> → 4 → 5
+* `states == {0., 2.0, 4.0, 6.0} or states == {-0.1, -2.0, 4.0, 6.0}`
+    0<sup>±</sup> → 2<sup>±</sup> → 4 → 6
 
 Finding the correct dimensions of the container box might need visualization. Try placing a `G4Box` with the desired dimensions at the desired position in the geometry and see whether it encloses the source volume completely and as close as possible. In fact, most of the predefined geometries have such a `G4Box` called `AuxBox` which is commented out. After using it to determine the size and position of the container box, remember to comment out the code again.
 
