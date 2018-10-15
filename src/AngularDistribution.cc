@@ -213,7 +213,722 @@ double AngularDistribution::AngDist(
 
 		}
 
-} else if (nst >= 4) {
+    } else if (nst == 4) {
+        // 0^+ → 1^- → 0 → 1
+        if ((std::abs(st[2]) == 0.0 && std::abs(st[3]) == 1.0) &&
+            ((st[0] == 0. && st[1] == -1.0) ||
+             (st[0] == -0.1 && st[1] == 1.0))) {
+             
+            return 1/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^- → 0 → 2
+        if ((std::abs(st[2]) == 0.0 && std::abs(st[3]) == 2.0) &&
+            ((st[0] == 0. && st[1] == -1.0) ||
+             (st[0] == -0.1 && st[1] == 1.0))) {
+             
+            return 1/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^- → 0 → 3
+        if ((std::abs(st[2]) == 0.0 && std::abs(st[3]) == 3.0) &&
+            ((st[0] == 0. && st[1] == -1.0) ||
+             (st[0] == -0.1 && st[1] == 1.0))) {
+             
+            return 1/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^- → 0 → 4
+        if ((std::abs(st[2]) == 0.0 && std::abs(st[3]) == 4.0) &&
+            ((st[0] == 0. && st[1] == -1.0) ||
+             (st[0] == -0.1 && st[1] == 1.0))) {
+             
+            return 1/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^- → 0 → 5
+        if ((std::abs(st[2]) == 0.0 && std::abs(st[3]) == 5.0) &&
+            ((st[0] == 0. && st[1] == -1.0) ||
+             (st[0] == -0.1 && st[1] == 1.0))) {
+             
+            return 1/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^- → 0 → 6
+        if ((std::abs(st[2]) == 0.0 && std::abs(st[3]) == 6.0) &&
+            ((st[0] == 0. && st[1] == -1.0) ||
+             (st[0] == -0.1 && st[1] == 1.0))) {
+             
+            return 1/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^- → 1 → 0
+        if ((std::abs(st[2]) == 1.0 && std::abs(st[3]) == 0.0) &&
+            ((st[0] == 0. && st[1] == -1.0) ||
+             (st[0] == -0.1 && st[1] == 1.0))) {
+             
+            return (pow(mix[1], 2) + (1.0/40.0)*(pow(mix[1], 2) - 5)*(-3*pow(sin(theta), 2)*cos(2*phi) + 3*pow(cos(theta), 2) - 1) + 1)/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^- → 1 → 1
+        if ((std::abs(st[2]) == 1.0 && std::abs(st[3]) == 1.0) &&
+            ((st[0] == 0. && st[1] == -1.0) ||
+             (st[0] == -0.1 && st[1] == 1.0))) {
+             
+            return (-1.0/80.0*(pow(mix[1], 2) - 5)*(pow(mix[2], 2) + 6*mix[2] + 1)*(-3*pow(sin(theta), 2)*cos(2*phi) + 3*pow(cos(theta), 2) - 1) + (pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^- → 1 → 2
+        if ((std::abs(st[2]) == 1.0 && std::abs(st[3]) == 2.0) &&
+            ((st[0] == 0. && st[1] == -1.0) ||
+             (st[0] == -0.1 && st[1] == 1.0))) {
+             
+            return ((1.0/800.0)*M_SQRT2*(pow(mix[1], 2) - 5)*(5*M_SQRT2*pow(mix[2], 2) + 6*sqrt(10)*mix[2] + M_SQRT2)*(-3*pow(sin(theta), 2)*cos(2*phi) + 3*pow(cos(theta), 2) - 1) + (pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^- → 1 → 3
+        if ((std::abs(st[2]) == 1.0 && std::abs(st[3]) == 3.0) &&
+            ((st[0] == 0. && st[1] == -1.0) ||
+             (st[0] == -0.1 && st[1] == 1.0))) {
+             
+            return ((1.0/2240.0)*M_SQRT2*(pow(mix[1], 2) - 5)*(21*M_SQRT2*pow(mix[2], 2) + 16*sqrt(7)*mix[2] - 4*M_SQRT2)*(-3*pow(sin(theta), 2)*cos(2*phi) + 3*pow(cos(theta), 2) - 1) + (pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^- → 1 → 4
+        if ((std::abs(st[2]) == 1.0 && std::abs(st[3]) == 4.0) &&
+            ((st[0] == 0. && st[1] == -1.0) ||
+             (st[0] == -0.1 && st[1] == 1.0))) {
+             
+            return ((1.0/1600.0)*M_SQRT2*(pow(mix[1], 2) - 5)*(17*M_SQRT2*pow(mix[2], 2) + 10*sqrt(6)*mix[2] - 5*M_SQRT2)*(-3*pow(sin(theta), 2)*cos(2*phi) + 3*pow(cos(theta), 2) - 1) + (pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^- → 1 → 5
+        if ((std::abs(st[2]) == 1.0 && std::abs(st[3]) == 5.0) &&
+            ((st[0] == 0. && st[1] == -1.0) ||
+             (st[0] == -0.1 && st[1] == 1.0))) {
+             
+            return ((1.0/8800.0)*M_SQRT2*(pow(mix[1], 2) - 5)*(99*M_SQRT2*pow(mix[2], 2) + 24*sqrt(22)*mix[2] - 34*M_SQRT2)*(-3*pow(sin(theta), 2)*cos(2*phi) + 3*pow(cos(theta), 2) - 1) + (pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^- → 1 → 6
+        if ((std::abs(st[2]) == 1.0 && std::abs(st[3]) == 6.0) &&
+            ((st[0] == 0. && st[1] == -1.0) ||
+             (st[0] == -0.1 && st[1] == 1.0))) {
+             
+            return ((1.0/14560.0)*M_SQRT2*(pow(mix[1], 2) - 5)*(169*M_SQRT2*pow(mix[2], 2) + 14*sqrt(130)*mix[2] - 63*M_SQRT2)*(-3*pow(sin(theta), 2)*cos(2*phi) + 3*pow(cos(theta), 2) - 1) + (pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^- → 2 → 0
+        if ((std::abs(st[2]) == 2.0 && std::abs(st[3]) == 0.0) &&
+            ((st[0] == 0. && st[1] == -1.0) ||
+             (st[0] == -0.1 && st[1] == 1.0))) {
+             
+            return (pow(mix[1], 2) + (1.0/8.0)*(pow(mix[1], 2) - 1)*(-3*pow(sin(theta), 2)*cos(2*phi) + 3*pow(cos(theta), 2) - 1) + 1)/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^- → 2 → 1
+        if ((std::abs(st[2]) == 2.0 && std::abs(st[3]) == 1.0) &&
+            ((st[0] == 0. && st[1] == -1.0) ||
+             (st[0] == -0.1 && st[1] == 1.0))) {
+             
+            return ((1.0/5600.0)*sqrt(70)*(pow(mix[1], 2) - 1)*(5*sqrt(70)*pow(mix[2], 2) + 70*sqrt(14)*mix[2] - 7*sqrt(70))*(-3*pow(sin(theta), 2)*cos(2*phi) + 3*pow(cos(theta), 2) - 1) + (pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^- → 2 → 2
+        if ((std::abs(st[2]) == 2.0 && std::abs(st[3]) == 2.0) &&
+            ((st[0] == 0. && st[1] == -1.0) ||
+             (st[0] == -0.1 && st[1] == 1.0))) {
+             
+            return ((1.0/39200.0)*sqrt(70)*(pow(mix[1], 2) - 1)*(-15*sqrt(70)*pow(mix[2], 2) + 490*sqrt(6)*mix[2] + 49*sqrt(70))*(-3*pow(sin(theta), 2)*cos(2*phi) + 3*pow(cos(theta), 2) - 1) + (pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^- → 2 → 3
+        if ((std::abs(st[2]) == 2.0 && std::abs(st[3]) == 3.0) &&
+            ((st[0] == 0. && st[1] == -1.0) ||
+             (st[0] == -0.1 && st[1] == 1.0))) {
+             
+            return (-1.0/19600.0*sqrt(70)*(pow(mix[1], 2) - 1)*(20*sqrt(70)*pow(mix[2], 2) + 140*sqrt(21)*mix[2] + 7*sqrt(70))*(-3*pow(sin(theta), 2)*cos(2*phi) + 3*pow(cos(theta), 2) - 1) + (pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^- → 2 → 4
+        if ((std::abs(st[2]) == 2.0 && std::abs(st[3]) == 4.0) &&
+            ((st[0] == 0. && st[1] == -1.0) ||
+             (st[0] == -0.1 && st[1] == 1.0))) {
+             
+            return (-1.0/15680.0*sqrt(70)*(pow(mix[1], 2) - 1)*(21*sqrt(70)*pow(mix[2], 2) + 280*M_SQRT2*mix[2] - 8*sqrt(70))*(-3*pow(sin(theta), 2)*cos(2*phi) + 3*pow(cos(theta), 2) - 1) + (pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^- → 2 → 5
+        if ((std::abs(st[2]) == 2.0 && std::abs(st[3]) == 5.0) &&
+            ((st[0] == 0. && st[1] == -1.0) ||
+             (st[0] == -0.1 && st[1] == 1.0))) {
+             
+            return (-1.0/12320.0*sqrt(70)*(pow(mix[1], 2) - 1)*(17*sqrt(70)*pow(mix[2], 2) + 66*sqrt(14)*mix[2] - 11*sqrt(70))*(-3*pow(sin(theta), 2)*cos(2*phi) + 3*pow(cos(theta), 2) - 1) + (pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^- → 2 → 6
+        if ((std::abs(st[2]) == 2.0 && std::abs(st[3]) == 6.0) &&
+            ((st[0] == 0. && st[1] == -1.0) ||
+             (st[0] == -0.1 && st[1] == 1.0))) {
+             
+            return (-1.0/800800.0*sqrt(70)*(pow(mix[1], 2) - 1)*(1089*sqrt(70)*pow(mix[2], 2) + 728*sqrt(330)*mix[2] - 884*sqrt(70))*(-3*pow(sin(theta), 2)*cos(2*phi) + 3*pow(cos(theta), 2) - 1) + (pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^- → 3 → 0
+        if ((std::abs(st[2]) == 3.0 && std::abs(st[3]) == 0.0) &&
+            ((st[0] == 0. && st[1] == -1.0) ||
+             (st[0] == -0.1 && st[1] == 1.0))) {
+             
+            return (pow(mix[1], 2) + (1.0/80.0)*(15*pow(mix[1], 2) - 12)*(-3*pow(sin(theta), 2)*cos(2*phi) + 3*pow(cos(theta), 2) - 1) + 1)/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^- → 3 → 1
+        if ((std::abs(st[2]) == 3.0 && std::abs(st[3]) == 1.0) &&
+            ((st[0] == 0. && st[1] == -1.0) ||
+             (st[0] == -0.1 && st[1] == 1.0))) {
+             
+            return ((pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1) + (1.0/2240.0)*sqrt(3)*(5*pow(mix[1], 2) - 4)*(21*sqrt(3)*pow(mix[2], 2) + 8*sqrt(42)*mix[2] + 16*sqrt(3))*(-3*pow(sin(theta), 2)*cos(2*phi) + 3*pow(cos(theta), 2) - 1))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^- → 3 → 2
+        if ((std::abs(st[2]) == 3.0 && std::abs(st[3]) == 2.0) &&
+            ((st[0] == 0. && st[1] == -1.0) ||
+             (st[0] == -0.1 && st[1] == 1.0))) {
+             
+            return ((pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1) + (1.0/2800.0)*sqrt(3)*(5*pow(mix[1], 2) - 4)*(5*sqrt(3)*pow(mix[2], 2) + 42*sqrt(10)*mix[2] - 14*sqrt(3))*(-3*pow(sin(theta), 2)*cos(2*phi) + 3*pow(cos(theta), 2) - 1))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^- → 3 → 3
+        if ((std::abs(st[2]) == 3.0 && std::abs(st[3]) == 3.0) &&
+            ((st[0] == 0. && st[1] == -1.0) ||
+             (st[0] == -0.1 && st[1] == 1.0))) {
+             
+            return ((pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1) + (1.0/1120.0)*(5*pow(mix[1], 2) - 4)*(-11*pow(mix[2], 2) + 42*mix[2] + 21)*(-3*pow(sin(theta), 2)*cos(2*phi) + 3*pow(cos(theta), 2) - 1))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^- → 3 → 4
+        if ((std::abs(st[2]) == 3.0 && std::abs(st[3]) == 4.0) &&
+            ((st[0] == 0. && st[1] == -1.0) ||
+             (st[0] == -0.1 && st[1] == 1.0))) {
+             
+            return ((pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1) - 1.0/1120.0*(5*pow(mix[1], 2) - 4)*(15*pow(mix[2], 2) + 70*mix[2] + 7)*(-3*pow(sin(theta), 2)*cos(2*phi) + 3*pow(cos(theta), 2) - 1))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^- → 3 → 5
+        if ((std::abs(st[2]) == 3.0 && std::abs(st[3]) == 5.0) &&
+            ((st[0] == 0. && st[1] == -1.0) ||
+             (st[0] == -0.1 && st[1] == 1.0))) {
+             
+            return ((pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1) - 1.0/1344.0*sqrt(3)*(5*pow(mix[1], 2) - 4)*(7*sqrt(3)*pow(mix[2], 2) + 8*sqrt(21)*mix[2] - 4*sqrt(3))*(-3*pow(sin(theta), 2)*cos(2*phi) + 3*pow(cos(theta), 2) - 1))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^- → 3 → 6
+        if ((std::abs(st[2]) == 3.0 && std::abs(st[3]) == 6.0) &&
+            ((st[0] == 0. && st[1] == -1.0) ||
+             (st[0] == -0.1 && st[1] == 1.0))) {
+             
+            return ((pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1) - 1.0/10560.0*sqrt(3)*(5*pow(mix[1], 2) - 4)*(51*sqrt(3)*pow(mix[2], 2) + 22*sqrt(105)*mix[2] - 55*sqrt(3))*(-3*pow(sin(theta), 2)*cos(2*phi) + 3*pow(cos(theta), 2) - 1))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^- → 4 → 0
+        if ((std::abs(st[2]) == 4.0 && std::abs(st[3]) == 0.0) &&
+            ((st[0] == 0. && st[1] == -1.0) ||
+             (st[0] == -0.1 && st[1] == 1.0))) {
+             
+            return (pow(mix[1], 2) + (1.0/560.0)*(119*pow(mix[1], 2) - 85)*(-3*pow(sin(theta), 2)*cos(2*phi) + 3*pow(cos(theta), 2) - 1) + 1)/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^- → 4 → 1
+        if ((std::abs(st[2]) == 4.0 && std::abs(st[3]) == 1.0) &&
+            ((st[0] == 0. && st[1] == -1.0) ||
+             (st[0] == -0.1 && st[1] == 1.0))) {
+             
+            return ((pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1) + (1.0/862400.0)*sqrt(77)*(7*pow(mix[1], 2) - 5)*(289*sqrt(77)*pow(mix[2], 2) + 110*sqrt(231)*mix[2] + 275*sqrt(77))*(-3*pow(sin(theta), 2)*cos(2*phi) + 3*pow(cos(theta), 2) - 1))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^- → 4 → 2
+        if ((std::abs(st[2]) == 4.0 && std::abs(st[3]) == 2.0) &&
+            ((st[0] == 0. && st[1] == -1.0) ||
+             (st[0] == -0.1 && st[1] == 1.0))) {
+             
+            return ((pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1) + (1.0/109760.0)*sqrt(77)*(7*pow(mix[1], 2) - 5)*(21*sqrt(77)*pow(mix[2], 2) + 56*sqrt(55)*mix[2] + 20*sqrt(77))*(-3*pow(sin(theta), 2)*cos(2*phi) + 3*pow(cos(theta), 2) - 1))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^- → 4 → 3
+        if ((std::abs(st[2]) == 4.0 && std::abs(st[3]) == 3.0) &&
+            ((st[0] == 0. && st[1] == -1.0) ||
+             (st[0] == -0.1 && st[1] == 1.0))) {
+             
+            return ((pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1) + (11.0/7840.0)*(7*pow(mix[1], 2) - 5)*(pow(mix[2], 2) + 42*mix[2] - 7)*(-3*pow(sin(theta), 2)*cos(2*phi) + 3*pow(cos(theta), 2) - 1))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^- → 4 → 4
+        if ((std::abs(st[2]) == 4.0 && std::abs(st[3]) == 4.0) &&
+            ((st[0] == 0. && st[1] == -1.0) ||
+             (st[0] == -0.1 && st[1] == 1.0))) {
+             
+            return ((pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1) + (1.0/3018400.0)*sqrt(77)*(7*pow(mix[1], 2) - 5)*(-325*sqrt(77)*pow(mix[2], 2) + 3234*sqrt(5)*mix[2] + 539*sqrt(77))*(-3*pow(sin(theta), 2)*cos(2*phi) + 3*pow(cos(theta), 2) - 1))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^- → 4 → 5
+        if ((std::abs(st[2]) == 4.0 && std::abs(st[3]) == 5.0) &&
+            ((st[0] == 0. && st[1] == -1.0) ||
+             (st[0] == -0.1 && st[1] == 1.0))) {
+             
+            return ((pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1) - 1.0/215600.0*sqrt(77)*(7*pow(mix[1], 2) - 5)*(25*sqrt(77)*pow(mix[2], 2) + 42*sqrt(770)*mix[2] + 14*sqrt(77))*(-3*pow(sin(theta), 2)*cos(2*phi) + 3*pow(cos(theta), 2) - 1))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^- → 4 → 6
+        if ((std::abs(st[2]) == 4.0 && std::abs(st[3]) == 6.0) &&
+            ((st[0] == 0. && st[1] == -1.0) ||
+             (st[0] == -0.1 && st[1] == 1.0))) {
+             
+            return ((pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1) - 1.0/172480.0*sqrt(77)*(7*pow(mix[1], 2) - 5)*(21*sqrt(77)*pow(mix[2], 2) + 56*sqrt(154)*mix[2] - 16*sqrt(77))*(-3*pow(sin(theta), 2)*cos(2*phi) + 3*pow(cos(theta), 2) - 1))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^+ → 0 → 1
+        if ((std::abs(st[2]) == 0.0 && std::abs(st[3]) == 1.0) &&
+            ((st[0] == 0. && st[1] == 1.0) ||
+             (st[0] == -0.1 && st[1] == -1.0))) {
+             
+            return 1/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^+ → 0 → 2
+        if ((std::abs(st[2]) == 0.0 && std::abs(st[3]) == 2.0) &&
+            ((st[0] == 0. && st[1] == 1.0) ||
+             (st[0] == -0.1 && st[1] == -1.0))) {
+             
+            return 1/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^+ → 0 → 3
+        if ((std::abs(st[2]) == 0.0 && std::abs(st[3]) == 3.0) &&
+            ((st[0] == 0. && st[1] == 1.0) ||
+             (st[0] == -0.1 && st[1] == -1.0))) {
+             
+            return 1/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^+ → 0 → 4
+        if ((std::abs(st[2]) == 0.0 && std::abs(st[3]) == 4.0) &&
+            ((st[0] == 0. && st[1] == 1.0) ||
+             (st[0] == -0.1 && st[1] == -1.0))) {
+             
+            return 1/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^+ → 0 → 5
+        if ((std::abs(st[2]) == 0.0 && std::abs(st[3]) == 5.0) &&
+            ((st[0] == 0. && st[1] == 1.0) ||
+             (st[0] == -0.1 && st[1] == -1.0))) {
+             
+            return 1/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^+ → 0 → 6
+        if ((std::abs(st[2]) == 0.0 && std::abs(st[3]) == 6.0) &&
+            ((st[0] == 0. && st[1] == 1.0) ||
+             (st[0] == -0.1 && st[1] == -1.0))) {
+             
+            return 1/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^+ → 1 → 0
+        if ((std::abs(st[2]) == 1.0 && std::abs(st[3]) == 0.0) &&
+            ((st[0] == 0. && st[1] == 1.0) ||
+             (st[0] == -0.1 && st[1] == -1.0))) {
+             
+            return (pow(mix[1], 2) + (1.0/40.0)*(pow(mix[1], 2) - 5)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2) + 1)/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^+ → 1 → 1
+        if ((std::abs(st[2]) == 1.0 && std::abs(st[3]) == 1.0) &&
+            ((st[0] == 0. && st[1] == 1.0) ||
+             (st[0] == -0.1 && st[1] == -1.0))) {
+             
+            return (-1.0/80.0*(pow(mix[1], 2) - 5)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(pow(mix[2], 2) + 6*mix[2] + 1) + (pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^+ → 1 → 2
+        if ((std::abs(st[2]) == 1.0 && std::abs(st[3]) == 2.0) &&
+            ((st[0] == 0. && st[1] == 1.0) ||
+             (st[0] == -0.1 && st[1] == -1.0))) {
+             
+            return ((1.0/800.0)*M_SQRT2*(pow(mix[1], 2) - 5)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(5*M_SQRT2*pow(mix[2], 2) + 6*sqrt(10)*mix[2] + M_SQRT2) + (pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^+ → 1 → 3
+        if ((std::abs(st[2]) == 1.0 && std::abs(st[3]) == 3.0) &&
+            ((st[0] == 0. && st[1] == 1.0) ||
+             (st[0] == -0.1 && st[1] == -1.0))) {
+             
+            return ((1.0/2240.0)*M_SQRT2*(pow(mix[1], 2) - 5)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(21*M_SQRT2*pow(mix[2], 2) + 16*sqrt(7)*mix[2] - 4*M_SQRT2) + (pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^+ → 1 → 4
+        if ((std::abs(st[2]) == 1.0 && std::abs(st[3]) == 4.0) &&
+            ((st[0] == 0. && st[1] == 1.0) ||
+             (st[0] == -0.1 && st[1] == -1.0))) {
+             
+            return ((1.0/1600.0)*M_SQRT2*(pow(mix[1], 2) - 5)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(17*M_SQRT2*pow(mix[2], 2) + 10*sqrt(6)*mix[2] - 5*M_SQRT2) + (pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^+ → 1 → 5
+        if ((std::abs(st[2]) == 1.0 && std::abs(st[3]) == 5.0) &&
+            ((st[0] == 0. && st[1] == 1.0) ||
+             (st[0] == -0.1 && st[1] == -1.0))) {
+             
+            return ((1.0/8800.0)*M_SQRT2*(pow(mix[1], 2) - 5)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(99*M_SQRT2*pow(mix[2], 2) + 24*sqrt(22)*mix[2] - 34*M_SQRT2) + (pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^+ → 1 → 6
+        if ((std::abs(st[2]) == 1.0 && std::abs(st[3]) == 6.0) &&
+            ((st[0] == 0. && st[1] == 1.0) ||
+             (st[0] == -0.1 && st[1] == -1.0))) {
+             
+            return ((1.0/14560.0)*M_SQRT2*(pow(mix[1], 2) - 5)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(169*M_SQRT2*pow(mix[2], 2) + 14*sqrt(130)*mix[2] - 63*M_SQRT2) + (pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^+ → 2 → 0
+        if ((std::abs(st[2]) == 2.0 && std::abs(st[3]) == 0.0) &&
+            ((st[0] == 0. && st[1] == 1.0) ||
+             (st[0] == -0.1 && st[1] == -1.0))) {
+             
+            return (pow(mix[1], 2) + (1.0/8.0)*(pow(mix[1], 2) - 1)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2) + 1)/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^+ → 2 → 1
+        if ((std::abs(st[2]) == 2.0 && std::abs(st[3]) == 1.0) &&
+            ((st[0] == 0. && st[1] == 1.0) ||
+             (st[0] == -0.1 && st[1] == -1.0))) {
+             
+            return ((1.0/5600.0)*sqrt(70)*(pow(mix[1], 2) - 1)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(5*sqrt(70)*pow(mix[2], 2) + 70*sqrt(14)*mix[2] - 7*sqrt(70)) + (pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^+ → 2 → 2
+        if ((std::abs(st[2]) == 2.0 && std::abs(st[3]) == 2.0) &&
+            ((st[0] == 0. && st[1] == 1.0) ||
+             (st[0] == -0.1 && st[1] == -1.0))) {
+             
+            return ((1.0/39200.0)*sqrt(70)*(pow(mix[1], 2) - 1)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(-15*sqrt(70)*pow(mix[2], 2) + 490*sqrt(6)*mix[2] + 49*sqrt(70)) + (pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^+ → 2 → 3
+        if ((std::abs(st[2]) == 2.0 && std::abs(st[3]) == 3.0) &&
+            ((st[0] == 0. && st[1] == 1.0) ||
+             (st[0] == -0.1 && st[1] == -1.0))) {
+             
+            return (-1.0/19600.0*sqrt(70)*(pow(mix[1], 2) - 1)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(20*sqrt(70)*pow(mix[2], 2) + 140*sqrt(21)*mix[2] + 7*sqrt(70)) + (pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^+ → 2 → 4
+        if ((std::abs(st[2]) == 2.0 && std::abs(st[3]) == 4.0) &&
+            ((st[0] == 0. && st[1] == 1.0) ||
+             (st[0] == -0.1 && st[1] == -1.0))) {
+             
+            return (-1.0/15680.0*sqrt(70)*(pow(mix[1], 2) - 1)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(21*sqrt(70)*pow(mix[2], 2) + 280*M_SQRT2*mix[2] - 8*sqrt(70)) + (pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^+ → 2 → 5
+        if ((std::abs(st[2]) == 2.0 && std::abs(st[3]) == 5.0) &&
+            ((st[0] == 0. && st[1] == 1.0) ||
+             (st[0] == -0.1 && st[1] == -1.0))) {
+             
+            return (-1.0/12320.0*sqrt(70)*(pow(mix[1], 2) - 1)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(17*sqrt(70)*pow(mix[2], 2) + 66*sqrt(14)*mix[2] - 11*sqrt(70)) + (pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^+ → 2 → 6
+        if ((std::abs(st[2]) == 2.0 && std::abs(st[3]) == 6.0) &&
+            ((st[0] == 0. && st[1] == 1.0) ||
+             (st[0] == -0.1 && st[1] == -1.0))) {
+             
+            return (-1.0/800800.0*sqrt(70)*(pow(mix[1], 2) - 1)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(1089*sqrt(70)*pow(mix[2], 2) + 728*sqrt(330)*mix[2] - 884*sqrt(70)) + (pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^+ → 3 → 0
+        if ((std::abs(st[2]) == 3.0 && std::abs(st[3]) == 0.0) &&
+            ((st[0] == 0. && st[1] == 1.0) ||
+             (st[0] == -0.1 && st[1] == -1.0))) {
+             
+            return (pow(mix[1], 2) + (1.0/80.0)*(15*pow(mix[1], 2) - 12)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2) + 1)/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^+ → 3 → 1
+        if ((std::abs(st[2]) == 3.0 && std::abs(st[3]) == 1.0) &&
+            ((st[0] == 0. && st[1] == 1.0) ||
+             (st[0] == -0.1 && st[1] == -1.0))) {
+             
+            return ((pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1) + (1.0/2240.0)*sqrt(3)*(5*pow(mix[1], 2) - 4)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(21*sqrt(3)*pow(mix[2], 2) + 8*sqrt(42)*mix[2] + 16*sqrt(3)))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^+ → 3 → 2
+        if ((std::abs(st[2]) == 3.0 && std::abs(st[3]) == 2.0) &&
+            ((st[0] == 0. && st[1] == 1.0) ||
+             (st[0] == -0.1 && st[1] == -1.0))) {
+             
+            return ((pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1) + (1.0/2800.0)*sqrt(3)*(5*pow(mix[1], 2) - 4)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(5*sqrt(3)*pow(mix[2], 2) + 42*sqrt(10)*mix[2] - 14*sqrt(3)))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^+ → 3 → 3
+        if ((std::abs(st[2]) == 3.0 && std::abs(st[3]) == 3.0) &&
+            ((st[0] == 0. && st[1] == 1.0) ||
+             (st[0] == -0.1 && st[1] == -1.0))) {
+             
+            return ((pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1) + (1.0/1120.0)*(5*pow(mix[1], 2) - 4)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(-11*pow(mix[2], 2) + 42*mix[2] + 21))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^+ → 3 → 4
+        if ((std::abs(st[2]) == 3.0 && std::abs(st[3]) == 4.0) &&
+            ((st[0] == 0. && st[1] == 1.0) ||
+             (st[0] == -0.1 && st[1] == -1.0))) {
+             
+            return ((pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1) - 1.0/1120.0*(5*pow(mix[1], 2) - 4)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(15*pow(mix[2], 2) + 70*mix[2] + 7))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^+ → 3 → 5
+        if ((std::abs(st[2]) == 3.0 && std::abs(st[3]) == 5.0) &&
+            ((st[0] == 0. && st[1] == 1.0) ||
+             (st[0] == -0.1 && st[1] == -1.0))) {
+             
+            return ((pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1) - 1.0/1344.0*sqrt(3)*(5*pow(mix[1], 2) - 4)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(7*sqrt(3)*pow(mix[2], 2) + 8*sqrt(21)*mix[2] - 4*sqrt(3)))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^+ → 3 → 6
+        if ((std::abs(st[2]) == 3.0 && std::abs(st[3]) == 6.0) &&
+            ((st[0] == 0. && st[1] == 1.0) ||
+             (st[0] == -0.1 && st[1] == -1.0))) {
+             
+            return ((pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1) - 1.0/10560.0*sqrt(3)*(5*pow(mix[1], 2) - 4)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(51*sqrt(3)*pow(mix[2], 2) + 22*sqrt(105)*mix[2] - 55*sqrt(3)))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^+ → 4 → 0
+        if ((std::abs(st[2]) == 4.0 && std::abs(st[3]) == 0.0) &&
+            ((st[0] == 0. && st[1] == 1.0) ||
+             (st[0] == -0.1 && st[1] == -1.0))) {
+             
+            return (pow(mix[1], 2) + (1.0/560.0)*(119*pow(mix[1], 2) - 85)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2) + 1)/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^+ → 4 → 1
+        if ((std::abs(st[2]) == 4.0 && std::abs(st[3]) == 1.0) &&
+            ((st[0] == 0. && st[1] == 1.0) ||
+             (st[0] == -0.1 && st[1] == -1.0))) {
+             
+            return ((pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1) + (1.0/862400.0)*sqrt(77)*(7*pow(mix[1], 2) - 5)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(289*sqrt(77)*pow(mix[2], 2) + 110*sqrt(231)*mix[2] + 275*sqrt(77)))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^+ → 4 → 2
+        if ((std::abs(st[2]) == 4.0 && std::abs(st[3]) == 2.0) &&
+            ((st[0] == 0. && st[1] == 1.0) ||
+             (st[0] == -0.1 && st[1] == -1.0))) {
+             
+            return ((pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1) + (1.0/109760.0)*sqrt(77)*(7*pow(mix[1], 2) - 5)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(21*sqrt(77)*pow(mix[2], 2) + 56*sqrt(55)*mix[2] + 20*sqrt(77)))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^+ → 4 → 3
+        if ((std::abs(st[2]) == 4.0 && std::abs(st[3]) == 3.0) &&
+            ((st[0] == 0. && st[1] == 1.0) ||
+             (st[0] == -0.1 && st[1] == -1.0))) {
+             
+            return ((pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1) + (11.0/7840.0)*(7*pow(mix[1], 2) - 5)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(pow(mix[2], 2) + 42*mix[2] - 7))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^+ → 4 → 4
+        if ((std::abs(st[2]) == 4.0 && std::abs(st[3]) == 4.0) &&
+            ((st[0] == 0. && st[1] == 1.0) ||
+             (st[0] == -0.1 && st[1] == -1.0))) {
+             
+            return ((pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1) + (1.0/3018400.0)*sqrt(77)*(7*pow(mix[1], 2) - 5)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(-325*sqrt(77)*pow(mix[2], 2) + 3234*sqrt(5)*mix[2] + 539*sqrt(77)))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^+ → 4 → 5
+        if ((std::abs(st[2]) == 4.0 && std::abs(st[3]) == 5.0) &&
+            ((st[0] == 0. && st[1] == 1.0) ||
+             (st[0] == -0.1 && st[1] == -1.0))) {
+             
+            return ((pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1) - 1.0/215600.0*sqrt(77)*(7*pow(mix[1], 2) - 5)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(25*sqrt(77)*pow(mix[2], 2) + 42*sqrt(770)*mix[2] + 14*sqrt(77)))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 1^+ → 4 → 6
+        if ((std::abs(st[2]) == 4.0 && std::abs(st[3]) == 6.0) &&
+            ((st[0] == 0. && st[1] == 1.0) ||
+             (st[0] == -0.1 && st[1] == -1.0))) {
+             
+            return ((pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1) - 1.0/172480.0*sqrt(77)*(7*pow(mix[1], 2) - 5)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(21*sqrt(77)*pow(mix[2], 2) + 56*sqrt(154)*mix[2] - 16*sqrt(77)))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 2^+ → 0 → 1
+        if ((std::abs(st[2]) == 0.0 && std::abs(st[3]) == 1.0) &&
+            ((st[0] == 0. && st[1] == 2.0) ||
+             (st[0] == -0.1 && st[1] == -2.0))) {
+             
+            return 1/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 2^+ → 0 → 2
+        if ((std::abs(st[2]) == 0.0 && std::abs(st[3]) == 2.0) &&
+            ((st[0] == 0. && st[1] == 2.0) ||
+             (st[0] == -0.1 && st[1] == -2.0))) {
+             
+            return 1/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 2^+ → 0 → 3
+        if ((std::abs(st[2]) == 0.0 && std::abs(st[3]) == 3.0) &&
+            ((st[0] == 0. && st[1] == 2.0) ||
+             (st[0] == -0.1 && st[1] == -2.0))) {
+             
+            return 1/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 2^+ → 0 → 4
+        if ((std::abs(st[2]) == 0.0 && std::abs(st[3]) == 4.0) &&
+            ((st[0] == 0. && st[1] == 2.0) ||
+             (st[0] == -0.1 && st[1] == -2.0))) {
+             
+            return 1/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 2^+ → 0 → 5
+        if ((std::abs(st[2]) == 0.0 && std::abs(st[3]) == 5.0) &&
+            ((st[0] == 0. && st[1] == 2.0) ||
+             (st[0] == -0.1 && st[1] == -2.0))) {
+             
+            return 1/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 2^+ → 0 → 6
+        if ((std::abs(st[2]) == 0.0 && std::abs(st[3]) == 6.0) &&
+            ((st[0] == 0. && st[1] == 2.0) ||
+             (st[0] == -0.1 && st[1] == -2.0))) {
+             
+            return 1/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 2^+ → 1 → 0
+        if ((std::abs(st[2]) == 1.0 && std::abs(st[3]) == 0.0) &&
+            ((st[0] == 0. && st[1] == 2.0) ||
+             (st[0] == -0.1 && st[1] == -2.0))) {
+             
+            return (pow(mix[1], 2) + (1.0/8.0)*(pow(mix[1], 2) - 1)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2) + 1)/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 2^+ → 1 → 1
+        if ((std::abs(st[2]) == 1.0 && std::abs(st[3]) == 1.0) &&
+            ((st[0] == 0. && st[1] == 2.0) ||
+             (st[0] == -0.1 && st[1] == -2.0))) {
+             
+            return (-1.0/16.0*(pow(mix[1], 2) - 1)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(pow(mix[2], 2) + 6*mix[2] + 1) + (pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 2^+ → 1 → 2
+        if ((std::abs(st[2]) == 1.0 && std::abs(st[3]) == 2.0) &&
+            ((st[0] == 0. && st[1] == 2.0) ||
+             (st[0] == -0.1 && st[1] == -2.0))) {
+             
+            return ((1.0/160.0)*M_SQRT2*(pow(mix[1], 2) - 1)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(5*M_SQRT2*pow(mix[2], 2) + 6*sqrt(10)*mix[2] + M_SQRT2) + (pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 2^+ → 1 → 3
+        if ((std::abs(st[2]) == 1.0 && std::abs(st[3]) == 3.0) &&
+            ((st[0] == 0. && st[1] == 2.0) ||
+             (st[0] == -0.1 && st[1] == -2.0))) {
+             
+            return ((1.0/448.0)*M_SQRT2*(pow(mix[1], 2) - 1)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(21*M_SQRT2*pow(mix[2], 2) + 16*sqrt(7)*mix[2] - 4*M_SQRT2) + (pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 2^+ → 1 → 4
+        if ((std::abs(st[2]) == 1.0 && std::abs(st[3]) == 4.0) &&
+            ((st[0] == 0. && st[1] == 2.0) ||
+             (st[0] == -0.1 && st[1] == -2.0))) {
+             
+            return ((1.0/320.0)*M_SQRT2*(pow(mix[1], 2) - 1)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(17*M_SQRT2*pow(mix[2], 2) + 10*sqrt(6)*mix[2] - 5*M_SQRT2) + (pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 2^+ → 1 → 5
+        if ((std::abs(st[2]) == 1.0 && std::abs(st[3]) == 5.0) &&
+            ((st[0] == 0. && st[1] == 2.0) ||
+             (st[0] == -0.1 && st[1] == -2.0))) {
+             
+            return ((1.0/1760.0)*M_SQRT2*(pow(mix[1], 2) - 1)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(99*M_SQRT2*pow(mix[2], 2) + 24*sqrt(22)*mix[2] - 34*M_SQRT2) + (pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 2^+ → 1 → 6
+        if ((std::abs(st[2]) == 1.0 && std::abs(st[3]) == 6.0) &&
+            ((st[0] == 0. && st[1] == 2.0) ||
+             (st[0] == -0.1 && st[1] == -2.0))) {
+             
+            return ((1.0/2912.0)*M_SQRT2*(pow(mix[1], 2) - 1)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(169*M_SQRT2*pow(mix[2], 2) + 14*sqrt(130)*mix[2] - 63*M_SQRT2) + (pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 2^+ → 2 → 0
+        if ((std::abs(st[2]) == 2.0 && std::abs(st[3]) == 0.0) &&
+            ((st[0] == 0. && st[1] == 2.0) ||
+             (st[0] == -0.1 && st[1] == -2.0))) {
+             
+            return (1.0/1176.0)*(1176*pow(mix[1], 2) + (-45*pow(mix[1], 2) + 105)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2) + (48*pow(mix[1], 2) - 112)*(-5*(7*pow(cos(theta), 2) - 1)*pow(sin(theta), 2)*cos(2*phi) + 35*pow(cos(theta), 4) - 30*pow(cos(theta), 2) + 3) + 1176)/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 2^+ → 2 → 1
+        if ((std::abs(st[2]) == 2.0 && std::abs(st[3]) == 1.0) &&
+            ((st[0] == 0. && st[1] == 2.0) ||
+             (st[0] == -0.1 && st[1] == -2.0))) {
+             
+            return (-4.0/441.0*pow(mix[2], 2)*(3*pow(mix[1], 2) - 7)*(-5*(7*pow(cos(theta), 2) - 1)*pow(sin(theta), 2)*cos(2*phi) + 35*pow(cos(theta), 4) - 30*pow(cos(theta), 2) + 3) + (pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1) - 1.0/54880.0*sqrt(70)*(3*pow(mix[1], 2) - 7)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(5*sqrt(70)*pow(mix[2], 2) + 70*sqrt(14)*mix[2] - 7*sqrt(70)))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 2^+ → 2 → 2
+        if ((std::abs(st[2]) == 2.0 && std::abs(st[3]) == 2.0) &&
+            ((st[0] == 0. && st[1] == 2.0) ||
+             (st[0] == -0.1 && st[1] == -2.0))) {
+             
+            return ((4.0/1029.0)*pow(mix[2], 2)*(3*pow(mix[1], 2) - 7)*(-5*(7*pow(cos(theta), 2) - 1)*pow(sin(theta), 2)*cos(2*phi) + 35*pow(cos(theta), 4) - 30*pow(cos(theta), 2) + 3) + (pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1) - 1.0/384160.0*sqrt(70)*(3*pow(mix[1], 2) - 7)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(-15*sqrt(70)*pow(mix[2], 2) + 490*sqrt(6)*mix[2] + 49*sqrt(70)))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 2^+ → 2 → 3
+        if ((std::abs(st[2]) == 2.0 && std::abs(st[3]) == 3.0) &&
+            ((st[0] == 0. && st[1] == 2.0) ||
+             (st[0] == -0.1 && st[1] == -2.0))) {
+             
+            return (-1.0/1029.0*pow(mix[2], 2)*(3*pow(mix[1], 2) - 7)*(-5*(7*pow(cos(theta), 2) - 1)*pow(sin(theta), 2)*cos(2*phi) + 35*pow(cos(theta), 4) - 30*pow(cos(theta), 2) + 3) + (pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1) + (1.0/192080.0)*sqrt(70)*(3*pow(mix[1], 2) - 7)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(20*sqrt(70)*pow(mix[2], 2) + 140*sqrt(21)*mix[2] + 7*sqrt(70)))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 2^+ → 2 → 4
+        if ((std::abs(st[2]) == 2.0 && std::abs(st[3]) == 4.0) &&
+            ((st[0] == 0. && st[1] == 2.0) ||
+             (st[0] == -0.1 && st[1] == -2.0))) {
+             
+            return ((pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1) + (1.0/153664.0)*sqrt(70)*(3*pow(mix[1], 2) - 7)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(21*sqrt(70)*pow(mix[2], 2) + 280*M_SQRT2*mix[2] - 8*sqrt(70)) + (1.0/259308.0)*sqrt(14)*(3*pow(mix[1], 2) - 7)*(7*sqrt(14)*pow(mix[2], 2) + 35*sqrt(10)*mix[2] + 2*sqrt(14))*(-5*(7*pow(cos(theta), 2) - 1)*pow(sin(theta), 2)*cos(2*phi) + 35*pow(cos(theta), 4) - 30*pow(cos(theta), 2) + 3))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 2^+ → 2 → 5
+        if ((std::abs(st[2]) == 2.0 && std::abs(st[3]) == 5.0) &&
+            ((st[0] == 0. && st[1] == 2.0) ||
+             (st[0] == -0.1 && st[1] == -2.0))) {
+             
+            return ((pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1) + (1.0/120736.0)*sqrt(70)*(3*pow(mix[1], 2) - 7)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(17*sqrt(70)*pow(mix[2], 2) + 66*sqrt(14)*mix[2] - 11*sqrt(70)) + (1.0/271656.0)*sqrt(14)*(3*pow(mix[1], 2) - 7)*(27*sqrt(14)*pow(mix[2], 2) + 18*sqrt(70)*mix[2] - sqrt(14))*(-5*(7*pow(cos(theta), 2) - 1)*pow(sin(theta), 2)*cos(2*phi) + 35*pow(cos(theta), 4) - 30*pow(cos(theta), 2) + 3))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 2^+ → 2 → 6
+        if ((std::abs(st[2]) == 2.0 && std::abs(st[3]) == 6.0) &&
+            ((st[0] == 0. && st[1] == 2.0) ||
+             (st[0] == -0.1 && st[1] == -2.0))) {
+             
+            return ((pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1) + (1.0/7847840.0)*sqrt(70)*(3*pow(mix[1], 2) - 7)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(1089*sqrt(70)*pow(mix[2], 2) + 728*sqrt(330)*mix[2] - 884*sqrt(70)) + (1.0/588588.0)*sqrt(14)*(3*pow(mix[1], 2) - 7)*(88*sqrt(14)*pow(mix[2], 2) + 42*sqrt(66)*mix[2] - 9*sqrt(14))*(-5*(7*pow(cos(theta), 2) - 1)*pow(sin(theta), 2)*cos(2*phi) + 35*pow(cos(theta), 4) - 30*pow(cos(theta), 2) + 3))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 2^+ → 3 → 0
+        if ((std::abs(st[2]) == 3.0 && std::abs(st[3]) == 0.0) &&
+            ((st[0] == 0. && st[1] == 2.0) ||
+             (st[0] == -0.1 && st[1] == -2.0))) {
+             
+            return (1.0/168.0)*(168*pow(mix[1], 2) + (3*pow(mix[1], 2) - 2)*(-5*(7*pow(cos(theta), 2) - 1)*pow(sin(theta), 2)*cos(2*phi) + 35*pow(cos(theta), 4) - 30*pow(cos(theta), 2) + 3) + (9*pow(mix[1], 2) + 36)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2) + 168)/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 2^+ → 3 → 1
+        if ((std::abs(st[2]) == 3.0 && std::abs(st[3]) == 1.0) &&
+            ((st[0] == 0. && st[1] == 2.0) ||
+             (st[0] == -0.1 && st[1] == -2.0))) {
+             
+            return ((pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1) + (1.0/1568.0)*sqrt(3)*(pow(mix[1], 2) + 4)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(21*sqrt(3)*pow(mix[2], 2) + 8*sqrt(42)*mix[2] + 16*sqrt(3)) + (1.0/155232.0)*sqrt(22)*(3*pow(mix[1], 2) - 2)*(7*sqrt(22)*pow(mix[2], 2) + 220*sqrt(77)*mix[2] - 88*sqrt(22))*(-5*(7*pow(cos(theta), 2) - 1)*pow(sin(theta), 2)*cos(2*phi) + 35*pow(cos(theta), 4) - 30*pow(cos(theta), 2) + 3))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 2^+ → 3 → 2
+        if ((std::abs(st[2]) == 3.0 && std::abs(st[3]) == 2.0) &&
+            ((st[0] == 0. && st[1] == 2.0) ||
+             (st[0] == -0.1 && st[1] == -2.0))) {
+             
+            return ((11.0/588.0)*pow(mix[2], 2)*(3*pow(mix[1], 2) - 2)*(-5*(7*pow(cos(theta), 2) - 1)*pow(sin(theta), 2)*cos(2*phi) + 35*pow(cos(theta), 4) - 30*pow(cos(theta), 2) + 3) + (pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1) + (1.0/1960.0)*sqrt(3)*(pow(mix[1], 2) + 4)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(5*sqrt(3)*pow(mix[2], 2) + 42*sqrt(10)*mix[2] - 14*sqrt(3)))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 2^+ → 3 → 3
+        if ((std::abs(st[2]) == 3.0 && std::abs(st[3]) == 3.0) &&
+            ((st[0] == 0. && st[1] == 2.0) ||
+             (st[0] == -0.1 && st[1] == -2.0))) {
+             
+            return (-11.0/882.0*pow(mix[2], 2)*(3*pow(mix[1], 2) - 2)*(-5*(7*pow(cos(theta), 2) - 1)*pow(sin(theta), 2)*cos(2*phi) + 35*pow(cos(theta), 4) - 30*pow(cos(theta), 2) + 3) + (pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1) + (1.0/784.0)*(pow(mix[1], 2) + 4)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(-11*pow(mix[2], 2) + 42*mix[2] + 21))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 2^+ → 3 → 4
+        if ((std::abs(st[2]) == 3.0 && std::abs(st[3]) == 4.0) &&
+            ((st[0] == 0. && st[1] == 2.0) ||
+             (st[0] == -0.1 && st[1] == -2.0))) {
+             
+            return ((11.0/2646.0)*pow(mix[2], 2)*(3*pow(mix[1], 2) - 2)*(-5*(7*pow(cos(theta), 2) - 1)*pow(sin(theta), 2)*cos(2*phi) + 35*pow(cos(theta), 4) - 30*pow(cos(theta), 2) + 3) + (pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1) - 1.0/784.0*(pow(mix[1], 2) + 4)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(15*pow(mix[2], 2) + 70*mix[2] + 7))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 2^+ → 3 → 5
+        if ((std::abs(st[2]) == 3.0 && std::abs(st[3]) == 5.0) &&
+            ((st[0] == 0. && st[1] == 2.0) ||
+             (st[0] == -0.1 && st[1] == -2.0))) {
+             
+            return (1.0/1707552.0)*(1707552*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1) - 1815*sqrt(3)*(pow(mix[1], 2) + 4)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(7*sqrt(3)*pow(mix[2], 2) + 8*sqrt(21)*mix[2] - 4*sqrt(3)) - sqrt(22)*(3*pow(mix[1], 2) - 2)*(119*sqrt(22)*pow(mix[2], 2) + 220*sqrt(154)*mix[2] + 44*sqrt(22))*(-5*(7*pow(cos(theta), 2) - 1)*pow(sin(theta), 2)*cos(2*phi) + 35*pow(cos(theta), 4) - 30*pow(cos(theta), 2) + 3))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 2^+ → 3 → 6
+        if ((std::abs(st[2]) == 3.0 && std::abs(st[3]) == 6.0) &&
+            ((st[0] == 0. && st[1] == 2.0) ||
+             (st[0] == -0.1 && st[1] == -2.0))) {
+             
+            return ((pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1) - 1.0/7392.0*sqrt(3)*(pow(mix[1], 2) + 4)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(51*sqrt(3)*pow(mix[2], 2) + 22*sqrt(105)*mix[2] - 55*sqrt(3)) - 1.0/1057056.0*sqrt(22)*(3*pow(mix[1], 2) - 2)*(261*sqrt(22)*pow(mix[2], 2) + 78*sqrt(770)*mix[2] - 13*sqrt(22))*(-5*(7*pow(cos(theta), 2) - 1)*pow(sin(theta), 2)*cos(2*phi) + 35*pow(cos(theta), 4) - 30*pow(cos(theta), 2) + 3))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 2^+ → 4 → 0
+        if ((std::abs(st[2]) == 4.0 && std::abs(st[3]) == 0.0) &&
+            ((st[0] == 0. && st[1] == 2.0) ||
+             (st[0] == -0.1 && st[1] == -2.0))) {
+             
+            return (1.0/784.0)*(784*pow(mix[1], 2) + (17*pow(mix[1], 2) + 170)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2) + (36*pow(mix[1], 2) - 18)*(-5*(7*pow(cos(theta), 2) - 1)*pow(sin(theta), 2)*cos(2*phi) + 35*pow(cos(theta), 4) - 30*pow(cos(theta), 2) + 3) + 784)/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 2^+ → 4 → 1
+        if ((std::abs(st[2]) == 4.0 && std::abs(st[3]) == 1.0) &&
+            ((st[0] == 0. && st[1] == 2.0) ||
+             (st[0] == -0.1 && st[1] == -2.0))) {
+             
+            return ((pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1) + (1.0/1207360.0)*sqrt(77)*(pow(mix[1], 2) + 10)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(289*sqrt(77)*pow(mix[2], 2) + 110*sqrt(231)*mix[2] + 275*sqrt(77)) + (1.0/4708704.0)*sqrt(2002)*(2*pow(mix[1], 2) - 1)*(27*sqrt(2002)*pow(mix[2], 2) + 78*sqrt(6006)*mix[2] + 13*sqrt(2002))*(-5*(7*pow(cos(theta), 2) - 1)*pow(sin(theta), 2)*cos(2*phi) + 35*pow(cos(theta), 4) - 30*pow(cos(theta), 2) + 3))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 2^+ → 4 → 2
+        if ((std::abs(st[2]) == 4.0 && std::abs(st[3]) == 2.0) &&
+            ((st[0] == 0. && st[1] == 2.0) ||
+             (st[0] == -0.1 && st[1] == -2.0))) {
+             
+            return ((pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1) + (1.0/153664.0)*sqrt(77)*(pow(mix[1], 2) + 10)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(21*sqrt(77)*pow(mix[2], 2) + 56*sqrt(55)*mix[2] + 20*sqrt(77)) - 1.0/7606368.0*sqrt(2002)*(2*pow(mix[1], 2) - 1)*(7*sqrt(2002)*pow(mix[2], 2) - 308*sqrt(1430)*mix[2] + 44*sqrt(2002))*(-5*(7*pow(cos(theta), 2) - 1)*pow(sin(theta), 2)*cos(2*phi) + 35*pow(cos(theta), 4) - 30*pow(cos(theta), 2) + 3))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 2^+ → 4 → 3
+        if ((std::abs(st[2]) == 4.0 && std::abs(st[3]) == 3.0) &&
+            ((st[0] == 0. && st[1] == 2.0) ||
+             (st[0] == -0.1 && st[1] == -2.0))) {
+             
+            return (1.0/98784.0)*(2288*pow(mix[2], 2)*(2*pow(mix[1], 2) - 1)*(-5*(7*pow(cos(theta), 2) - 1)*pow(sin(theta), 2)*cos(2*phi) + 35*pow(cos(theta), 4) - 30*pow(cos(theta), 2) + 3) + 98784*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1) + 99*(pow(mix[1], 2) + 10)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(pow(mix[2], 2) + 42*mix[2] - 7))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 2^+ → 4 → 4
+        if ((std::abs(st[2]) == 4.0 && std::abs(st[3]) == 4.0) &&
+            ((st[0] == 0. && st[1] == 2.0) ||
+             (st[0] == -0.1 && st[1] == -2.0))) {
+             
+            return (1.0/4225760.0)*(-80080*pow(mix[2], 2)*(2*pow(mix[1], 2) - 1)*(-5*(7*pow(cos(theta), 2) - 1)*pow(sin(theta), 2)*cos(2*phi) + 35*pow(cos(theta), 4) - 30*pow(cos(theta), 2) + 3) + 4225760*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1) + sqrt(77)*(pow(mix[1], 2) + 10)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(-325*sqrt(77)*pow(mix[2], 2) + 3234*sqrt(5)*mix[2] + 539*sqrt(77)))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 2^+ → 4 → 5
+        if ((std::abs(st[2]) == 4.0 && std::abs(st[3]) == 5.0) &&
+            ((st[0] == 0. && st[1] == 2.0) ||
+             (st[0] == -0.1 && st[1] == -2.0))) {
+             
+            return ((13.0/1764.0)*pow(mix[2], 2)*(2*pow(mix[1], 2) - 1)*(-5*(7*pow(cos(theta), 2) - 1)*pow(sin(theta), 2)*cos(2*phi) + 35*pow(cos(theta), 4) - 30*pow(cos(theta), 2) + 3) + (pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1) - 1.0/301840.0*sqrt(77)*(pow(mix[1], 2) + 10)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(25*sqrt(77)*pow(mix[2], 2) + 42*sqrt(770)*mix[2] + 14*sqrt(77)))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+        // 0^+ → 2^+ → 4 → 6
+        if ((std::abs(st[2]) == 4.0 && std::abs(st[3]) == 6.0) &&
+            ((st[0] == 0. && st[1] == 2.0) ||
+             (st[0] == -0.1 && st[1] == -2.0))) {
+             
+            return ((pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1) - 1.0/241472.0*sqrt(77)*(pow(mix[1], 2) + 10)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(21*sqrt(77)*pow(mix[2], 2) + 56*sqrt(154)*mix[2] - 16*sqrt(77)) - 1.0/155387232.0*sqrt(2002)*(2*pow(mix[1], 2) - 1)*(203*sqrt(2002)*pow(mix[2], 2) + 1540*sqrt(1001)*mix[2] + 88*sqrt(2002))*(-5*(7*pow(cos(theta), 2) - 1)*pow(sin(theta), 2)*cos(2*phi) + 35*pow(cos(theta), 4) - 30*pow(cos(theta), 2) + 3))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
+        }
+    } else if (nst >= 5) {
 		cout
 		    << "Warning: AngularDistributionGenerator:: Required spin sequence "
 		       "not found."
