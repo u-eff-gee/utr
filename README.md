@@ -798,7 +798,7 @@ These instructions will get you a copy of the simulation running.
 
 To build and run the simulation, the following dependencies are required:
 
-* [Geant4](https://geant4.web.cern.ch/) (tested with version 10.04)
+* [Geant4](https://geant4.web.cern.ch/) (tested with versions >10.04)
 * CMake (*build*)
 * Make (*build*)
 
