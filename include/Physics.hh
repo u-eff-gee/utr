@@ -18,25 +18,16 @@ You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef Physics_h
-#define Physics_h 1
+#ifndef PHYSICS_h
+#define PHYSICS_h 1
 
-#include "G4VUserPhysicsList.hh"
+#include "G4VModularPhysicsList.hh"
 
-class Physics : public G4VUserPhysicsList {
-  public:
+class Physics : public G4VModularPhysicsList {
+
+public:
 	Physics();
-	~Physics();
 
-  protected:
-	void ConstructParticle();
-	void ConstructProcess();
-	void ConstructEMPenelope();
-	void ConstructEMLivermore();
-	void ConstructEMLivermorePolarized();
-	void ConstructHPNeutron();
-	void ConstructMuons();
-	void ConstructChargedParticle();
 };
 
 #endif
