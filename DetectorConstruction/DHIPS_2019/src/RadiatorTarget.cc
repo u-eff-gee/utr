@@ -18,8 +18,12 @@ using std::cout;
 using std::endl;
 using std::stringstream;
 
-RadiatorTarget::RadiatorTarget(G4double target_z, G4String target_material, G4String target_name, G4double attenuator_z, G4String attenuator_material){
-	target_thickness = target_z;
+RadiatorTarget::RadiatorTarget(G4LogicalVolume *World_Log):World_Logical(World_Log){}
+
+
+void RadiatorTarget::Construct(G4ThreeVector global_coordinates,G4String target_name, G4String target_material,G4double target_thickness,G4String attenuator_material,G4double attenuator_thickness)
+{
+	G4double target_z=target_thickness;
 
 	G4Colour  white   (1.0, 1.0, 1.0) ;
 	G4Colour  grey    (0.5, 0.5, 0.5) ;
@@ -47,7 +51,7 @@ RadiatorTarget::RadiatorTarget(G4double target_z, G4String target_material, G4St
 	G4double radiator_Cover_Window_Medium_z = 3.*mm;
 	G4double radiator_Cover_Window_Large_z = 5.*mm;
 
-	G4double radiator_Cover_z;
+	G4double radiator_Cover_z=0.;
 
 	if(target_material == "Cu"){
 		radiator_Mother_z = 10.*mm + target_z; 
@@ -72,7 +76,7 @@ RadiatorTarget::RadiatorTarget(G4double target_z, G4String target_material, G4St
 		}
 	}
 
-	radiator_Mother_z += attenuator_z;
+	radiator_Mother_z += attenuator_thickness;
 
 	//*************************************************
 	// Mother volume
@@ -80,9 +84,9 @@ RadiatorTarget::RadiatorTarget(G4double target_z, G4String target_material, G4St
 	
 	G4Box *radiator_Mother_Solid = new G4Box("radiator_Mother_Solid", radiator_Mother_x*0.5, radiator_Mother_y*0.5, radiator_Mother_z*0.5);
 
-	radiatorTarget = new G4LogicalVolume(radiator_Mother_Solid, AIR, "radiatorTarget");
+	G4LogicalVolume *radiatorTarget_Logical = new G4LogicalVolume(radiator_Mother_Solid, AIR, "radiatorTarget");
 	//radiatorTarget->SetVisAttributes(G4VisAttributes::GetInvisible());
-	radiatorTarget->SetVisAttributes(yellow);
+	radiatorTarget_Logical->SetVisAttributes(yellow);
 
 	//*************************************************
 	// Radiator target holder:
@@ -147,27 +151,27 @@ RadiatorTarget::RadiatorTarget(G4double target_z, G4String target_material, G4St
 	G4LogicalVolume *radiator_Holder_Logical = new G4LogicalVolume(radiator_Holder_5, Cu, "radiator_Holder_Logical");
 	radiator_Holder_Logical->SetVisAttributes(orange);
 
-	new G4PVPlacement(0, G4ThreeVector(0.,-radiator_Mother_y*0.5 + radiator_Holder_y*0.5, -0.5*radiator_Mother_z + radiator_Cover_z + radiator_Holder_z*0.5), radiator_Holder_Logical, "radiator_Holder", radiatorTarget, false, 0);
+	new G4PVPlacement(0, G4ThreeVector(0.,-radiator_Mother_y*0.5 + radiator_Holder_y*0.5, -0.5*radiator_Mother_z + radiator_Cover_z + radiator_Holder_z*0.5), radiator_Holder_Logical, "radiator_Holder", radiatorTarget_Logical, false, 0);
 
 	// Vertical water columns
 //	
 //	G4Box *box_Solid = new G4Box("box_Solid", 5.*mm, 5.*mm, 5.*mm);
 //	G4LogicalVolume *box_Logical = new G4LogicalVolume(box_Solid, WATER, "box_Logical");
-//	new G4PVPlacement(rot, G4ThreeVector(0., 0., 0.), box_Logical, "box", radiatorTarget, false, 0);
+//	new G4PVPlacement(rot, G4ThreeVector(0., 0., 0.), box_Logical, "box", radiatorTarget_Logical, false, 0);
 
 	G4Tubs *water_Column_Vertical_Right_Solid = new G4Tubs("water_Column_Vertical_Right_Solid", 0., 3.5*mm, (radiator_Holder_y - pipe_Horizontal_y)*0.5, 0., twopi);
 
 	G4LogicalVolume *water_Column_Vertical_Right_Logical = new G4LogicalVolume(water_Column_Vertical_Right_Solid, WATER, "water_Column_Vertical_Right_Logical");
 	water_Column_Vertical_Right_Logical->SetVisAttributes(cyan);
 
-	new G4PVPlacement(rot, G4ThreeVector(-pipe_Vertical_x, -radiator_Mother_y*0.5 + pipe_Horizontal_y + 0.5*(radiator_Holder_y - pipe_Horizontal_y), -0.5*radiator_Mother_z + radiator_Cover_z + radiator_Holder_z*0.5), water_Column_Vertical_Right_Logical, "water_Column_Vertical_Right", radiatorTarget, false, 0);
+	new G4PVPlacement(rot, G4ThreeVector(-pipe_Vertical_x, -radiator_Mother_y*0.5 + pipe_Horizontal_y + 0.5*(radiator_Holder_y - pipe_Horizontal_y), -0.5*radiator_Mother_z + radiator_Cover_z + radiator_Holder_z*0.5), water_Column_Vertical_Right_Logical, "water_Column_Vertical_Right", radiatorTarget_Logical, false, 0);
 
 	G4Tubs *water_Column_Vertical_Left_Solid = new G4Tubs("water_Column_Vertical_Left_Solid", 0., 3.5*mm, (radiator_Holder_y - pipe_Horizontal_y)*0.5, 0., twopi);
 
 	G4LogicalVolume *water_Column_Vertical_Left_Logical = new G4LogicalVolume(water_Column_Vertical_Left_Solid, WATER, "water_Column_Vertical_Left_Logical");
 	water_Column_Vertical_Left_Logical->SetVisAttributes(cyan);
 
-	new G4PVPlacement(rot, G4ThreeVector(pipe_Vertical_x, -radiator_Mother_y*0.5 + pipe_Horizontal_y + 0.5*(radiator_Holder_y - pipe_Horizontal_y), -0.5*radiator_Mother_z + radiator_Cover_z + radiator_Holder_z*0.5), water_Column_Vertical_Left_Logical, "water_Column_Vertical_Left", radiatorTarget, false, 0);
+	new G4PVPlacement(rot, G4ThreeVector(pipe_Vertical_x, -radiator_Mother_y*0.5 + pipe_Horizontal_y + 0.5*(radiator_Holder_y - pipe_Horizontal_y), -0.5*radiator_Mother_z + radiator_Cover_z + radiator_Holder_z*0.5), water_Column_Vertical_Left_Logical, "water_Column_Vertical_Left", radiatorTarget_Logical, false, 0);
 
 	 // Horizontal water colum
 
@@ -176,7 +180,7 @@ RadiatorTarget::RadiatorTarget(G4double target_z, G4String target_material, G4St
 	G4LogicalVolume *water_Column_Horizontal_Logical = new G4LogicalVolume(water_Column_Horizontal_Solid, WATER, "water_Column_Horizontal_Logical");
 	water_Column_Horizontal_Logical->SetVisAttributes(cyan);
 
-	new G4PVPlacement(rot2, G4ThreeVector(0., -radiator_Mother_y*0.5 + pipe_Horizontal_y,-0.5*radiator_Mother_z + radiator_Cover_z + radiator_Holder_z*0.5), water_Column_Horizontal_Logical, "water_Column_Horizontal", radiatorTarget, false, 0);
+	new G4PVPlacement(rot2, G4ThreeVector(0., -radiator_Mother_y*0.5 + pipe_Horizontal_y,-0.5*radiator_Mother_z + radiator_Cover_z + radiator_Holder_z*0.5), water_Column_Horizontal_Logical, "water_Column_Horizontal", radiatorTarget_Logical, false, 0);
 
 	// Water pipes on top
 	
@@ -185,14 +189,14 @@ RadiatorTarget::RadiatorTarget(G4double target_z, G4String target_material, G4St
 	G4LogicalVolume *pipe_Left_Logical = new G4LogicalVolume(pipe_Left_Solid, Cu, "pipe_Left_Logical");
 	pipe_Left_Logical->SetVisAttributes(orange);
 
-	new G4PVPlacement(rot, G4ThreeVector(pipe_Vertical_x, (radiator_Mother_y - pipe_Length)*0.5,-0.5*radiator_Mother_z + radiator_Cover_z + radiator_Holder_z*0.5), pipe_Left_Logical, "pipe_Left", radiatorTarget, false, 0);
+	new G4PVPlacement(rot, G4ThreeVector(pipe_Vertical_x, (radiator_Mother_y - pipe_Length)*0.5,-0.5*radiator_Mother_z + radiator_Cover_z + radiator_Holder_z*0.5), pipe_Left_Logical, "pipe_Left", radiatorTarget_Logical, false, 0);
 	
 	G4Tubs *pipe_Right_Solid = new G4Tubs("pipe_Right_Solid", pipe_Inner_Radius, pipe_Outer_Radius, pipe_Length*0.5, 0., twopi);
 
 	G4LogicalVolume *pipe_Right_Logical = new G4LogicalVolume(pipe_Right_Solid, Cu, "pipe_Right_Logical");
 	pipe_Right_Logical->SetVisAttributes(orange);
 
-	new G4PVPlacement(rot, G4ThreeVector(-pipe_Vertical_x, (radiator_Mother_y - pipe_Length)*0.5, -0.5*radiator_Mother_z + radiator_Cover_z + radiator_Holder_z*0.5), pipe_Right_Logical, "pipe_Right", radiatorTarget, false, 0);
+	new G4PVPlacement(rot, G4ThreeVector(-pipe_Vertical_x, (radiator_Mother_y - pipe_Length)*0.5, -0.5*radiator_Mother_z + radiator_Cover_z + radiator_Holder_z*0.5), pipe_Right_Logical, "pipe_Right", radiatorTarget_Logical, false, 0);
 
 	// Water columns on top
 
@@ -201,14 +205,14 @@ RadiatorTarget::RadiatorTarget(G4double target_z, G4String target_material, G4St
 	G4LogicalVolume *water_Column_Top_Left_Logical = new G4LogicalVolume(water_Column_Top_Left_Solid, WATER, "water_Column_Top_Left_Logical");
 	water_Column_Top_Left_Logical->SetVisAttributes(cyan);
 
-	new G4PVPlacement(rot, G4ThreeVector(pipe_Vertical_x, (radiator_Mother_y - pipe_Length)*0.5,-0.5*radiator_Mother_z + radiator_Cover_z + radiator_Holder_z*0.5), water_Column_Top_Left_Logical, "water_Column_Top_Left", radiatorTarget, false, 0);
+	new G4PVPlacement(rot, G4ThreeVector(pipe_Vertical_x, (radiator_Mother_y - pipe_Length)*0.5,-0.5*radiator_Mother_z + radiator_Cover_z + radiator_Holder_z*0.5), water_Column_Top_Left_Logical, "water_Column_Top_Left", radiatorTarget_Logical, false, 0);
 	
 	G4Tubs *water_Column_Top_Right_Solid = new G4Tubs("water_Column_Top_Right_Solid", 0., pipe_Inner_Radius, pipe_Length*0.5, 0., twopi);
 
 	G4LogicalVolume *water_Column_Top_Right_Logical = new G4LogicalVolume(water_Column_Top_Right_Solid, WATER, "water_Column_Top_Right_Logical");
 	water_Column_Top_Right_Logical->SetVisAttributes(cyan);
 
-	new G4PVPlacement(rot, G4ThreeVector(-pipe_Vertical_x, (radiator_Mother_y - pipe_Length)*0.5, -0.5*radiator_Mother_z + radiator_Cover_z + radiator_Holder_z*0.5), water_Column_Top_Right_Logical, "water_Column_Top_Right", radiatorTarget, false, 0);
+	new G4PVPlacement(rot, G4ThreeVector(-pipe_Vertical_x, (radiator_Mother_y - pipe_Length)*0.5, -0.5*radiator_Mother_z + radiator_Cover_z + radiator_Holder_z*0.5), water_Column_Top_Right_Logical, "water_Column_Top_Right", radiatorTarget_Logical, false, 0);
 	
 	//*************************************************
 	// Cover for target holder and/or target (in case of a Cu target, the cover is the target)
@@ -232,7 +236,7 @@ RadiatorTarget::RadiatorTarget(G4double target_z, G4String target_material, G4St
 		G4LogicalVolume *target_Logical = new G4LogicalVolume(target_Solid, Cu, target_name);
 		target_Logical->SetVisAttributes(orange);
 
-		new G4PVPlacement(0, G4ThreeVector(0., -radiator_Mother_y*0.5 + radiator_Holder_y*0.5, -radiator_Mother_z*0.5 + radiator_Cover_z*0.5), target_Logical, target_name, radiatorTarget, false, 0);
+		new G4PVPlacement(0, G4ThreeVector(0., -radiator_Mother_y*0.5 + radiator_Holder_y*0.5, -radiator_Mother_z*0.5 + radiator_Cover_z*0.5), target_Logical, target_name, radiatorTarget_Logical, false, 0);
 
 	}
 	else{
@@ -250,7 +254,7 @@ RadiatorTarget::RadiatorTarget(G4double target_z, G4String target_material, G4St
 		G4LogicalVolume* radiator_Cover_Logical = new G4LogicalVolume(radiator_Cover2, Cu, "radiator_Cover_Logical");
 		radiator_Cover_Logical->SetVisAttributes(orange);
 
-		new G4PVPlacement(0, G4ThreeVector(0., -radiator_Mother_y*0.5 + radiator_Holder_y*0.5, -0.5*radiator_Mother_z + radiator_Cover_z*0.5), radiator_Cover_Logical, "radiator_Cover", radiatorTarget, false, 0);
+		new G4PVPlacement(0, G4ThreeVector(0., -radiator_Mother_y*0.5 + radiator_Holder_y*0.5, -0.5*radiator_Mother_z + radiator_Cover_z*0.5), radiator_Cover_Logical, "radiator_Cover", radiatorTarget_Logical, false, 0);
 
 		stringstream target_material_database_name;
 		target_material_database_name << "G4_" << target_material;
@@ -262,20 +266,21 @@ RadiatorTarget::RadiatorTarget(G4double target_z, G4String target_material, G4St
 		G4LogicalVolume *target_Logical = new G4LogicalVolume(target_Solid, targetMaterial, target_name);
 		target_Logical->SetVisAttributes(yellow);
 
-		new G4PVPlacement(0, G4ThreeVector(0., -radiator_Mother_y*0.5 + radiator_Holder_y*0.5, -0.5*radiator_Mother_z + radiator_Cover_z*0.5 + window_Small_z*0.5), target_Logical, target_name, radiatorTarget, false, 0);
+		new G4PVPlacement(0, G4ThreeVector(0., -radiator_Mother_y*0.5 + radiator_Holder_y*0.5, -0.5*radiator_Mother_z + radiator_Cover_z*0.5 + window_Small_z*0.5), target_Logical, target_name, radiatorTarget_Logical, false, 0);
 	}
 
-	if(attenuator_z > 0.){
-		stringstream attenuator_material_database_name;
-		attenuator_material_database_name << "G4_" << attenuator_material;
+	if(attenuator_thickness > 0.){
+		G4Material *attenuatorMaterial = man->FindOrBuildMaterial(attenuator_material);
 
-		G4Material *attenuatorMaterial = man->FindOrBuildMaterial(attenuator_material_database_name.str());
-
-		G4Box *attenuator_Solid = new G4Box("attenuator_Solid", radiator_Holder_x*0.5, radiator_Holder_y*0.5, attenuator_z*0.5);
+		G4Box *attenuator_Solid = new G4Box("attenuator_Solid", radiator_Holder_x*0.5, radiator_Holder_y*0.5, attenuator_thickness*0.5);
 
 		G4LogicalVolume *attenuator_Logical = new G4LogicalVolume(attenuator_Solid, attenuatorMaterial, "attenuator_Logical");
 		attenuator_Logical->SetVisAttributes(grey);
 
-		new G4PVPlacement(0, G4ThreeVector(0., -radiator_Mother_y*0.5 + radiator_Holder_y*0.5, -0.5*radiator_Mother_z + radiator_Holder_z + radiator_Cover_z + attenuator_z*0.5), attenuator_Logical, "Attenuator", radiatorTarget, false, 0);
+		new G4PVPlacement(0, G4ThreeVector(0., -radiator_Mother_y*0.5 + radiator_Holder_y*0.5, -0.5*radiator_Mother_z + radiator_Holder_z + radiator_Cover_z + attenuator_thickness*0.5), attenuator_Logical, "Attenuator", radiatorTarget_Logical, false, 0);
 	}
+
+	new G4PVPlacement(0, global_coordinates, radiatorTarget_Logical, target_name, World_Logical, false, 0);
+
+
 }

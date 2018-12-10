@@ -6,16 +6,14 @@
 class RadiatorTarget
 {
 public:
-	RadiatorTarget(G4double target_z, G4String radiator_material, G4String target_name, G4double attenuator_z, G4String attenuator_material);	
+
+	RadiatorTarget(G4LogicalVolume *World_Log);
 	~RadiatorTarget(){};
-	G4LogicalVolume *Get_Logical(){ return radiatorTarget; };
-	G4double Get_Z(){ return radiator_Mother_z; };
-	G4double Get_Window_Position(){ return radiator_Window_Position; };
+	void Construct(G4ThreeVector global_coordinates,G4String target_name,G4String target_material,G4double target_thickness,G4String attenuator_material,G4double attenuator_thickness);
 
 private:
-	G4LogicalVolume *radiatorTarget;
+	G4LogicalVolume* World_Logical;
 
-	G4double target_thickness;
 	G4double radiator_Mother_x;
 	G4double radiator_Mother_y;
 	G4double radiator_Mother_z;
