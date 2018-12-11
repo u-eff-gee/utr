@@ -58,17 +58,17 @@ void BeamPipe_Upstream::Construct(G4ThreeVector global_coordinates,G4double rela
 	// Mother volume
 	//*************************************************
 	
-	G4Box *beampipe_upstream_Mother_Solid = new G4Box("beampipe_upstream_Solid", radiator_Mother_x*0.5, radiator_Mother_y*0.5, radiator_Mother_z*0.5);
+	G4Box *beampipe_upstream_Mother_Solid = new G4Box("beampipe_upstream_Solid", beamPipe_Small_Radius_Length*0.5, beamPipe_Small_Radius_Length*0.5, beamPipe_Small_Radius_Length*0.5);
 
 	G4LogicalVolume *beampipe_upstream_Mother_Logical = new G4LogicalVolume(beampipe_upstream_Mother_Solid, AIR, "beampipe_upstream_Mother_Logical");
-	//radiatorTarget->SetVisAttributes(G4VisAttributes::GetInvisible());
-	beampipe_upstream_Mother_Logical->SetVisAttributes(yellow);
-
+	beampipe_upstream_Mother_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());
+	// beampipe_upstream_Mother_Logical->SetVisAttributes(yellow);
+	 
 	//*************************************************
 	// Pipe volume
 	//*************************************************
 	
-	G4Tubs *beamPipe_Large_Radius_Solid = new G4Tubs("beamPipe_Large_Radius_Solid", beamPipe_Inner_Radius, beamPipe_Outer_Radius_Large, beamPipe_Large_Radius_Length*0.5, 0., twopi);
+	G4Tubs *beamPipe_Large_Radius_Solid = new G4Tubs("beamPipe_Large_Radius_Solid", beamPipe_Outer_Radius_Small, beamPipe_Outer_Radius_Large, beamPipe_Large_Radius_Length*0.5, 0., twopi);
 
 	G4LogicalVolume *beamPipe_Large_Radius_Logical = new G4LogicalVolume(beamPipe_Large_Radius_Solid, Al, "beamPipe_Large_Radius_Logical");
 	beamPipe_Large_Radius_Logical->SetVisAttributes(grey);
@@ -80,24 +80,23 @@ void BeamPipe_Upstream::Construct(G4ThreeVector global_coordinates,G4double rela
 	G4LogicalVolume *beamPipe_Exit_Window_Logical = new G4LogicalVolume(beamPipe_Exit_Window_Solid, Al, "beamPipe_Exit_Window_Logical");
 	beamPipe_Exit_Window_Logical->SetVisAttributes(grey);
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., beamPipe_Large_Radius_Length*0.5), beamPipe_Exit_Window_Logical, "beamPipe_Exit_Window", beampipe_upstream_Mother_Logical, false, 0);
+	new G4PVPlacement(0, G4ThreeVector(0., 0., beamPipe_Large_Radius_Length+exit_Window_Thickness*0.5), beamPipe_Exit_Window_Logical, "beamPipe_Exit_Window", beampipe_upstream_Mother_Logical, false, 0);
 
 	G4Tubs *beamPipe_Small_Radius_Solid = new G4Tubs("beamPipe_Small_Radius_Solid", beamPipe_Inner_Radius, beamPipe_Outer_Radius_Small, beamPipe_Small_Radius_Length*0.5, 0., twopi);
 
 	G4LogicalVolume *beamPipe_Small_Radius_Logical = new G4LogicalVolume(beamPipe_Small_Radius_Solid, Al, "beamPipe_Small_Radius_Logical");
 	beamPipe_Small_Radius_Logical->SetVisAttributes(grey);
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., beamPipe_Large_Radius_Length - beamPipe_Small_Radius_Length*0.5), beamPipe_Small_Radius_Logical, "beamPipe_Small_Radius", beampipe_upstream_Mother_Logical, false, 0);
+	new G4PVPlacement(0, G4ThreeVector(0., 0.,  beamPipe_Large_Radius_Length - beamPipe_Small_Radius_Length*0.5), beamPipe_Small_Radius_Logical, "beamPipe_Small_Radius", beampipe_upstream_Mother_Logical, false, 0);
 
 	// cout << "DetectorConstruction.cc: Construct(): Beam pipe in simulation starts at z = " << 0 beamPipe_Large_Radius_Length - beamPipe_Small_Radius_Length*0.5 << " mm" << endl;
 
-	G4Tubs *beamPipe_Vacuum_Solid = new G4Tubs("beamPipe_Vacuum_Solid", 0., beamPipe_Inner_Radius, (beamPipe_Small_Radius_Length + 0.5*beamPipe_Large_Radius_Length)*0.5 - 0.5*exit_Window_Thickness, 0., twopi);
+	G4Tubs *beamPipe_Vacuum_Solid = new G4Tubs("beamPipe_Vacuum_Solid", 0., beamPipe_Inner_Radius, beamPipe_Small_Radius_Length*0.5, 0., twopi);
 
 	G4LogicalVolume *beamPipe_Vacuum_Logical = new G4LogicalVolume(beamPipe_Vacuum_Solid, vacuum, "beamPipe_Vacuum_Logical");
 	beamPipe_Vacuum_Logical->SetVisAttributes(cyan);
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0.,  beamPipe_Large_Radius_Length - beamPipe_Small_Radius_Length + (beamPipe_Small_Radius_Length + 0.5*beamPipe_Large_Radius_Length)*0.5), beamPipe_Vacuum_Logical, "beamPipe_Vacuum", beampipe_upstream_Mother_Logical, false, 0);
-
+	new G4PVPlacement(0, G4ThreeVector(0., 0., beamPipe_Large_Radius_Length - beamPipe_Small_Radius_Length*0.5), beamPipe_Vacuum_Logical, "beamPipe_Vacuum", beampipe_upstream_Mother_Logical, false, 0);
 
 
 	new G4PVPlacement(0, global_coordinates, beampipe_upstream_Mother_Logical, "beampipe_upstream", World_Logical, false, 0);

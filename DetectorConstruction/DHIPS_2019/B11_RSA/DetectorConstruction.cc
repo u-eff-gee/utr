@@ -102,24 +102,42 @@ G4VPhysicalVolume *DetectorConstruction::Construct()
 	G4Material *air = nist->FindOrBuildMaterial("G4_AIR");
 	/************************* World volume *****************/
 
-	G4double world_x = 6. * m; //Total length of World Volume
-	G4double world_y = 6. * m;
-	G4double world_z = 6. * m;
+	/***************** WORLD *****************/
 
-	G4Box *world_dim = new G4Box("world_dim", world_x * 0.5, world_y * 0.5 , world_z * 0.5);
+	World_x = 6000. * mm;
+	World_y = 6000. * mm;
+	World_z = 6000. * mm;
 
-	G4LogicalVolume *world_log =
-	    new G4LogicalVolume(world_dim, air, "world_log");
+	G4Box *World_dim =
+	    new G4Box("World_Solid", World_x * 0.5, World_y * 0.5, World_z * 0.5);
 
-	// world_log->SetVisAttributes(G4VisAttributes::GetInvisible());
+	G4LogicalVolume *World_Logical =
+	    new G4LogicalVolume(World_dim, air, "World_Logical", 0, 0, 0);
 
-	G4VPhysicalVolume *world_phys =new G4PVPlacement(0, G4ThreeVector(), world_log, "world", 0, false, 0);
+	//World_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());
+    	G4VisAttributes* world_vis = new G4VisAttributes(true, red);
+    	world_vis->SetForceWireframe(true);
 
+	World_Logical->SetVisAttributes(world_vis);
 
+	G4VPhysicalVolume *World_Physical =
+		    new G4PVPlacement(0, G4ThreeVector(), World_Logical, "World", 0, false, 0);
 
+	/***************************************************/
+	/***************** INITIALIZATIONS *****************/
+	/***************************************************/
+
+	BeamPipe_Upstream BeamPipe_Upstream(World_Logical);
+	RadiatorTarget RadiatorTarget(World_Logical);
+
+	/***************************************************/
+	/*****************  CONSTRUCTION  *****************/
+	/***************************************************/
+
+	BeamPipe_Upstream.Construct(G4ThreeVector(1,1,1),0.1);
 
 	// print_info();
-	return world_phys;
+	return World_Physical;
 
 }
 
