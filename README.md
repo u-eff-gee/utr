@@ -66,8 +66,8 @@ Configure `utr` to use either the `G4GeneralParticleSource` or the `AngularDistr
 
 ### 1.6 Choose the physics processes
 
-In `src/Physics.cc` activate or deactivate processes, choose between different models, or include certain particles (see section [2.4 Physics](#physics))
- 
+Using cmake build variables, activate or deactivate physics modules, or implement a custom physics list and include it in `src/Physics.cpp` (see section [2.4 Physics](#physics))
+
 ### 1.7 Choose random number seed
 
 In `utr.cc`, set the random number seed explicitly to get deterministic results. It is not clear whether this works in multithreaded mode. See section [2.5 Random Number Engine](#random)
@@ -721,26 +721,52 @@ When using multiple sources, be aware that `AngularDistributionGenerator` sample
 This is not always desirable. Imagine the following example: The goal is to simulate a beam on two disconnected targets. The first target has twice the volume of the second target, but the second target has a four times larger density. That means, the reaction would occur approximately twice as often in the second target than in the first. Implementing the targets like this in `AngularDistributionGenerator` would not give realistic results because of the weighting by volume. In a case like this, one would rather simulate the individual parts of the target and compute a weighted sum of the results.
 
 ### 2.4 Physics <a name="physics"></a>
-The physics processes are defined in `/src/Physics.cc`. In the Physics::ConstructProcess() method, physics lists for groups of particles can be activated by uncommenting the desired physics list. If you are working on a slow machine and you just want to visualize the geometry, it can be advantageous to switch off all physics.
+`utr` makes use of the `G4VModularPhysicsList`, which allows to integrate physics modules in a straightforward way by calling the `G4ModularPhysicsList::RegisterPhysics(G4VPhysicsConstructor*)` method. The registered `G4VPhysicsConstructor` class takes care of the introduction of particles and physics processes.
+The physics processes are separated into two logical groups, which contain the most probably occurring processes in NRF experiments: electromagnetic (EM) and hadronic.
 
-At the moment, physics processes for gammas, electrons/positrons, neutrons and other charged particles are available. Check Physics.cc to see which processes are defined.
-A description of the processes can be found in the [GEANT4 Physics Reference Manual](http://geant4.web.cern.ch/geant4/UserDocumentation/UsersGuides/PhysicsReferenceManual/fo/PhysicsReferenceManual.pdf)
+Geant4 provides complete EM and hadronic modules for different energy ranges and with different precision. In `utr`, a selection of those, which was considered most suitable for low-energy NRF applications, can be selected via the `HADRON*` and `EM*` cmake build options (see also [3 Installation](#installation)): 
 
-The physics list is optimized for NRF applications at HIGS and largely inspired by the GEANT4 examples `TestEm7` and `Hadr04`.
+```
+$ cmake -DEM_LIVERMORE=ON -DHADRON_ELASTIC_HP=ON .
+```
 
-#### 2.4.1 Transportation
-Mandatory for all particles. Without this, the simulation will do almost nothing.
+Though possible, it is safer not to include several EM or hadronic models at the same time. If in doubt, the command line output at the beginning of a Geant4 simulation can be checked to see which model is actually used for a certain process. For example, if both `EM_LIVERMORE` and `EM_LIVERMORE_POLARIZED` are switched on, that output will include lines like:
 
-#### 2.4.2 EMPenelope, EMLivermore
-Uses the Penelope OR Livermore low-energy electromagnetic physics framework for gammas, electrons and positrons. Only one of them can be active at the same time. Both frameworks aim at a more precise description of these processes than the standard G4 physics which are optimized for particle physics applications at CERN.
+```
+compt:   for  gamma    SubType= 13  BuildTable= 1
+      Lambda table from 100 eV  to 1 MeV, 20 bins per decade, spline: 1
+      LambdaPrime table from 1 MeV to 100 TeV in 160 bins
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+    LivermoreCompton :  Emin=        0 eV    Emax=        1 GeV  FluoActive
+        KleinNishina :  Emin=        1 GeV   Emax=      100 TeV  FluoActive
+``` 
 
-At the moment, only EMLivermore provides models for the interaction of polarized photons with matter, therefore, G4LivermorePolarized* is used by default.
+This shows that the unpolarized model is used (otherwise, `LivermoreCompton` would be replaced by `LivermorePolarizedCompton`), which may not be what the user expected.
 
-#### 2.4.3 HPNeutron
-A specialized neutron physics framework for low energies.
+A description of the physics lists and the implementation of the processes can be found in the [GEANT4 Physics Reference Manual](http://geant4.web.cern.ch/geant4/UserDocumentation/UsersGuides/PhysicsReferenceManual/fo/PhysicsReferenceManual.pdf)
 
-#### 2.4.4 ChargedParticle
-Standard processes for any other charged particle that might appear in the simulation. The probability for this in NRF applications is low, so this list is not very detailed.
+Of the available physics modules, only `EMPhysicsPolarizedJAEA` comes with `utr`, the others are included in the Geant4 code. `EMPhysicsPolarizedJAEA` is based on the `G4EmLivermorePolarizedPhysics` module, but the photon elastic scattering model has been changed to the one recently introduced by Omer and Hajima, which has a different implementation of Rayleigh scattering and introduces Delbrueck scattering in Geant4 [[6]](#ref-delbrueck), [[7]](#ref-jaea).
+
+Physics modules can be switched by setting the different `HADRON*` and `EM*` cmake build flags, for example:
+
+```
+$ cmake -DEM_LIVERMORE=ON -DHADRON_ELASTIC_HP=ON .
+```
+
+An output like 
+
+```
+================================================================================                                                                                                                                                                       
+Using the following physics lists:                                                                                                                                                                                                                     
+        G4EmLivermorePolarizedPhysics with JAEA elastic processes ...                                                                                                                                                                                  
+        G4HadronElasticPhysicsLEND ...                                                                                                                                                                                                                 
+        G4HadronPhysicsFTFP_BERT ...                                                                                                                                                                                                                   
+================================================================================ 
+```
+
+at the beginning of a simulation will show which physics lists are currently used.
+
+In order to include new physics modules, include them in the `src/Physics.cc` file.
 
 ### 2.5 Random Number Engine <a name="random"></a>
 In `utr.cc`, the random number engine's seed is set by using the current CPU time, making it a "real" random generator.
@@ -822,7 +848,7 @@ $ make
 
 This will compile the simulation using a default geometry (see [2.1 Geometry](#geometry)) and the GeneralParticleSource as a primary generator (see [2.3 Event Generation](#eventgeneration)).
 
-To use another geometry in the directory `DetectorConstruction/`, set the `CAMPAIGN` and the `DETECTOR_CONSTRUCTION` build variable when executing the `cmake` command:
+To use another geometry in the directory `DetectorConstruction/`, set the `CAMPAIGN` and the `DETECTOR_CONSTRUCTION` build variable when executing the `cmake` command (see also [2.1 Geometry](#geometry)):
 
 ```bash
 $ cmake -DCAMPAIGN="Campaign_YEAR" -DDETECTOR_CONSTRUCTION="TARGETS_RUNS" .
@@ -841,7 +867,13 @@ To use the AngularDistributionGenerator instead of the GeneralParticleSource, se
 $ cmake -DUSE_GPS=OFF .
 ```
 
-Any of the commands above will create the `utr` binary in the top directory.
+Furthermore, various cmake build variables are available to (de-)activate different physics modules (see also [2.4 Physics](#physics)), for example:
+
+```
+$ cmake -DEM_LIVERMORE_POLARIZED=ON .
+```
+
+Any of the `cmake` + `make` combinations above will create the `utr` binary in the top directory.
 In case CMake complains that it cannot find `Geant4Config.cmake` or `geant4-config.cmake`, set the *CMAKE_INSTALL_PREFIX* variable to the directory where GEANT4 has been installed:
 
 ```bash
@@ -1108,7 +1140,7 @@ one can see clear systematic deviations from the input distribution which are a 
 
 ## 7 License <a name="license"></a>
 
-Copyright (C) 2017
+Copyright (C) 2017, 2018
 
 U. Gayer (ugayer@ikp.tu-darmstadt.de)
 
@@ -1126,4 +1158,6 @@ UG would like to acknowledge the untiring effort of user Jörn Kleemann in debug
 <a name="ref-g4_2">[2]</a> J. Allison *et al.*, “GEANT4 developments and applications”, IEEE Transactions on Nuclear Science, **53.1**, 270 (2006). [`doi:10.1109/TNS.2006.869826`](https://doi.org/10.1109/TNS.2006.869826).  
 <a name="ref-g4_3">[3]</a> J. Allison *et al.*, “Recent developments in GEANT4”, Nucl. Inst. Meth. A **835**, 186 (2016). [`doi:10.1016/j.nima.2016.06.125`](https://doi.org/10.1016/j.nima.2016.06.125).  
 <a name="ref-higs">[4]</a> H. R. Weller *et al.*, “Research opportunities at the upgraded HIγS facility”, Prog. Part. Nucl. Phys. **62.1**, 257 (2009). [`doi:10.1016/j.ppnp.2008.07.001`](https://doi.org/10.1016/j.ppnp.2008.07.001).  
-<a name="ref-g3">[5]</a> B. Löher *et al.*, “The high-efficiency γ-ray spectroscopy setup γ³ at HIγS”, Nucl. Instr. Meth. Phys. Res. A **723**, 136 (2013). [`doi:10.1016/j.nima.2013.04.087`](https://doi.org/10.1016/j.nima.2013.04.087).  
+<a name="ref-g3">[5]</a> B. Löher *et al.*, “The high-efficiency γ-ray spectroscopy setup γ³ at HIγS”, Nucl. Instr. Meth. Phys. Res. A **723**, 136 (2013). [`doi:10.1016/j.nima.2013.04.087`](https://doi.org/10.1016/j.nima.2013.04.087).   
+<a name="ref-delbrueck">[6]</a> M. Omer and R. Hajima, “Including Delbrueck scattering in Geant4”, Nucl. Instr. Meth. Phys. Res. B **405**, 43 (2017). [`doi.org/10.1016/j.nimb.2017.05.028`](https://doi.org/10.1016/j.nimb.2017.05.028).   
+<a name="ref-jaea">[7]</a> M. Omer and R. Hajima, “Geant4 physics process for elastic scattering of gamma-rays”, JAEA Technical Report **2018-007** (2018). [`doi.org/10.11484/jaea-data-code-2018-007`](https://doi.org/10.11484/jaea-data-code-2018-007).
