@@ -18,23 +18,94 @@ You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// Electromagnetic modular physics lists
-#include "G4EmLivermorePhysics.hh"
-#include "G4EmStandardPhysics_option4.hh"
-
-// Hadronics modular physics lists
-#include "G4HadronPhysicsShielding.hh"
-#include "G4HadronElasticPhysicsLEND.hh"
-#include "G4ThermalNeutrons.hh"
-
 #include "Physics.hh"
 
-Physics::Physics(){
-	RegisterPhysics( new G4EmStandardPhysics_option4() );
-	RegisterPhysics( new G4EmLivermorePhysics());
+// Electromagnetic modular physics lists
+#ifdef EM_FAST
+#include "G4EmStandardPhysics_option1.hh"
+#endif
 
-	
-//	RegisterPhysics( new G4HadronElasticPhysics() );
-//	RegisterPhysics( new G4HadronPhysicsShielding() );
-//	RegisterPhysics( new G4ThermalNeutrons(1) );
+#ifdef EM_LIVERMORE
+#include "G4EmLivermorePhysics.hh"
+#endif
+
+#ifdef EM_STANDARD
+#include "G4EmStandardPhysics_option4.hh"
+#endif
+
+// Hadronic elastic modular physics lists
+#ifdef HADRON_ELASTIC_STANDARD
+#include "G4HadronElasticPhysics.hh"
+#endif
+#ifdef HADRON_ELASTIC_HP
+#include "G4HadronElasticPhysicsHP.hh"
+#endif
+#ifdef HADRON_ELASTIC_LEND
+#include "G4HadronElasticPhysicsLEND.hh"
+#endif
+//
+// Hadronic elastic modular physics lists
+#ifdef HADRON_INELASTIC_STANDARD
+#include "G4HadronPhysicsFTFP_BERT.hh"
+#endif
+#ifdef HADRON_INELASTIC_HP
+#include "G4HadronPhysicsFTFP_BERT_HP.hh"
+#endif
+#ifdef HADRON_INELASTIC_LEND
+#include "G4HadronPhysicsShieldingLEND.hh"
+#endif
+
+Physics::Physics(){
+	G4cout << "================================================================"
+	          "================" << G4endl;
+	G4cout << "Using the following physics lists:" << G4endl;
+
+// Electromagnetic modular physics lists
+#ifdef EM_FAST 
+	G4cout << "\tG4EmStandardPhysics_option1 ..." << G4endl;
+	RegisterPhysics( new G4EmStandardPhysics_option1() );
+#endif
+#ifdef EM_LIVERMORE
+	G4cout << "\tG4EmLivermorePhysics ..." << G4endl;
+	RegisterPhysics( new G4EmLivermorePhysics() );
+#endif
+#ifdef EM_STANDARD 
+	G4cout << "\tG4EmStandardPhysics_option4 ..." << G4endl;
+	RegisterPhysics( new G4EmStandardPhysics_option4() );
+#endif
+
+// Hadronic elastic modular physics lists
+#ifdef HADRON_ELASTIC_STANDARD
+	G4cout << "\tG4HadronElasticPhysics ..." << G4endl;
+	RegisterPhysics( new G4HadronElasticPhysics() );
+#endif
+
+#ifdef HADRON_ELASTIC_HP
+	G4cout << "\tG4HadronElasticPhysicsHP ..." << G4endl;
+	RegisterPhysics( new G4HadronElasticPhysicsHP() );
+#endif
+
+#ifdef HADRON_ELASTIC_LEND
+	G4cout << "\tG4HadronElasticPhysicsLEND ..." << G4endl;
+	RegisterPhysics( new G4HadronElasticPhysicsLEND() );
+#endif
+
+// Hadronic inelastic modular physics lists
+#ifdef HADRON_INELASTIC_STANDARD
+	G4cout << "\tG4HadronPhysicsFTFP_BERT ..." << G4endl;
+	RegisterPhysics( new G4HadronPhysicsFTFP_BERT() );
+#endif
+
+#ifdef HADRON_INELASTIC_HP
+	G4cout << "\tG4HadronPhysicsFTFP_BERT_HP ..." << G4endl;
+	RegisterPhysics( new G4HadronPhysicsFTFP_BERT_HP() );
+#endif
+
+#ifdef HADRON_INELASTIC_LEND
+	G4cout << "\tG4HadronPhysicsShieldingLEND ..." << G4endl;
+	RegisterPhysics( new G4HadronPhysicsShieldingLEND() );
+#endif
+
+	G4cout << "================================================================"
+	          "================" << G4endl;
 }

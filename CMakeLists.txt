@@ -28,6 +28,18 @@ set(PRINT_PROGRESS 100000 CACHE STRING "Set the frequency of printed updates abo
 option(USE_GPS "Use G4GeneralParticleSource as primary generator" ON)
 option(USE_TARGETS "Use Targets in the geometry" ON)
 
+option(EM_FAST "Use G4EmStandardPhysics_option1" OFF)
+option(EM_STANDARD "Use G4EmStandardPhysics_option4" ON)
+option(EM_LIVERMORE "Use G4EmLivermorePhysics" OFF)
+
+option(HADRON_ELASTIC_STANDARD "Use G4HadronElasticPhysics" ON)
+option(HADRON_ELASTIC_HP "Use G4HadronElasticPhysicsHP" OFF)
+option(HADRON_ELASTIC_LEND "Use G4HadronElasticPhysicsLEND" OFF)
+
+option(HADRON_INELASTIC_STANDARD "Use G4HadronPhysicsFTFP_BERT" ON)
+option(HADRON_INELASTIC_HP "Use G4HadronPhysicsFTFP_BERT_HP" OFF)
+option(HADRON_INELASTIC_LEND "Use G4HadronPhysicsShieldingLEND" OFF)
+
 #----------------------------------------------------------------------------
 # Enable configuration of the source code by cmake
 configure_file(

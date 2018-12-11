@@ -3,6 +3,19 @@
 
 #cmakedefine USE_GPS
 #cmakedefine USE_TARGETS
+
+#cmakedefine EM_FAST 
+#cmakedefine EM_STANDARD 
+#cmakedefine EM_LIVERMORE
+
+#cmakedefine HADRON_ELASTIC_STANDARD
+#cmakedefine HADRON_ELASTIC_HP
+#cmakedefine HADRON_ELASTIC_LEND
+
+#cmakedefine HADRON_INELASTIC_STANDARD
+#cmakedefine HADRON_INELASTIC_HP
+#cmakedefine HADRON_INELASTIC_LEND
+
 const int print_progress = ${PRINT_PROGRESS};
 
 #endif

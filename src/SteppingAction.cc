@@ -36,6 +36,7 @@ SteppingAction::SteppingAction(): n_threads(1) {}
 SteppingAction::~SteppingAction() {}
 
 void SteppingAction::UserSteppingAction(const G4Step *step) {
+
 #ifdef G4MULTITHREADED
 	G4RunManager* runManager = G4MTRunManager::GetRunManager();
 	const G4Event* evt = G4MTRunManager::GetRunManager()->GetCurrentEvent();
@@ -63,7 +64,7 @@ void SteppingAction::UserSteppingAction(const G4Step *step) {
 		int rsec 	= (RemainTime-rdays*(24*3600)-rhours*3600-rminutes*60);
 
 		G4cout	<< "\nProgress: ["<<setw(16)<<eID<<"/"<<NbEvents<<"]  "
-				<<setw(4.2)<<(float)((float)eID/(float)NbEvents*100.)<<" %"
+				<<setw(4)<<(float)((float)eID/(float)NbEvents*100.)<<" %"
 				<<"\tRunning time: "<< setw(3)<<days<<"d "<<setw(2)<<hours<<"h "<<setw(3)<<minutes<<"mn "<<setw(3)<<sec<<"s   "
 				<<"Estimated remaining time: "<< setw(3)<<rdays<<"d "<<setw(2)<<rhours<<"h "<<setw(3)<<rminutes<<"mn "<<setw(3)<<rsec<<"s   "
 				<<flush;

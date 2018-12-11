@@ -23,6 +23,8 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "G4VModularPhysicsList.hh"
 
+#include "utrConfig.h"
+
 class Physics : public G4VModularPhysicsList {
 
 public:
