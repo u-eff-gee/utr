@@ -29,8 +29,10 @@ option(USE_GPS "Use G4GeneralParticleSource as primary generator" ON)
 option(USE_TARGETS "Use Targets in the geometry" ON)
 
 option(EM_FAST "Use G4EmStandardPhysics_option1" OFF)
-option(EM_STANDARD "Use G4EmStandardPhysics_option4" ON)
+option(EM_STANDARD "Use G4EmStandardPhysics_option4" OFF)
 option(EM_LIVERMORE "Use G4EmLivermorePhysics" OFF)
+option(EM_LIVERMORE_POLARIZED "Use G4EmLivermorePolarizedPhysics" ON)
+option(EM_LIVERMORE_POLARIZED_JAEA "Use G4EmLivermorePolarizedPhysics with elastic scattering processes from JAEA" OFF)
 
 option(HADRON_ELASTIC_STANDARD "Use G4HadronElasticPhysics" ON)
 option(HADRON_ELASTIC_HP "Use G4HadronElasticPhysicsHP" OFF)
