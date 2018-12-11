@@ -78,6 +78,9 @@ void RadiatorTarget::Construct(G4ThreeVector global_coordinates,G4String target_
 
 	radiator_Mother_z += attenuator_thickness;
 
+	Z_begin=global_coordinates.getZ()-radiator_Mother_z*0.5;
+	Z_end=global_coordinates.getZ()+radiator_Mother_z*0.5;
+
 	//*************************************************
 	// Mother volume
 	//*************************************************

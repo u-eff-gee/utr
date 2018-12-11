@@ -48,9 +48,11 @@ Materials *materials = Materials::Instance();
 #include "Germanium2_TUD.hh"
 #include "Polarimeter_TUD.hh"
 #include "BGO.hh"
-#include "RadiatorTarget.hh"
 
+#include "RadiatorTarget.hh"
 #include "BeamPipe_Upstream.hh"
+#include "BeamPipe_Downstream.hh"
+#include "Collimator.hh"
 
 // Geometry
 #include "G4Box.hh"
@@ -121,7 +123,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct()
 	World_Logical->SetVisAttributes(world_vis);
 
 	G4VPhysicalVolume *World_Physical =
-		    new G4PVPlacement(0, G4ThreeVector(), World_Logical, "World", 0, false, 0);
+	    new G4PVPlacement(0, G4ThreeVector(), World_Logical, "World", 0, false, 0);
 
 	/***************************************************/
 	/***************** INITIALIZATIONS *****************/
@@ -129,38 +131,27 @@ G4VPhysicalVolume *DetectorConstruction::Construct()
 
 	BeamPipe_Upstream BeamPipe_Upstream(World_Logical);
 	RadiatorTarget RadiatorTarget(World_Logical);
+	Collimator Collimator(World_Logical);
+	BeamPipe_Downstream BeamPipe_Downstream(World_Logical);
+
 
 	/***************************************************/
 	/*****************  CONSTRUCTION  *****************/
 	/***************************************************/
 
-	BeamPipe_Upstream.Construct(G4ThreeVector(1,1,1),0.1);
+	BeamPipe_Upstream.Construct(G4ThreeVector(0,0,-2500*mm),0.1);
 
+
+	RadiatorTarget.Construct(G4ThreeVector(0,0,BeamPipe_Upstream.GetEnd().getZ()+(200+15*0.5)*mm),"Radiator1","Au",3*mm,"Air",0.); 
+	RadiatorTarget.Construct(G4ThreeVector(0,0,RadiatorTarget.GetEnd().getZ()+30*mm),"Radiator2","Au",3*mm,"Air",0.);
+	Collimator.Construct(G4ThreeVector(0,0,RadiatorTarget.GetEnd().getZ()+0.5*Collimator.GetLength().getZ()+50*mm));
+	BeamPipe_Downstream.Construct(G4ThreeVector(0.,0.,0.),0.1);
 	// print_info();
 	return World_Physical;
 
 }
 
-// 	/************************* Copper Collimator *****************/
 
-// 	// Consists of ten 300mm * 300mm * 95mm Cu blocks arranged to form a
-// 	// Collimator of 955mm length. 
-// 	// The collimator diameter is chosen to increase step-wise from 12mm at
-// 	// radiator target position to 20 mm at target position.
-
-// 	G4double block_x = 300. * mm;  //x increases to the left from the perpective of the beam
-// 	G4double block_y = 300. * mm;  //y increases towards the top
-// 	G4double block_z = 95. * mm;   //z lies in the direction of the beam
-// //These Variables are used to correct the position of all boxes, 
-// //that are not defined in spherical coordinates
-// G4double trans_x = 0. * mm; 
-// G4double trans_y = 0. * mm; 
-// G4double trans_z = 0. * mm; 
-
-// // These boxes are declared here for later use. They are used to make tubs out of them.
-// 	G4Box *blockwithouthole = new G4Box("blockwithouthole", block_x / 2, block_y / 2, block_z / 2);
-// 	 G4Box *lastblockwithouthole = new G4Box("blockwithouthole", block_x / 6, block_y / 2, block_z / 2);
-	 
 // 	 G4double disttoendblock32= -40*cm+trans_x ;
 	 
 // 	 //detectordistance1 should be divided by cosine. For 5 deg the difference is less than 1 in 100000
@@ -169,81 +160,6 @@ G4VPhysicalVolume *DetectorConstruction::Construct()
 // 	 G4double detectordistance2 = 225.*mm;
 // 	 G4double poldistance = 225.*mm;
 	 
-
-	
-// // Variable for collimator hole radius
-// G4double colholeradius_min=6. * mm;
-// G4double colholeradius_max=10. * mm;
-// G4double colholradiusstep= (colholeradius_max-colholeradius_min)*0.1;
-// G4double hole_radius;
-// G4Tubs *hole;
-// G4SubtractionSolid *block; 
-// G4LogicalVolume *blocks_Logical[10];
-// stringstream logical_volume_name;
-// G4double distcollimatortotarget=162. * mm;
-// G4VisAttributes *blockvis;
-
-// 	// _________________________ Block Loop _________________________
-// for (G4int i=0; i<10;++i){
-// 	 hole_radius = (colholeradius_max-colholradiusstep*i) * mm;
-
-// 	 hole =
-// 	    new G4Tubs("hole", 0. * mm, hole_radius, 200. * mm, 0., twopi);
-// if (i==0 || i==1 || i==2 ||i==3) {block =
-// 	    new G4SubtractionSolid("block",lastblockwithouthole, hole);}
-// else
-// 	{block =
-// 	    new G4SubtractionSolid("block",blockwithouthole, hole);}
-// logical_volume_name << "Collimator_block" << i << "_Logical";
-//   blocks_Logical[i] =
-// 	    new G4LogicalVolume(block, Cu, logical_volume_name.str().c_str(), 0, 0, 0);
-// 	blockvis = new G4VisAttributes(light_orange);
-// 	blocks_Logical[i]->SetVisAttributes(blockvis);
-// 	logical_volume_name.str("");
-
-// 	new G4PVPlacement(0, G4ThreeVector(trans_x , trans_y, -distcollimatortotarget-(i+0.5) * block_z+trans_z), blocks_Logical[i],blocks_Logical[i]->GetName(),
-// 	                  world_log, 0, 0);}
-
-// /************************* Beam pipe *****************/
-
-// 	G4double beam_pipe_to_collimator = 180.*mm;
-
-// 	G4double exit_Window_Thickness = 0.1*mm; // Estimated
-// 	G4double beamPipe_Inner_Radius = 19.*mm; // Estimated
-// 	G4double beamPipe_Outer_Radius_Small = 21.25*mm;
-// 	G4double beamPipe_Outer_Radius_Large = 35.*mm;
-// 	G4double beamPipe_Small_Radius_Length = 200.*mm; // Estimated
-// 	G4double beamPipe_Large_Radius_Length = 25.*mm;
-
-// 	G4Tubs *beamPipe_Large_Radius_Solid = new G4Tubs("beamPipe_Large_Radius_Solid", beamPipe_Inner_Radius, beamPipe_Outer_Radius_Large, beamPipe_Large_Radius_Length*0.5, 0., twopi);
-
-// 	G4LogicalVolume *beamPipe_Large_Radius_Logical = new G4LogicalVolume(beamPipe_Large_Radius_Solid, Al, "beamPipe_Large_Radius_Logical");
-// 	beamPipe_Large_Radius_Logical->SetVisAttributes(grey);
-
-// 	new G4PVPlacement(0, G4ThreeVector(0., 0., -distcollimatortotarget + trans_z -11.*block_z - beam_pipe_to_collimator - beamPipe_Large_Radius_Length*0.5), beamPipe_Large_Radius_Logical, "beamPipe_Large_Radius", world_log, false, 0);
-
-// 	G4Tubs *beamPipe_Exit_Window_Solid = new G4Tubs("beamPipe_Exit_Window_Solid", 0., beamPipe_Inner_Radius, exit_Window_Thickness*0.5, 0., twopi);
-
-// 	G4LogicalVolume *beamPipe_Exit_Window_Logical = new G4LogicalVolume(beamPipe_Exit_Window_Solid, Al, "beamPipe_Exit_Window_Logical");
-// 	beamPipe_Exit_Window_Logical->SetVisAttributes(grey);
-
-// 	new G4PVPlacement(0, G4ThreeVector(0., 0., -distcollimatortotarget + trans_z -11.*block_z - beam_pipe_to_collimator - beamPipe_Large_Radius_Length*0.5), beamPipe_Exit_Window_Logical, "beamPipe_Exit_Window", world_log, false, 0);
-
-// 	G4Tubs *beamPipe_Small_Radius_Solid = new G4Tubs("beamPipe_Small_Radius_Solid", beamPipe_Inner_Radius, beamPipe_Outer_Radius_Small, beamPipe_Small_Radius_Length*0.5, 0., twopi);
-
-// 	G4LogicalVolume *beamPipe_Small_Radius_Logical = new G4LogicalVolume(beamPipe_Small_Radius_Solid, Al, "beamPipe_Small_Radius_Logical");
-// 	beamPipe_Small_Radius_Logical->SetVisAttributes(grey);
-
-// 	new G4PVPlacement(0, G4ThreeVector(0., 0., -distcollimatortotarget + trans_z -11.*block_z - beam_pipe_to_collimator - beamPipe_Large_Radius_Length - beamPipe_Small_Radius_Length*0.5), beamPipe_Small_Radius_Logical, "beamPipe_Small_Radius", world_log, false, 0);
-
-// 	cout << "DetectorConstruction.cc: Construct(): Beam pipe in simulation starts at z = " << -distcollimatortotarget + trans_z -11.*block_z - beam_pipe_to_collimator - beamPipe_Large_Radius_Length - beamPipe_Small_Radius_Length*0.5 << " mm" << endl;
-
-// 	G4Tubs *beamPipe_Vacuum_Solid = new G4Tubs("beamPipe_Vacuum_Solid", 0., beamPipe_Inner_Radius, (beamPipe_Small_Radius_Length + 0.5*beamPipe_Large_Radius_Length)*0.5 - 0.5*exit_Window_Thickness, 0., twopi);
-
-// 	G4LogicalVolume *beamPipe_Vacuum_Logical = new G4LogicalVolume(beamPipe_Vacuum_Solid, VACUUM, "beamPipe_Vacuum_Logical");
-// 	beamPipe_Vacuum_Logical->SetVisAttributes(cyan);
-
-// 	new G4PVPlacement(0, G4ThreeVector(0., 0., -distcollimatortotarget + trans_z -11.*block_z - beam_pipe_to_collimator - beamPipe_Large_Radius_Length - beamPipe_Small_Radius_Length + (beamPipe_Small_Radius_Length + 0.5*beamPipe_Large_Radius_Length)*0.5), beamPipe_Vacuum_Logical, "beamPipe_Vacuum", world_log, false, 0);
 
 
 // /************************* Beam pipe Upstream *****************/
