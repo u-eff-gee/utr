@@ -42,6 +42,8 @@ option(HADRON_INELASTIC_STANDARD "Use G4HadronPhysicsFTFP_BERT" ON)
 option(HADRON_INELASTIC_HP "Use G4HadronPhysicsFTFP_BERT_HP" OFF)
 option(HADRON_INELASTIC_LEND "Use G4HadronPhysicsShieldingLEND" OFF)
 
+option(BACKWARD_COMPATIBLE_BUILD "Build for Geant4 versions < 10.5" OFF)
+
 #----------------------------------------------------------------------------
 # Enable configuration of the source code by cmake
 configure_file(
@@ -63,6 +65,10 @@ include_directories(${PROJECT_SOURCE_DIR}/DetectorConstruction/${CAMPAIGN}/${DET
 
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc ${PROJECT_SOURCE_DIR}/DetectorConstruction/${CAMPAIGN}/src/*.cc ${PROJECT_SOURCE_DIR}/DetectorConstruction/${CAMPAIGN}/${DETECTOR_CONSTRUCTION}/*.cc)
 file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh ${PROJECT_SOURCE_DIR}/DetectorConstruction/${CAMPAIGN}/include/*.hh ${PROJECT_SOURCE_DIR}/DetectorConstruction/${CAMPAIGN}/${DETECTOR_CONSTRUCTION}/*.hh)
+if(BACKWARD_COMPATIBLE_BUILD)
+	list(REMOVE_ITEM sources ${PROJECT_SOURCE_DIR}/src/EMPhysicsPolarizedJAEA.cc)
+	list(REMOVE_ITEM headers ${PROJECT_SOURCE_DIR}/include/EMPhysicsPolarizedJAEA.hh)
+endif(BACKWARD_COMPATIBLE_BUILD)
 
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
