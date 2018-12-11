@@ -1085,6 +1085,25 @@ HISTNAME_FILENAME.txt
 where HISTNAME is the name of the TH1 object and FILENAME the same as above.
 The shell script `loopHistogramToTxt.sh` shows how to loop the script over a large number of files.
 
+### 5.4 MergeFiles.cpp
+`MergeFiles` creates a ROOT file which contains a `TChain` of multiple simulation output files. This makes it possible to access the data in all files as if they were in a single ROOT tree. `MergeFiles` recognizes similar arguments as `GetHistogram` (in fact, `MergeFiles` was created by 'cannibalizing' `GetHistogram`):
+
+```bash
+$ ./mergeFiles --help
+Usage: mergeFiles [OPTION...] Merge ROOT output files
+MergeFiles
+
+  -o OUTPUTFILENAME          Output file name
+  -p PATTERN1                File name pattern 1
+  -q PATTERN2                File name pattern 2
+  -t TREENAME                Name of tree
+  -?, --help                 Give this help list
+      --usage                Give a short usage message
+```
+
+For the meaning of the arguments, refer to the documentation of the `GetHistogram` script.
+The `TChain` file can also be post-processed with the aforementioned scripts, in particular `RootToTxt` which cannot merge data on its own.
+
 ## 6 Unit Tests <a name="unittests"></a>
 
 ## 6.1 AngularDistributionGenerator <a name="angulardistributiongenerator"></a>
