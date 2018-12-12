@@ -28,8 +28,8 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "AngularDistributionGenerator.hh"
 #endif
 
+#include "EventAction.hh"
 #include "RunAction.hh"
-#include "SteppingAction.hh"
 
 using std::vector;
 
@@ -50,11 +50,11 @@ void ActionInitialization::Build() const {
 	SetUserAction(new AngularDistributionGenerator);
 #endif
 
-	SteppingAction *steppingAction = new SteppingAction();
-	SetUserAction(steppingAction);
+	EventAction *eventAction = new EventAction();
 #ifdef G4MULTITHREADED
-	steppingAction->setNThreads(n_threads);
+	eventAction->setNThreads(n_threads);
 #endif
+	SetUserAction(eventAction);
 
 	RunAction *runAction = new RunAction();
 	runAction->setOutputDir(outputdir);
