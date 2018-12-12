@@ -1,6 +1,6 @@
 CPP=g++
 CFLAGS=-Wall -Wconversion -Wsign-conversion -O3
-ROOTFLAGS=`root-config --cflags --glibs`
+ROOTFLAGS=-isystem$(shell root-config --incdir) -L$(shell root-config --libdir) -lCore -lRIO -lHist -lTree
 
 all: getHistogram histogramToTxt rootToTxt mergeFiles
 
