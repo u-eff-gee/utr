@@ -28,6 +28,33 @@ set(PRINT_PROGRESS 100000 CACHE STRING "Set the frequency of printed updates abo
 option(USE_GPS "Use G4GeneralParticleSource as primary generator" ON)
 option(USE_TARGETS "Use Targets in the geometry" ON)
 
+option(EM_FAST "Use G4EmStandardPhysics_option1" OFF)
+option(EM_STANDARD "Use G4EmStandardPhysics_option4" OFF)
+option(EM_LIVERMORE "Use G4EmLivermorePhysics" OFF)
+option(EM_LIVERMORE_POLARIZED "Use G4EmLivermorePolarizedPhysics" ON)
+option(EM_LIVERMORE_POLARIZED_JAEA "Use G4EmLivermorePolarizedPhysics with elastic scattering processes from JAEA" OFF)
+option(EM_PENELOPE "Use G4EmPenelopePhysics" OFF)
+
+option(HADRON_ELASTIC_STANDARD "Use G4HadronElasticPhysics" ON)
+option(HADRON_ELASTIC_HP "Use G4HadronElasticPhysicsHP" OFF)
+option(HADRON_ELASTIC_LEND "Use G4HadronElasticPhysicsLEND" OFF)
+
+option(HADRON_INELASTIC_STANDARD "Use G4HadronPhysicsFTFP_BERT" ON)
+option(HADRON_INELASTIC_HP "Use G4HadronPhysicsFTFP_BERT_HP" OFF)
+option(HADRON_INELASTIC_LEND "Use G4HadronPhysicsShieldingLEND" OFF)
+
+option(BACKWARD_COMPATIBLE_BUILD "Build for Geant4 versions < 10.5" OFF)
+option(EVENT_EDEP "For each event, record total energy deposition in the detectors" ON)
+option(EVENT_EKIN "For each event, record kinetic energy at the time a particle first hits a detector" OFF)
+option(EVENT_PARTICLE "For each event, record type of the first particle that hit a detector" ON)
+option(EVENT_VOLUME "For each event, record the detector volumes that were hit by a particle" ON)
+option(EVENT_POSX "For each event, record the X position of the first particle that hit a detector" OFF)
+option(EVENT_POSY "For each event, record the Y position of the first particle that hit a detector" OFF)
+option(EVENT_POSZ "For each event, record the Z position of the first particle that hit a detector" OFF)
+option(EVENT_MOMX "For each event, record the momentum in X direction of the first particle that hit a detector" OFF)
+option(EVENT_MOMX "For each event, record the momentum in X direction of the first particle that hit a detector" OFF)
+option(EVENT_MOMX "For each event, record the momentum in X direction of the first particle that hit a detector" OFF)
+
 #----------------------------------------------------------------------------
 # Enable configuration of the source code by cmake
 configure_file(
@@ -49,6 +76,10 @@ include_directories(${PROJECT_SOURCE_DIR}/DetectorConstruction/${CAMPAIGN}/${DET
 
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc ${PROJECT_SOURCE_DIR}/DetectorConstruction/${CAMPAIGN}/src/*.cc ${PROJECT_SOURCE_DIR}/DetectorConstruction/${CAMPAIGN}/${DETECTOR_CONSTRUCTION}/*.cc)
 file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh ${PROJECT_SOURCE_DIR}/DetectorConstruction/${CAMPAIGN}/include/*.hh ${PROJECT_SOURCE_DIR}/DetectorConstruction/${CAMPAIGN}/${DETECTOR_CONSTRUCTION}/*.hh)
+if(BACKWARD_COMPATIBLE_BUILD)
+	list(REMOVE_ITEM sources ${PROJECT_SOURCE_DIR}/src/EMPhysicsPolarizedJAEA.cc)
+	list(REMOVE_ITEM headers ${PROJECT_SOURCE_DIR}/include/EMPhysicsPolarizedJAEA.hh)
+endif(BACKWARD_COMPATIBLE_BUILD)
 
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries

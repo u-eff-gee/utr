@@ -3,6 +3,33 @@
 
 #cmakedefine USE_GPS
 #cmakedefine USE_TARGETS
+
+#cmakedefine EM_FAST 
+#cmakedefine EM_STANDARD 
+#cmakedefine EM_LIVERMORE
+#cmakedefine EM_LIVERMORE_POLARIZED
+#cmakedefine EM_LIVERMORE_POLARIZED_JAEA
+#cmakedefine EM_PENELOPE
+
+#cmakedefine HADRON_ELASTIC_STANDARD
+#cmakedefine HADRON_ELASTIC_HP
+#cmakedefine HADRON_ELASTIC_LEND
+
+#cmakedefine HADRON_INELASTIC_STANDARD
+#cmakedefine HADRON_INELASTIC_HP
+#cmakedefine HADRON_INELASTIC_LEND
+
+#cmakedefine EVENT_EDEP
+#cmakedefine EVENT_EKIN
+#cmakedefine EVENT_PARTICLE
+#cmakedefine EVENT_VOLUME
+#cmakedefine EVENT_POSX
+#cmakedefine EVENT_POSY
+#cmakedefine EVENT_POSZ
+#cmakedefine EVENT_MOMX
+#cmakedefine EVENT_MOMY
+#cmakedefine EVENT_MOMZ
+
 const int print_progress = ${PRINT_PROGRESS};
 
 #endif

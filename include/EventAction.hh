@@ -18,21 +18,20 @@ You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SteppingAction_h
-#define SteppingAction_h 1
+#ifndef EventAction_h
+#define EventAction_h 1
 
 #include <time.h>
 
-#include "G4Step.hh"
-#include "G4UserSteppingAction.hh"
+#include "G4UserEventAction.hh"
 #include "globals.hh"
 
-class SteppingAction : public G4UserSteppingAction {
+class EventAction : public G4UserEventAction {
   public:
-	SteppingAction();
-	virtual ~SteppingAction();
+	EventAction();
+	virtual ~EventAction();
 
-	virtual void UserSteppingAction(const G4Step *);
+	virtual void EndOfEventAction(const G4Event *);
 
 	void setNThreads(const int nt){ n_threads = (G4double) nt; };
 

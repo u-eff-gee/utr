@@ -53,21 +53,21 @@ See section [4 Usage and Visualization](#usage)
 
  1. Create a new campaign in `DetectorConstruction/` and/or a new directory in `DetectorConstruction/Campaign_YEAR`.
  2. Implement a geometry in a `DetectorConstruction.hh` and `DetectorConstruction.cc` file in this directory and maybe some auxiliary files following the conventions (see section [2.1 Geometry](#geometry)).
- 3. Configure `utr` to use the new geometry using the cmake build option (see sections [2.1 Geometry](#geometry) or [3 Installation](#installation))
+ 3. Configure `utr` to use the new geometry using the cmake build option (see sections [2.1 Geometry](#geometry) or [3.3 Build configuration](#build))
 
 ### 1.4 Define sensitive volumes
 
  1. In `DetectorConstruction.cc`, set volumes as sensitive detectors. There is the choice between 3 different detector types that record different information about particles (see section [2.2 Sensitive Detectors](#sensitivedetectors)).
- 2. In `src/ActionInitialization.cc`, set the quantities that should be written to the output file (see section [2.2 Sensitive Detectors](#sensitivedetectors)).
+ 2. Using cmake build options, set the quantities that should be written to the output file (see section [2.2 Sensitive Detectors](#sensitivedetectors) and [3.3 Build configuration](#build)).
 
 ### 1.5 Choose a primary source
 
-Configure `utr` to use either the `G4GeneralParticleSource` or the `AngularDistributionGenerator` using the CMake build option (see sections [2.3 Event Generation](#eventgeneration) or [3 Installation](#installation))
+Configure `utr` to use either the `G4GeneralParticleSource` or the `AngularDistributionGenerator` using the CMake build option (see sections [2.3 Event Generation](#eventgeneration) and [3.3 Build configuration](#build))
 
 ### 1.6 Choose the physics processes
 
-In `src/Physics.cc` activate or deactivate processes, choose between different models, or include certain particles (see section [2.4 Physics](#physics))
- 
+Using cmake build variables, activate or deactivate physics modules, or implement a custom physics list and include it in `src/Physics.cpp` (see section [2.4 Physics](#physics) and [3.3 Build configuration](#build))
+
 ### 1.7 Choose random number seed
 
 In `utr.cc`, set the random number seed explicitly to get deterministic results. It is not clear whether this works in multithreaded mode. See section [2.5 Random Number Engine](#random)
@@ -235,9 +235,9 @@ At the moment, the following detectors are implemented:
 * Duke 55% HPGe (Ortec serial number 4-TN21638A)
 * Duke 55% HPGe (Ortec serial number 4-TN31524A)
 * Duke 120% HPGe "Zero degree detector" (Ortec serial number 33-P40383A)
-* Darmstadt HPGe "1" (Canberra serial number 10PC473156-A)
-* Darmstadt HPGe "2" (Eurisys Mesures serial number 10PC447589-A)
-* Darmstadt Clover "Polarimeter" (Eurisys Mesures serial number 10PC447590-a)
+* Darmstadt 100% HPGe "1" (Canberra serial number 10PC473156-A)
+* Darmstadt 100% HPGe "2" (Eurisys Mesures serial number 10PC447589-A)
+* Darmstadt Clover 100% "Polarimeter" (Eurisys Mesures serial number 10PC447590-a)
 * Cologne 100% HPGe (Ortec serial number 73954)
 * Stuttgart 86.2% HPGe (Canberra serial number 37-N311204)
 
@@ -361,7 +361,7 @@ vy_real = 1/sqrt(vx^2 + vy^2)*sin(arctan(y/x))*ekin/c
 
 Event generation is done by classes derived from the `G4VUserPrimaryGeneratorAction`. In the following, the two existing event generators are described. 
 
-By default, `utr` uses the Geant4 standard G4GeneralParticleSource. To use the AngularDistributionGenerator of `utr`, which implements angular distributions for Nuclear Resonance Fluorescence (NRF) applications, unset the `USE_GPS` option when building the source code (see also [3 Installation](#installation)):
+By default, `utr` uses the Geant4 standard G4GeneralParticleSource. To use the AngularDistributionGenerator of `utr`, which implements angular distributions for Nuclear Resonance Fluorescence (NRF) applications, unset the `USE_GPS` option when building the source code (see also [3.3 Build configuration](#build)):
 
 ```bash
 $ cmake -DUSE_GPS=OFF .
@@ -721,26 +721,52 @@ When using multiple sources, be aware that `AngularDistributionGenerator` sample
 This is not always desirable. Imagine the following example: The goal is to simulate a beam on two disconnected targets. The first target has twice the volume of the second target, but the second target has a four times larger density. That means, the reaction would occur approximately twice as often in the second target than in the first. Implementing the targets like this in `AngularDistributionGenerator` would not give realistic results because of the weighting by volume. In a case like this, one would rather simulate the individual parts of the target and compute a weighted sum of the results.
 
 ### 2.4 Physics <a name="physics"></a>
-The physics processes are defined in `/src/Physics.cc`. In the Physics::ConstructProcess() method, physics lists for groups of particles can be activated by uncommenting the desired physics list. If you are working on a slow machine and you just want to visualize the geometry, it can be advantageous to switch off all physics.
+`utr` makes use of the `G4VModularPhysicsList`, which allows to integrate physics modules in a straightforward way by calling the `G4ModularPhysicsList::RegisterPhysics(G4VPhysicsConstructor*)` method. The registered `G4VPhysicsConstructor` class takes care of the introduction of particles and physics processes.
+The physics processes are separated into two logical groups, which contain the most probably occurring processes in NRF experiments: electromagnetic (EM) and hadronic.
 
-At the moment, physics processes for gammas, electrons/positrons, neutrons and other charged particles are available. Check Physics.cc to see which processes are defined.
-A description of the processes can be found in the [GEANT4 Physics Reference Manual](http://geant4.web.cern.ch/geant4/UserDocumentation/UsersGuides/PhysicsReferenceManual/fo/PhysicsReferenceManual.pdf)
+Geant4 provides complete EM and hadronic modules for different energy ranges and with different precision. In `utr`, a selection of those, which was considered most suitable for low-energy NRF applications, can be selected via the `HADRON*` and `EM*` cmake build options (see also [3.3 Build configuration](#build)): 
 
-The physics list is optimized for NRF applications at HIGS and largely inspired by the GEANT4 examples `TestEm7` and `Hadr04`.
+```
+$ cmake -DEM_LIVERMORE=ON -DHADRON_ELASTIC_HP=ON .
+```
 
-#### 2.4.1 Transportation
-Mandatory for all particles. Without this, the simulation will do almost nothing.
+Though possible, it is safer not to include several EM or hadronic models at the same time. If in doubt, the command line output at the beginning of a Geant4 simulation can be checked to see which model is actually used for a certain process. For example, if both `EM_LIVERMORE` and `EM_LIVERMORE_POLARIZED` are switched on, that output will include lines like:
 
-#### 2.4.2 EMPenelope, EMLivermore
-Uses the Penelope OR Livermore low-energy electromagnetic physics framework for gammas, electrons and positrons. Only one of them can be active at the same time. Both frameworks aim at a more precise description of these processes than the standard G4 physics which are optimized for particle physics applications at CERN.
+```
+compt:   for  gamma    SubType= 13  BuildTable= 1
+      Lambda table from 100 eV  to 1 MeV, 20 bins per decade, spline: 1
+      LambdaPrime table from 1 MeV to 100 TeV in 160 bins
+      ===== EM models for the G4Region  DefaultRegionForTheWorld ======
+    LivermoreCompton :  Emin=        0 eV    Emax=        1 GeV  FluoActive
+        KleinNishina :  Emin=        1 GeV   Emax=      100 TeV  FluoActive
+``` 
 
-At the moment, only EMLivermore provides models for the interaction of polarized photons with matter, therefore, G4LivermorePolarized* is used by default.
+This shows that the unpolarized model is used (otherwise, `LivermoreCompton` would be replaced by `LivermorePolarizedCompton`), which may not be what the user expected.
 
-#### 2.4.3 HPNeutron
-A specialized neutron physics framework for low energies.
+A description of the physics lists and the implementation of the processes can be found in the [GEANT4 Physics Reference Manual](http://geant4.web.cern.ch/geant4/UserDocumentation/UsersGuides/PhysicsReferenceManual/fo/PhysicsReferenceManual.pdf)
 
-#### 2.4.4 ChargedParticle
-Standard processes for any other charged particle that might appear in the simulation. The probability for this in NRF applications is low, so this list is not very detailed.
+Of the available physics modules, only `EMPhysicsPolarizedJAEA` comes with `utr`, the others are included in the Geant4 code. `EMPhysicsPolarizedJAEA` is based on the `G4EmLivermorePolarizedPhysics` module, but the photon elastic scattering model has been changed to the one recently introduced by Omer and Hajima, which has a different implementation of Rayleigh scattering and introduces Delbrueck scattering in Geant4 [[6]](#ref-delbrueck), [[7]](#ref-jaea).
+
+Physics modules can be switched by setting the different `HADRON*` and `EM*` cmake build flags, for example:
+
+```
+$ cmake -DEM_LIVERMORE=ON -DHADRON_ELASTIC_HP=ON .
+```
+
+An output like 
+
+```
+================================================================================                                                                                                                                                                       
+Using the following physics lists:                                                                                                                                                                                                                     
+        G4EmLivermorePolarizedPhysics with JAEA elastic processes ...                                                                                                                                                                                  
+        G4HadronElasticPhysicsLEND ...                                                                                                                                                                                                                 
+        G4HadronPhysicsFTFP_BERT ...                                                                                                                                                                                                                   
+================================================================================ 
+```
+
+at the beginning of a simulation will show which physics lists are currently used.
+
+In order to include new physics modules, include them in the `src/Physics.cc` file.
 
 ### 2.5 Random Number Engine <a name="random"></a>
 In `utr.cc`, the random number engine's seed is set by using the current CPU time, making it a "real" random generator.
@@ -766,29 +792,12 @@ In section [2.2 Sensitive Detectors](#sensitivedetectors) the format of the ROOT
 
 * **ekin**
 * **edep**
-* **particle**
+* **particle** (given in the [Monte Carlo Particle Numbering Scheme](http://pdg.lbl.gov/mc_particle_id_contents.html))
 * **volume**
 * **x/y/z**
 * **vx/vy/vz**
 
-The user can specify in `ActionInitialization.cc` which of these quantities should be written to the ROOT file, to avoid creating unnecessarily large files. When the `RunAction` is initialized in `ActionInitialization.cc`, set the value of the corresponding output flag to 0 if this quantity should not be written to the ROOT file.
-
-For example, the code
-
-```
-output_flags[EKIN] = 0;
-output_flags[EDEP] = 1;
-output_flags[PARTICLE] = 1;
-output_flags[VOLUME] = 1;
-output_flags[POSX] = 0;
-output_flags[POSY] = 0;
-output_flags[POSZ] = 0;
-output_flags[MOMX] = 0;
-output_flags[MOMY] = 0;
-output_flags[MOMZ] = 0;
-```
-
-would only write the energy deposition, the particle type and the sensitive detector volume.
+By using cmake build options (see [3.3 Build configuration](#build)), the user can specify which of these quantities should be written to the ROOT file, to avoid creating unnecessarily large files.
 
 ## 3 Installation <a name="installation"></a>
 
@@ -798,7 +807,7 @@ These instructions will get you a copy of the simulation running.
 
 To build and run the simulation, the following dependencies are required:
 
-* [Geant4](https://geant4.web.cern.ch/) (tested with versions >10.04)
+* [Geant4](https://geant4.web.cern.ch/) (Tested with version 10.5. If your version is older, refer to [3.3 Build configuration](#build) to see how to run `utr` in the backwards compatible mode)
 * CMake (*build*)
 * Make (*build*)
 
@@ -820,33 +829,112 @@ $ cmake .
 $ make
 ```
 
-This will compile the simulation using a default geometry (see [2.1 Geometry](#geometry)) and the GeneralParticleSource as a primary generator (see [2.3 Event Generation](#eventgeneration)).
+This will compile the simulation using default options for everything. To change the default configuration, many CMake build options are available and described in the next section.
 
-To use another geometry in the directory `DetectorConstruction/`, set the `CAMPAIGN` and the `DETECTOR_CONSTRUCTION` build variable when executing the `cmake` command:
+After the `make` step, an executable `utr` will have been created in the top-level directory, which can be used to execute `utr` (see also [4 Usage and Visualization](#usage)).
 
-```bash
-$ cmake -DCAMPAIGN="Campaign_YEAR" -DDETECTOR_CONSTRUCTION="TARGETS_RUNS" .
+### 3.3 Build configuration <a name="build"></a>
+
+Using CMake build options, the simulation can be configured. There are options available to
+
+ * Change the geometry
+ * Select physics lists
+ * Select the primary generator
+ * Select the output quantities
+ * Switch targets on and off
+ * Run in backward compatible mode
+ * Set the frequency of runtime updates
+
+which are described in the following subsections.
+They are used in the `cmake` step of the compilation process, which was described in the previous section. In general, an option `OPTION` of CMake is set to a specific value `VALUE` by typing:
+
+```
+$ cmake -DOPTION=VALUE .
 ```
 
-Since the 2018 campaign, there is also a build variable to quickly remove the targets in the geometry, for example if one would like to simulate detector efficiencies:
+Most options are **flags**, i.e. their only possible values are `ON` and `OFF`. Only the options of the geometry configuration are **string options**, which take an arbitrary string as a value. The option that sets the frequency of updates takes an integer number.
 
-```bash
+#### 3.3.1 Configuration of the geometry
+
+As described in section [2.1 Geometry](#geometry), the different available `DetectorConstructions` are sorted into campaigns and runs. To select a specific geometry, the build options `CAMPAIGN` and `DETECTOR_CONSTRUCTION` have to be set with the names of the corresponding directories. For example, to choose the `64Ni_271_279` geometry from the 2018 campaign, type
+
+```
+$ cmake -DCAMPAIGN=Campaign_2018 -DDETECTOR_CONSTRUCTION=64Ni_271_279 .
+```
+
+#### 3.3.2 Configuration of the physics list
+
+As described in section [2.4 Physics](#physics), different physics models can be selected by setting the corresponding flag to `ON`. By default, the following models are used by `utr` (the name of the flag is given in parentheses):
+
+ * EM : G4EmLivermorePolarizedPhysics (EM_LIVERMORE_POLARIZED)
+ * Elastic Hadronic: G4HadronElasticPhysics (HADRON_ELASTIC_STANDARD)
+ * Inelastic Hadronic: G4HadronPhysicsFTFP_BERT (HADRON_INELASTIC_STANDARD)
+
+To switch to another EM physics list, for example, one would type
+
+```
+$ cmake -DEM_STANDARD=ON -DEM_LIVERMORE_POLARIZED=OFF .
+```
+
+Note that the previously used physics list needs to be switched off as well, to avoid getting unexpected behavior if two physics lists implement the same processes.
+
+#### 3.3.3 Configuration of the primary generator
+
+`utr` offers two different primary generators (see [2.3 Event Generation]()), the Geant4-builtin `G4GeneralParticleSource` and a generator for custom angular distributions. To switch between them, set the `USE_GPS` flag:
+
+```
+$ cmake -DUSE_GPS=ON .
+```
+
+#### 3.3.4 Cofiguration of the targets
+
+In real NRF experiments, one often removes the NRF target and puts a radioactive source in the same place. For convenience, `utr` provides a cmake build flag to switch off the targets in the geometry, i.e. to do a calibration measurement in the simulation.
+
+To remove the targets in the simulation, type:
+
+```
 $ cmake -DUSE_TARGETS=OFF .
 ```
-Have a look at the `DetectorConstruction.cc` files of the 2018 campaign to see how this option influences the compilation.
 
-To use the AngularDistributionGenerator instead of the GeneralParticleSource, set the `USE_GPS` variable
+To see which part is actually ignored when this flag is set to `OFF`, look at the currently activated `DetectorConstruction.cc` and search for code embedded in a
 
-```bash
-$ cmake -DUSE_GPS=OFF .
+```
+#ifdef USE_TARGETS
+[...]
+#endif
 ```
 
-Any of the commands above will create the `utr` binary in the top directory.
-In case CMake complains that it cannot find `Geant4Config.cmake` or `geant4-config.cmake`, set the *CMAKE_INSTALL_PREFIX* variable to the directory where GEANT4 has been installed:
+clause.
 
-```bash
-$ cmake -DCMAKE_INSTALL_PREFIX=/PATH/TO/G4/INSTALL .
-$ make
+#### 3.3.5 Configuration of the output
+
+The options for the output file format are described in [2.6 Output File Format](#outputfileformat). By changing the corresponding flags:
+
+ * EDEP
+ * EKIN
+ * PARTICLE (given in the [Monte Carlo Particle Numbering Scheme](http://pdg.lbl.gov/mc_particle_id_contents.html))
+ * VOLUME
+ * POSX, POSY, POSZ
+ * MOMX, MOMY, MOMZ
+
+the user can decided which of the quantities are written to the ROOT output file as branches. For example, to write the x coordinate of the first step in the detector volume, type
+
+$ cmake -DPOSX=ON .
+
+#### 3.3.6 Backward compatibility
+
+Geant4 version 10.5 introduces the JAEA models for the elastic scattering of photons, which was integrated in the `utr` code. Unfortunately, this breaks backward compatibility with earlier versions. The optimum solution would be to update your version of Geant4, of course, but if this is not possible, set the `BACKWARD_COMPATIBLE_BUILD` flag to ignore the physics list which use the JAEA models:
+
+```
+$ cmake -DBACKWARD_COMPATIBLE_BUILD=ON .
+``` 
+
+#### 3.3.7 Configuration of runtime updates
+
+By default, `utr` prints updates about the number of processed events and the execution time every 10^5 events (see [4 Usage and Visualization](#usage)). To change that number, set the value of the `PRINT_PROGRESS` variable:
+
+```
+$ cmake -DPRINT_PROGRESS=1000 .
 ```
 
 ## 4 Usage and Visualization <a name="usage"></a>
@@ -892,16 +980,16 @@ $ ./utr -o OUTPUTDIR
 
 Sets the output directory of `utr` where the ROOT files will be placed.
 
-While running a simulation, `utr` will automatically print information about the progress in the following format, using the `G4VUserSteppingAction` class:
+While running a simulation, `utr` will automatically print information about the progress in the following format, using the `G4VUserEventAction` class:
 
 ```bash
-Progresss: [          160000/100000000]  0.16 %  Running time:   0d  0h   0mn   4s   Estimated remaining time:   0d  0h  2mn    4s
+Progresss: [          160000/100000000]  0.16 %  Running time:   0d  0h   0mn   4s
 ```
 
-That means there is no need to use the `/run/printProgress` macro of Geant4 any more. The number of events `NEVENTS` after which a new progress update is printed can be set using the `PRINT_PROGRESS` preprocessor variable at compile-time (see also [3 Installation](#installation)):
+That means there is no need to use the `/run/printProgress` macro of Geant4 any more. The number of events `NEVENTS` after which a new progress update is printed can be set using the `PRINT_PROGRESS` preprocessor variable at compile-time (see also [3.3 Build configuration](#build)):
 
 ```bash
-$ cmake -DPRINT_PROGRESS=NEVENTS.
+$ cmake -DPRINT_PROGRESS=NEVENTS .
 ```
 
 Running `utr` without any argument will launch a UI session where macro commands can be entered. It should also automatically execute the macro file `init_vis.mac`, which visualizes the geometry.
@@ -1053,6 +1141,25 @@ HISTNAME_FILENAME.txt
 where HISTNAME is the name of the TH1 object and FILENAME the same as above.
 The shell script `loopHistogramToTxt.sh` shows how to loop the script over a large number of files.
 
+### 5.4 MergeFiles.cpp
+`MergeFiles` creates a ROOT file which contains a `TChain` of multiple simulation output files. This makes it possible to access the data in all files as if they were in a single ROOT tree. `MergeFiles` recognizes similar arguments as `GetHistogram` (in fact, `MergeFiles` was created by 'cannibalizing' `GetHistogram`):
+
+```bash
+$ ./mergeFiles --help
+Usage: mergeFiles [OPTION...] Merge ROOT output files
+MergeFiles
+
+  -o OUTPUTFILENAME          Output file name
+  -p PATTERN1                File name pattern 1
+  -q PATTERN2                File name pattern 2
+  -t TREENAME                Name of tree
+  -?, --help                 Give this help list
+      --usage                Give a short usage message
+```
+
+For the meaning of the arguments, refer to the documentation of the `GetHistogram` script.
+The `TChain` file can also be post-processed with the aforementioned scripts, in particular `RootToTxt` which cannot merge data on its own.
+
 ## 6 Unit Tests <a name="unittests"></a>
 
 ## 6.1 AngularDistributionGenerator <a name="angulardistributiongenerator"></a>
@@ -1108,7 +1215,7 @@ one can see clear systematic deviations from the input distribution which are a 
 
 ## 7 License <a name="license"></a>
 
-Copyright (C) 2017
+Copyright (C) 2017, 2018
 
 U. Gayer (ugayer@ikp.tu-darmstadt.de)
 
@@ -1126,4 +1233,6 @@ UG would like to acknowledge the untiring effort of user Jörn Kleemann in debug
 <a name="ref-g4_2">[2]</a> J. Allison *et al.*, “GEANT4 developments and applications”, IEEE Transactions on Nuclear Science, **53.1**, 270 (2006). [`doi:10.1109/TNS.2006.869826`](https://doi.org/10.1109/TNS.2006.869826).  
 <a name="ref-g4_3">[3]</a> J. Allison *et al.*, “Recent developments in GEANT4”, Nucl. Inst. Meth. A **835**, 186 (2016). [`doi:10.1016/j.nima.2016.06.125`](https://doi.org/10.1016/j.nima.2016.06.125).  
 <a name="ref-higs">[4]</a> H. R. Weller *et al.*, “Research opportunities at the upgraded HIγS facility”, Prog. Part. Nucl. Phys. **62.1**, 257 (2009). [`doi:10.1016/j.ppnp.2008.07.001`](https://doi.org/10.1016/j.ppnp.2008.07.001).  
-<a name="ref-g3">[5]</a> B. Löher *et al.*, “The high-efficiency γ-ray spectroscopy setup γ³ at HIγS”, Nucl. Instr. Meth. Phys. Res. A **723**, 136 (2013). [`doi:10.1016/j.nima.2013.04.087`](https://doi.org/10.1016/j.nima.2013.04.087).  
+<a name="ref-g3">[5]</a> B. Löher *et al.*, “The high-efficiency γ-ray spectroscopy setup γ³ at HIγS”, Nucl. Instr. Meth. Phys. Res. A **723**, 136 (2013). [`doi:10.1016/j.nima.2013.04.087`](https://doi.org/10.1016/j.nima.2013.04.087).   
+<a name="ref-delbrueck">[6]</a> M. Omer and R. Hajima, “Including Delbrueck scattering in Geant4”, Nucl. Instr. Meth. Phys. Res. B **405**, 43 (2017). [`doi.org/10.1016/j.nimb.2017.05.028`](https://doi.org/10.1016/j.nimb.2017.05.028).   
+<a name="ref-jaea">[7]</a> M. Omer and R. Hajima, “Geant4 physics process for elastic scattering of gamma-rays”, JAEA Technical Report **2018-007** (2018). [`doi.org/10.11484/jaea-data-code-2018-007`](https://doi.org/10.11484/jaea-data-code-2018-007).

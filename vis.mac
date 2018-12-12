@@ -5,21 +5,6 @@
 # Use this open statement to create an OpenGL view:
 /vis/open OGL 600x600-0+0
 #
-# Use this open statement to create an OpenInventor view:
-#/vis/open OIX
-#
-# Use this open statement to create a .prim file suitable for
-# viewing in DAWN:
-#/vis/open DAWNFILE
-#
-# Use this open statement to create a .heprep file suitable for
-# viewing in HepRApp:
-#/vis/open HepRepFile
-#
-# Use this open statement to create a .wrl file suitable for
-# viewing in a VRML viewer:
-#/vis/open VRML2FILE
-#
 # Disable auto refresh and quieten vis messages whilst scene and
 # trajectories are established:
 /vis/viewer/set/autoRefresh false
@@ -33,7 +18,7 @@
 #
 # Specify camera focus point
 #/vis/viewer/set/targetPoint 0 0 0 mm #g3 setup target position
-#/vis/viewer/set/targetPoint 0 0 1612.1 mm #second setup target position
+#/vis/viewer/set/targetPoint 0 0 1574.80 mm #second setup target position
 /vis/viewer/set/targetPoint 0 0 0 mm
 #
 # Specify zoom value:
@@ -58,21 +43,8 @@
 # Draw hits at end of event:
 /vis/scene/add/hits
 #
-# To draw only gammas:
-#/vis/filtering/trajectories/create/particleFilter
-#/vis/filtering/trajectories/particleFilter-0/add gamma
-#
-# To invert the above, drawing all particles except gammas,
-# keep the above two lines but also add:
-#/vis/filtering/trajectories/particleFilter-0/invert true
-#
-# Many other options are available with /vis/modeling and /vis/filtering.
-# For example, to select colour by particle ID:
-#/vis/modeling/trajectories/create/drawByParticleID
-#/vis/modeling/trajectories/drawByParticleID-0/default/setDrawStepPts true
 # To select or override default colours (note: e+ is blue by default):
-#/vis/modeling/trajectories/list
-#/vis/modeling/trajectories/drawByParticleID-0/set e+ yellow
+/vis/modeling/trajectories/create/drawByParticleID neutron yellow
 #
 # To superimpose all of the events from a given run:
 /vis/scene/endOfEventAction accumulate

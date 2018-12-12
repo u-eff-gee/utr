@@ -13,6 +13,7 @@ getHistogram
 histogramToTxt
 rootToTxt
 angdisttest
+mergeFiles
 
 # C++ objects
 unit_test/AngularDistributionGenerator/AngularDistribution.o

@@ -44,7 +44,6 @@ class SecondarySD : public G4VSensitiveDetector {
 	void SetDetectorID(unsigned int detID) { detectorID = detID; };
 
   private:
-	TargetHitsCollection *fHitsCollection;
 	unsigned int currentTrackID;
 	unsigned int currentEventID;
 	unsigned int detectorID;

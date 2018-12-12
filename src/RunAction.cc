@@ -18,10 +18,6 @@ You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "RunAction.hh"
-#include "Analysis.hh"
-#include <limits.h>
-
 #include "G4Run.hh"
 #include "G4RunManager.hh"
 #include "G4SDManager.hh"
@@ -31,11 +27,13 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "G4FileUtilities.hh"
 
-RunAction::RunAction() : G4UserRunAction() {
-	// Default setting for output file
-	for (unsigned int i = 0; i < n_output_flags; i++)
-		output_flags[i] = 1;
-}
+#include "RunAction.hh"
+#include "Analysis.hh"
+#include <limits.h>
+
+#include "utrConfig.h"
+
+RunAction::RunAction() : G4UserRunAction() {}
 
 RunAction::~RunAction() { delete G4AnalysisManager::Instance(); }
 
@@ -44,26 +42,36 @@ void RunAction::BeginOfRunAction(const G4Run *) {
 	G4AnalysisManager *analysisManager = G4AnalysisManager::Instance();
 
 	analysisManager->CreateNtuple("utr", "Particle information");
-	if (output_flags[EKIN])
-		analysisManager->CreateNtupleDColumn("ekin");
-	if (output_flags[EDEP])
-		analysisManager->CreateNtupleDColumn("edep");
-	if (output_flags[PARTICLE])
-		analysisManager->CreateNtupleDColumn("particle");
-	if (output_flags[VOLUME])
-		analysisManager->CreateNtupleDColumn("volume");
-	if (output_flags[POSX])
+#ifdef EVENT_EDEP
+	analysisManager->CreateNtupleDColumn("edep");
+#endif
+#ifdef EVENT_EKIN
+	analysisManager->CreateNtupleDColumn("ekin");
+#endif
+#ifdef EVENT_PARTICLE
+	analysisManager->CreateNtupleDColumn("particle");
+#endif
+#ifdef EVENT_VOLUME
+	analysisManager->CreateNtupleDColumn("volume");
+#endif
+#ifdef EVENT_POSX
 		analysisManager->CreateNtupleDColumn("x");
-	if (output_flags[POSY])
+#endif
+#ifdef EVENT_POSY
 		analysisManager->CreateNtupleDColumn("y");
-	if (output_flags[POSZ])
+#endif
+#ifdef EVENT_POSZ
 		analysisManager->CreateNtupleDColumn("z");
-	if (output_flags[MOMX])
+#endif
+#ifdef EVENT_MOMX
 		analysisManager->CreateNtupleDColumn("vx");
-	if (output_flags[MOMY])
+#endif
+#ifdef EVENT_MOMY
 		analysisManager->CreateNtupleDColumn("vy");
-	if (output_flags[MOMZ])
+#endif
+#ifdef EVENT_MOMZ
 		analysisManager->CreateNtupleDColumn("vz");
+#endif
 	analysisManager->FinishNtuple();
 
 	// Open an output file
@@ -121,13 +129,6 @@ void RunAction::EndOfRunAction(const G4Run *) {
 
 	delete G4AnalysisManager::Instance();
 }
-
-void RunAction::SetOutputFlags(unsigned int *o_flags) {
-	for (int i = 0; i < n_output_flags; i++)
-		output_flags[i] = o_flags[i];
-}
-
-unsigned int *RunAction::GetOutputFlags() { return output_flags; }
 
 G4String RunAction::GetOutputFlagName(unsigned int n) {
 	switch (n) {

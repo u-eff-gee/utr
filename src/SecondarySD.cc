@@ -31,9 +31,11 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4ios.hh"
 #include "RunAction.hh"
 
+#include "utrConfig.h"
+
 SecondarySD::SecondarySD(const G4String &name,
                          const G4String &hitsCollectionName)
-    : G4VSensitiveDetector(name), fHitsCollection(NULL) {
+    : G4VSensitiveDetector(name) {
 	collectionName.insert(hitsCollectionName);
 
 	currentTrackID = 0;
@@ -63,61 +65,47 @@ G4bool SecondarySD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
 
 		G4AnalysisManager *analysisManager = G4AnalysisManager::Instance();
 
-		RunAction *runAction =
-		    (RunAction *)G4RunManager::GetRunManager()->GetUserRunAction();
-		unsigned int *output_flags = runAction->GetOutputFlags();
-
 		unsigned int nentry = 0;
 
-		if (output_flags[EKIN]) {
-			analysisManager->FillNtupleDColumn(nentry,
-			                                   track->GetKineticEnergy());
-			nentry++;
-		}
-		if (output_flags[EDEP]) {
-			analysisManager->FillNtupleDColumn(nentry,
-			                                   aStep->GetTotalEnergyDeposit());
-			nentry++;
-		}
-		if (output_flags[PARTICLE]) {
-			analysisManager->FillNtupleDColumn(
-			    nentry, track->GetDefinition()->GetPDGEncoding());
-			nentry++;
-		}
-		if (output_flags[VOLUME]) {
-			analysisManager->FillNtupleDColumn(nentry, getDetectorID());
-			nentry++;
-		}
-		if (output_flags[POSX]) {
-			analysisManager->FillNtupleDColumn(nentry,
-			                                   track->GetPosition().x());
-			nentry++;
-		}
-		if (output_flags[POSY]) {
-			analysisManager->FillNtupleDColumn(nentry,
-			                                   track->GetPosition().y());
-			nentry++;
-		}
-		if (output_flags[POSZ]) {
-			analysisManager->FillNtupleDColumn(nentry,
-			                                   track->GetPosition().z());
-			nentry++;
-		}
-		if (output_flags[MOMX]) {
-			analysisManager->FillNtupleDColumn(nentry,
-			                                   track->GetMomentum().x());
-			nentry++;
-		}
-		if (output_flags[MOMY]) {
-			analysisManager->FillNtupleDColumn(nentry,
-			                                   track->GetMomentum().y());
-			nentry++;
-		}
-		if (output_flags[MOMZ]) {
-			analysisManager->FillNtupleDColumn(nentry,
-			                                   track->GetMomentum().z());
-			nentry++;
-		}
+#ifdef EVENT_EDEP
+	analysisManager->FillNtupleDColumn(nentry, aStep->GetTotalEnergyDeposit());
+	++nentry;
+#endif
+#ifdef EVENT_EKIN
+	analysisManager->FillNtupleDColumn(nentry, track->GetKineticEnergy());	
+	++nentry;
+#endif
+#ifdef EVENT_PARTICLE
+	analysisManager->FillNtupleDColumn(nentry, track->GetDefinition()->GetPDGEncoding());
+	++nentry;
+#endif
+#ifdef EVENT_VOLUME
+	analysisManager->FillNtupleDColumn(nentry, getDetectorID());
+	++nentry;
+#endif
+#ifdef EVENT_POSX
+	analysisManager->FillNtupleDColumn(nentry, track->GetPosition().x());
+	++nentry;
+#endif
+#ifdef EVENT_POSY
+	analysisManager->FillNtupleDColumn(nentry, track->GetPosition().y());
+	++nentry;
+#endif
+#ifdef EVENT_POSZ
+	analysisManager->FillNtupleDColumn(nentry, track->GetPosition().z());
+	++nentry;
+#endif
+#ifdef EVENT_MOMX
+	analysisManager->FillNtupleDColumn(nentry, track->GetMomentum().x());
+	++nentry;
+#endif
+#ifdef EVENT_MOMY
+	analysisManager->FillNtupleDColumn(nentry, track->GetMomentum().y());
+	++nentry;
+#endif
+#ifdef EVENT_MOMZ
+	analysisManager->FillNtupleDColumn(nentry, track->GetMomentum().z());
+#endif
 
 		analysisManager->AddNtupleRow();
 	}

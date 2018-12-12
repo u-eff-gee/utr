@@ -18,6 +18,8 @@ You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <vector>
+
 #include "ActionInitialization.hh"
 
 #ifdef USE_GPS
@@ -26,8 +28,10 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "AngularDistributionGenerator.hh"
 #endif
 
+#include "EventAction.hh"
 #include "RunAction.hh"
-#include "SteppingAction.hh"
+
+using std::vector;
 
 ActionInitialization::ActionInitialization() : 
 G4VUserActionInitialization(), 
@@ -46,27 +50,49 @@ void ActionInitialization::Build() const {
 	SetUserAction(new AngularDistributionGenerator);
 #endif
 
-	SteppingAction *steppingAction = new SteppingAction();
-	SetUserAction(steppingAction);
+	EventAction *eventAction = new EventAction();
 #ifdef G4MULTITHREADED
-	steppingAction->setNThreads(n_threads);
+	eventAction->setNThreads(n_threads);
 #endif
+	SetUserAction(eventAction);
 
 	RunAction *runAction = new RunAction();
 	runAction->setOutputDir(outputdir);
 
-	unsigned int output_flags[runAction->n_output_flags];
-	output_flags[EKIN] = 0;
-	output_flags[EDEP] = 1;
-	output_flags[PARTICLE] = 1;
-	output_flags[VOLUME] = 1;
-	output_flags[POSX] = 0;
-	output_flags[POSY] = 0;
-	output_flags[POSZ] = 0;
-	output_flags[MOMX] = 1;
-	output_flags[MOMY] = 1;
-	output_flags[MOMZ] = 1;
-	runAction->SetOutputFlags(output_flags);
+	vector<bool> record_quantity(NFLAGS);
+	for(short i = 0; i < NFLAGS; ++i)
+		record_quantity[i] = false;
+
+#ifdef EVENT_EDEP
+	record_quantity[EDEP] = true;
+#endif
+#ifdef EVENT_EKIN
+	record_quantity[EKIN] = true;
+#endif
+#ifdef EVENT_PARTICLE
+	record_quantity[PARTICLE] = true;
+#endif
+#ifdef EVENT_VOLUME
+	record_quantity[VOLUME] = true;
+#endif
+#ifdef EVENT_POSX
+	record_quantity[POSX] = true;
+#endif
+#ifdef EVENT_POSY
+	record_quantity[POSY] = true;
+#endif
+#ifdef EVENT_POSZ
+	record_quantity[POSZ] = true;
+#endif
+#ifdef EVENT_MOMX
+	record_quantity[MOMX] = true;
+#endif
+#ifdef EVENT_MOMY
+	record_quantity[MOMY] = true;
+#endif
+#ifdef EVENT_MOMZ
+	record_quantity[MOMZ] = true;
+#endif
 
 	G4cout << "================================================================"
 	          "================"
@@ -74,8 +100,8 @@ void ActionInitialization::Build() const {
 	G4cout << "ActionInitialization: The following quantities will be saved to "
 	          "the output file:"
 	       << G4endl;
-	for (int i = 0; i < runAction->n_output_flags; i++) {
-		if (output_flags[i] == 1) {
+	for (auto i = 0; i < NFLAGS; i++) {
+		if (record_quantity[i]) {
 			G4cout << runAction->GetOutputFlagName(i) << G4endl;
 		}
 	}
