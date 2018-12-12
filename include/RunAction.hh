@@ -28,16 +28,19 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 using std::string;
 
-#define EKIN 0
-#define EDEP 1
-#define PARTICLE 2
-#define VOLUME 3
-#define POSX 4
-#define POSY 5
-#define POSZ 6
-#define MOMX 7
-#define MOMY 8
-#define MOMZ 9
+enum output_flags: short {
+	EDEP = 0,	
+	EKIN = 1,	
+	PARTICLE = 2,	
+	VOLUME = 3,	
+	POSX = 4,	
+	POSY = 5,	
+	POSZ = 6,	
+	MOMX = 7,	
+	MOMY = 8,	
+	MOMZ = 9,
+	NFLAGS = 10
+};
 
 class RunAction : public G4UserRunAction {
   public:
@@ -47,9 +50,6 @@ class RunAction : public G4UserRunAction {
 	virtual void BeginOfRunAction(const G4Run *);
 	virtual void EndOfRunAction(const G4Run *);
 
-	void SetOutputFlags(unsigned int *o_flags);
-	unsigned int *GetOutputFlags();
-	unsigned int GetNOutputFlags() { return n_output_flags; };
 	G4String GetOutputFlagName(unsigned int n);
 
 	static const int n_output_flags = 10;

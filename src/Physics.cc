@@ -51,7 +51,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #ifdef HADRON_ELASTIC_LEND
 #include "G4HadronElasticPhysicsLEND.hh"
 #endif
-//
+
 // Hadronic elastic modular physics lists
 #ifdef HADRON_INELASTIC_STANDARD
 #include "G4HadronPhysicsFTFP_BERT.hh"

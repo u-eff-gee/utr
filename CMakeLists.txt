@@ -42,6 +42,17 @@ option(HADRON_INELASTIC_STANDARD "Use G4HadronPhysicsFTFP_BERT" ON)
 option(HADRON_INELASTIC_HP "Use G4HadronPhysicsFTFP_BERT_HP" OFF)
 option(HADRON_INELASTIC_LEND "Use G4HadronPhysicsShieldingLEND" OFF)
 
+option(EVENT_EDEP "For each event, record total energy deposition in the detectors" ON)
+option(EVENT_EKIN "For each event, record kinetic energy at the time a particle first hits a detector" OFF)
+option(EVENT_PARTICLE "For each event, record type of the first particle that hit a detector" ON)
+option(EVENT_VOLUME "For each event, record the detector volumes that were hit by a particle" ON)
+option(EVENT_POSX "For each event, record the X position of the first particle that hit a detector" OFF)
+option(EVENT_POSY "For each event, record the Y position of the first particle that hit a detector" OFF)
+option(EVENT_POSZ "For each event, record the Z position of the first particle that hit a detector" OFF)
+option(EVENT_MOMX "For each event, record the momentum in X direction of the first particle that hit a detector" OFF)
+option(EVENT_MOMX "For each event, record the momentum in X direction of the first particle that hit a detector" OFF)
+option(EVENT_MOMX "For each event, record the momentum in X direction of the first particle that hit a detector" OFF)
+
 #----------------------------------------------------------------------------
 # Enable configuration of the source code by cmake
 configure_file(

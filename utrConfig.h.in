@@ -18,6 +18,17 @@
 #cmakedefine HADRON_INELASTIC_HP
 #cmakedefine HADRON_INELASTIC_LEND
 
+#cmakedefine EVENT_EDEP
+#cmakedefine EVENT_EKIN
+#cmakedefine EVENT_PARTICLE
+#cmakedefine EVENT_VOLUME
+#cmakedefine EVENT_POSX
+#cmakedefine EVENT_POSY
+#cmakedefine EVENT_POSZ
+#cmakedefine EVENT_MOMX
+#cmakedefine EVENT_MOMY
+#cmakedefine EVENT_MOMZ
+
 const int print_progress = ${PRINT_PROGRESS};
 
 #endif
