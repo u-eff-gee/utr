@@ -9,6 +9,7 @@
 #cmakedefine EM_LIVERMORE
 #cmakedefine EM_LIVERMORE_POLARIZED
 #cmakedefine EM_LIVERMORE_POLARIZED_JAEA
+#cmakedefine EM_PENELOPE
 
 #cmakedefine HADRON_ELASTIC_STANDARD
 #cmakedefine HADRON_ELASTIC_HP

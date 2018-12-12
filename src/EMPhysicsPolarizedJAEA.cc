@@ -53,8 +53,9 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4GammaConversion.hh"
 #include "G4LivermorePolarizedGammaConversionModel.hh"
 
-#include "G4RayleighScattering.hh" 
+//#include "G4RayleighScattering.hh" 
 //#include "G4LivermorePolarizedRayleighModel.hh"
+#include "G4JAEAElasticScattering.hh"
 #include "G4JAEAElasticScatteringModel.hh"
 #include "G4LivermorePhotoElectricModel.hh"
 #include "G4PhotoElectricAngularGeneratorPolarized.hh"
@@ -270,14 +271,17 @@ void EMPhysicsPolarizedJAEA::ConstructProcess()
       convLiv->SetHighEnergyLimit(livEnergyLimit);
       theGammaConversion->AddEmModel(0, convLiv);
 
-      G4RayleighScattering* theRayleigh = new G4RayleighScattering();
+      //G4RayleighScattering* theRayleigh = new G4RayleighScattering();
       //theRayleigh->SetEmModel(new G4LivermorePolarizedRayleighModel());
-      theRayleigh->SetEmModel(new G4JAEAElasticScatteringModel());
+
+      G4JAEAElasticScattering* theElasticScattering = new G4JAEAElasticScattering();
+      theElasticScattering->SetEmModel(new G4JAEAElasticScatteringModel() );
 
       ph->RegisterProcess(thePhotoElectricEffect, particle);
       ph->RegisterProcess(theComptonScattering, particle);
       ph->RegisterProcess(theGammaConversion, particle);
-      ph->RegisterProcess(theRayleigh, particle);
+      //ph->RegisterProcess(theRayleigh, particle);
+      ph->RegisterProcess(theElasticScattering, particle);
 
     } else if (particleName == "e-") {
 

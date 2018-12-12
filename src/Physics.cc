@@ -37,6 +37,10 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "EMPhysicsPolarizedJAEA.hh"
 #endif
 
+#ifdef EM_PENELOPE
+#include "G4EmPenelopePhysics.hh"
+#endif
+
 #ifdef EM_STANDARD
 #include "G4EmStandardPhysics_option4.hh"
 #endif
@@ -84,6 +88,10 @@ Physics::Physics(){
 #ifdef EM_LIVERMORE_POLARIZED_JAEA
 	G4cout << "\tG4EmLivermorePolarizedPhysics with JAEA elastic processes ..." << G4endl;
 	RegisterPhysics( new EMPhysicsPolarizedJAEA() );
+#endif
+#ifdef EM_PENELOPE
+	G4cout << "\tG4EmPenelopePhysics ..." << G4endl;
+	RegisterPhysics( new G4EmPenelopePhysics() );
 #endif
 #ifdef EM_STANDARD 
 	G4cout << "\tG4EmStandardPhysics_option4 ..." << G4endl;
