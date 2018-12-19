@@ -88,8 +88,8 @@ void RadiatorTarget::Construct(G4ThreeVector global_coordinates,G4String target_
 	G4Box *radiator_Mother_Solid = new G4Box("radiator_Mother_Solid", radiator_Mother_x*0.5, radiator_Mother_y*0.5, radiator_Mother_z*0.5);
 
 	G4LogicalVolume *radiatorTarget_Logical = new G4LogicalVolume(radiator_Mother_Solid, AIR, "radiatorTarget");
-	//radiatorTarget->SetVisAttributes(G4VisAttributes::GetInvisible());
-	radiatorTarget_Logical->SetVisAttributes(yellow);
+	radiatorTarget_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());
+	// radiatorTarget_Logical->SetVisAttributes(yellow);
 
 	//*************************************************
 	// Radiator target holder:

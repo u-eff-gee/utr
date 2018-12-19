@@ -61,8 +61,8 @@ void BeamPipe_Upstream::Construct(G4ThreeVector global_coordinates,G4double rela
 	G4Box *beampipe_upstream_Mother_Solid = new G4Box("beampipe_upstream_Solid", beamPipe_Outer_Radius_Large, beamPipe_Outer_Radius_Large, beamPipe_Small_Radius_Length*0.5);
 
 	G4LogicalVolume *beampipe_upstream_Mother_Logical = new G4LogicalVolume(beampipe_upstream_Mother_Solid, AIR, "beampipe_upstream_Mother_Logical");
-	// beampipe_upstream_Mother_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());
-	beampipe_upstream_Mother_Logical->SetVisAttributes(yellow);
+	beampipe_upstream_Mother_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());
+	// beampipe_upstream_Mother_Logical->SetVisAttributes(yellow);
 	
 	//*************************************************
 	// Pipe volume

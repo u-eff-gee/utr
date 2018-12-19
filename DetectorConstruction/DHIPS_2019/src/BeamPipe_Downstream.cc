@@ -51,7 +51,7 @@ void BeamPipe_Downstream::Construct(G4ThreeVector global_coordinates,G4double re
 	G4Material *Pb = nist->FindOrBuildMaterial("G4_Pb");
 	G4Material *Al = nist->FindOrBuildMaterial("G4_Al");
 	G4Material *Si = nist->FindOrBuildMaterial("G4_Si");
-	G4Material* AIR = nist->FindOrBuildMaterial("G4_AIR");
+	G4Material* air = nist->FindOrBuildMaterial("G4_AIR");
 
 	Vacuum vac(relative_density, "beampipe_downstream_vacuum");
 	G4Material *vacuum = vac.Get_Material();
@@ -59,9 +59,9 @@ void BeamPipe_Downstream::Construct(G4ThreeVector global_coordinates,G4double re
 	G4double diff=0.5*(Chamber_Outer_Length-Chamber_Inner_Length);
 	G4Box *beampipe_downstream_Mother_Solid = new G4Box("beampipe_downstream_Solid", Chamber_Outer_Length*0.5, Chamber_Outer_Length*0.5, (Chamber_Outer_Length+beamPipe_NRF_Lenght-diff)*0.5);
 
-	G4LogicalVolume *beampipe_downstream_Mother_Logical = new G4LogicalVolume(beampipe_downstream_Mother_Solid, AIR, "beampipe_downstream_Mother_Logical");
-	// beampipe_downstream_Mother_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());
-	beampipe_downstream_Mother_Logical->SetVisAttributes(yellow);
+	G4LogicalVolume *beampipe_downstream_Mother_Logical = new G4LogicalVolume(beampipe_downstream_Mother_Solid, air, "beampipe_downstream_Mother_Logical");
+	beampipe_downstream_Mother_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());
+	// beampipe_downstream_Mother_Logical->SetVisAttributes(yellow);
 	
 
 //////////////////////

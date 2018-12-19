@@ -62,13 +62,13 @@ BGO::BGO(G4String name){
 	
 	// Part 1
 	
-G4double	al_Case1_Length = 8.*mm;
-G4double	al_Case1_inner_angle = 16.5*deg;
-G4double	al_Case1_outer_angle = 21.*deg;
-G4double	al_Case1_Rmin1 = 25.*mm;
-G4double	al_Case1_Rmax1 = 62.*mm;
-G4double	al_Case1_Rmin2 = al_Case1_Rmin1 + al_Case1_Length*tan(al_Case1_inner_angle);
-G4double	al_Case1_Rmax2 = al_Case1_Rmax1 + al_Case1_Length*tan(al_Case1_outer_angle);
+	G4double	al_Case1_Length = 8.*mm;
+	G4double	al_Case1_inner_angle = 16.5*deg;
+	G4double	al_Case1_outer_angle = 21.*deg;
+	G4double	al_Case1_Rmin1 = 25.*mm;
+	G4double	al_Case1_Rmax1 = 62.*mm;
+	G4double	al_Case1_Rmin2 = al_Case1_Rmin1 + al_Case1_Length*tan(al_Case1_inner_angle);
+	G4double	al_Case1_Rmax2 = al_Case1_Rmax1 + al_Case1_Length*tan(al_Case1_outer_angle);
 	
 	G4Cons* al_Case1_Solid = new G4Cons("al_Case1_Solid", al_Case1_Rmin1, al_Case1_Rmax1, al_Case1_Rmin2, al_Case1_Rmax2, al_Case1_Length*0.5, 0.*deg, 360.*deg);
 	G4LogicalVolume* al_Case1_Logical = new G4LogicalVolume(al_Case1_Solid, Al, "al_Case1_Logical");
@@ -79,13 +79,13 @@ G4double	al_Case1_Rmax2 = al_Case1_Rmax1 + al_Case1_Length*tan(al_Case1_outer_an
 
 	// Part 2
 	
-G4double	al_Case2_Length = 78.*mm;
-G4double	al_Case2_inner_angle = 21.*deg;
-G4double	al_Case2_outer_angle = 21.*deg;
-G4double	al_Case2_Rmin1 = al_Case1_Rmax2 - 3.*mm;
-G4double	al_Case2_Rmax1 = al_Case1_Rmax2;
-G4double	al_Case2_Rmin2 = al_Case2_Rmin1 + al_Case2_Length*tan(al_Case2_inner_angle);
-G4double	al_Case2_Rmax2 = al_Case2_Rmax1 + al_Case2_Length*tan(al_Case2_outer_angle);
+	G4double	al_Case2_Length = 78.*mm;
+	G4double	al_Case2_inner_angle = 21.*deg;
+	G4double	al_Case2_outer_angle = 21.*deg;
+	G4double	al_Case2_Rmin1 = al_Case1_Rmax2 - 3.*mm;
+	G4double	al_Case2_Rmax1 = al_Case1_Rmax2;
+	G4double	al_Case2_Rmin2 = al_Case2_Rmin1 + al_Case2_Length*tan(al_Case2_inner_angle);
+	G4double	al_Case2_Rmax2 = al_Case2_Rmax1 + al_Case2_Length*tan(al_Case2_outer_angle);
 	
 	G4Cons* al_Case2_Solid = new G4Cons("al_Case2_Solid", al_Case2_Rmin1, al_Case2_Rmax1, al_Case2_Rmin2, al_Case2_Rmax2, al_Case2_Length*0.5, 0.*deg, 360.*deg);
 	G4LogicalVolume* al_Case2_Logical = new G4LogicalVolume(al_Case2_Solid, Al, "al_Case2_Logical");
@@ -94,11 +94,11 @@ G4double	al_Case2_Rmax2 = al_Case2_Rmax1 + al_Case2_Length*tan(al_Case2_outer_an
 	
 	// Part 3
 	
-G4double	al_Case3_Length = 86.*mm;
-G4double	al_Case3_Rmin1 = al_Case2_Rmin2;
-G4double	al_Case3_Rmax1 = al_Case2_Rmax2;
-G4double	al_Case3_Rmin2 = al_Case3_Rmin1; 
-G4double	al_Case3_Rmax2 = al_Case3_Rmax1;	
+	G4double	al_Case3_Length = 86.*mm;
+	G4double	al_Case3_Rmin1 = al_Case2_Rmin2;
+	G4double	al_Case3_Rmax1 = al_Case2_Rmax2;
+	G4double	al_Case3_Rmin2 = al_Case3_Rmin1; 
+	G4double	al_Case3_Rmax2 = al_Case3_Rmax1;	
 	G4Cons* al_Case3_Solid = new G4Cons("al_Case3_Solid", al_Case3_Rmin1, al_Case3_Rmax1, al_Case3_Rmin2, al_Case3_Rmax2, al_Case3_Length*0.5, 0.*deg, 360.*deg);
 	G4LogicalVolume* al_Case3_Logical = new G4LogicalVolume(al_Case3_Solid, Al, "al_Case3_Logical");
 	new G4PVPlacement(rot, G4ThreeVector(0., 0., bgo_Mother_Length*0.5 - al_Case1_Length - al_Case2_Length - al_Case3_Length*0.5), al_Case3_Logical, "al_Case3", bgo_Mother_Logical, false, 0);
@@ -107,11 +107,11 @@ G4double	al_Case3_Rmax2 = al_Case3_Rmax1;
 	
 	// Part 4
 	
-G4double	al_Case4_Length = 20.*mm;
-G4double	al_Case4_Rmin1 = al_Case3_Rmin2;
-G4double	al_Case4_Rmax1 = al_Case4_Rmin1 + 23.*mm;
-G4double	al_Case4_Rmin2 = al_Case4_Rmin1; 
-G4double	al_Case4_Rmax2 = al_Case4_Rmax1;	
+	G4double	al_Case4_Length = 20.*mm;
+	G4double	al_Case4_Rmin1 = al_Case3_Rmin2;
+	G4double	al_Case4_Rmax1 = al_Case4_Rmin1 + 23.*mm;
+	G4double	al_Case4_Rmin2 = al_Case4_Rmin1; 
+	G4double	al_Case4_Rmax2 = al_Case4_Rmax1;	
 	G4Cons* al_Case4_Solid = new G4Cons("al_Case4_Solid", al_Case4_Rmin1, al_Case4_Rmax1, al_Case4_Rmin2, al_Case4_Rmax2, al_Case4_Length*0.5, 0.*deg, 360.*deg);
 	G4LogicalVolume* al_Case4_Logical = new G4LogicalVolume(al_Case4_Solid, Al, "al_Case4_Logical");
 	new G4PVPlacement(rot, G4ThreeVector(0., 0., bgo_Mother_Length*0.5 - al_Case1_Length - al_Case2_Length - al_Case3_Length - al_Case4_Length*0.5), al_Case4_Logical, "al_Case4", bgo_Mother_Logical, false, 0);
@@ -120,11 +120,11 @@ G4double	al_Case4_Rmax2 = al_Case4_Rmax1;
 	
 	// Part 5
 	
-G4double	al_Case5_Length = 11.*mm;
-G4double	al_Case5_Rmin1 = al_Case4_Rmin2;
-G4double	al_Case5_Rmax1 = al_Case4_Rmin2;
-G4double	al_Case5_Rmin2 = 51.5*mm; 
-G4double	al_Case5_Rmax2 = al_Case5_Rmax1;	
+	G4double	al_Case5_Length = 11.*mm;
+	G4double	al_Case5_Rmin1 = al_Case4_Rmin2;
+	G4double	al_Case5_Rmax1 = al_Case4_Rmin2;
+	G4double	al_Case5_Rmin2 = 51.5*mm; 
+	G4double	al_Case5_Rmax2 = al_Case5_Rmax1;	
 	G4Cons* al_Case5_Solid = new G4Cons("al_Case5_Solid", al_Case5_Rmin1, al_Case5_Rmax1, al_Case5_Rmin2, al_Case5_Rmax2, al_Case5_Length*0.5, 0.*deg, 360.*deg);
 	G4LogicalVolume* al_Case5_Logical = new G4LogicalVolume(al_Case5_Solid, Al, "al_Case5_Logical");
 	new G4PVPlacement(rot, G4ThreeVector(0., 0., bgo_Mother_Length*0.5 - al_Case1_Length - al_Case2_Length - al_Case3_Length - 7.*mm - al_Case5_Length*0.5), al_Case5_Logical, "al_Case5", bgo_Mother_Logical, false, 0);
@@ -133,11 +133,11 @@ G4double	al_Case5_Rmax2 = al_Case5_Rmax1;
 	
 	// Part 6
 	
-G4double	al_Case6_Length = 3.*mm;
-G4double	al_Case6_Rmin1 = al_Case5_Rmin2;
-G4double	al_Case6_Rmax1 = al_Case5_Rmax2;
-G4double	al_Case6_Rmin2 = al_Case6_Rmin1; 
-G4double	al_Case6_Rmax2 = al_Case6_Rmax1;	
+	G4double	al_Case6_Length = 3.*mm;
+	G4double	al_Case6_Rmin1 = al_Case5_Rmin2;
+	G4double	al_Case6_Rmax1 = al_Case5_Rmax2;
+	G4double	al_Case6_Rmin2 = al_Case6_Rmin1; 
+	G4double	al_Case6_Rmax2 = al_Case6_Rmax1;	
 	G4Cons* al_Case6_Solid = new G4Cons("al_Case6_Solid", al_Case6_Rmin1, al_Case6_Rmax1, al_Case6_Rmin2, al_Case6_Rmax2, al_Case6_Length*0.5, 0.*deg, 360.*deg);
 	G4LogicalVolume* al_Case6_Logical = new G4LogicalVolume(al_Case6_Solid, Al, "al_Case6_Logical");
 	new G4PVPlacement(rot, G4ThreeVector(0., 0., bgo_Mother_Length*0.5 - al_Case1_Length - al_Case2_Length - al_Case3_Length - 7.*mm  - al_Case5_Length - al_Case6_Length*0.5), al_Case6_Logical, "al_Case6", bgo_Mother_Logical, false, 0);
@@ -146,11 +146,11 @@ G4double	al_Case6_Rmax2 = al_Case6_Rmax1;
 	
 	// Part 7
 	
-G4double	al_Case7_Length = 9.*mm;
-G4double	al_Case7_Rmin1 = al_Case6_Rmin2;
-G4double	al_Case7_Rmax1 = al_Case6_Rmax2;
-G4double	al_Case7_Rmin2 = al_Case6_Rmin2; 
-G4double	al_Case7_Rmax2 = al_Case6_Rmin2 + 7.*mm;
+	G4double	al_Case7_Length = 9.*mm;
+	G4double	al_Case7_Rmin1 = al_Case6_Rmin2;
+	G4double	al_Case7_Rmax1 = al_Case6_Rmax2;
+	G4double	al_Case7_Rmin2 = al_Case6_Rmin2; 
+	G4double	al_Case7_Rmax2 = al_Case6_Rmin2 + 7.*mm;
 
 	G4Cons* al_Case7_Solid = new G4Cons("al_Case7_Solid", al_Case7_Rmin1, al_Case7_Rmax1, al_Case7_Rmin2, al_Case7_Rmax2, al_Case7_Length*0.5, 0.*deg, 360.*deg);
 	G4LogicalVolume* al_Case7_Logical = new G4LogicalVolume(al_Case7_Solid, Al, "al_Case7_Logical");
@@ -165,35 +165,35 @@ G4double	al_Case7_Rmax2 = al_Case6_Rmin2 + 7.*mm;
 	
 	// Part 1
 	
-G4double	al_SolidCase1_Length = 8.*mm;
-//G4double	al_SolidCase1_inner_angle = 16.5*deg;
-G4double	al_SolidCase1_outer_angle = 21.*deg;
-G4double	al_SolidCase1_Rmin1 = 0.*mm;
-G4double	al_SolidCase1_Rmax1 = 62.*mm;
-G4double	al_SolidCase1_Rmin2 = 0.*mm;
-G4double	al_SolidCase1_Rmax2 = al_SolidCase1_Rmax1 + al_SolidCase1_Length*tan(al_SolidCase1_outer_angle);
+	G4double	al_SolidCase1_Length = 8.*mm;
+	//G4double	al_SolidCase1_inner_angle = 16.5*deg;
+	G4double	al_SolidCase1_outer_angle = 21.*deg;
+	G4double	al_SolidCase1_Rmin1 = 0.*mm;
+	G4double	al_SolidCase1_Rmax1 = 62.*mm;
+	G4double	al_SolidCase1_Rmin2 = 0.*mm;
+	G4double	al_SolidCase1_Rmax2 = al_SolidCase1_Rmax1 + al_SolidCase1_Length*tan(al_SolidCase1_outer_angle);
 	
 	G4Cons* al_SolidCase1_Solid = new G4Cons("al_SolidCase1_Solid", al_SolidCase1_Rmin1, al_SolidCase1_Rmax1, al_SolidCase1_Rmin2, al_SolidCase1_Rmax2, al_SolidCase1_Length*0.5, 0.*deg, 360.*deg);
 
 	// Part 2
 	
-G4double	al_SolidCase2_Length = 78.*mm;
-//G4double	al_SolidCase2_inner_angle = 21.*deg;
-G4double	al_SolidCase2_outer_angle = 21.*deg;
-G4double	al_SolidCase2_Rmin1 = 0.*mm;
-G4double	al_SolidCase2_Rmax1 = al_Case1_Rmax2;
-G4double	al_SolidCase2_Rmin2 = 0.*mm;
-G4double	al_SolidCase2_Rmax2 = al_SolidCase2_Rmax1 + al_SolidCase2_Length*tan(al_SolidCase2_outer_angle);
-	
+	G4double	al_SolidCase2_Length = 78.*mm;
+	//G4double	al_SolidCase2_inner_angle = 21.*deg;
+	G4double	al_SolidCase2_outer_angle = 21.*deg;
+	G4double	al_SolidCase2_Rmin1 = 0.*mm;
+	G4double	al_SolidCase2_Rmax1 = al_Case1_Rmax2;
+	G4double	al_SolidCase2_Rmin2 = 0.*mm;
+	G4double	al_SolidCase2_Rmax2 = al_SolidCase2_Rmax1 + al_SolidCase2_Length*tan(al_SolidCase2_outer_angle);
+		
 	G4Cons* al_SolidCase2_Solid = new G4Cons("al_SolidCase2_Solid", al_SolidCase2_Rmin1, al_SolidCase2_Rmax1, al_SolidCase2_Rmin2, al_SolidCase2_Rmax2, al_SolidCase2_Length*0.5, 0.*deg, 360.*deg);
 	
 	// Part 3
 	
-G4double	al_SolidCase3_Length = 86.*mm;
-G4double	al_SolidCase3_Rmin1 = 0.*mm;
-G4double	al_SolidCase3_Rmax1 = al_Case2_Rmax2;
-G4double	al_SolidCase3_Rmin2 = 0.*mm;
-G4double	al_SolidCase3_Rmax2 = al_SolidCase3_Rmax1;	
+	G4double	al_SolidCase3_Length = 86.*mm;
+	G4double	al_SolidCase3_Rmin1 = 0.*mm;
+	G4double	al_SolidCase3_Rmax1 = al_Case2_Rmax2;
+	G4double	al_SolidCase3_Rmin2 = 0.*mm;
+	G4double	al_SolidCase3_Rmax2 = al_SolidCase3_Rmax1;	
 	G4Cons* al_SolidCase3_Solid = new G4Cons("al_SolidCase3_Solid", al_SolidCase3_Rmin1, al_SolidCase3_Rmax1, al_SolidCase3_Rmin2, al_SolidCase3_Rmax2, al_SolidCase3_Length*0.5, 0.*deg, 360.*deg);
 
 	// Merge the three parts into G4UnionSolid
@@ -209,14 +209,14 @@ G4double	al_SolidCase3_Rmax2 = al_SolidCase3_Rmax1;
 
 	// Part 1
 	
-G4double	bgo_Crystal1_Length = 30.*mm;
-//G4double	bgo_Crystal1_inner_angle = al_Case1_inner_angle;
-//G4double	bgo_Crystal1_outer_angle = al_Case1_outer_angle;
-G4double	bgo_Crystal1_Rmin1 = al_Case1_Rmin1 + (al_Case1_Length + 2.*mm)*tan(al_Case1_inner_angle);
-G4double	bgo_Crystal1_Rmax1 = al_Case1_Rmax2 - (3.*mm + 2.*mm)*tan(al_Case1_outer_angle);
+	G4double	bgo_Crystal1_Length = 30.*mm;
+	//G4double	bgo_Crystal1_inner_angle = al_Case1_inner_angle;
+	//G4double	bgo_Crystal1_outer_angle = al_Case1_outer_angle;
+	G4double	bgo_Crystal1_Rmin1 = al_Case1_Rmin1 + (al_Case1_Length + 2.*mm)*tan(al_Case1_inner_angle);
+	G4double	bgo_Crystal1_Rmax1 = al_Case1_Rmax2 - (3.*mm + 2.*mm)*tan(al_Case1_outer_angle);
 
-G4double	bgo_Crystal1_Rmin2 = al_Case1_Rmin1 + (al_Case1_Length + 2.*mm + bgo_Crystal1_Length)*tan(al_Case1_inner_angle) ; 
-G4double	bgo_Crystal1_Rmax2 = al_Case1_Rmax2 - (3.*mm + 2.*mm)*tan(al_Case1_outer_angle) + bgo_Crystal1_Length*tan(al_Case1_outer_angle);
+	G4double	bgo_Crystal1_Rmin2 = al_Case1_Rmin1 + (al_Case1_Length + 2.*mm + bgo_Crystal1_Length)*tan(al_Case1_inner_angle) ; 
+	G4double	bgo_Crystal1_Rmax2 = al_Case1_Rmax2 - (3.*mm + 2.*mm)*tan(al_Case1_outer_angle) + bgo_Crystal1_Length*tan(al_Case1_outer_angle);
 
 	G4Cons* bgo_Crystal1_Solid = new G4Cons("bgo_Crystal1_Solid", bgo_Crystal1_Rmin1, bgo_Crystal1_Rmax1, bgo_Crystal1_Rmin2, bgo_Crystal1_Rmax2, bgo_Crystal1_Length*0.5, 0.*deg, 360.*deg);
 
@@ -229,14 +229,14 @@ G4double	bgo_Crystal1_Rmax2 = al_Case1_Rmax2 - (3.*mm + 2.*mm)*tan(al_Case1_oute
 	bgo_Crystal1_Logical->SetVisAttributes(blue);
 	
 	// Part 2
-	
-G4double	bgo_Crystal2_Length = 30.*mm;
-//G4double	bgo_Crystal2_outer_angle = al_Case1_outer_angle;
-G4double	bgo_Crystal2_Rmin1 = 52.3*mm;
-G4double	bgo_Crystal2_Rmax1 = bgo_Crystal1_Rmax2;
+		
+	G4double	bgo_Crystal2_Length = 30.*mm;
+	//G4double	bgo_Crystal2_outer_angle = al_Case1_outer_angle;
+	G4double	bgo_Crystal2_Rmin1 = 52.3*mm;
+	G4double	bgo_Crystal2_Rmax1 = bgo_Crystal1_Rmax2;
 
-G4double	bgo_Crystal2_Rmin2 = bgo_Crystal2_Rmin1;
-G4double	bgo_Crystal2_Rmax2 = bgo_Crystal2_Rmax1 + bgo_Crystal2_Length*tan(al_Case1_outer_angle);
+	G4double	bgo_Crystal2_Rmin2 = bgo_Crystal2_Rmin1;
+	G4double	bgo_Crystal2_Rmax2 = bgo_Crystal2_Rmax1 + bgo_Crystal2_Length*tan(al_Case1_outer_angle);
 
 	G4Cons* bgo_Crystal2_Solid = new G4Cons("bgo_Crystal2_Solid", bgo_Crystal2_Rmin1, bgo_Crystal2_Rmax1, bgo_Crystal2_Rmin2, bgo_Crystal2_Rmax2, bgo_Crystal2_Length*0.5, 0.*deg, 360.*deg);
 
@@ -250,13 +250,13 @@ G4double	bgo_Crystal2_Rmax2 = bgo_Crystal2_Rmax1 + bgo_Crystal2_Length*tan(al_Ca
 	bgo_Crystal2_Logical->SetVisAttributes(blue);
 	
 	// Part 3
-	
-G4double	bgo_Crystal3_Length = 100.*mm;
-G4double	bgo_Crystal3_Rmin1 = 52.3*mm;
-G4double	bgo_Crystal3_Rmax1 = bgo_Crystal2_Rmax2;
+		
+	G4double	bgo_Crystal3_Length = 100.*mm;
+	G4double	bgo_Crystal3_Rmin1 = 52.3*mm;
+	G4double	bgo_Crystal3_Rmax1 = bgo_Crystal2_Rmax2;
 
-G4double	bgo_Crystal3_Rmin2 = bgo_Crystal3_Rmin1;
-G4double	bgo_Crystal3_Rmax2 = bgo_Crystal3_Rmax1;
+	G4double	bgo_Crystal3_Rmin2 = bgo_Crystal3_Rmin1;
+	G4double	bgo_Crystal3_Rmax2 = bgo_Crystal3_Rmax1;
 
 	G4Cons* bgo_Crystal3_Solid = new G4Cons("bgo_Crystal3_Solid", bgo_Crystal3_Rmin1, bgo_Crystal3_Rmax1, bgo_Crystal3_Rmin2, bgo_Crystal3_Rmax2, bgo_Crystal3_Length*0.5, 0.*deg, 360.*deg);
 
@@ -270,13 +270,13 @@ G4double	bgo_Crystal3_Rmax2 = bgo_Crystal3_Rmax1;
 	bgo_Crystal3_Logical->SetVisAttributes(blue);
 	
 	// Part 4
-	
-G4double	bgo_Crystal4_Length = 14.*mm;
-G4double	bgo_Crystal4_Rmin1 = bgo_Crystal3_Rmin1;
-G4double	bgo_Crystal4_Rmax1 = bgo_Crystal3_Rmax1;
+		
+	G4double	bgo_Crystal4_Length = 14.*mm;
+	G4double	bgo_Crystal4_Rmin1 = bgo_Crystal3_Rmin1;
+	G4double	bgo_Crystal4_Rmax1 = bgo_Crystal3_Rmax1;
 
-G4double	bgo_Crystal4_Rmin2 = bgo_Crystal4_Rmin1;
-G4double	bgo_Crystal4_Rmax2 = bgo_Crystal4_Rmin1;
+	G4double	bgo_Crystal4_Rmin2 = bgo_Crystal4_Rmin1;
+	G4double	bgo_Crystal4_Rmax2 = bgo_Crystal4_Rmin1;
 
 	G4Cons* bgo_Crystal4_Solid = new G4Cons("bgo_Crystal4_Solid", bgo_Crystal4_Rmin1, bgo_Crystal4_Rmax1, bgo_Crystal4_Rmin2, bgo_Crystal4_Rmax2, bgo_Crystal4_Length*0.5, 0.*deg, 360.*deg);
 
@@ -296,14 +296,14 @@ G4double	bgo_Crystal4_Rmax2 = bgo_Crystal4_Rmin1;
 	
 	// Part 1
 	
-G4double	al_Inner_Case1_Length = 43.*mm;
-//G4double	al_Inner_Case1_inner_angle = al_Case1_inner_angle;
-//G4double	al_Inner_Case1_outer_angle = al_Case1_outer_angle;
-G4double	al_Inner_Case1_Rmin1 = al_Case1_Rmin1 - 1.*mm*tan(al_Case1_inner_angle);
-G4double	al_Inner_Case1_Rmax1 = al_Case1_Rmin1;
+	G4double	al_Inner_Case1_Length = 43.*mm;
+	//G4double	al_Inner_Case1_inner_angle = al_Case1_inner_angle;
+	//G4double	al_Inner_Case1_outer_angle = al_Case1_outer_angle;
+	G4double	al_Inner_Case1_Rmin1 = al_Case1_Rmin1 - 1.*mm*tan(al_Case1_inner_angle);
+	G4double	al_Inner_Case1_Rmax1 = al_Case1_Rmin1;
 
-G4double	al_Inner_Case1_Rmin2 = al_Inner_Case1_Rmin1 + al_Inner_Case1_Length*tan(al_Case1_inner_angle);
-G4double	al_Inner_Case1_Rmax2 = al_Inner_Case1_Rmax1 + al_Inner_Case1_Length*tan(al_Case1_inner_angle);
+	G4double	al_Inner_Case1_Rmin2 = al_Inner_Case1_Rmin1 + al_Inner_Case1_Length*tan(al_Case1_inner_angle);
+	G4double	al_Inner_Case1_Rmax2 = al_Inner_Case1_Rmax1 + al_Inner_Case1_Length*tan(al_Case1_inner_angle);
 
 
 	G4Cons* al_Inner_Case1_Solid = new G4Cons("al_Inner_Case1_Solid", al_Inner_Case1_Rmin1, al_Inner_Case1_Rmax1, al_Inner_Case1_Rmin2, al_Inner_Case1_Rmax2, al_Inner_Case1_Length*0.5, 0.*deg, 360.*deg);
@@ -314,12 +314,12 @@ G4double	al_Inner_Case1_Rmax2 = al_Inner_Case1_Rmax1 + al_Inner_Case1_Length*tan
 	
 	// Part 2
 	
-G4double	al_Inner_Case2_Length = 1.*mm;
-G4double	al_Inner_Case2_Rmin1 = al_Inner_Case1_Rmax2;
-G4double	al_Inner_Case2_Rmax1 = bgo_Crystal2_Rmin1 - 2.*mm;
+	G4double	al_Inner_Case2_Length = 1.*mm;
+	G4double	al_Inner_Case2_Rmin1 = al_Inner_Case1_Rmax2;
+	G4double	al_Inner_Case2_Rmax1 = bgo_Crystal2_Rmin1 - 2.*mm;
 
-G4double	al_Inner_Case2_Rmin2 = al_Inner_Case2_Rmin1;
-G4double	al_Inner_Case2_Rmax2 = al_Inner_Case2_Rmax1;
+	G4double	al_Inner_Case2_Rmin2 = al_Inner_Case2_Rmin1;
+	G4double	al_Inner_Case2_Rmax2 = al_Inner_Case2_Rmax1;
 
 
 	G4Cons* al_Inner_Case2_Solid = new G4Cons("al_Inner_Case2_Solid", al_Inner_Case2_Rmin1, al_Inner_Case2_Rmax1, al_Inner_Case2_Rmin2, al_Inner_Case2_Rmax2, al_Inner_Case2_Length*0.5, 0.*deg, 360.*deg);
@@ -330,13 +330,13 @@ G4double	al_Inner_Case2_Rmax2 = al_Inner_Case2_Rmax1;
 
 	// Part 3
 	
-G4double	al_Inner_Case3_Length = 160.*mm;
-max_penetration_depth = al_Inner_Case3_Length;
-G4double	al_Inner_Case3_Rmin1 = al_Inner_Case2_Rmax1;
-G4double	al_Inner_Case3_Rmax1 = al_Inner_Case2_Rmax1 + 1.*mm;
+	G4double	al_Inner_Case3_Length = 160.*mm;
+	max_penetration_depth = al_Inner_Case3_Length;
+	G4double	al_Inner_Case3_Rmin1 = al_Inner_Case2_Rmax1;
+	G4double	al_Inner_Case3_Rmax1 = al_Inner_Case2_Rmax1 + 1.*mm;
 
-G4double	al_Inner_Case3_Rmin2 = al_Inner_Case3_Rmin1;
-G4double	al_Inner_Case3_Rmax2 = al_Inner_Case2_Rmax1;
+	G4double	al_Inner_Case3_Rmin2 = al_Inner_Case3_Rmin1;
+	G4double	al_Inner_Case3_Rmax2 = al_Inner_Case2_Rmax1;
 
 
 	G4Cons* al_Inner_Case3_Solid = new G4Cons("al_Inner_Case3_Solid", al_Inner_Case3_Rmin1, al_Inner_Case3_Rmax1, al_Inner_Case3_Rmin2, al_Inner_Case3_Rmax2, al_Inner_Case3_Length*0.5, 0.*deg, 360.*deg);
