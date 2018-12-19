@@ -398,38 +398,40 @@ void LeadCastle::ConsturctLeadShield(G4ThreeVector local_coordinates)
 
 
 	//Beginning Det1House-------------------------------------
-	G4double BGO1_Distance=-(detectordistance1 + BGO1->Get_Length()*0.5)-block_small_x;
-	G4Box* LeadDet1House_Solid= new G4Box("LeadDet1House_Solid", 14.*cm,25*cm,13.938*cm);
+	G4double BGO1_Distance=(-(detectordistance1 + BGO1->Get_Length()*0.5));
+	G4Box* LeadDet1House_Solid= new G4Box("LeadDet1House_Solid", 15*cm,25*cm,13.938*cm);
 	//Z-Dimension from distcollimatortotarget and Collimator_Lead_Block
 
 	G4double g1_theta=90.*deg;
-	G4double g1_phi= 95*deg;
+	G4double g1_phi= 5*deg;
 
 	G4RotationMatrix* RotationDet1_Y= new G4RotationMatrix();
-	RotationDet1_Y->rotateY(g1_phi);
-	G4ThreeVector TranslationDet1(BGO1_Distance*sin(g1_theta)*cos(g1_phi),0,-tan(90*deg-g1_phi)*BGO1_Distance);
+	RotationDet1_Y->rotateY(g1_phi+90*deg);
+	G4ThreeVector TranslationDet1(BGO1_Distance*sin(g1_theta)*cos(g1_phi)+10*cm*cos(g1_phi),BGO1_Distance*cos(g1_theta),distcollimatortotarget+BGO1_Distance*sin(g1_theta)*sin(g1_phi)+10*cm*sin(g1_phi));
 
 	
 
-	G4SubtractionSolid* Det1_Box_Filter_Solid = new G4SubtractionSolid("Det1_Box_Filter_Solid",LeadDet1House_Solid,FilterHole_Solid,RotationDet1_Y,TranslationDet1);
-	G4SubtractionSolid* Det1_Complete_Solid = new G4SubtractionSolid("Det1_Complete_Solid",Det1_Box_Filter_Solid,BGO1->Get_Al_Case_Solid(),RotationDet1_Y,TranslationDet1);
+	G4SubtractionSolid* Det1_Box_Filter_Solid = new G4SubtractionSolid("Det1_Box_Filter_Solid",LeadDet1House_Solid,FilterHole_Solid,RotationDet1_Y,G4ThreeVector());
+	G4SubtractionSolid* Det1_Complete_Solid = new G4SubtractionSolid("Det1_Complete_Solid",Det1_Box_Filter_Solid,BGO1->Get_Al_Case_Solid(),RotationDet1_Y,G4ThreeVector());
 	G4LogicalVolume* Det1_Complete_Logical = new G4LogicalVolume(Det1_Complete_Solid, Pb, "Det1_Complete_Logical", 0, 0, 0);
 	Det1_Complete_Logical->SetVisAttributes(grey);
 	
-	new G4PVPlacement(0, G4ThreeVector(-detectordistance1-tan(90*deg-g1_phi)*BGO1_Distance,0,distcollimatortotarget+tan(90*deg-g1_phi)*BGO1_Distance),Det1_Complete_Logical,"LeadDet1House",LeadShield_Mother_Logical,0,0); 
+	new G4PVPlacement(0, TranslationDet1,Det1_Complete_Logical,"LeadDet1House",LeadShield_Mother_Logical,0,0); 
 
 	G4double UpstreamDet1_X= 77.5*cm;//180*cm (Ceiling)-0.5*block_small_x-10*cm(RightWall)
-	G4Box* UpstreamDet1_Solid = new G4Box("UpstreamDet1_Solid",UpstreamDet1_X,25*cm,block_z *0.5*4+1.131*cm+tan(90*deg-g1_phi)*BGO1_Distance*0.5);
+	G4double UpstreamDet1_Z= block_z*4*0.5+10*cm*sin(g1_phi)*0.5;
+
+	G4Box* UpstreamDet1_Solid = new G4Box("UpstreamDet1_Solid",UpstreamDet1_X,25*cm,UpstreamDet1_Z);
 	G4LogicalVolume* UpstreamDet1_Logical = new G4LogicalVolume(UpstreamDet1_Solid, Pb, "UpstreamDet1_Logical", 0, 0, 0);
 	UpstreamDet1_Logical->SetVisAttributes(grey);
 
-	new G4PVPlacement(0, G4ThreeVector(-block_small_x*0.5-UpstreamDet1_X,0,-block_z *0.5*4+1.131*cm+tan(90*deg-g1_phi)*BGO1_Distance*0.5),UpstreamDet1_Logical,"UpstreamDet1",LeadShield_Mother_Logical,0,0); 
+	new G4PVPlacement(0, G4ThreeVector(-block_small_x*0.5-UpstreamDet1_X,0,-UpstreamDet1_Z+10*cm*sin(g1_phi)*0.5),UpstreamDet1_Logical,"UpstreamDet1",LeadShield_Mother_Logical,0,0); 
 
 	G4Box* DownstreamDet1_Solid = new G4Box("DownstreamDet1_Solid",UpstreamDet1_X,25*cm,block_z *0.5*4+1.131*cm);
 	G4LogicalVolume* DownstreamDet1_Logical = new G4LogicalVolume(DownstreamDet1_Solid, Pb, "DownstreamDet1_Logical", 0, 0, 0);
 	DownstreamDet1_Logical->SetVisAttributes(grey);
 
-	new G4PVPlacement(0, G4ThreeVector(-block_small_x*1.5-UpstreamDet1_X,0,+block_z *0.5*4+3*1.131*cm+2*13.938*cm+tan(90*deg-g1_phi)*BGO1_Distance),DownstreamDet1_Logical,"DownstreamDet1",LeadShield_Mother_Logical,0,0); 
+	new G4PVPlacement(0, G4ThreeVector(detectordistance1-0.5*block_small_x-UpstreamDet1_X+BGO1_Distance*sin(g1_theta)*cos(g1_phi)+10*cm*cos(g1_phi),0,UpstreamDet1_Z+10*cm*sin(g1_phi)+13.938*cm*2),DownstreamDet1_Logical,"DownstreamDet1",LeadShield_Mother_Logical,0,0); 
 
 
 
