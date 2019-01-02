@@ -54,6 +54,7 @@ Materials *materials = Materials::Instance();
 #include "BeamPipe_Downstream.hh"
 #include "LeadCastle.hh"
 #include "Detectors.hh"
+#include "B11_Target.hh"
 
 // Geometry
 #include "G4Box.hh"
@@ -135,19 +136,20 @@ G4VPhysicalVolume *DetectorConstruction::Construct()
 	BeamPipe_Downstream BeamPipe_Downstream(World_Logical);
 	LeadCastle LeadCastle(World_Logical);
 	Detectors Detectors(World_Logical);
+	B11_Target B11_Target(World_Logical);
 
 
 	/***************************************************/
 	/*****************  CONSTRUCTION  *****************/
 	/***************************************************/
 
-	// BeamPipe_Upstream.Construct(G4ThreeVector(0,0,-2500*mm),0.1);
-	// RadiatorTarget.Construct(G4ThreeVector(0,0,BeamPipe_Upstream.GetEnd().getZ()+(200+15*0.5)*mm),"Radiator1","Au",3*mm,"Air",0.); 
-	// RadiatorTarget.Construct(G4ThreeVector(0,0,RadiatorTarget.GetEnd().getZ()+30*mm),"Radiator2","Au",3*mm,"Air",0.);
-	// BeamPipe_Downstream.Construct(G4ThreeVector(0.,0.,-162.*mm+BeamPipe_Downstream.GetLength().getZ()),0.1);
-	LeadCastle.Construct(G4ThreeVector(0,0,0));
+	BeamPipe_Upstream.Construct(G4ThreeVector(0,0,-2500*mm),0.1);
+	RadiatorTarget.Construct(G4ThreeVector(0,0,-2000*mm),"Radiator1","Au",3*mm,"Air",0.); 
+	RadiatorTarget.Construct(G4ThreeVector(0,0,-1800*mm),"Radiator2","Au",3*mm,"Air",0.);
+	BeamPipe_Downstream.Construct(G4ThreeVector(),0.1);
+	LeadCastle.Construct(G4ThreeVector());
 	Detectors.Construct(G4ThreeVector());
-
+	B11_Target.Construct(G4ThreeVector());
 	 // print_info();
 	return World_Physical;
 

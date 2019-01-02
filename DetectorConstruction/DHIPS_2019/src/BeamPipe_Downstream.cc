@@ -26,14 +26,6 @@ BeamPipe_Downstream::BeamPipe_Downstream(G4LogicalVolume *World_Log):World_Logic
 void BeamPipe_Downstream::Construct(G4ThreeVector global_coordinates,G4double relative_density)
 {
 
-	X_begin+=global_coordinates.getX();
-	Y_begin+=global_coordinates.getY();
-	Z_begin+=global_coordinates.getZ();
-
-	X_end+=global_coordinates.getX();
-	Y_end+=global_coordinates.getY();
-	Z_end+=global_coordinates.getZ();
-
 	G4Colour  white   (1.0, 1.0, 1.0) ;
 	G4Colour  grey    (0.5, 0.5, 0.5) ;
 	G4Colour  black   (0.0, 0.0, 0.0) ;
@@ -51,19 +43,11 @@ void BeamPipe_Downstream::Construct(G4ThreeVector global_coordinates,G4double re
 	G4Material *Pb = nist->FindOrBuildMaterial("G4_Pb");
 	G4Material *Al = nist->FindOrBuildMaterial("G4_Al");
 	G4Material *Si = nist->FindOrBuildMaterial("G4_Si");
-	G4Material* air = nist->FindOrBuildMaterial("G4_AIR");
 
 	Vacuum vac(relative_density, "beampipe_downstream_vacuum");
 	G4Material *vacuum = vac.Get_Material();
 
 	G4double diff=0.5*(Chamber_Outer_Length-Chamber_Inner_Length);
-	G4Box *beampipe_downstream_Mother_Solid = new G4Box("beampipe_downstream_Solid", Chamber_Outer_Length*0.5, Chamber_Outer_Length*0.5, (Chamber_Outer_Length+beamPipe_NRF_Lenght-diff)*0.5);
-
-	G4LogicalVolume *beampipe_downstream_Mother_Logical = new G4LogicalVolume(beampipe_downstream_Mother_Solid, air, "beampipe_downstream_Mother_Logical");
-	beampipe_downstream_Mother_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());
-	// beampipe_downstream_Mother_Logical->SetVisAttributes(yellow);
-	
-
 //////////////////////
 	// BeamTube
 ////////////////////////// 
@@ -75,7 +59,7 @@ void BeamPipe_Downstream::Construct(G4ThreeVector global_coordinates,G4double re
 ////////////////////////
 	// Vacuum in Tube
 ////////////////////////// 
-	G4Tubs *beamPipe_Vacuum_NRF_Solid = new G4Tubs("beamPipe_Vacuum_NRF_Solid", 0,beamPipe_NRF_Inner_Radius, beamPipe_NRF_Lenght*0.5, 0., twopi);
+	G4Tubs *beamPipe_Vacuum_NRF_Solid = new G4Tubs("beamPipe_Vacuum_NRF_Solid", 0,beamPipe_NRF_Inner_Radius, -beamPipe_NRF_Window_Thickness*0.5+beamPipe_NRF_Lenght*0.5, 0., twopi);
 
 	G4LogicalVolume *beamPipe_Vacuum_NRF_Logical = new G4LogicalVolume(beamPipe_Vacuum_NRF_Solid, vacuum, "beamPipe_Vacuum_NRF_Logical");
 	beamPipe_Vacuum_NRF_Logical->SetVisAttributes(white);
@@ -131,25 +115,26 @@ void BeamPipe_Downstream::Construct(G4ThreeVector global_coordinates,G4double re
 	G4LogicalVolume *Si_Radius_Shield_Logical = new G4LogicalVolume(Si_Radius_Shield_Solid, Al, "Si_Radius_Shield_Logical");
 	Si_Radius_Shield_Logical->SetVisAttributes(blue);
 
-	G4RotationMatrix* Si_Rotate=new G4RotationMatrix();
-	Si_Rotate->rotateY(90*deg);
+	G4RotationMatrix* Si_Rotate1=new G4RotationMatrix();
+	Si_Rotate1->rotateY(90*deg);
+
+	G4RotationMatrix* Si_Rotate2=new G4RotationMatrix();
+	Si_Rotate2->rotateY(-90*deg);
 
 	G4Tubs* Si_Detector_Solid=new G4Tubs("Si_Detector_Solid", 0., Si_Radius, Si_Thickness*0.5, 0., twopi);
 	G4LogicalVolume *Si_Detector_Logical = new G4LogicalVolume(Si_Detector_Solid, Si, "Si_Detector_Logical");
 	Si_Detector_Logical->SetVisAttributes(orange);
 
-/*Pipe*/	    	new G4PVPlacement(0, G4ThreeVector(0., 0., (-Chamber_Outer_Length+diff)*0.5), beamPipe_NRF_Logical, "beamPipe_NRF_Logical", beampipe_downstream_Mother_Logical, false, 0);
-/*Pipe Vacuum*/		new G4PVPlacement(0, G4ThreeVector(0., 0., (-Chamber_Outer_Length+diff)*0.5), beamPipe_Vacuum_NRF_Logical, "beamPipe_Vacuum_NRF_Logical", beampipe_downstream_Mother_Logical, false, 0);
-// /*Lid*/     		new G4PVPlacement(0, G4ThreeVector(0., 0., -Chamber_Outer_Length*0.5+(-beamPipe_NRF_Lenght+beamPipe_NRF_Window_Thickness)*0.5), beamPipe_NRF_Lid_Logical, "beamPipe_NRF_Lid_Logical", beampipe_downstream_Mother_Logical, false, 0);
-/*Chamber*/ 		new G4PVPlacement(0, G4ThreeVector(0 , 0,  (-Chamber_Outer_Length+beamPipe_NRF_Lenght+Chamber_Inner_Length+diff)*0.5), Chamber_Block_Logical, "Chamber_Block", beampipe_downstream_Mother_Logical, 0, 0);
-/*Chamber Vaccum*/	new G4PVPlacement(0, G4ThreeVector(0 , 0, 0), Chamber_Vacuum_Block_Logical, "Chamber_Vacuum_Block", Chamber_Block_Logical, 0, 0);
+/*Pipe*/	    	new G4PVPlacement(0, global_coordinates+G4ThreeVector(0., 0., (-Chamber_Outer_Length+diff)*0.5), beamPipe_NRF_Logical, "beamPipe_NRF_Logical", World_Logical, false, 0);
+/*Pipe Vacuum*/		new G4PVPlacement(0, global_coordinates+G4ThreeVector(0., 0., beamPipe_NRF_Window_Thickness*0.5+(-Chamber_Outer_Length+diff)*0.5), beamPipe_Vacuum_NRF_Logical, "beamPipe_Vacuum_NRF_Logical", World_Logical, false, 0);
+/*Lid*/     		new G4PVPlacement(0, global_coordinates+G4ThreeVector(0., 0.,-beamPipe_NRF_Lenght*0.5+beamPipe_NRF_Window_Thickness*0.5+(-Chamber_Outer_Length+diff)*0.5), beamPipe_NRF_Lid_Logical, "beamPipe_NRF_Lid_Logical", World_Logical, false, 0);
+/*Chamber*/ 		new G4PVPlacement(0, global_coordinates+G4ThreeVector(0 , 0,  (-Chamber_Outer_Length+beamPipe_NRF_Lenght+Chamber_Inner_Length+diff)*0.5), Chamber_Block_Logical, "Chamber_Block", World_Logical, 0, 0);
+/*Chamber Vaccum*/	new G4PVPlacement(0, global_coordinates+G4ThreeVector(0 , 0, 0), Chamber_Vacuum_Block_Logical, "Chamber_Vacuum_Block", Chamber_Block_Logical, 0, 0);
 /*D_Target*/		new G4PVPlacement(D_Rotate, G4ThreeVector(0 , 0, 0), D_Target_Logical, "D_Target", Chamber_Vacuum_Block_Logical, 0, 0);
-/*Si Shield*/		new G4PVPlacement(Si_Rotate, G4ThreeVector(SiDistanceToTarget+Si_Thickness_Shield*0.5 , 0, 0), Si_Radius_Shield_Logical, "Si_Radius_Shield", Chamber_Vacuum_Block_Logical, 0, 0);
-/*Si*/	        	new G4PVPlacement(Si_Rotate, G4ThreeVector(SiDistanceToTarget+Si_Thickness*0.5 , 0, 0), Si_Detector_Logical, "Si_Detector", Chamber_Vacuum_Block_Logical, 0, 0);
-
-
-	new G4PVPlacement(0, global_coordinates, beampipe_downstream_Mother_Logical, "beampipe_downstream", World_Logical, false, 0);
+/*Si Shield*/		new G4PVPlacement(Si_Rotate1, G4ThreeVector(SiDistanceToTarget+Si_Thickness_Shield*0.5 , 0, 0), Si_Radius_Shield_Logical, "Si_Radius_Shield1", Chamber_Vacuum_Block_Logical, 0, 0);
+/*Si Shield*/		new G4PVPlacement(Si_Rotate2, G4ThreeVector(-SiDistanceToTarget-Si_Thickness_Shield*0.5 , 0, 0), Si_Radius_Shield_Logical, "Si_Radius_Shield2", Chamber_Vacuum_Block_Logical, 0, 0);
+/*Si*/	        	new G4PVPlacement(Si_Rotate1, G4ThreeVector(SiDistanceToTarget+Si_Thickness*0.5 , 0, 0), Si_Detector_Logical, "Si_Detector1", Chamber_Vacuum_Block_Logical, 0, 0);
+/*Si*/	        	new G4PVPlacement(Si_Rotate2, G4ThreeVector(-SiDistanceToTarget-Si_Thickness*0.5 , 0, 0), Si_Detector_Logical, "Si_Detector2", Chamber_Vacuum_Block_Logical, 0, 0);
 
 
 }
-

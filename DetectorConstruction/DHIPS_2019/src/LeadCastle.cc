@@ -42,21 +42,15 @@ void LeadCastle::Construct(G4ThreeVector global_coordinates)
 	BGO2 = new BGO("BGO2");
 	BGOPol = new BGO("BGOP");
 
-	ConsturctCollimator(G4ThreeVector(0,0,-(10 * block_z)*0.5-distcollimatortotarget));
-	ConsturctIronShield(G4ThreeVector(0,0,-(10 * block_z+48*cm)*0.5-distcollimatortotarget));
-	ConsturctLeadShield(G4ThreeVector(0,0,-distcollimatortotarget));
+	ConsturctCollimator(global_coordinates+G4ThreeVector(0,0,-(10 * block_z)*0.5-distcollimatortotarget));
+	ConsturctIronShield(global_coordinates+G4ThreeVector(0,0,-(10 * block_z+48*cm)*0.5-distcollimatortotarget));
+	ConsturctLeadShield(global_coordinates+G4ThreeVector(0,0,-distcollimatortotarget));
 
 	new G4PVPlacement(0, global_coordinates, LeadCastle_Mother_Logical, "Lead_Castle", World_Logical, false, 0);
 }
 
 void LeadCastle::ConsturctIronShield(G4ThreeVector local_coordinates)
 {	
-	const int NBlocks = 10;
-
-	G4Box *IronShield_Mother_Solid = new G4Box("IronShield_Mother_Solid", 50*cm,80*cm,block_z *0.5*NBlocks);
-	G4LogicalVolume *IronShield_Mother_Logical = new G4LogicalVolume(IronShield_Mother_Solid, air, "IronShield_Mother_Logical");
-	IronShield_Mother_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());
-	// IronShield_Mother_Logical->SetVisAttributes(yellow);
 	/************************* Iron Shielding *****************/
 	// Iron Shielding around the Copper Collimator
 	// 20 cm thick on the sides. 10cm thick on top. 40 cm thick at the bottom
@@ -77,7 +71,7 @@ void LeadCastle::ConsturctIronShield(G4ThreeVector local_coordinates)
 	IronShield1_Logical = new G4LogicalVolume(IronShield1_Solid, Fe, "IronShield1_Logical", 0, 0, 0);
 	IronShield1_Logical->SetVisAttributes(IronShieldvis);
 
-	new G4PVPlacement(0, G4ThreeVector(25.*cm , 0,0), IronShield1_Logical, "IronShield1", IronShield_Mother_Logical, 0, 0);
+	new G4PVPlacement(0, local_coordinates+G4ThreeVector(25.*cm , 0,0), IronShield1_Logical, "IronShield1", World_Logical, 0, 0);
 	//End of IronShield1--------------------------------------------------------
 
 	// //Beginning IronShield2-----------------------------------------
@@ -88,7 +82,7 @@ void LeadCastle::ConsturctIronShield(G4ThreeVector local_coordinates)
 	IronShield2_Logical = new G4LogicalVolume(IronShield2_Solid, Fe, "IronShield2_Logical", 0, 0, 0);
 	IronShield2_Logical->SetVisAttributes(IronShieldvis);
 	
-	new G4PVPlacement(0, G4ThreeVector(0., 20.*cm,0 ), IronShield2_Logical, "IronShield2", IronShield_Mother_Logical, 0, 0);
+	new G4PVPlacement(0, local_coordinates+G4ThreeVector(0., 20.*cm,0 ), IronShield2_Logical, "IronShield2", World_Logical, 0, 0);
 	//End IronShield2----------------------------------------
 
 	//Beginning IronShield3-------------------------------------
@@ -99,7 +93,7 @@ void LeadCastle::ConsturctIronShield(G4ThreeVector local_coordinates)
 	IronShield3_Logical = new G4LogicalVolume(IronShield3_Solid, Fe, "IronShield3_Logical", 0, 0, 0);
 	IronShield3_Logical->SetVisAttributes(IronShieldvis);
 	
-	new G4PVPlacement(0, G4ThreeVector(-25.*cm , 0.,0 ), IronShield3_Logical, "IronShield3", IronShield_Mother_Logical, 0, 0);
+	new G4PVPlacement(0, local_coordinates+G4ThreeVector(-25.*cm , 0.,0 ), IronShield3_Logical, "IronShield3", World_Logical, 0, 0);
 	//End IronShield3---------------------------------------
 
 	//Beginning IronShield4-------------------------------------
@@ -110,10 +104,8 @@ void LeadCastle::ConsturctIronShield(G4ThreeVector local_coordinates)
 	IronShield4_Logical = new G4LogicalVolume(IronShield4_Solid, Fe, "block24_Logical", 0, 0, 0);
 	IronShield4_Logical->SetVisAttributes(IronShieldvis);
 	
-	new G4PVPlacement(0, G4ThreeVector(0., -20.*cm,0), IronShield4_Logical, "IronShield4", IronShield_Mother_Logical, 0, 0);
+	new G4PVPlacement(0, local_coordinates+G4ThreeVector(0., -20.*cm,0), IronShield4_Logical, "IronShield4", World_Logical, 0, 0);
 	//End Block 24---------------------------------------
-
-	new G4PVPlacement(0,local_coordinates,IronShield_Mother_Logical,"IronShield",LeadCastle_Mother_Logical,0,0);
 }
 
 void LeadCastle::ConsturctCollimator(G4ThreeVector local_coordinates)
@@ -122,12 +114,6 @@ void LeadCastle::ConsturctCollimator(G4ThreeVector local_coordinates)
 	//*************************************************
 	// Colimator volume
 	//*************************************************
-	G4Box *Collimator_Mother_Solid = new G4Box("Collimator_Solid", block_x*0.5, block_y*0.5, block_z *0.5*NBlocks);
-
-	G4LogicalVolume *Collimator_Mother_Logical = new G4LogicalVolume(Collimator_Mother_Solid, air, "Collimator_Mother_Logical");
-	Collimator_Mother_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());
-	// Collimator_Mother_Logical->SetVisAttributes(yellow);
-	
 	G4Box *big_block = new G4Box("blockwithouthole", block_x *0.5, block_y *0.5, block_z *0.5);
 	G4Box *small_block = new G4Box("blockwithouthole", block_small_x *0.5, block_y *0.5, block_z *0.5); //next to target
 
@@ -155,19 +141,12 @@ void LeadCastle::ConsturctCollimator(G4ThreeVector local_coordinates)
 		Collimator_blocks_Logical[i] = new G4LogicalVolume(Collimator_block, Cu, ("Collimator_Block"+std::to_string(i)).c_str(), 0, 0, 0);
 		Collimator_blocks_Logical[i]->SetVisAttributes(light_orange);
 
-		new G4PVPlacement(0, G4ThreeVector(0., 0., (NBlocks*0.5-i-0.5)* block_z), Collimator_blocks_Logical[i],("Collimator_Block"+std::to_string(i)).c_str(),Collimator_Mother_Logical, 0, 0);
+		new G4PVPlacement(0, local_coordinates+G4ThreeVector(0., 0., (NBlocks*0.5-i-0.5)* block_z), Collimator_blocks_Logical[i],("Collimator_Block"+std::to_string(i)).c_str(),World_Logical, 0, 0);
 	}
-	new G4PVPlacement(0,local_coordinates,Collimator_Mother_Logical,"Collimator",LeadCastle_Mother_Logical,0,0);
 }
 
 void LeadCastle::ConsturctLeadShield(G4ThreeVector local_coordinates)
 {
-
-	G4Box *LeadShield_Mother_Solid = new G4Box("LeadShield_Solid", 180*cm,45*cm, 120*cm);
-	G4LogicalVolume *LeadShield_Mother_Logical = new G4LogicalVolume(LeadShield_Mother_Solid, air, "LeadShield_Mother_Logical");
-	LeadShield_Mother_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());
-	// LeadShield_Mother_Logical->SetVisAttributes(yellow);
-
 	//Beginning LeadCeiling-------------------------------------
 	G4LogicalVolume *LeadCeiling_Logical;
 	G4Box *LeadCeiling_Solid; 
@@ -176,7 +155,7 @@ void LeadCastle::ConsturctLeadShield(G4ThreeVector local_coordinates)
 	LeadCeiling_Logical = new G4LogicalVolume(LeadCeiling_Solid, Pb, "LeadCeiling_Logical", 0, 0, 0);
 	LeadCeiling_Logical->SetVisAttributes(grey);
 	
-	new G4PVPlacement(0, G4ThreeVector(0.,+35.*cm,0.), LeadCeiling_Logical, "LeadCeiling", LeadShield_Mother_Logical, 0, 0);
+	new G4PVPlacement(0, local_coordinates+G4ThreeVector(0.,+35.*cm,0.), LeadCeiling_Logical, "LeadCeiling", World_Logical, 0, 0);
 	//End LeadCeiling---------------------------------------
 
 	//Beginning LeadFloor-------------------------------------
@@ -187,7 +166,7 @@ void LeadCastle::ConsturctLeadShield(G4ThreeVector local_coordinates)
 	LeadFloor_Logical = new G4LogicalVolume(LeadFloor_Solid, Pb, "LeadFloor_Logical", 0, 0, 0);
 	LeadFloor_Logical->SetVisAttributes(grey);
 	
-	new G4PVPlacement(0, G4ThreeVector(0. , -35.*cm,0.), LeadFloor_Logical, "LeadFloor", LeadShield_Mother_Logical, 0, 0);
+	new G4PVPlacement(0, local_coordinates+G4ThreeVector(0. , -35.*cm,0.), LeadFloor_Logical, "LeadFloor", World_Logical, 0, 0);
 	//End LeadFloor---
 
 	//Beginning LeadBackWall-------------------------------------
@@ -198,7 +177,7 @@ void LeadCastle::ConsturctLeadShield(G4ThreeVector local_coordinates)
 	LeadBackWall_Logical = new G4LogicalVolume(LeadBackWall_Solid, Pb, "LeadBackWall_Logical", 0, 0, 0);
 	LeadBackWall_Logical->SetVisAttributes(grey);
 	
-	new G4PVPlacement(0, G4ThreeVector(0.,0.,110.*cm), LeadBackWall_Logical, "LeadBackWall", LeadShield_Mother_Logical, 0, 0);
+	new G4PVPlacement(0, local_coordinates+G4ThreeVector(0.,0.,110.*cm), LeadBackWall_Logical, "LeadBackWall", World_Logical, 0, 0);
 	//End LeadBackWall---
 
 	//Beginning LeadRightWall-------------------------------------
@@ -209,7 +188,7 @@ void LeadCastle::ConsturctLeadShield(G4ThreeVector local_coordinates)
 	LeadRightWall_Logical = new G4LogicalVolume(LeadRightWall_Solid, Pb, "LeadRightWall_Logical", 0, 0, 0);
 	LeadRightWall_Logical->SetVisAttributes(grey);
 	
-	new G4PVPlacement(0, G4ThreeVector(-170*cm,0.,0), LeadRightWall_Logical, "LeadRightWall", LeadShield_Mother_Logical, 0, 0);
+	new G4PVPlacement(0, local_coordinates+G4ThreeVector(-170*cm,0.,0), LeadRightWall_Logical, "LeadRightWall", World_Logical, 0, 0);
 	//End LeadRightWall---
 
 	//Beginning LeadLeftCollimator-------------------------------------
@@ -220,7 +199,7 @@ void LeadCastle::ConsturctLeadShield(G4ThreeVector local_coordinates)
 	LeadLeftCollimator_Logical = new G4LogicalVolume(LeadLeftCollimator_Solid, Pb, "LeadLeftCollimator_Logical", 0, 0, 0);
 	LeadLeftCollimator_Logical->SetVisAttributes(grey);
 
-	new G4PVPlacement(0, G4ThreeVector(45.*cm, 0.,-95*cm+28.5*cm), LeadLeftCollimator_Logical, "LeadLeftCollimator", LeadShield_Mother_Logical, 0, 0);
+	new G4PVPlacement(0, local_coordinates+G4ThreeVector(45.*cm, 0.,-95*cm+28.5*cm), LeadLeftCollimator_Logical, "LeadLeftCollimator", World_Logical, 0, 0);
 	//End LeadLeftCollimator---------------------------------------
 
 	//Beginning LeadRightCollimator-------------------------------------
@@ -231,7 +210,7 @@ void LeadCastle::ConsturctLeadShield(G4ThreeVector local_coordinates)
 	LeadRightCollimator_Logical = new G4LogicalVolume(LeadRightCollimator_Solid, Pb, "block31_Logical", 0, 0, 0);
 	LeadRightCollimator_Logical->SetVisAttributes(grey);
 	
-	new G4PVPlacement(0, G4ThreeVector(-45*cm ,0.,-66.5*cm), LeadRightCollimator_Logical, "LeadRightCollimator", LeadShield_Mother_Logical, 0, 0);
+	new G4PVPlacement(0, local_coordinates+G4ThreeVector(-45*cm ,0.,-66.5*cm), LeadRightCollimator_Logical, "LeadRightCollimator", World_Logical, 0, 0);
 	//End LeadRightCollimator---------------------------------------
 
 	//Beginning LeadCastleGate-------------------------------------
@@ -242,7 +221,7 @@ void LeadCastle::ConsturctLeadShield(G4ThreeVector local_coordinates)
 	LeadCastleGate_Logical = new G4LogicalVolume(LeadCastleGate_Solid, Pb, "block73_Logical", 0, 0, 0);
 	LeadCastleGate_Logical->SetVisAttributes(grey);
 	
-	new G4PVPlacement(0, G4ThreeVector(107.5*cm, 0,-53*cm), LeadCastleGate_Logical, "LeadCastleGate", LeadShield_Mother_Logical, 0, 0);
+	new G4PVPlacement(0, local_coordinates+G4ThreeVector(107.5*cm, 0,-53*cm), LeadCastleGate_Logical, "LeadCastleGate", World_Logical, 0, 0);
 	//End LeadCastleGate---------------------------------------
 
 	//Beginning LeadCastle_LeftWall-------------------------------------
@@ -253,7 +232,7 @@ void LeadCastle::ConsturctLeadShield(G4ThreeVector local_coordinates)
 	LeadCastle_LeftWall_Logical = new G4LogicalVolume(LeadCastle_LeftWall_Solid, Pb, "LeadCastle_LeftWall_Logical", 0, 0, 0);
 	LeadCastle_LeftWall_Logical->SetVisAttributes(grey);
 	
-	new G4PVPlacement(0, G4ThreeVector(170.*cm , 0.,26.5*cm), LeadCastle_LeftWall_Logical, "LeadCastle_LeftWall", LeadShield_Mother_Logical, 0, 0);
+	new G4PVPlacement(0, local_coordinates+G4ThreeVector(170.*cm , 0.,26.5*cm), LeadCastle_LeftWall_Logical, "LeadCastle_LeftWall", World_Logical, 0, 0);
 	//End LeadCastle_LeftWall---------------------------------------
 
 	//Beginning LeadDetectorCollimator_Pol_Det2-------------------------------------
@@ -304,7 +283,7 @@ void LeadCastle::ConsturctLeadShield(G4ThreeVector local_coordinates)
 	G4LogicalVolume* LeadCollimator_Pol_Det2_Logical = new G4LogicalVolume(LeadCollimator_Pol_Det2_Solid, Pb, "LeadCollimator_Pol_Det2_Logical", 0, 0, 0);
 	LeadCollimator_Pol_Det2_Logical->SetVisAttributes(grey);
 	
-	new G4PVPlacement(0, G4ThreeVector(17.5*cm ,0,+14.55*0.5*cm-35*cm), LeadCollimator_Pol_Det2_Logical, "LeadCollimator_Pol_Det2", LeadShield_Mother_Logical, 0, 0);
+	new G4PVPlacement(0, local_coordinates+G4ThreeVector(17.5*cm ,0,+14.55*0.5*cm-35*cm), LeadCollimator_Pol_Det2_Logical, "LeadCollimator_Pol_Det2", World_Logical, 0, 0);
 
 	//End LeadDetectorCollimator_Pol_Det2-------------------------------------
 
@@ -355,7 +334,7 @@ void LeadCastle::ConsturctLeadShield(G4ThreeVector local_coordinates)
 	// LeadCollimator_Det2_Pol_Logical->SetVisAttributes(yellow);
 	// G4RotationMatrix* RotationDetectorCollimator = new G4RotationMatrix();
 	// RotationDetectorCollimator->rotateY(-0*deg);
-	// new G4PVPlacement(RotationDetectorCollimator, G4ThreeVector(0,0,Z_Box), LeadCollimator_Det2_Pol_Logical, "LeadCollimator_Det2_Pol", LeadShield_Mother_Logical, 0, 0);
+	// new G4PVPlacement(Rotlocal_coordinates+ationDetectorCollimator, G4ThreeVector(0,0,Z_Box), LeadCollimator_Det2_Pol_Logical, "LeadCollimator_Det2_Pol", World_Logical, 0, 0);
 	// // End LeadDetectorCollimator_Pol_Det2-------------------------------------
 
 	
@@ -375,12 +354,12 @@ void LeadCastle::ConsturctLeadShield(G4ThreeVector local_coordinates)
 	G4LogicalVolume* LeadFrontDet2Hole_Logical = new G4LogicalVolume(LeadFrontDet2Hole_Solid, Pb, "LeadFrontDet2Hole_Logical", 0, 0, 0);
 	LeadFrontDet2Hole_Logical->SetVisAttributes(grey);
 
-	new G4PVPlacement(0, G4ThreeVector(+12.5*cm , 0,2.262*cm+(8.938/2)*cm ), LeadFrontDet2Hole_Logical, "LeadFrontDet2Hole", LeadShield_Mother_Logical, 0, 0);
+	new G4PVPlacement(0, local_coordinates+G4ThreeVector(+12.5*cm , 0,2.262*cm+(8.938/2)*cm ), LeadFrontDet2Hole_Logical, "LeadFrontDet2Hole", World_Logical, 0, 0);
 	G4Box* LeadCollimatorConector_Solid = new G4Box("LeadCollimatorConector_Solid",3.75*cm,block_y*0.5,block_z *0.5*4+1.131*cm);
 	G4LogicalVolume* LeadCollimatorConector_Logical = new G4LogicalVolume(LeadCollimatorConector_Solid, Pb, "LeadCollimatorConector_Logical", 0, 0, 0);
 	LeadCollimatorConector_Logical->SetVisAttributes(grey);
 
-	new G4PVPlacement(0, G4ThreeVector(8.75*cm , 0,-block_z *0.5*4+1.131*cm),LeadCollimatorConector_Logical,"LeadCollimatorConector",LeadShield_Mother_Logical,0,0); 
+	new G4PVPlacement(0, local_coordinates+G4ThreeVector(8.75*cm , 0,-block_z *0.5*4+1.131*cm),LeadCollimatorConector_Logical,"LeadCollimatorConector",World_Logical,0,0); 
 	//End LeadFrontDet2-------------------------------------
 
 	//Begin LeadDownstream Pol
@@ -390,7 +369,7 @@ void LeadCastle::ConsturctLeadShield(G4ThreeVector local_coordinates)
 	G4LogicalVolume* LeadDownstream_Pol_Logical = new G4LogicalVolume(LeadDownstream_Pol_Solid, Pb, "LeadDownstream_Pol_Logical", 0, 0, 0);
 	LeadDownstream_Pol_Logical->SetVisAttributes(grey);
 
-	new G4PVPlacement(0, G4ThreeVector(26.5*cm , 0,120*cm-20*cm-LeadDownstream_Pol_Z),LeadDownstream_Pol_Logical,"LeadDownstream_Pol",LeadShield_Mother_Logical,0,0); 
+	new G4PVPlacement(0, local_coordinates+G4ThreeVector(26.5*cm , 0,120*cm-20*cm-LeadDownstream_Pol_Z),LeadDownstream_Pol_Logical,"LeadDownstream_Pol",World_Logical,0,0); 
 	
 
 
@@ -416,7 +395,7 @@ void LeadCastle::ConsturctLeadShield(G4ThreeVector local_coordinates)
 	G4LogicalVolume* Det1_Complete_Logical = new G4LogicalVolume(Det1_Complete_Solid, Pb, "Det1_Complete_Logical", 0, 0, 0);
 	Det1_Complete_Logical->SetVisAttributes(grey);
 	
-	new G4PVPlacement(0, TranslationDet1,Det1_Complete_Logical,"LeadDet1House",LeadShield_Mother_Logical,0,0); 
+	new G4PVPlacement(0, local_coordinates+TranslationDet1,Det1_Complete_Logical,"LeadDet1House",World_Logical,0,0); 
 
 	G4double UpstreamDet1_X= 77.5*cm;//180*cm (Ceiling)-0.5*block_small_x-10*cm(RightWall)
 	G4double UpstreamDet1_Z= block_z*4*0.5+10*cm*sin(g1_phi)*0.5;
@@ -425,22 +404,13 @@ void LeadCastle::ConsturctLeadShield(G4ThreeVector local_coordinates)
 	G4LogicalVolume* UpstreamDet1_Logical = new G4LogicalVolume(UpstreamDet1_Solid, Pb, "UpstreamDet1_Logical", 0, 0, 0);
 	UpstreamDet1_Logical->SetVisAttributes(grey);
 
-	new G4PVPlacement(0, G4ThreeVector(-block_small_x*0.5-UpstreamDet1_X,0,-UpstreamDet1_Z+10*cm*sin(g1_phi)*0.5),UpstreamDet1_Logical,"UpstreamDet1",LeadShield_Mother_Logical,0,0); 
+	new G4PVPlacement(0, local_coordinates+G4ThreeVector(-block_small_x*0.5-UpstreamDet1_X,0,-UpstreamDet1_Z+10*cm*sin(g1_phi)*0.5),UpstreamDet1_Logical,"UpstreamDet1",World_Logical,0,0); 
 
 	G4Box* DownstreamDet1_Solid = new G4Box("DownstreamDet1_Solid",UpstreamDet1_X,25*cm,block_z *0.5*4+1.131*cm);
 	G4LogicalVolume* DownstreamDet1_Logical = new G4LogicalVolume(DownstreamDet1_Solid, Pb, "DownstreamDet1_Logical", 0, 0, 0);
 	DownstreamDet1_Logical->SetVisAttributes(grey);
 
-	new G4PVPlacement(0, G4ThreeVector(detectordistance1-0.5*block_small_x-UpstreamDet1_X+BGO1_Distance*sin(g1_theta)*cos(g1_phi)+10*cm*cos(g1_phi),0,UpstreamDet1_Z+10*cm*sin(g1_phi)+13.938*cm*2),DownstreamDet1_Logical,"DownstreamDet1",LeadShield_Mother_Logical,0,0); 
-
-
-
+	new G4PVPlacement(0, local_coordinates+G4ThreeVector(detectordistance1-0.5*block_small_x-UpstreamDet1_X+BGO1_Distance*sin(g1_theta)*cos(g1_phi)+10*cm*cos(g1_phi),0,UpstreamDet1_Z+10*cm*sin(g1_phi)+13.938*cm*2),DownstreamDet1_Logical,"DownstreamDet1",World_Logical,0,0); 
 
 	//End Det1House-------------------------------------
-
-
-
-		new G4PVPlacement(0,local_coordinates,LeadShield_Mother_Logical,"LeadShield",LeadCastle_Mother_Logical,0,0);
-
-
-	}
+}

@@ -35,11 +35,6 @@ void Detectors::Construct(G4ThreeVector global_coordinates)
 	G4Colour  orange (1.0, 0.5, 0.0) ;
 	G4Colour  light_blue  (1.0, 0.82, 0.36) ;
 
-	G4NistManager* nist = G4NistManager::Instance();
-
-	G4Material *Cu= nist->FindOrBuildMaterial("G4_Cu");
-	G4Material *Pb= nist->FindOrBuildMaterial("G4_Pb");
-
 	Germanium1_TUD* HPGe1 = new Germanium1_TUD("HPGe1");
 	Germanium2_TUD* HPGe2 = new Germanium2_TUD("HPGe2") ;
 	Polarimeter_TUD* HPGePol = new Polarimeter_TUD("HPGePol") ;
@@ -77,8 +72,8 @@ void Detectors::Construct(G4ThreeVector global_coordinates)
     G4double BGO1_Dist = -(detectordistance1 + BGO1->Get_Length()*0.5);
     G4ThreeVector BGO1_Pos(BGO1_Dist*sin(g1_theta)*cos(g1_phi), BGO1_Dist*cos(g1_theta), BGO1_Dist*sin(g1_theta)*sin(g1_phi));
   
-	new G4PVPlacement(RotDet1, HPGe1_Pos,HPGe1_Logical,"HPGe1",World_Logical,0,0); 
-	new G4PVPlacement(RotDet1, BGO1_Pos,BGO1_Logical,"BGO1",World_Logical,0,0); 
+	new G4PVPlacement(RotDet1, global_coordinates+HPGe1_Pos,HPGe1_Logical,"HPGe1",World_Logical,0,0); 
+	new G4PVPlacement(RotDet1, global_coordinates+BGO1_Pos,BGO1_Logical,"BGO1",World_Logical,0,0); 
 
 	G4RotationMatrix* RotDet2 = new G4RotationMatrix();
 	RotDet2->rotateY(g2_phi-90*deg);
@@ -89,8 +84,8 @@ void Detectors::Construct(G4ThreeVector global_coordinates)
     G4double BGO2_Dist = -(detectordistance2 + BGO2->Get_Length()*0.5);
     G4ThreeVector BGO2_Pos(BGO2_Dist*sin(g2_theta)*cos(g2_phi), BGO2_Dist*cos(g2_theta), BGO2_Dist*sin(g2_theta)*sin(g2_phi));
 
-	new G4PVPlacement(RotDet2,HPGe2_Pos,HPGe2_Logical,"HPGe2",World_Logical,0,0); 
-	new G4PVPlacement(RotDet2,BGO2_Pos,BGO2_Logical,"BGO2",World_Logical,0,0); 
+	new G4PVPlacement(RotDet2,global_coordinates+HPGe2_Pos,HPGe2_Logical,"HPGe2",World_Logical,0,0); 
+	new G4PVPlacement(RotDet2,global_coordinates+BGO2_Pos,BGO2_Logical,"BGO2",World_Logical,0,0); 
 	
 	G4RotationMatrix* RotDetPol = new G4RotationMatrix();
 	RotDetPol->rotateY(gPol_phi-90*deg);
@@ -102,8 +97,8 @@ void Detectors::Construct(G4ThreeVector global_coordinates)
     G4ThreeVector BGOPol_Pos(BGOPol_Dist*sin(gPol_theta)*cos(gPol_phi), BGOPol_Dist*cos(gPol_theta), BGOPol_Dist*sin(gPol_theta)*sin(gPol_phi));
 
 
-	new G4PVPlacement(RotDetPol,HPGePol_Pos,HPGePol_Logical,"HPGePol",World_Logical,0,0); 
-	new G4PVPlacement(RotDetPol, BGOPol_Pos,BGOPol_Logical,"BGOPol",World_Logical,0,0); 
+	new G4PVPlacement(RotDetPol,global_coordinates+HPGePol_Pos,HPGePol_Logical,"HPGePol",World_Logical,0,0); 
+	new G4PVPlacement(RotDetPol,global_coordinates+ BGOPol_Pos,BGOPol_Logical,"BGOPol",World_Logical,0,0); 
 
 
 }

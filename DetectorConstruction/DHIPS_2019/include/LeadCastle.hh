@@ -16,18 +16,10 @@ public:
 	LeadCastle(G4LogicalVolume *World_Log);
 	~LeadCastle(){};
 	void Construct(G4ThreeVector global_coordinates);
-	G4ThreeVector GetVertex(){return G4ThreeVector(LeadCastle_Mother_x,LeadCastle_Mother_y,LeadCastle_Mother_z);}
-	// G4ThreeVector GetBegin(){return G4ThreeVector(X_begin,Y_begin,Z_begin);}
-	// G4ThreeVector GetEnd(){return G4ThreeVector(X_end,Y_end,Z_end);}
-	// G4ThreeVector GetLength(){return G4ThreeVector(fabs(X_begin-X_end),fabs(Y_begin-Y_end),fabs(Z_begin-Z_end));}
 private:
 	G4LogicalVolume* World_Logical;
 	G4Box *LeadCastle_Mother_Solid;
 	G4LogicalVolume *LeadCastle_Mother_Logical;
-
-	G4double LeadCastle_Mother_x;
-	G4double LeadCastle_Mother_y;
-	G4double LeadCastle_Mother_z;
 
 	G4NistManager *nist = G4NistManager::Instance();
 	G4Material* air = nist->FindOrBuildMaterial("G4_AIR");
