@@ -1,5 +1,4 @@
-/*
-utr - Geant4 simulation of the UTR at HIGS
+/* utr - Geant4 simulation of the UTR at HIGS
 Copyright (C) 2017 the developing team (see README.md)
 
 This file is part of utr.
@@ -18,30 +17,20 @@ You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef DETECTORCONSTRUCTION_HH
-#define DETECTORCONSTRUCTION_HH 1
+#ifndef VACUUM_HH 
+#define VACUUM_HH 1
 
-#include "G4SystemOfUnits.hh"
-#include "G4UnitsTable.hh"
-#include "G4VUserDetectorConstruction.hh"
+#include "G4Material.hh"
 
-#include "utrConfig.h"
+class Vacuum{
+public:
+	Vacuum(G4double relative_density, G4String material_name);
+	~Vacuum(){};
 
-class DetectorConstruction : public G4VUserDetectorConstruction {
-  public:
-	DetectorConstruction();
-	~DetectorConstruction();
-
-	virtual G4VPhysicalVolume *Construct();
-	// virtual void ConstructSDandField();
-
-	void print_info() const;
+	G4Material *Get_Material(){ return Vacuum_Material; }
 
 private:
-	G4double World_x;
-	G4double World_y;
-	G4double World_z;
-
+	G4Material *Vacuum_Material;
 };
 
 #endif
