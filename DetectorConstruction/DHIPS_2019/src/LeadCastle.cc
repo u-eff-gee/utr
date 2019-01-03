@@ -30,10 +30,6 @@ LeadCastle::LeadCastle(G4LogicalVolume *World_Log):World_Logical(World_Log){}
 
 void LeadCastle::Construct(G4ThreeVector global_coordinates)
 {
-	LeadCastle_Mother_Solid = new G4Box("LeadCastle_Solid", 2*m,2*m,2*m);
-	LeadCastle_Mother_Logical = new G4LogicalVolume(LeadCastle_Mother_Solid, air, "LeadCastle_Logical");
-	LeadCastle_Mother_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());
-
 	HPGe1 = new Germanium1_TUD("Germanium1_TUD");
 	HPGe2 = new Germanium2_TUD("Germanium2_TUD");
 	HPGePol = new Polarimeter_TUD("Polarimeter_TUD");
@@ -45,8 +41,6 @@ void LeadCastle::Construct(G4ThreeVector global_coordinates)
 	ConsturctCollimator(global_coordinates+G4ThreeVector(0,0,-(10 * block_z)*0.5-distcollimatortotarget));
 	ConsturctIronShield(global_coordinates+G4ThreeVector(0,0,-(10 * block_z+48*cm)*0.5-distcollimatortotarget));
 	ConsturctLeadShield(global_coordinates+G4ThreeVector(0,0,-distcollimatortotarget));
-
-	new G4PVPlacement(0, global_coordinates, LeadCastle_Mother_Logical, "Lead_Castle", World_Logical, false, 0);
 }
 
 void LeadCastle::ConsturctIronShield(G4ThreeVector local_coordinates)

@@ -18,8 +18,6 @@ public:
 	void Construct(G4ThreeVector global_coordinates);
 private:
 	G4LogicalVolume* World_Logical;
-	G4Box *LeadCastle_Mother_Solid;
-	G4LogicalVolume *LeadCastle_Mother_Logical;
 
 	G4NistManager *nist = G4NistManager::Instance();
 	G4Material* air = nist->FindOrBuildMaterial("G4_AIR");
@@ -41,10 +39,6 @@ private:
 	G4double detectordistance2 = 225.*mm;
 	G4double detectordistancepol = 225.*mm;
 	G4double distcollimatortotarget = 162*mm;
-
-	G4double lengthCollimator=block_z*10;
-
-
 
 	Germanium1_TUD* HPGe1;
 	Germanium2_TUD* HPGe2;
