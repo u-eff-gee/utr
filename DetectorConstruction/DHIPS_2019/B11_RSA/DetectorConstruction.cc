@@ -136,7 +136,6 @@ G4VPhysicalVolume *DetectorConstruction::Construct()
 	BeamPipe_Downstream BeamPipe_Downstream(World_Logical);
 	LeadCastle LeadCastle(World_Logical);
 	Detectors Detectors(World_Logical);
-	B11_Target B11_Target(World_Logical);
 
 
 	/***************************************************/
@@ -152,7 +151,8 @@ G4VPhysicalVolume *DetectorConstruction::Construct()
 	Detectors.ConstructDetectorFilter(G4ThreeVector(),"Det1",10*mm,10*mm);//Cu Filter Length, Pb Filter Length
 	Detectors.ConstructDetectorFilter(G4ThreeVector(),"Det2",10*mm,10*mm);//Cu Filter Length, Pb Filter Length
 	Detectors.ConstructDetectorFilter(G4ThreeVector(),"DetPol",10*mm,10*mm);//Cu Filter Length, Pb Filter Length
-	B11_Target.Construct(G4ThreeVector());
+	B11_Target B11_Target(BeamPipe_Downstream.Get_Beampipe_Vacuum());
+	B11_Target.Construct(G4ThreeVector(0., 0., -BeamPipe_Downstream.Get_Z_Axis_Offset_Z()));
 	
 	print_info();
 	return World_Physical;

@@ -61,7 +61,7 @@ void BeamPipe_Downstream::Construct(G4ThreeVector global_coordinates,G4double re
 ////////////////////////// 
 	G4Tubs *beamPipe_Vacuum_NRF_Solid = new G4Tubs("beamPipe_Vacuum_NRF_Solid", 0,beamPipe_NRF_Inner_Radius, -beamPipe_NRF_Window_Thickness*0.5+beamPipe_NRF_Lenght*0.5, 0., twopi);
 
-	G4LogicalVolume *beamPipe_Vacuum_NRF_Logical = new G4LogicalVolume(beamPipe_Vacuum_NRF_Solid, vacuum, "beamPipe_Vacuum_NRF_Logical");
+	beamPipe_Vacuum_NRF_Logical = new G4LogicalVolume(beamPipe_Vacuum_NRF_Solid, vacuum, "beamPipe_Vacuum_NRF_Logical");
 	beamPipe_Vacuum_NRF_Logical->SetVisAttributes(white);
 
 ////////////////////////
@@ -126,6 +126,7 @@ void BeamPipe_Downstream::Construct(G4ThreeVector global_coordinates,G4double re
 	Si_Detector_Logical->SetVisAttributes(orange);
 
 /*Pipe*/	    	new G4PVPlacement(0, global_coordinates+G4ThreeVector(0., 0., (-Chamber_Outer_Length+diff)*0.5), beamPipe_NRF_Logical, "beamPipe_NRF_Logical", World_Logical, false, 0);
+			Z_Axis_Offset_Z = global_coordinates.z() + (-Chamber_Outer_Length+diff)*0.5;
 /*Pipe Vacuum*/		new G4PVPlacement(0, global_coordinates+G4ThreeVector(0., 0., beamPipe_NRF_Window_Thickness*0.5+(-Chamber_Outer_Length+diff)*0.5), beamPipe_Vacuum_NRF_Logical, "beamPipe_Vacuum_NRF_Logical", World_Logical, false, 0);
 /*Lid*/     		new G4PVPlacement(0, global_coordinates+G4ThreeVector(0., 0.,-beamPipe_NRF_Lenght*0.5+beamPipe_NRF_Window_Thickness*0.5+(-Chamber_Outer_Length+diff)*0.5), beamPipe_NRF_Lid_Logical, "beamPipe_NRF_Lid_Logical", World_Logical, false, 0);
 /*Chamber*/ 		new G4PVPlacement(0, global_coordinates+G4ThreeVector(0 , 0,  (-Chamber_Outer_Length+beamPipe_NRF_Lenght+Chamber_Inner_Length+diff)*0.5), Chamber_Block_Logical, "Chamber_Block", World_Logical, 0, 0);
