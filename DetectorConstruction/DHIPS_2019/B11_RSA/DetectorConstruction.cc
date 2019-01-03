@@ -104,6 +104,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct()
 
 	G4NistManager *nist = G4NistManager::Instance();
 	G4Material *air = nist->FindOrBuildMaterial("G4_AIR");
+
 	/************************* World volume *****************/
 
 	/***************** WORLD *****************/
@@ -151,8 +152,11 @@ G4VPhysicalVolume *DetectorConstruction::Construct()
 	Detectors.ConstructDetectorFilter(G4ThreeVector(),"Det1",10*mm,10*mm);//Cu Filter Length, Pb Filter Length
 	Detectors.ConstructDetectorFilter(G4ThreeVector(),"Det2",10*mm,10*mm);//Cu Filter Length, Pb Filter Length
 	Detectors.ConstructDetectorFilter(G4ThreeVector(),"DetPol",10*mm,10*mm);//Cu Filter Length, Pb Filter Length
+
+#ifdef USE_TARGETS
 	B11_Target B11_Target(BeamPipe_Downstream.Get_Beampipe_Vacuum());
 	B11_Target.Construct(G4ThreeVector(0., 0., -BeamPipe_Downstream.Get_Z_Axis_Offset_Z()));
+#endif
 	
 	print_info();
 	return World_Physical;
