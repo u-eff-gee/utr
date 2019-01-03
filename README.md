@@ -117,6 +117,8 @@ More volatile geometry should be placed in the corresponding campaign, i.e. `utr
 
 At the moment, detailed implementations of the geometry of the 2016/2017 campaign and parts of the 2018 campaign exist. They include geometry close to the beamline in the collimator room and the UTR including, of course, the experimental setups (γ³ setup [[5]](#ref-g3) and second setup). Less detailed geometries exist for selected experiments in older campaigns. The geometries for the 2013 and 2014/2015 campaign are based on the geometry from 2016/2017, the geometry for the 2012 campaign is based on the geometry from 2018.
 
+An implementation of the Darmstadt High-Intensity Photon Setup (DHIPS) [[6]](#ref-dhips) is under construction at the moment. Its geometry will be organized similar to the HIγS geometry from 2018.
+
 By default, `utr` will use the geometry in `DetectorConstruction/Campaign_2018/64Ni_271_279`. Existing geometries can be switched very quickly using cmake build variables. For example, to use the geometry in `utr/DetectorConstruction/Campaign_YEAR/TARGETS_RUNS`, set the corresponding CMake variables and re-build the code (see also [3 Installation](#installation)):
 
 ```bash
@@ -745,7 +747,7 @@ This shows that the unpolarized model is used (otherwise, `LivermoreCompton` wou
 
 A description of the physics lists and the implementation of the processes can be found in the [GEANT4 Physics Reference Manual](http://geant4.web.cern.ch/geant4/UserDocumentation/UsersGuides/PhysicsReferenceManual/fo/PhysicsReferenceManual.pdf)
 
-Of the available physics modules, only `EMPhysicsPolarizedJAEA` comes with `utr`, the others are included in the Geant4 code. `EMPhysicsPolarizedJAEA` is based on the `G4EmLivermorePolarizedPhysics` module, but the photon elastic scattering model has been changed to the one recently introduced by Omer and Hajima, which has a different implementation of Rayleigh scattering and introduces Delbrueck scattering in Geant4 [[6]](#ref-delbrueck), [[7]](#ref-jaea).
+Of the available physics modules, only `EMPhysicsPolarizedJAEA` comes with `utr`, the others are included in the Geant4 code. `EMPhysicsPolarizedJAEA` is based on the `G4EmLivermorePolarizedPhysics` module, but the photon elastic scattering model has been changed to the one recently introduced by Omer and Hajima, which has a different implementation of Rayleigh scattering and introduces Delbrueck scattering in Geant4 [[7]](#ref-delbrueck), [[8]](#ref-jaea).
 
 Physics modules can be switched by setting the different `HADRON*` and `EM*` cmake build flags, for example:
 
@@ -1234,5 +1236,6 @@ UG would like to acknowledge the untiring effort of user Jörn Kleemann in debug
 <a name="ref-g4_3">[3]</a> J. Allison *et al.*, “Recent developments in GEANT4”, Nucl. Inst. Meth. A **835**, 186 (2016). [`doi:10.1016/j.nima.2016.06.125`](https://doi.org/10.1016/j.nima.2016.06.125).  
 <a name="ref-higs">[4]</a> H. R. Weller *et al.*, “Research opportunities at the upgraded HIγS facility”, Prog. Part. Nucl. Phys. **62.1**, 257 (2009). [`doi:10.1016/j.ppnp.2008.07.001`](https://doi.org/10.1016/j.ppnp.2008.07.001).  
 <a name="ref-g3">[5]</a> B. Löher *et al.*, “The high-efficiency γ-ray spectroscopy setup γ³ at HIγS”, Nucl. Instr. Meth. Phys. Res. A **723**, 136 (2013). [`doi:10.1016/j.nima.2013.04.087`](https://doi.org/10.1016/j.nima.2013.04.087).   
-<a name="ref-delbrueck">[6]</a> M. Omer and R. Hajima, “Including Delbrueck scattering in Geant4”, Nucl. Instr. Meth. Phys. Res. B **405**, 43 (2017). [`doi.org/10.1016/j.nimb.2017.05.028`](https://doi.org/10.1016/j.nimb.2017.05.028).   
-<a name="ref-jaea">[7]</a> M. Omer and R. Hajima, “Geant4 physics process for elastic scattering of gamma-rays”, JAEA Technical Report **2018-007** (2018). [`doi.org/10.11484/jaea-data-code-2018-007`](https://doi.org/10.11484/jaea-data-code-2018-007).
+<a name="ref-dhips">[6]</a> K. Sonnabend *et al.*, "The Darmstadt High-Intensity Photon setup (DHIPS) at the S-DALINAC", Nucl. Instr. Meth. Phys. Res. A **640**, 6 (2011). [`https://doi.org/10.1016/j.nima.2011.02.107`](https://doi.org/10.1016/j.nima.2011.02.107)  
+<a name="ref-delbrueck">[7]</a> M. Omer and R. Hajima, “Including Delbrueck scattering in Geant4”, Nucl. Instr. Meth. Phys. Res. B **405**, 43 (2017). [`doi.org/10.1016/j.nimb.2017.05.028`](https://doi.org/10.1016/j.nimb.2017.05.028).   
+<a name="ref-jaea">[8]</a> M. Omer and R. Hajima, “Geant4 physics process for elastic scattering of gamma-rays”, JAEA Technical Report **2018-007** (2018). [`doi.org/10.11484/jaea-data-code-2018-007`](https://doi.org/10.11484/jaea-data-code-2018-007).
