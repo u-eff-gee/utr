@@ -50,8 +50,6 @@ void B11_Target::Construct(G4ThreeVector global_coordinates){
 	G4double Target_Mass = 1.527*g;
 	G4double Target_Radius = 10*mm;
 	G4double Target_Length = Target_Mass/(Target_Density*pi*Target_Radius*Target_Radius);
-	std::cout<<"Target_Length: "<<Target_Length<<std::endl;
-
 
 	G4Isotope *B11 = new G4Isotope("B11", 5, 11, 11.0093054*g/mole);
 	G4Isotope *B10 = new G4Isotope("B10", 5, 10, 10.0129370*g/mole);
@@ -74,7 +72,6 @@ void B11_Target::Construct(G4ThreeVector global_coordinates){
 
 	G4Material *nat_Cu = man->FindOrBuildMaterial("G4_Cu");
 	G4Material *nat_Al= man->FindOrBuildMaterial("G4_Al");
-	G4Material *air = man->FindOrBuildMaterial("G4_AIR");
 
 	G4double LidLength=2*mm;
 	G4Tubs *Al_ContainerLid_Solid = new G4Tubs("Al_ContainerLid_Solid",0,Target_Radius,LidLength*0.5,0,twopi);

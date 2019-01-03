@@ -406,11 +406,11 @@ void LeadCastle::ConsturctLeadShield(G4ThreeVector local_coordinates)
 
 	new G4PVPlacement(0, local_coordinates+G4ThreeVector(-block_small_x*0.5-UpstreamDet1_X,0,-UpstreamDet1_Z+10*cm*sin(g1_phi)*0.5),UpstreamDet1_Logical,"UpstreamDet1",World_Logical,0,0); 
 
-	G4Box* DownstreamDet1_Solid = new G4Box("DownstreamDet1_Solid",UpstreamDet1_X,25*cm,block_z *0.5*4+1.131*cm);
+	G4Box* DownstreamDet1_Solid = new G4Box("DownstreamDet1_Solid",UpstreamDet1_X,25*cm,block_z *0.5*4+1.131*cm-2*cm);
 	G4LogicalVolume* DownstreamDet1_Logical = new G4LogicalVolume(DownstreamDet1_Solid, Pb, "DownstreamDet1_Logical", 0, 0, 0);
 	DownstreamDet1_Logical->SetVisAttributes(grey);
 
-	new G4PVPlacement(0, local_coordinates+G4ThreeVector(detectordistance1-0.5*block_small_x-UpstreamDet1_X+BGO1_Distance*sin(g1_theta)*cos(g1_phi)+10*cm*cos(g1_phi),0,UpstreamDet1_Z+10*cm*sin(g1_phi)+13.938*cm*2),DownstreamDet1_Logical,"DownstreamDet1",World_Logical,0,0); 
+	new G4PVPlacement(0, local_coordinates+G4ThreeVector(detectordistance1-0.5*block_small_x-UpstreamDet1_X+BGO1_Distance*sin(g1_theta)*cos(g1_phi)+10*cm*cos(g1_phi),0,UpstreamDet1_Z+10*cm*sin(g1_phi)+13.938*cm*2-2*cm),DownstreamDet1_Logical,"DownstreamDet1",World_Logical,0,0); 
 
 	//End Det1House-------------------------------------
 }

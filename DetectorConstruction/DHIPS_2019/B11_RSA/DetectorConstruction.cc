@@ -146,12 +146,23 @@ G4VPhysicalVolume *DetectorConstruction::Construct()
 	BeamPipe_Upstream.Construct(G4ThreeVector(0,0,-2500*mm),0.1);
 	RadiatorTarget.Construct(G4ThreeVector(0,0,-2000*mm),"Radiator1","Au",3*mm,"Air",0.); 
 	RadiatorTarget.Construct(G4ThreeVector(0,0,-1800*mm),"Radiator2","Au",3*mm,"Air",0.);
-	BeamPipe_Downstream.Construct(G4ThreeVector(),0.1);
+	BeamPipe_Downstream.Construct(G4ThreeVector(0,0,285*mm),0.1);//285*mm measured
 	LeadCastle.Construct(G4ThreeVector());
 	Detectors.Construct(G4ThreeVector());
+	Detectors.ConstructDetectorFilter(G4ThreeVector(),"Det1",10*mm,10*mm);//Cu Filter Length, Pb Filter Length
+	Detectors.ConstructDetectorFilter(G4ThreeVector(),"Det2",10*mm,10*mm);//Cu Filter Length, Pb Filter Length
+	Detectors.ConstructDetectorFilter(G4ThreeVector(),"DetPol",10*mm,10*mm);//Cu Filter Length, Pb Filter Length
 	B11_Target.Construct(G4ThreeVector());
-	 // print_info();
+	
+	print_info();
 	return World_Physical;
 
 }
 
+void DetectorConstruction::print_info() const {
+	printf("==============================================================\n");
+	printf("  DetectorConstruction: Info (all dimensions in mm)\n");
+	G4cout << G4endl;
+	printf("> World dimensions             : ( %5.2f, %5.2f, %5.2f )\n", World_x, World_y, World_z);
+	printf("==============================================================\n");
+}

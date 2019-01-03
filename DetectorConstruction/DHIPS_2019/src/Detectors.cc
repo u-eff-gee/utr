@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <string>
 
 #include "G4Box.hh"
 #include "G4Tubs.hh"
@@ -50,20 +51,7 @@ void Detectors::Construct(G4ThreeVector global_coordinates)
 	G4LogicalVolume* BGO2_Logical= BGO2->Get_Logical();
 	G4LogicalVolume* BGOPol_Logical= BGOPol->Get_Logical();
 
- 	G4double g1_theta=90.*deg;
-  	G4double g1_phi=5.*deg;
-
-	G4double g2_phi= 140*deg; 
-	G4double g2_theta= 90*deg;
-
-  	G4double gPol_theta=90.*deg;
-  	G4double gPol_phi=180.*deg;
-
-	G4double detectordistance1 = 225.*mm;
-	G4double detectordistance2 = 225.*mm;
-	G4double detectordistancePol = 225.*mm;
-
-	G4RotationMatrix* RotDet1 = new G4RotationMatrix();
+  	G4RotationMatrix* RotDet1 = new G4RotationMatrix();
 	RotDet1->rotateY(g1_phi-90*deg);
 
 	G4double HPGe1_Dist = -(detectordistance1 + HPGe1->Get_Length()*0.5 + BGO1->Get_Length()) + BGO1->Get_Max_Penetration_Depth();
@@ -75,7 +63,7 @@ void Detectors::Construct(G4ThreeVector global_coordinates)
 	new G4PVPlacement(RotDet1, global_coordinates+HPGe1_Pos,HPGe1_Logical,"HPGe1",World_Logical,0,0); 
 	new G4PVPlacement(RotDet1, global_coordinates+BGO1_Pos,BGO1_Logical,"BGO1",World_Logical,0,0); 
 
-	G4RotationMatrix* RotDet2 = new G4RotationMatrix();
+  	G4RotationMatrix* RotDet2 = new G4RotationMatrix();
 	RotDet2->rotateY(g2_phi-90*deg);
 
 	G4double HPGe2_Dist = -(detectordistance2 + HPGe2->Get_Length()*0.5 + BGO2->Get_Length()) + BGO2->Get_Max_Penetration_Depth();
@@ -86,7 +74,7 @@ void Detectors::Construct(G4ThreeVector global_coordinates)
 
 	new G4PVPlacement(RotDet2,global_coordinates+HPGe2_Pos,HPGe2_Logical,"HPGe2",World_Logical,0,0); 
 	new G4PVPlacement(RotDet2,global_coordinates+BGO2_Pos,BGO2_Logical,"BGO2",World_Logical,0,0); 
-	
+
 	G4RotationMatrix* RotDetPol = new G4RotationMatrix();
 	RotDetPol->rotateY(gPol_phi-90*deg);
 
@@ -99,6 +87,74 @@ void Detectors::Construct(G4ThreeVector global_coordinates)
 
 	new G4PVPlacement(RotDetPol,global_coordinates+HPGePol_Pos,HPGePol_Logical,"HPGePol",World_Logical,0,0); 
 	new G4PVPlacement(RotDetPol,global_coordinates+ BGOPol_Pos,BGOPol_Logical,"BGOPol",World_Logical,0,0); 
+}
+
+void Detectors::ConstructDetectorFilter(G4ThreeVector global_coordinates,std::string det, G4double CuLength, G4double PbLength)
+{
+	bool detcheck = false;
+	G4double det_phi=0;
+	G4double det_theta=0;
+	G4double det_dist=0;
+	if(det=="Det1")
+		{
+			det_phi=g1_phi;
+			det_theta=g1_theta;
+			det_dist=detectordistance1;
+			detcheck=true;
+		}
+		else if(det=="Det2")
+			{
+				det_phi=g2_phi;
+				det_theta=g2_theta;
+				det_dist=detectordistance2;
+				detcheck=true;
+			}
+			else if(det=="DetPol")
+				{
+					det_phi=gPol_phi;
+					det_theta=gPol_theta;
+					det_dist=detectordistancePol;
+					detcheck=true;
+				}
+				else
+				{
+					printf("\n");
+					printf("No Proper detector name used. Please use: Det1, Det2 or DetPol in function ConstructDetectorFilter\n");
+					printf("No filters were used in ConstructDetectorFilter(%s,%f,%f)",det.c_str(),CuLength,PbLength);
+					printf("\n");
+					abort();
+				}
+	if(detcheck)
+	{
+		G4Colour  orange (1.0, 0.5, 0.0) ;
+		G4Colour  grey   (0.5, 0.5, 0.5) ;
+		G4RotationMatrix* RotDet= new G4RotationMatrix();
+		RotDet->rotateY(det_phi-90*deg);
+		G4NistManager *nist = G4NistManager::Instance();
+		G4Material *Cu= nist->FindOrBuildMaterial("G4_Cu");
+		G4Material *Pb= nist->FindOrBuildMaterial("G4_Pb");
+		G4Tubs* Cu_Filter_Solid= new G4Tubs("Cu_Filter_Solid", 0, 25*mm, CuLength*0.5, 0. * deg, 360. * deg);
+		G4Tubs* Pb_Filter_Solid= new G4Tubs("Pb_Filter_Solid", 0, 25*mm, PbLength*0.5, 0. * deg, 360. * deg);
+
+		G4LogicalVolume* Cu_Filter_Logical = new G4LogicalVolume(Cu_Filter_Solid, Cu, "Cu_Filter_Logical", 0, 0, 0);
+		G4LogicalVolume* Pb_Filter_Logical = new G4LogicalVolume(Pb_Filter_Solid, Pb, "Pb_Filter_Solid", 0, 0, 0);
+
+		Cu_Filter_Logical->SetVisAttributes(orange);
+		Pb_Filter_Logical->SetVisAttributes(grey);
+
+		G4double Cu_dist=-det_dist+0.5*CuLength;
+		G4double Pb_dist=-det_dist+0.5*PbLength+CuLength;
+
+
+		G4ThreeVector Pb_Filter_Dist(Pb_dist*sin(det_theta)*cos(det_phi), Pb_dist*cos(det_theta), Pb_dist*sin(det_theta)*sin(det_phi));
+		G4ThreeVector Cu_Filter_Dist(Cu_dist*sin(det_theta)*cos(det_phi), Cu_dist*cos(det_theta), Cu_dist*sin(det_theta)*sin(det_phi));
+
+		new G4PVPlacement(RotDet,global_coordinates+Cu_Filter_Dist,Cu_Filter_Logical,(det+"_Cu_Filter").c_str(),World_Logical,0,0); 
+		new G4PVPlacement(RotDet,global_coordinates+Pb_Filter_Dist,Pb_Filter_Logical,(det+"_Pb_Filter").c_str(),World_Logical,0,0); 
+	
+
+
+	}
 
 
 }

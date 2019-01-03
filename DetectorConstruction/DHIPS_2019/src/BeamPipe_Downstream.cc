@@ -129,7 +129,7 @@ void BeamPipe_Downstream::Construct(G4ThreeVector global_coordinates,G4double re
 /*Pipe Vacuum*/		new G4PVPlacement(0, global_coordinates+G4ThreeVector(0., 0., beamPipe_NRF_Window_Thickness*0.5+(-Chamber_Outer_Length+diff)*0.5), beamPipe_Vacuum_NRF_Logical, "beamPipe_Vacuum_NRF_Logical", World_Logical, false, 0);
 /*Lid*/     		new G4PVPlacement(0, global_coordinates+G4ThreeVector(0., 0.,-beamPipe_NRF_Lenght*0.5+beamPipe_NRF_Window_Thickness*0.5+(-Chamber_Outer_Length+diff)*0.5), beamPipe_NRF_Lid_Logical, "beamPipe_NRF_Lid_Logical", World_Logical, false, 0);
 /*Chamber*/ 		new G4PVPlacement(0, global_coordinates+G4ThreeVector(0 , 0,  (-Chamber_Outer_Length+beamPipe_NRF_Lenght+Chamber_Inner_Length+diff)*0.5), Chamber_Block_Logical, "Chamber_Block", World_Logical, 0, 0);
-/*Chamber Vaccum*/	new G4PVPlacement(0, global_coordinates+G4ThreeVector(0 , 0, 0), Chamber_Vacuum_Block_Logical, "Chamber_Vacuum_Block", Chamber_Block_Logical, 0, 0);
+/*Chamber Vaccum*/	new G4PVPlacement(0, G4ThreeVector(0 , 0, 0), Chamber_Vacuum_Block_Logical, "Chamber_Vacuum_Block", Chamber_Block_Logical, 0, 0);
 /*D_Target*/		new G4PVPlacement(D_Rotate, G4ThreeVector(0 , 0, 0), D_Target_Logical, "D_Target", Chamber_Vacuum_Block_Logical, 0, 0);
 /*Si Shield*/		new G4PVPlacement(Si_Rotate1, G4ThreeVector(SiDistanceToTarget+Si_Thickness_Shield*0.5 , 0, 0), Si_Radius_Shield_Logical, "Si_Radius_Shield1", Chamber_Vacuum_Block_Logical, 0, 0);
 /*Si Shield*/		new G4PVPlacement(Si_Rotate2, G4ThreeVector(-SiDistanceToTarget-Si_Thickness_Shield*0.5 , 0, 0), Si_Radius_Shield_Logical, "Si_Radius_Shield2", Chamber_Vacuum_Block_Logical, 0, 0);
