@@ -52,8 +52,8 @@ option(EVENT_POSX "For each event, record the X position of the first particle t
 option(EVENT_POSY "For each event, record the Y position of the first particle that hit a detector" OFF)
 option(EVENT_POSZ "For each event, record the Z position of the first particle that hit a detector" OFF)
 option(EVENT_MOMX "For each event, record the momentum in X direction of the first particle that hit a detector" OFF)
-option(EVENT_MOMX "For each event, record the momentum in X direction of the first particle that hit a detector" OFF)
-option(EVENT_MOMX "For each event, record the momentum in X direction of the first particle that hit a detector" OFF)
+option(EVENT_MOMY "For each event, record the momentum in Y direction of the first particle that hit a detector" OFF)
+option(EVENT_MOMZ "For each event, record the momentum in Z direction of the first particle that hit a detector" OFF)
 
 #----------------------------------------------------------------------------
 # Enable configuration of the source code by cmake
