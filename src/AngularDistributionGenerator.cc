@@ -136,23 +136,29 @@ void AngularDistributionGenerator::GeneratePrimaries(G4Event *anEvent) {
 			random_phi = twopi*G4UniformRand();
 			random_w = G4UniformRand() * MAX_W;
 
-			if (random_w <= angdist->AngDist(random_theta, random_phi, states,
-			                        nstates, mixing_ratios)) {
-				++momentum_success;
-			} else if(!is_polarized){
-				if (random_w <= angdist->AngDist(random_theta, random_phi,
-						alt_states, nstates, mixing_ratios)) {
+			if (!is_polarized){
+				if (random_w <= angdist->AngDist(random_theta, random_phi, states,
+				    nstates, mixing_ratios) + 
+					angdist->AngDist(random_theta,
+				    random_phi, alt_states, nstates, mixing_ratios))
 					++momentum_success;
-				}
+			} else{
+				if (random_w <= angdist->AngDist(random_theta, random_phi, states,
+				    nstates, mixing_ratios))
+					++momentum_success;
+
 			}
-			if (MAX_W <= angdist->AngDist(random_theta, random_phi, states,
-			                        nstates, mixing_ratios)) {
-				++max_w;
-			} else if(!is_polarized){
-				if (MAX_W < angdist->AngDist(random_theta, random_phi,
-						alt_states, nstates, mixing_ratios)) {
-					++momentum_success;
-				}
+			if (!is_polarized){
+				if (MAX_W <= angdist->AngDist(random_theta, random_phi, states,
+				    nstates, mixing_ratios) + 
+					angdist->AngDist(random_theta,
+				    random_phi, alt_states, nstates, mixing_ratios))
+					++max_w;
+			} else{
+				if (MAX_W <= angdist->AngDist(random_theta, random_phi, states,
+				    nstates, mixing_ratios))
+					++max_w;
+
 			}
 		}
 
