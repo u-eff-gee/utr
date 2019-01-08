@@ -1,7 +1,9 @@
 #ifndef UTR_CONFIG_H
 #define UTR_CONFIG_H 1
 
-#cmakedefine USE_GPS
+#cmakedefine GENERATOR_ANGDIST
+#cmakedefine GENERATOR_ANGCORR
+
 #cmakedefine USE_TARGETS
 
 #cmakedefine EM_FAST 

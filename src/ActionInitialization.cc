@@ -22,10 +22,12 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "ActionInitialization.hh"
 
-#ifdef USE_GPS
-#include "GeneralParticleSource.hh"
-#else
+#ifdef GENERATOR_ANGDIST
 #include "AngularDistributionGenerator.hh"
+#elif defined GENERATOR_ANGCORR
+#include "AngularCorrelationGenerator.hh"
+#else
+#include "GeneralParticleSource.hh"
 #endif
 
 #include "EventAction.hh"
@@ -44,10 +46,12 @@ void ActionInitialization::BuildForMaster() const {
 }
 
 void ActionInitialization::Build() const {
-#ifdef USE_GPS
-	SetUserAction(new GeneralParticleSource);
-#else
+#ifdef GENERATOR_ANGDIST
 	SetUserAction(new AngularDistributionGenerator);
+#elif defined GENERATOR_ANGCORR
+	SetUserAction(new AngularCorrelationGenerator);
+#else
+	SetUserAction(new GeneralParticleSource);
 #endif
 
 	EventAction *eventAction = new EventAction();

@@ -1,0 +1,46 @@
+/run/initialize
+
+# AngularCorrelationGenerator can create multiple primary particles
+# in a single event, where the angular distribution of the n-th particle
+# is dependent on the emission direction of the (n-1)-th particle.
+# This can be used, for example, to simulate correlated gamma-rays from
+# an n-step decay of an excited nuclear state.
+
+# The information about particles and their angular distribution is given
+# step by step to AngularDistributionGenerator.
+
+/angcorr/particle geantino
+/angcorr/energy 1. MeV
+/angcorr/direction 0. 0. 1.
+
+/angcorr/nstates 3
+/angcorr/state1 0.
+/angcorr/state2 0.
+/angcorr/state3 0.
+# Polarization is true by default, and the setting not matter in this case,
+# but write it explicitly here for completeness.
+/angcorr/polarized false
+
+/angcorr/particle geantino
+/angcorr/energy 0.5 MeV
+
+/angcorr/nstates 3
+/angcorr/state1 0.
+/angcorr/state2 1.
+/angcorr/state3 0.
+/angcorr/polarized true
+
+# The information about the source volumes is the same for all steps
+# in the cascade, i.e. it is assumed that all particles are emitted
+# from a common origin.
+/angcorr/sourceX 0. mm
+/angcorr/sourceY 0. mm
+/angcorr/sourceZ 0. mm
+
+/angcorr/sourceDX 2. mm
+/angcorr/sourceDY 2. mm
+/angcorr/sourceDZ 2. mm
+
+/angcorr/sourcePV source
+
+/run/beamOn 10

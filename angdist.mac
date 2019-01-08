@@ -22,6 +22,6 @@
 /ang/sourceDY 20. mm
 /ang/sourceDZ 10. mm
 
-/ang/sourcePV Ni64_Target
+/ang/sourcePV source
 
 /run/beamOn 10

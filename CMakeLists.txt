@@ -25,7 +25,8 @@ set(CAMPAIGN "Campaign_2018" CACHE STRING "Select experimental campaign from dir
 set(DETECTOR_CONSTRUCTION "64Ni_271_279" CACHE STRING "Select detector construction from directory DetectorConstruction/$CAMPAIGN/")
 set(PRINT_PROGRESS 100000 CACHE STRING "Set the frequency of printed updates about the progress of utr (unit: number of events processed)")
 # Choose primary generator
-option(USE_GPS "Use G4GeneralParticleSource as primary generator" ON)
+option(GENERATOR_ANGDIST "Use AngularDistributionGenerator as primary generator instead of G4GeneralParticleSource (has a higher priority than USE_ANGCORR if both are checked)" OFF)
+option(GENERATOR_ANGCORR "Use AngularCorrelationGenerator as primary generator instead of G4GeneralParticleSource" OFF)
 option(USE_TARGETS "Use Targets in the geometry" ON)
 
 option(EM_FAST "Use G4EmStandardPhysics_option1" OFF)
