@@ -133,6 +133,11 @@ AngularDistributionMessenger::AngularDistributionMessenger(
 	sourcePVCmd->SetParameterName("sourcePV", true);
 	sourcePVCmd->SetDefaultValue("");
 
+	polarizationCmd = new G4UIcmdWithABool("/ang/polarized", this);
+	polarizationCmd->SetGuidance("Assume that the exciting transition is polarized (default: true)");
+	polarizationCmd->SetParameterName("is_polarized", true);
+	polarizationCmd->SetDefaultValue(true);
+
 	energyCmd = new G4UIcmdWithADoubleAndUnit("/ang/energy", this);
 
 	angularDistributionGenerator->SetParticleDefinition(
@@ -155,6 +160,8 @@ AngularDistributionMessenger::AngularDistributionMessenger(
 	angularDistributionGenerator->SetSourceDX(10. * mm);
 	angularDistributionGenerator->SetSourceDY(10. * mm);
 	angularDistributionGenerator->SetSourceDZ(10. * mm);
+
+	angularDistributionGenerator->SetPolarized(true);
 }
 
 AngularDistributionMessenger::~AngularDistributionMessenger() {
@@ -243,6 +250,10 @@ void AngularDistributionMessenger::SetNewValue(G4UIcommand *command,
 	if (command == sourcePVCmd) {
 		angularDistributionGenerator->AddSourcePV(newValues);
 	}
+	if (command == polarizationCmd) {
+		angularDistributionGenerator->SetPolarized(
+				polarizationCmd->GetNewBoolValue(newValues));
+	}
 }
 
 G4String AngularDistributionMessenger::GetCurrentValue(G4UIcommand *command) {
@@ -321,6 +332,10 @@ G4String AngularDistributionMessenger::GetCurrentValue(G4UIcommand *command) {
 	if (command == sourceDZCmd) {
 		return sourceDZCmd->ConvertToString(
 		    angularDistributionGenerator->GetSourceDZ());
+	}
+	if (command == polarizationCmd) {
+		return polarizationCmd->ConvertToString(
+		    angularDistributionGenerator->IsPolarized());
 	}
 
 	return cv;

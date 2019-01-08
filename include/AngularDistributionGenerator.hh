@@ -69,6 +69,8 @@ class AngularDistributionGenerator : public G4VUserPrimaryGeneratorAction {
 
 	void AddSourcePV(G4String physvol) { source_PV_names.push_back(physvol); };
 
+	void SetPolarized(G4bool pol){ is_polarized = pol; };
+
 	G4ParticleDefinition *GetParticleDefinition() {
 		return particleDefinition;
 	};
@@ -89,6 +91,8 @@ class AngularDistributionGenerator : public G4VUserPrimaryGeneratorAction {
 
 	G4String GetSourcePV(int i) { return source_PV_names[i]; };
 
+	G4bool IsPolarized(){ return is_polarized; };
+
   private:
 	G4ParticleGun *particleGun;
 	AngularDistributionMessenger *angDistMessenger;
@@ -100,6 +104,11 @@ class AngularDistributionGenerator : public G4VUserPrimaryGeneratorAction {
 
 	G4int nstates;
 	G4double states[4];
+	// The alternative states are used for the simulation of unpolarized gamma-ray excitations,
+	// since the angular distribution of the transition is the sum of the two possible
+	// polarizations, for example E1 and M1. The most simple way to switch between these two
+	// possibilities is to switch the parity of the first excited state in the cascade.
+	G4double alt_states[4];
 	G4double mixing_ratios[3];
 
 	G4double source_x;
@@ -114,6 +123,8 @@ class AngularDistributionGenerator : public G4VUserPrimaryGeneratorAction {
 	G4double random_x;
 	G4double random_y;
 	G4double random_z;
+
+	G4bool is_polarized;
 
 	G4double random_theta;
 	G4double random_phi;

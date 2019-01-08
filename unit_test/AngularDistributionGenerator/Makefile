@@ -2,7 +2,7 @@ CPP=g++
 SRC_DIR=../../src
 INCLUDE_DIR=../../include
 CFLAGS=-Wall -Wconversion -Wsign-conversion -O3 -I$(INCLUDE_DIR)
-ROOTFLAGS=`root-config --cflags --glibs`
+ROOTFLAGS=-isystem$(shell root-config --incdir) -L$(shell root-config --libdir) -lCore -lRIO -lHist -lTree
 
 all: angdisttest
 

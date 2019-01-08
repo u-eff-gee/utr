@@ -60,6 +60,9 @@ void AngularDistributionGenerator::GeneratePrimaries(G4Event *anEvent) {
 	G4ThreeVector randomOrigin = G4ThreeVector(0., 0., 0.);
 	G4ThreeVector randomDirection = G4ThreeVector(0., 0., 1.);
 
+	for(G4int i = 0; i < 4; ++i)
+		alt_states[i] = states[i];
+	alt_states[1] = -states[1];
 
 	G4double p, pnot;
 
@@ -133,14 +136,23 @@ void AngularDistributionGenerator::GeneratePrimaries(G4Event *anEvent) {
 			random_phi = twopi*G4UniformRand();
 			random_w = G4UniformRand() * MAX_W;
 
-			if (angdist->IsInside(random_theta, random_phi, random_w, states,
+			if (random_w <= angdist->AngDist(random_theta, random_phi, states,
 			                        nstates, mixing_ratios)) {
 				++momentum_success;
+			} else if(!is_polarized){
+				if (random_w <= angdist->AngDist(random_theta, random_phi,
+						alt_states, nstates, mixing_ratios)) {
+					++momentum_success;
+				}
 			}
-			if (angdist->IsInside(random_theta, random_phi, MAX_W, states,
-						
+			if (MAX_W <= angdist->AngDist(random_theta, random_phi, states,
 			                        nstates, mixing_ratios)) {
 				++max_w;
+			} else if(!is_polarized){
+				if (MAX_W < angdist->AngDist(random_theta, random_phi,
+						alt_states, nstates, mixing_ratios)) {
+					++momentum_success;
+				}
 			}
 		}
 
@@ -200,13 +212,23 @@ void AngularDistributionGenerator::GeneratePrimaries(G4Event *anEvent) {
 		random_phi = twopi*G4UniformRand();
 		random_w = G4UniformRand() * MAX_W;
 
-		if (angdist->IsInside(random_theta, random_phi, random_w, states,
-		                        nstates, mixing_ratios)) {
+		if (!is_polarized){
+			if (random_w <= angdist->AngDist(random_theta, random_phi, states,
+		            nstates, mixing_ratios) + 
+			 	angdist->AngDist(random_theta,
+			    random_phi, alt_states, nstates, mixing_ratios))
+				momentum_found = true;
+		} else{
+			if (random_w <= angdist->AngDist(random_theta, random_phi, states,
+			    nstates, mixing_ratios))
+				momentum_found = true;
+
+		}
+		if (momentum_found) {
 			randomDirection = G4ThreeVector(sin(random_theta) * cos(random_phi),
 			                                sin(random_theta) * sin(random_phi),
 			                                cos(random_theta));
 			particleGun->SetParticleMomentumDirection(randomDirection);
-			momentum_found = true;
 			break;
 		}
 	}

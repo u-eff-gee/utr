@@ -28,26 +28,16 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4Material.hh"
 #include "G4NistManager.hh"
 #include "Materials.hh"
-Materials *Materials::instance = NULL;
 Materials *materials = Materials::Instance();
 
 // Geometry
 #include "G4Box.hh"
 #include "G4LogicalVolume.hh"
 #include "G4PVPlacement.hh"
-//#include "G4RotationMatrix.hh"
-//#include "G4SubtractionSolid.hh"
+#include "G4Sphere.hh"
 #include "G4ThreeVector.hh"
-//#include "G4Tubs.hh"
-//#include "G4UnionSolid.hh"
 #include "G4VisAttributes.hh"
 #include "globals.hh"
-
-// Bricks
-//#include "Bricks.hh"
-
-// Filters
-//#include "Filters.hh"
 
 // Sensitive Detectors
 #include "EnergyDepositionSD.hh"
@@ -59,23 +49,6 @@ Materials *materials = Materials::Instance();
 #include "G4PhysicalConstants.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4UnitsTable.hh"
-
-// Detectors
-//#include "Germanium1_TUD.hh"
-//#include "Germanium2_TUD.hh"
-//#include "HPGe1.hh"
-//#include "HPGe1_55.hh"
-//#include "HPGe2.hh"
-//#include "HPGe2_55.hh"
-//#include "HPGe3.hh"
-//#include "HPGe4.hh"
-//#include "LaBr_Cologne.hh"
-//#include "LaBr_TUD.hh"
-//#include "Polarimeter_TUD.hh"
-//#include "ZeroDegree.hh"
-
-// Targets
-#include "Targets.hh"
 
 #define PI 3.141592
 

@@ -9,13 +9,6 @@ using std::endl;
 // PI/(180 DEGREE_TO_RAD)
 #define DEGREE_TO_RAD 0.017453292519943295
 
-bool AngularDistribution::IsInside(double rand_theta, double rand_phi, double rand_w, double *st, int nst, double *mix) const {
-	if (rand_w <= AngDist(rand_theta, rand_phi, st, nst, mix)){
-		return true;
-	}
-	return false;
-}
-
 double AngularDistribution::AngDist(
     double theta, double phi, double *st,
     int nst, double *mix) const {

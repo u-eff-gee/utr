@@ -377,7 +377,9 @@ This event generator uses the G4GeneralParticleSource (GPS) whose parameters can
 
 The AngularDistributionGenerator generates monoenergetic particles that originate in a set of G4PhysicalVolumes of the DetectorConstruction and have a certain angular distribution.
 
-The physical volumes (the "sources") and angular distribution can have arbitrary shapes. Starting positions and momentum directions are created using a Monte-Carlo method:
+##### 2.3.2.1 The algorithm
+
+The physical volumes (the "sources") and angular distribution can have arbitrary shapes. Starting positions and momentum directions are created using a Monte-Carlo method (**'rejection sampling'**), which is explained shortly in the following:
 Given a(n)
 
 * Cuboid in 3 dimensions ("container volume") that completely contains the source volume
@@ -399,7 +401,7 @@ The process of finding a starting point is depicted in 2 dimensions in the figur
 
 ![MC position generator](.media/MC_Position_Generator.png)
 
-The process of finding a starting vector is shown in one dimension (`W` is only dependent on `θ`) in in the figure below. First, a random value `random_θ` for `θ` with a uniform random distribution **on a sphere**. Note that this is not the same as a uniform distribution of values between 0 and π for θ. Then, a unform random number between 0 and an upper limit `W_max` is drawn. If the value `W_max` is lower than `W(random_θ)` (black points), then a particle will be emitted at that angle.
+The process of finding a starting vector is shown in one dimension (`W` is only dependent on `θ`) in in the figure below. First, a random value `random_θ` for `θ` with a uniform random distribution **on a sphere** is sampled. Note that this is not the same as a uniform distribution of values between 0 and π for θ. Then, a unform random number between 0 and an upper limit `W_max` is drawn. If the value `W_max` is lower than `W(random_θ)` (black points), then a particle will be emitted at that angle.
 
 ![MC momentum generator](.media/MC_Momentum_Generator.png)
 
@@ -409,7 +411,7 @@ Clearly, the algorithm works well if
 * the cuboid approximates the shape of the sources well and wraps it tightly
 * the angular distribution varies smoothly in the `(θ, φ)` plane and W_max is very close to the actual maximum value of `W`
 
-The maximum number of randomly sampled points is hard-coded `AngularDistributionGenerator.cc` where it says:
+The maximum number of randomly sampled points is hard-coded in `AngularDistributionGenerator.cc` where it says:
 
 ```
 MAX_TRIES_POSITION = 10000
@@ -428,9 +430,9 @@ G4WT0 > ========================================================================
 The momentum generator contains one more piece of information. This is because the value of `W_max` that was introduced above has been arbitrarily set to 3 in `AngularDistributionGenerator.hh`, which should be a sensible choice for most angular distributions. However, it may be that `W(θ, φ) > 3` for some distribution. This can also be detected by the self-check with a Monte-Carlo method. For each of the MAX_TRIES_MOMENTUM tries, `utr` will also check whether the inequality `W_max <= W(random_θ, random_φ)` holds. If yes, this could be a hint that the value of `W_max` is too low and should be increased manually.
 The corresponding message would look like
 ```
-G4WT0 > In 5624 out of 10000 cases (56.24 % ) 
-W(random_theta, random_phi) == MAX_W == 1 was valid. 
-This may mean that MAX_W is set too low and 
+G4WT0 > In 5624 out of 10000 cases (56.24 % )
+W(random_theta, random_phi) == MAX_W == 1 was valid.
+This may mean that MAX_W is set too low and
 the angular distribution is truncated.
 ```
 If everything is okay, it will display
@@ -438,6 +440,8 @@ If everything is okay, it will display
 G4WT0 > MAX_W == 3 seems to be high enough.
 ```
 However, using `W_max = 3` might still be inefficient, so it is good to know the minimum and maximum value of the angular distribution in advance. For debugging of the angular distribution, a unit test exists in the repository, which is especially recommended if one defines new angular distributions.
+
+##### 2.3.2.2 Usage
 
 To change parameters of the AngularDistributionGenerator, an AngularDistributionMessenger has been implemented that makes the following macro commands available:
 
@@ -457,13 +461,15 @@ To change parameters of the AngularDistributionGenerator, an AngularDistribution
     Along with `sourceDY` and `sourceDZ`, defines the dimensions of the container box.
 * `/ang/sourcePV VALUE`
     Enter the name of a physical volume that should act as a source. To add more physical volumes, call `/ang/sourcePV` multiple times with different arguments (about using multiple sources, see also the [caveat](#multiplesources) at the end of this section).
-    
+* `/ang/polarized VALUE`
+    Determine whether the excitation (i.e. the first transition in the cascade) is caused by a polarized photon (default value). To simulate unpolarized photons, the angular distributions for the two possible polarizations are added up in the code. This is done by choosing different parities for the first excited state in the cascade. This means that both distributions (for example 0<sup>+</sup> → 1<sup>+</sup> → 0<sup>+</sup> and 0<sup>+</sup> → 1<sup>-</sup> → 0<sup>+</sup>) need to be implemented. The user needs to give only of the two possible cascades as a macro command.
+
 The container volume's inside will be the interval [X - DX/2, X + DX/2], [Y - DY/2, Y + DY/2] and [Z - DZ/2, Z + DZ/2].
 
 The identifiers of the angular distribution are given to the simulation as an array of numbers `states  = {state1, state2, ...}` whose length `NSTATES` can to be specified by the user.
 For "real" NRF angular distributions, this array of numbers will be the spins of the excited states in a cascade, with the parity indicated by the sign of the numbers.
 
-Due to parity symmetry, an inversion of all the parities in a cascade will result in the same angular distribution. For example, the transition 0+ -> 1- -> 0+ has the same angular distribution as 0- -> 1+ -> 0-. This is indicated by the notation "+-" and "-+" in the list below (the example is listed as "0+- -> 1-+ -> 0+-").
+Due to parity symmetry, an inversion of all the parities in a cascade will result in the same angular distribution. For example, the transition 0<sup>+</sup> -> 1<sup>-</sup> -> 0<sup>+</sup> has the same angular distribution as 0<sup>-</sup> -> 1<sup>+</sup> -> 0<sup>-</sup>. This is indicated by the notation "+-" and "-+" in the list below (the example is listed as "0<sup>±</sup> -> 1<sup>∓</sup> -> 0<sup>±</sup>").
 
 It was chosen to represent the parity of a state as the sign of the spin quantum number. Unfortunately, this makes it impossible to represent 0- states, because the number "-0" is the same as "+0". Therefore, the value "-0.1" represents a 0- state.
 
@@ -716,7 +722,7 @@ At the moment, the following distributions are implemented:
 
 Finding the correct dimensions of the container box might need visualization. Try placing a `G4Box` with the desired dimensions at the desired position in the geometry and see whether it encloses the source volume completely and as close as possible. In fact, most of the predefined geometries have such a `G4Box` called `AuxBox` which is commented out. After using it to determine the size and position of the container box, remember to comment out the code again.
 
-#### 2.3.1 Caveat: Multiple sources <a name="multiplesources"></a>
+#### 2.3.2.3 Caveat: Multiple sources <a name="multiplesources"></a>
 
 When using multiple sources, be aware that `AngularDistributionGenerator` samples the points with a uniform random distribution inside the container volume. How many particles are emitted from a certain part of the source will only depend on its volume. 
 
