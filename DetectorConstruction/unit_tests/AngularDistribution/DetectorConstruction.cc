@@ -76,12 +76,10 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	/***************** World Volume *****************/
 
-	G4double world_x = 4000. * mm;
-	G4double world_y = 4000. * mm;
-	G4double world_z = 9000. * mm;
+	G4double world_r = 7000. * mm;
 
-	G4Box *world_dim =
-	    new G4Box("world_dim", world_x * 0.5, world_y * 0.5, world_z * 0.5);
+	G4Sphere *world_dim =
+	    new G4Sphere("world_dim", 0., world_r, 0., twopi, 0., pi);
 
 	G4LogicalVolume *world_log =
 	    new G4LogicalVolume(world_dim, vacuum, "world_log", 0, 0, 0);

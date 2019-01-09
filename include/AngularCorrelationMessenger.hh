@@ -49,7 +49,7 @@ class AngularCorrelationMessenger : public G4UImessenger {
 	G4ParticleTable *particleTable;
 	G4UIdirectory *angCorrDirectory;
 
-	// Commands to prevent the addition of new cascade steps
+	// Command to prevent the addition of new cascade steps
 	// This is necessary for the UI mode. Since the cacade steps
 	// are stored in std::vectors in the AngularCorrelationGenerator,
 	// every call of '/control/execute MACRO' would add the same
