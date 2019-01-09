@@ -43,7 +43,7 @@ AngularCorrelationGenerator::AngularCorrelationGenerator()
 	MAX_TRIES_POSITION = 1e4;
 	MAX_TRIES_MOMENTUM = 1e4;
 
-	particleGun = new G4ParticleGun(2);
+	particleGun = new G4ParticleGun(1);
 	particleTable = G4ParticleTable::GetParticleTable();
 
 	navi = G4TransportationManager::GetTransportationManager()
@@ -51,6 +51,7 @@ AngularCorrelationGenerator::AngularCorrelationGenerator()
 }
 
 AngularCorrelationGenerator::~AngularCorrelationGenerator() {
+	delete angCorrMessenger;
 	delete particleGun;
 }
 
@@ -135,7 +136,17 @@ void AngularCorrelationGenerator::GeneratePrimaries(G4Event *anEvent) {
 				particles[n_particle]->GetParticleName() << " ): ";
 			
 			if(n_particle == 0 && direction_given){
-				G4cout << "( direction: [" << direction.x() << ", " << direction.y() << ", " << direction.z() << " ] ) ..." << G4endl;
+				G4cout << "( direction: [" << direction.x() << ", " << direction.y() << ", " << direction.z() << " ] )" << G4endl;
+				G4cout << "No check necessary." << G4endl;
+			G4cout << "============================================================"
+				  "============"
+			       << G4endl;
+			} else if(n_particle > 0 && relative_angle_given[n_particle]){
+				G4cout << "( relative angle of " << relative_angle[n_particle]/deg << " degree(s) )" << G4endl;
+				G4cout << "No check necessary." << G4endl;
+			G4cout << "============================================================"
+				  "============"
+			       << G4endl;
 			} else{
 				G4cout << "( angular distribution ";
 				for(int n_state = 0; n_state < nstates[n_particle]; ++n_state){
@@ -144,63 +155,63 @@ void AngularCorrelationGenerator::GeneratePrimaries(G4Event *anEvent) {
 						G4cout << "-> ";
 				}
 				G4cout << ") ..." << G4endl;
-			}
 
-			for (int i = 0; i < MAX_TRIES_MOMENTUM; i++) {
-				random_theta = acos(2.*G4UniformRand() - 1.);
-				random_phi = twopi*G4UniformRand();
-				random_w = G4UniformRand() * MAX_W;
+				for (int i = 0; i < MAX_TRIES_MOMENTUM; i++) {
+					random_theta = acos(2.*G4UniformRand() - 1.);
+					random_phi = twopi*G4UniformRand();
+					random_w = G4UniformRand() * MAX_W;
 
-				if (!is_polarized[n_particle]){
-					if (random_w <= angdist->AngDist(random_theta, random_phi, &states[n_particle][0],
-					    nstates[n_particle], &mixing_ratios[n_particle][0]) + 
-						angdist->AngDist(random_theta,
-					    random_phi, &alt_states[n_particle][0], nstates[n_particle], &mixing_ratios[n_particle][0]))
-						++momentum_success;
-				} else{
-					if (random_w <= angdist->AngDist(random_theta, random_phi, &states[n_particle][0],
-					    nstates[n_particle], &mixing_ratios[n_particle][0]))
-						++momentum_success;
+					if (!is_polarized[n_particle]){
+						if (random_w <= angdist->AngDist(random_theta, random_phi, &states[n_particle][0],
+						    nstates[n_particle], &mixing_ratios[n_particle][0]) + 
+							angdist->AngDist(random_theta,
+						    random_phi, &alt_states[n_particle][0], nstates[n_particle], &mixing_ratios[n_particle][0]))
+							++momentum_success;
+					} else{
+						if (random_w <= angdist->AngDist(random_theta, random_phi, &states[n_particle][0],
+						    nstates[n_particle], &mixing_ratios[n_particle][0]))
+							++momentum_success;
+
+					}
+					if (!is_polarized[n_particle]){
+						if (MAX_W <= angdist->AngDist(random_theta, random_phi, &states[n_particle][0],
+						    nstates[n_particle], &mixing_ratios[n_particle][0]) + 
+							angdist->AngDist(random_theta,
+						    random_phi, &alt_states[n_particle][0], nstates[n_particle], &mixing_ratios[n_particle][0]))
+							++max_w;
+					} else{
+						if (MAX_W <= angdist->AngDist(random_theta, random_phi, &states[n_particle][0],
+						    nstates[n_particle], &mixing_ratios[n_particle][0]))
+							++max_w;
+
+					}
 
 				}
-				if (!is_polarized[n_particle]){
-					if (MAX_W <= angdist->AngDist(random_theta, random_phi, &states[n_particle][0],
-					    nstates[n_particle], &mixing_ratios[n_particle][0]) + 
-						angdist->AngDist(random_theta,
-					    random_phi, &alt_states[n_particle][0], nstates[n_particle], &mixing_ratios[n_particle][0]))
-						++max_w;
+
+				p = (double)momentum_success / MAX_TRIES_MOMENTUM;
+				pnot = (double)1. - p;
+
+				G4cout << "Check finished. Of " << MAX_TRIES_MOMENTUM
+				       << " random 3D momentum vectors, " << momentum_success
+				       << " were valid ( " << p / perCent << " % )" << G4endl;
+				G4cout << "Probability of failure:\tpow( " << pnot << ", "
+				       << MAX_TRIES_MOMENTUM
+				       << " ) = " << pow(pnot, MAX_TRIES_MOMENTUM) / perCent << " %"
+				       << G4endl;
+				if(max_w == 0){
+					G4cout << "MAX_W == " << MAX_W << " seems to be high enough." << G4endl;
 				} else{
-					if (MAX_W <= angdist->AngDist(random_theta, random_phi, &states[n_particle][0],
-					    nstates[n_particle], &mixing_ratios[n_particle][0]))
-						++max_w;
-
+					p_max_w = (double) max_w/MAX_TRIES_MOMENTUM; 
+					G4cout << G4endl;
+					G4cout << "In " << max_w << " out of " << MAX_TRIES_MOMENTUM << " cases (" << p_max_w / perCent << " % ) W(random_theta, random_phi) == MAX_W == " << MAX_W << " was valid. This may mean that MAX_W is set too low and the angular distribution is truncated." << G4endl;
 				}
+				G4cout << "============================================================"
+					  "============"
+				       << G4endl << G4endl;
 
 			}
-
-			p = (double)momentum_success / MAX_TRIES_MOMENTUM;
-			pnot = (double)1. - p;
-
-			G4cout << "Check finished. Of " << MAX_TRIES_MOMENTUM
-			       << " random 3D momentum vectors, " << momentum_success
-			       << " were valid ( " << p / perCent << " % )" << G4endl;
-			G4cout << "Probability of failure:\tpow( " << pnot << ", "
-			       << MAX_TRIES_MOMENTUM
-			       << " ) = " << pow(pnot, MAX_TRIES_MOMENTUM) / perCent << " %"
-			       << G4endl;
-			if(max_w == 0){
-				G4cout << "MAX_W == " << MAX_W << " seems to be high enough." << G4endl;
-			} else{
-				p_max_w = (double) max_w/MAX_TRIES_MOMENTUM; 
-				G4cout << G4endl;
-				G4cout << "In " << max_w << " out of " << MAX_TRIES_MOMENTUM << " cases (" << p_max_w / perCent << " % ) W(random_theta, random_phi) == MAX_W == " << MAX_W << " was valid. This may mean that MAX_W is set too low and the angular distribution is truncated." << G4endl;
-			}
-			G4cout << "============================================================"
-				  "============"
-			       << G4endl << G4endl;
-
-			checked_momentum_generator = true;
 		}
+		checked_momentum_generator = true;
 	}
 
 #endif
@@ -248,7 +259,18 @@ void AngularCorrelationGenerator::GeneratePrimaries(G4Event *anEvent) {
 			phi_reference = atan2(direction.y(), direction.x());
 			particleGun->SetParticleMomentumDirection(direction);
 			particleGun->GeneratePrimaryVertex(anEvent);
-		} else{
+		} else if(n_particle > 0 && relative_angle_given[n_particle]){
+			random_theta = theta_reference + relative_angle[n_particle];
+			random_phi = twopi*G4UniformRand();
+			theta_reference = random_theta;
+			phi_reference = random_phi;
+
+			randomDirection = G4ThreeVector(sin(random_theta) * cos(random_phi),
+							sin(random_theta) * sin(random_phi),
+							cos(random_theta));
+			particleGun->SetParticleMomentumDirection(randomDirection);
+			particleGun->GeneratePrimaryVertex(anEvent);
+		} else {
 			for (int i = 0; i < MAX_TRIES_MOMENTUM; i++) {
 				random_theta = acos(2.*G4UniformRand() - 1.);
 				random_phi = twopi*G4UniformRand();

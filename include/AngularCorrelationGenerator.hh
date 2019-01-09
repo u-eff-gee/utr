@@ -51,9 +51,16 @@ class AngularCorrelationGenerator : public G4VUserPrimaryGeneratorAction {
 	
 	void AddParticle(G4ParticleDefinition* particleDefinition){ 
 		particles.push_back(particleDefinition); 
-		particleEnergies.push_back(0.); };
+		particleEnergies.push_back(0.);
+		relative_angle.push_back(0.);
+		relative_angle_given.push_back(false);};
 	void SetEnergy(G4double energy){ particleEnergies[particleEnergies.end() - particleEnergies.begin() - 1] = energy; };
 	void SetDirection(G4ThreeVector vec){ direction = vec; direction_given = true; };
+	void SetRelativeAngle(G4double relangle){ 
+		relative_angle[relative_angle.end() - relative_angle.begin() - 1] = relangle;
+		relative_angle_given[relative_angle_given.end() - relative_angle_given.begin() - 1] = true;
+	};
+
 	void AddNStates(G4int nst){ 
 		nstates.push_back(nst); 
 		states.push_back(vector<G4double>(4));
@@ -136,6 +143,7 @@ class AngularCorrelationGenerator : public G4VUserPrimaryGeneratorAction {
 
 	// Angular distribution properties
 	G4ThreeVector direction;
+	vector<G4double> relative_angle;
 
 	vector<G4int> nstates;
 	vector< vector<G4double> > states;
@@ -163,6 +171,7 @@ class AngularCorrelationGenerator : public G4VUserPrimaryGeneratorAction {
 	G4bool position_found;
 	G4bool momentum_found;
 	G4bool direction_given;
+	vector<G4bool> relative_angle_given;
 
 	G4bool checked_momentum_generator;
 	G4bool checked_position_generator;

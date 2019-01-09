@@ -27,6 +27,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4UIcmdWithAString.hh"
 #include "G4UIcmdWithAnInteger.hh"
 #include "G4UIcmdWith3Vector.hh"
+#include "G4UIcmdWithoutParameter.hh"
 #include "G4UIcommand.hh"
 #include "G4UIdirectory.hh"
 #include "G4UImessenger.hh"
@@ -48,10 +49,21 @@ class AngularCorrelationMessenger : public G4UImessenger {
 	G4ParticleTable *particleTable;
 	G4UIdirectory *angCorrDirectory;
 
+	// Commands to prevent the addition of new cascade steps
+	// This is necessary for the UI mode. Since the cacade steps
+	// are stored in std::vectors in the AngularCorrelationGenerator,
+	// every call of '/control/execute MACRO' would add the same
+	// state  again. So with each call of the MACRO file, the
+	// cascade would get longer.
+	G4UIcmdWithAnInteger *stepCmd;
+	G4int n_steps;
+	G4int current_steps;
+
 	G4UIcmdWithAString *particleCmd;
 	G4UIcmdWithADoubleAndUnit *energyCmd;
 
 	G4UIcmdWith3Vector *directionCmd;
+	G4UIcmdWithADoubleAndUnit *relativeAngleCmd;
 
 	G4UIcmdWithAnInteger *nStatesCmd;
 

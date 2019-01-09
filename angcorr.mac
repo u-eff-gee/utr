@@ -9,6 +9,8 @@
 # The information about particles and their angular distribution is given
 # step by step to AngularDistributionGenerator.
 
+/angcorr/steps 2
+
 /angcorr/particle geantino
 /angcorr/energy 1. MeV
 /angcorr/direction 0. 0. 1.
@@ -17,12 +19,13 @@
 /angcorr/state1 0.
 /angcorr/state2 0.
 /angcorr/state3 0.
-# Polarization is true by default, and the setting not matter in this case,
+# Polarization is true by default, and the setting does not matter in this case,
 # but write it explicitly here for completeness.
 /angcorr/polarized false
 
-/angcorr/particle geantino
+/angcorr/particle gamma
 /angcorr/energy 0.5 MeV
+/angcorr/relativeangle 45. deg
 
 /angcorr/nstates 3
 /angcorr/state1 0.
@@ -43,4 +46,4 @@
 
 /angcorr/sourcePV source
 
-/run/beamOn 10
+/run/beamOn 1

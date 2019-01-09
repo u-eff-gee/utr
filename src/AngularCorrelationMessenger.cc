@@ -25,7 +25,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "AngularCorrelationMessenger.hh"
 
 AngularCorrelationMessenger::AngularCorrelationMessenger(
-    AngularCorrelationGenerator *angCorrGen) {
+    AngularCorrelationGenerator *angCorrGen):n_steps(0), current_steps(0){
 	angularCorrelationGenerator = angCorrGen;
 
 	particleTable = G4ParticleTable::GetParticleTable();
@@ -33,6 +33,12 @@ AngularCorrelationMessenger::AngularCorrelationMessenger(
 	angCorrDirectory = new G4UIdirectory("/angcorr/");
 	angCorrDirectory->SetGuidance(
 	    "Controls for angular correlation generator.");
+
+	stepCmd = new G4UIcmdWithAnInteger("/angcorr/steps", this);
+	stepCmd->SetGuidance("Sets the number of steps in the cascade (= the number of emitted particles).");
+	stepCmd->SetGuidance("Default: 0");
+	stepCmd->SetParameterName("nsteps", true);
+	stepCmd->SetDefaultValue(0);
 
 	particleCmd = new G4UIcmdWithAString("/angcorr/particle", this);
 	particleCmd->SetGuidance("Add primary particle.");
@@ -51,6 +57,12 @@ AngularCorrelationMessenger::AngularCorrelationMessenger(
 	directionCmd->SetGuidance("Default: (0, 0, 0), meaning 'ignore this option'.");
 	directionCmd->SetParameterName("dir_x", "dir_y", "dir_z", true);
 	directionCmd->SetDefaultValue(G4ThreeVector(0., 0., 0.));
+
+	relativeAngleCmd = new G4UIcmdWithADoubleAndUnit("/angcorr/relativeangle", this);
+	relativeAngleCmd->SetGuidance("Set emission angle w.r.t. the previous particle.");
+	relativeAngleCmd->SetGuidance("Default: pi or 180*deg, meaning 'in the opposite direction'.");
+	relativeAngleCmd->SetParameterName("angle", true);
+	relativeAngleCmd->SetDefaultValue(180.*deg);
 
 	nStatesCmd = new G4UIcmdWithAnInteger("/angcorr/nstates", this);
 	nStatesCmd->SetGuidance("Add new cascades with given number of states.");
@@ -157,26 +169,42 @@ AngularCorrelationMessenger::~AngularCorrelationMessenger() {
 
 void AngularCorrelationMessenger::SetNewValue(G4UIcommand *command,
                                                G4String newValues) {
+
+	if (command == stepCmd) {
+		n_steps = stepCmd->GetNewIntValue(newValues);
+	}
+
 	if (command == particleCmd) {
-		G4ParticleDefinition *pd = particleTable->FindParticle(newValues);
-		if (pd != NULL) {
-			angularCorrelationGenerator->AddParticle(pd);
-		} else {
-			G4cout << "Error! AngularCorrelationMessenger: Particle "
-			          "definition not found."
-			       << G4endl;
-			return;
+		if(current_steps >= n_steps){
+			G4cout << "Warning:AngularCorrelationMessenger.cc:SetNewValue(): Prevented the addition of another step to the cascade. This warning may occured because '/angcorr/steps' was called with the wrong number of intended steps. It may also occur if the same macro was called several times. In this case, it is intentional." << G4endl;
+		} else{
+			G4ParticleDefinition *pd = particleTable->FindParticle(newValues);
+			if (pd != NULL) {
+				angularCorrelationGenerator->AddParticle(pd);
+			} else {
+				G4cout << "Error! AngularCorrelationMessenger: Particle "
+					  "definition not found."
+				       << G4endl;
+				return;
+			}
+			++current_steps;
 		}
 	}
 
 	if (command == energyCmd) {
 		angularCorrelationGenerator->SetEnergy(
 		    energyCmd->GetNewDoubleValue(newValues));
+		G4cout << "Adding state at " << energyCmd->GetNewDoubleValue(newValues) << " MeV" << G4endl;
 	}
 
 	if (command == directionCmd) {
 		angularCorrelationGenerator->SetDirection(
 				directionCmd->GetNew3VectorValue(newValues));	
+	}
+
+	if (command == relativeAngleCmd) {
+		angularCorrelationGenerator->SetRelativeAngle(
+		    relativeAngleCmd->GetNewDoubleValue(newValues));
 	}
 
 	if (command == nStatesCmd) {
