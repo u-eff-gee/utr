@@ -50,10 +50,15 @@ class AngularCorrelationGenerator : public G4VUserPrimaryGeneratorAction {
 	// Set-methods to use with the AngularCorrelationMessenger
 	
 	void AddParticle(G4ParticleDefinition* particleDefinition){ 
+		nstates.push_back(0);
 		particles.push_back(particleDefinition); 
 		particleEnergies.push_back(0.);
 		relative_angle.push_back(0.);
-		relative_angle_given.push_back(false);};
+		relative_angle_given.push_back(false);;
+		states.push_back(vector<G4double>(4));
+		alt_states.push_back(vector<G4double>(4));
+		mixing_ratios.push_back(vector<G4double>(3));
+	};
 	void SetEnergy(G4double energy){ particleEnergies[particleEnergies.end() - particleEnergies.begin() - 1] = energy; };
 	void SetDirection(G4ThreeVector vec){ direction = vec; direction_given = true; };
 	void SetRelativeAngle(G4double relangle){ 
@@ -61,11 +66,8 @@ class AngularCorrelationGenerator : public G4VUserPrimaryGeneratorAction {
 		relative_angle_given[relative_angle_given.end() - relative_angle_given.begin() - 1] = true;
 	};
 
-	void AddNStates(G4int nst){ 
-		nstates.push_back(nst); 
-		states.push_back(vector<G4double>(4));
-		alt_states.push_back(vector<G4double>(4));
-		mixing_ratios.push_back(vector<G4double>(3));
+	void SetNStates(G4int nst){ 
+		nstates[nstates.end() - nstates.begin() - 1] = nst;
 	};
 	void SetState(G4int n_state, G4double jpi){ 
 		states[states.end() - states.begin() - 1][n_state] = jpi; 

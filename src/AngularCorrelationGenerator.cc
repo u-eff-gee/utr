@@ -59,6 +59,7 @@ void AngularCorrelationGenerator::GeneratePrimaries(G4Event *anEvent) {
 
 	G4ThreeVector randomOrigin = G4ThreeVector(0., 0., 0.);
 	G4ThreeVector randomDirection = G4ThreeVector(0., 0., 1.);
+	G4ThreeVector rotatedRandomDirection = G4ThreeVector(0., 0., 1.);
 
 	G4double rotation_angle_xaxis = 0;
 	G4double rotation_angle_zaxis = 0;
@@ -260,44 +261,29 @@ void AngularCorrelationGenerator::GeneratePrimaries(G4Event *anEvent) {
 						direction.y()*direction.y()), direction.z());
 			phi_reference = atan2(direction.y(), direction.x());
 
-			rotation_angle_xaxis = -theta_reference;
-			if(direction.x() == 0.){
-				rotation_angle_zaxis = 0.;
-			} else{
-				if(phi_reference < 0.){
-					rotation_angle_xaxis = -rotation_angle_xaxis;
-				} 
-				rotation_angle_zaxis = asin(sin(theta_reference)*cos(phi_reference)/
-						sin(rotation_angle_xaxis));
-			}
-
 			particleGun->SetParticleMomentumDirection(direction);
 			particleGun->GeneratePrimaryVertex(anEvent);
 
 		} else if(n_particle > 0 && relative_angle_given[n_particle]){
 			random_theta = relative_angle[n_particle];
 			random_phi = twopi*G4UniformRand();
-			theta_reference = random_theta;
-			phi_reference = random_phi;
+
+			rotation_angle_xaxis = -theta_reference;
+			if(phi_reference < 0.){
+				rotation_angle_xaxis = -rotation_angle_xaxis;
+			} 
+			rotation_angle_zaxis = asin(sin(theta_reference)*cos(phi_reference)/
+					sin(rotation_angle_xaxis));
 
 			randomDirection = G4ThreeVector(sin(random_theta) * cos(random_phi),
 							sin(random_theta) * sin(random_phi),
 							cos(random_theta));
-			particleGun->SetParticleMomentumDirection(
-					(randomDirection.rotateX(rotation_angle_xaxis))
-					                .rotateZ(rotation_angle_zaxis));
+			rotatedRandomDirection = randomDirection.rotateX(rotation_angle_xaxis).rotateZ(rotation_angle_zaxis);
+			particleGun->SetParticleMomentumDirection(rotatedRandomDirection);
 			particleGun->GeneratePrimaryVertex(anEvent);
 
-			rotation_angle_xaxis = -theta_reference;
-			if(direction.x() == 0.){
-				rotation_angle_zaxis = 0.;
-			} else{
-				if(phi_reference < 0.){
-					rotation_angle_xaxis = -rotation_angle_xaxis;
-				} 
-				rotation_angle_zaxis = asin(sin(theta_reference)*cos(phi_reference)/
-						sin(rotation_angle_xaxis));
-			}
+			theta_reference = rotatedRandomDirection.theta();
+			phi_reference = rotatedRandomDirection.phi();
 
 		} else {
 			for (int i = 0; i < MAX_TRIES_MOMENTUM; i++) {
@@ -318,26 +304,23 @@ void AngularCorrelationGenerator::GeneratePrimaries(G4Event *anEvent) {
 				}
 				if (momentum_found) {
 					if(n_particle > 0){
-						// TODO: Set as reference for the next particle and rotate w.r.t. the last particle
+
 						rotation_angle_xaxis = -theta_reference;
-						if(direction.x() == 0.){
-							rotation_angle_zaxis = 0.;
-						} else{
-							if(phi_reference < 0.){
-								rotation_angle_xaxis = -rotation_angle_xaxis;
-							} 
-							rotation_angle_zaxis = asin(sin(theta_reference)*cos(phi_reference)/
-									sin(rotation_angle_xaxis));
-						}
+						if(phi_reference < 0.){
+							rotation_angle_xaxis = -rotation_angle_xaxis;
+						} 
+						rotation_angle_zaxis = asin(sin(theta_reference)*cos(phi_reference)/
+								sin(rotation_angle_xaxis));
 
 						randomDirection = G4ThreeVector(sin(random_theta) * cos(random_phi),
 										sin(random_theta) * sin(random_phi),
 										cos(random_theta));
-						particleGun->SetParticleMomentumDirection(randomDirection.rotateX(rotation_angle_xaxis).rotateZ(rotation_angle_zaxis));
+						rotatedRandomDirection = randomDirection.rotateX(rotation_angle_xaxis).rotateZ(rotation_angle_zaxis);
+						particleGun->SetParticleMomentumDirection(rotatedRandomDirection);
 						particleGun->GeneratePrimaryVertex(anEvent);
 
-						theta_reference = ;
-						phi_reference = random_phi;
+						theta_reference = rotatedRandomDirection.theta();
+						phi_reference = rotatedRandomDirection.phi();
 					} else{
 						randomDirection = G4ThreeVector(sin(random_theta) * cos(random_phi),
 										sin(random_theta) * sin(random_phi),

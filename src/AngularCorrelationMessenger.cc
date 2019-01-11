@@ -176,7 +176,7 @@ void AngularCorrelationMessenger::SetNewValue(G4UIcommand *command,
 
 	if (command == particleCmd) {
 		if(current_steps >= n_steps){
-			G4cout << "Warning:AngularCorrelationMessenger.cc:SetNewValue(): Prevented the addition of another step to the cascade. This warning may occured because '/angcorr/steps' was called with the wrong number of intended steps. It may also occur if the same macro was called several times. In this case, it is intentional." << G4endl;
+			G4cout << "Warning:AngularCorrelationMessenger.cc:SetNewValue(): Prevented the addition of another step to the cascade. This warning may have occured because '/angcorr/steps' was called with the wrong number of intended steps. It may also occur if the same macro was called several times. In this case, it is intentional." << G4endl;
 		} else{
 			G4ParticleDefinition *pd = particleTable->FindParticle(newValues);
 			if (pd != NULL) {
@@ -207,7 +207,7 @@ void AngularCorrelationMessenger::SetNewValue(G4UIcommand *command,
 	}
 
 	if (command == nStatesCmd) {
-		angularCorrelationGenerator->AddNStates(
+		angularCorrelationGenerator->SetNStates(
 		    nStatesCmd->GetNewIntValue(newValues));
 	}
 
