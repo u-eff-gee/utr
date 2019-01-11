@@ -264,8 +264,11 @@ void AngularCorrelationGenerator::GeneratePrimaries(G4Event *anEvent) {
 			if(direction.x() == 0.){
 				rotation_angle_zaxis = 0.;
 			} else{
+				if(phi_reference < 0.){
+					rotation_angle_xaxis = -rotation_angle_xaxis;
+				} 
 				rotation_angle_zaxis = asin(sin(theta_reference)*cos(phi_reference)/
-					sin(rotation_angle_xaxis));
+						sin(rotation_angle_xaxis));
 			}
 
 			particleGun->SetParticleMomentumDirection(direction);
@@ -289,10 +292,12 @@ void AngularCorrelationGenerator::GeneratePrimaries(G4Event *anEvent) {
 			if(direction.x() == 0.){
 				rotation_angle_zaxis = 0.;
 			} else{
-				rotation_angle_zaxis = -asin(sin(theta_reference)*cos(phi_reference)/
-					sin(rotation_angle_xaxis));
+				if(phi_reference < 0.){
+					rotation_angle_xaxis = -rotation_angle_xaxis;
+				} 
+				rotation_angle_zaxis = asin(sin(theta_reference)*cos(phi_reference)/
+						sin(rotation_angle_xaxis));
 			}
-
 
 		} else {
 			for (int i = 0; i < MAX_TRIES_MOMENTUM; i++) {
@@ -314,11 +319,25 @@ void AngularCorrelationGenerator::GeneratePrimaries(G4Event *anEvent) {
 				if (momentum_found) {
 					if(n_particle > 0){
 						// TODO: Set as reference for the next particle and rotate w.r.t. the last particle
+						rotation_angle_xaxis = -theta_reference;
+						if(direction.x() == 0.){
+							rotation_angle_zaxis = 0.;
+						} else{
+							if(phi_reference < 0.){
+								rotation_angle_xaxis = -rotation_angle_xaxis;
+							} 
+							rotation_angle_zaxis = asin(sin(theta_reference)*cos(phi_reference)/
+									sin(rotation_angle_xaxis));
+						}
+
 						randomDirection = G4ThreeVector(sin(random_theta) * cos(random_phi),
 										sin(random_theta) * sin(random_phi),
 										cos(random_theta));
-						particleGun->SetParticleMomentumDirection(randomDirection);
+						particleGun->SetParticleMomentumDirection(randomDirection.rotateX(rotation_angle_xaxis).rotateZ(rotation_angle_zaxis));
 						particleGun->GeneratePrimaryVertex(anEvent);
+
+						theta_reference = ;
+						phi_reference = random_phi;
 					} else{
 						randomDirection = G4ThreeVector(sin(random_theta) * cos(random_phi),
 										sin(random_theta) * sin(random_phi),
@@ -329,13 +348,6 @@ void AngularCorrelationGenerator::GeneratePrimaries(G4Event *anEvent) {
 						particleGun->GeneratePrimaryVertex(anEvent);
 					}
 
-					rotation_angle_xaxis = -theta_reference;
-					if(direction.x() == 0.){
-						rotation_angle_zaxis = 0.;
-					} else{
-						rotation_angle_zaxis = -asin(sin(theta_reference)*cos(phi_reference)/
-							sin(rotation_angle_xaxis));
-					}
 
 					break;
 				}

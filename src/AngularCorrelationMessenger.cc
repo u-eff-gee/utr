@@ -194,7 +194,6 @@ void AngularCorrelationMessenger::SetNewValue(G4UIcommand *command,
 	if (command == energyCmd) {
 		angularCorrelationGenerator->SetEnergy(
 		    energyCmd->GetNewDoubleValue(newValues));
-		G4cout << "Adding state at " << energyCmd->GetNewDoubleValue(newValues) << " MeV" << G4endl;
 	}
 
 	if (command == directionCmd) {
