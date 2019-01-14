@@ -13,6 +13,7 @@ getHistogram
 histogramToTxt
 rootToTxt
 angdisttest
+angcorrtest
 mergeFiles
 
 # C++ objects

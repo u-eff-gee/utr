@@ -9,6 +9,7 @@
 #include <TF2.h>
 #include <TFile.h>
 #include <TMath.h>
+#include <TVector3.h>
 
 #include "AngularDistribution.hh"
 
@@ -20,11 +21,11 @@ struct arguments{
 	const char* p1;
 	const char* p2;
 	const char* outputfilename;
-	const unsigned int nsteps;
+	unsigned int nsteps;
 	bool is_unpolarized;
 	bool fit;
 
-	arguments() : tree("utr"), n_steps(2), p1("utr"), p2(".root"), outputfilename("hist.root"), is_unpolarized(false), fit(false){};
+	arguments() : tree("utr"), p1("utr"), p2(".root"), outputfilename("hist.root"), nsteps(2), is_unpolarized(false), fit(false){};
 };
 
 static struct argp_option options[] = {
@@ -33,7 +34,7 @@ static struct argp_option options[] = {
 { 0, 'q', "PATTERN2", 0, "File name pattern 2" },
 { 0, 'o', "OUTPUTFILENAME", 0, "Output file name" },
 { 0, 'u', 0, 0, "Assume unpolarized excitation"},
-{ 0, 'n', "NSTEPS", 0, "Number of steps of the cascade."}
+{ 0, 'n', "NSTEPS", 0, "Number of steps of the cascade."},
 { 0, 'f', 0, 0, "Fit a function to the simulation result"},
 { 0, 0, 0, 0, 0 }
 };
@@ -111,7 +112,6 @@ public:
 int main(int argc, char* argv[]){
 
 	const Double_t pi = TMath::Pi();
-	const Double_t two_pi = TMath::Pi()*2.;
 	
 	struct arguments args;
 	argp_parse(&argp, argc, argv, 0, 0, &args);
@@ -121,6 +121,7 @@ int main(int argc, char* argv[]){
 	cout << "> TREENAME     : " << args.tree << endl;
 	cout << "> FILES        : " << "*" << args.p1 << "*" << args.p2 << "*" << endl;
 	cout << "> OUTPUTFILE   : " << args.outputfilename << endl;
+	cout << "> NSTEPS       : " << args.nsteps<< endl;
 	cout << "> FIT          : " << args.fit << endl;
 	cout << "> UNPOLARIZED  : " << args.is_unpolarized << endl;
 	cout << "#############################################" << endl;
@@ -154,16 +155,19 @@ int main(int argc, char* argv[]){
 	Int_t nbins_phi = 50;
 	Int_t nbins_theta = 50;
 	Double_t phi_low = 0.;
-	Double_t phi_up = two_pi;
+	Double_t phi_up = pi;
 	Double_t theta_low = 0.;
 	Double_t theta_up = pi;
 
-	vector<TH2F*> histograms;
+	vector<TH2F*> hist;
 	stringstream sst;
 	for(unsigned int i = 0; i < args.nsteps; ++i){
 		sst.str("");	
 		sst << "hist" << (i+1);
-		histograms.push_back(new TH2F(sst.str.c_str(), "Momentum distribution in (theta, phi)", nbins_theta, theta_low, theta_up, nbins_phi, phi_low, phi_up));
+		hist.push_back(new TH2F(sst.str().c_str(), "Momentum distribution in (theta, phi)", nbins_theta, theta_low, theta_up, nbins_phi, phi_low, phi_up));
+		hist[i]->GetXaxis()->SetTitle("Theta");
+		hist[i]->GetYaxis()->SetTitle("Phi");
+		hist[i]->GetZaxis()->SetTitle("Angular distribution");
 	}
 
 	// Fill histogram from TBranch in TChain with user-defined conditions
@@ -174,22 +178,28 @@ int main(int argc, char* argv[]){
 	utr.SetBranchAddress("vy", &momentum_y);
 	utr.SetBranchAddress("vz", &momentum_z);
 
+	TVector3 vec(0., 0., 1.);
+
 	for(int i = 0; i < utr.GetEntries(); i++){
 		utr.GetEntry(i);
 
+		vec.SetXYZ(momentum_x, momentum_y, momentum_z);
+
 		// Need to distinguish between different sectors of the unit circle when filling the histogram
-		if(momentum_x >= 0. && momentum_y < 0.){
-			hist->Fill(acos((momentum_z/sqrt(momentum_x*momentum_x + momentum_y*momentum_y + momentum_z*momentum_z))), two_pi + atan(momentum_y/momentum_x));
-		}
-		else if(momentum_x >= 0. && momentum_y >= 0.){
-			hist->Fill(acos((momentum_z/sqrt(momentum_x*momentum_x + momentum_y*momentum_y + momentum_z*momentum_z))), atan(momentum_y/momentum_x));
-		}
-		else if(momentum_x < 0. && momentum_y >= 0.){
-			hist->Fill(acos((momentum_z/sqrt(momentum_x*momentum_x + momentum_y*momentum_y + momentum_z*momentum_z))), pi + atan(momentum_y/momentum_x));
-		}
-		else if(momentum_x < 0. && momentum_y < 0.){
-			hist->Fill(acos((momentum_z/sqrt(momentum_x*momentum_x + momentum_y*momentum_y + momentum_z*momentum_z))), pi + atan(momentum_y/momentum_x));
-		}
+		hist[(long unsigned int) i%args.nsteps]->Fill(vec.Theta(), vec.Phi());
+		//if(momentum_x >= 0. && momentum_y < 0.){
+		//	hist[(long unsigned int) i%args.nsteps]->Fill(acos((momentum_z/sqrt(momentum_x*momentum_x + momentum_y*momentum_y + momentum_z*momentum_z))), two_pi + atan(momentum_y/momentum_x));
+		//}
+		//else if(momentum_x >= 0. && momentum_y >= 0.){
+		//	hist[(long unsigned int) i% args.nsteps]->Fill(acos((momentum_z/sqrt(momentum_x*momentum_x + momentum_y*momentum_y + momentum_z*momentum_z))), atan(momentum_y/momentum_x));
+		//	cout << acos((momentum_z/sqrt(momentum_x*momentum_x + momentum_y*momentum_y + momentum_z*momentum_z))) << ", " << atan(momentum_y/momentum_x) << endl;
+		//}
+		//else if(momentum_x < 0. && momentum_y >= 0.){
+		//	hist[(long unsigned int) i%args.nsteps]->Fill(acos((momentum_z/sqrt(momentum_x*momentum_x + momentum_y*momentum_y + momentum_z*momentum_z))), pi + atan(momentum_y/momentum_x));
+		//}
+		//else if(momentum_x < 0. && momentum_y < 0.){
+		//	hist[(long unsigned int) i%args.nsteps]->Fill(acos((momentum_z/sqrt(momentum_x*momentum_x + momentum_y*momentum_y + momentum_z*momentum_z))), pi + atan(momentum_y/momentum_x));
+		//}
 	}
 
 	// Create TFile to write output
@@ -197,31 +207,32 @@ int main(int argc, char* argv[]){
 
 	// Fit the histogram
 	
-	if(args.fit){
-		W_Function w_function(args.is_unpolarized);
-	
-		TF2 *ang_dist = new TF2("ang_dist", w_function, 0., pi, 0., two_pi, 1);
-		Double_t ang_dist_params[1] = { 1. };
-		ang_dist->SetParameters(ang_dist_params);
-
-		hist->Fit("ang_dist");
-		ang_dist->Write();
-
-		// Calculate absolute value of the residuals of the fit
-		
-		TH2F *residuals= new TH2F("residuals", "(absolute value of) Residuals of momentum distribution in (theta, phi)", nbins_theta, theta_low, theta_up, nbins_phi, phi_low, phi_up);
-
-		for(Int_t th = 0; th < nbins_theta; ++th){
-			for(Int_t ph = 0; ph < nbins_phi; ++ph){
-				residuals->SetBinContent(th, ph, abs(hist->GetBinContent(th, ph) - ang_dist->Eval(hist->GetXaxis()->GetBinCenter(th), hist->GetYaxis()->GetBinCenter(ph))));
-			}
-		}
-
-		residuals->Write();
-	}
+//	if(args.fit){
+//		W_Function w_function(args.is_unpolarized);
+//	
+//		TF2 *ang_dist = new TF2("ang_dist", w_function, 0., pi, 0., two_pi, 1);
+//		Double_t ang_dist_params[1] = { 1. };
+//		ang_dist->SetParameters(ang_dist_params);
+//
+//		hist->Fit("ang_dist");
+//		ang_dist->Write();
+//
+//		// Calculate absolute value of the residuals of the fit
+//		
+//		TH2F *residuals= new TH2F("residuals", "(absolute value of) Residuals of momentum distribution in (theta, phi)", nbins_theta, theta_low, theta_up, nbins_phi, phi_low, phi_up);
+//
+//		for(Int_t th = 0; th < nbins_theta; ++th){
+//			for(Int_t ph = 0; ph < nbins_phi; ++ph){
+//				residuals->SetBinContent(th, ph, abs(hist->GetBinContent(th, ph) - ang_dist->Eval(hist->GetXaxis()->GetBinCenter(th), hist->GetYaxis()->GetBinCenter(ph))));
+//			}
+//		}
+//
+//		residuals->Write();
+//	}
 	
 	// Write histogram to a new TFile
-	hist->Write();
+	for(auto h: hist)
+		h->Write();
 
 	of->Close();
 

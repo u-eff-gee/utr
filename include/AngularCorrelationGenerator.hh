@@ -51,6 +51,7 @@ class AngularCorrelationGenerator : public G4VUserPrimaryGeneratorAction {
 	
 	void AddParticle(G4ParticleDefinition* particleDefinition){ 
 		nstates.push_back(0);
+		is_polarized.push_back(true);
 		particles.push_back(particleDefinition); 
 		particleEnergies.push_back(0.);
 		relative_angle.push_back(0.);
@@ -79,7 +80,7 @@ class AngularCorrelationGenerator : public G4VUserPrimaryGeneratorAction {
 	};
 	void SetDelta(G4int n_transition, G4double delta){ 
 		mixing_ratios[mixing_ratios.end() - mixing_ratios.begin() - 1][n_transition] = delta; };
-	void SetPolarized(G4bool pol){ is_polarized.push_back(pol); };
+	void SetPolarized(G4bool pol){ is_polarized[is_polarized.end() - is_polarized.begin() - 1] = pol; };
 
 	void SetSourceX(G4double x) { source_x = x; };
 	void SetSourceY(G4double y) { source_y = y; };
