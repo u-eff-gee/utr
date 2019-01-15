@@ -86,7 +86,7 @@ class AngularCorrelationMessenger : public G4UImessenger {
 
 	G4UIcmdWithAString *sourcePVCmd;
 
-	G4UIcmdWithABool *polarizationCmd;
+	G4UIcmdWith3Vector *polarizationCmd;
 };
 
 #endif

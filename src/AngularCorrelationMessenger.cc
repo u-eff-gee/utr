@@ -115,11 +115,13 @@ AngularCorrelationMessenger::AngularCorrelationMessenger(
 	delta34Cmd->SetParameterName("delta34", true);
 	delta34Cmd->SetDefaultValue(0.);
 
-	polarizationCmd = new G4UIcmdWithABool("/angcorr/polarized", this);
-	polarizationCmd->SetGuidance("Assume that the exciting transition is polarized (default: true)");
-	polarizationCmd->SetParameterName("is_polarized", true);
-	polarizationCmd->SetDefaultValue(true);
-
+	polarizationCmd = new G4UIcmdWith3Vector("/angcorr/polarization", this);
+	polarizationCmd->SetGuidance("Set the direction of polarization");
+	polarizationCmd->SetGuidance("of the current step in the cascade.");
+	polarizationCmd->SetGuidance("Default: (1.0, 0.0, 0.0).");
+	polarizationCmd->SetGuidance("No polarization: (0.0, 0.0, 0.0).");
+	polarizationCmd->SetParameterName("polarization_x", "polarization_y", "polarization_z", true);
+	polarizationCmd->SetDefaultValue(G4ThreeVector(1., 0., 0.));
 
 	sourceXCmd = new G4UIcmdWithADoubleAndUnit("/angcorr/sourceX", this);
 	sourceXCmd->SetGuidance("Set X position of source container volume");
@@ -241,8 +243,8 @@ void AngularCorrelationMessenger::SetNewValue(G4UIcommand *command,
 		    2, delta34Cmd->GetNewDoubleValue(newValues));
 	}
 	if (command == polarizationCmd) {
-		angularCorrelationGenerator->SetPolarized(
-				polarizationCmd->GetNewBoolValue(newValues));
+		angularCorrelationGenerator->SetPolarization(
+				polarizationCmd->GetNew3VectorValue(newValues));
 	}
 
 	if (command == sourceXCmd) {
@@ -353,7 +355,7 @@ G4String AngularCorrelationMessenger::GetCurrentValue(G4UIcommand *command) {
 	}
 	if (command == polarizationCmd) {
 		return polarizationCmd->ConvertToString(
-		    angularCorrelationGenerator->IsPolarized());
+		    angularCorrelationGenerator->GetPolarization());
 	}
 
 	return cv;

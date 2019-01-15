@@ -29,10 +29,20 @@
 #    /angcorr/state2 STATE2
 #    /angcorr/state3 STATE3
 #    ...
-#    [/angcorr/polarized IS_POLARIZED]
 #    The particles will be emitted with an angular distribution that
 #    is rotated in the same way as the emission direction of the previous
 #    particle is rotated from the z-axis.
+#
+#
+# For each step, the polarization of the radiation can also be
+# specified using
+#
+# /angcorr/polarization X Y Z
+#
+# where X, Y and Z are the components of the (normalized)
+# polarization vector of the outgoing radiation. Similar as
+# the emission direction, the polarization axis of the n-th 
+# particle will be rotated w.r.t. the (n-1)-th particle.
 #########################################################################
 
 # Define the number of steps in the cascade
@@ -47,29 +57,36 @@
 /angcorr/particle gamma
 /angcorr/energy 1. MeV
 /angcorr/direction 0. 0. -1.
+/angcorr/polarization 1. 0. 0.
 
 ##################################
 # Define the second step
 ##################################
 
 /angcorr/particle geantino
-/angcorr/energy 2. MeV
-/angcorr/relativeangle 0. deg
+/angcorr/energy 3. MeV
+
+/angcorr/relativeangle 10. deg
+/angcorr/polarization 1. 0. 0.
 
 ##################################
 # Define the third step
 ##################################
 
 /angcorr/particle neutron
-/angcorr/energy 3. MeV
+/angcorr/energy 5. MeV
 
 /angcorr/nstates 3
 /angcorr/state1 0.
 /angcorr/state2 1.
 /angcorr/state3 0.
-# Polarization is already true by default
-# but write it explicitly here for completeness.
-/angcorr/polarized true
+# Unpolarized angular distributions are defined by
+# a vector with vanishing length
+# In this example, the angular distributions of the
+# cascades 0^+ -> 1^+ -> 0^+ and
+# 0^+ -> 1^- -> 0^+ are added up to give an
+# unpolarized angular distribution
+/angcorr/polarization 1. 0. 0.
 
 ##################################
 # Define the source volume

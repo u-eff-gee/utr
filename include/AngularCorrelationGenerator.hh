@@ -47,11 +47,25 @@ class AngularCorrelationGenerator : public G4VUserPrimaryGeneratorAction {
 
 	void GeneratePrimaries(G4Event *anEvent);
 
+	G4ThreeVector generate_position();
+	G4ThreeVector generate_direction(unsigned long n_particle);
+	G4ThreeVector generate_polarization(unsigned long n_particle);
+
+	G4ThreeVector get_euler_angles(G4ThreeVector reference_direction,
+			G4ThreeVector reference_polarization);
+
+	// Self-checks
+	
+	void check_position_generator();
+	void check_momentum_generator();
+	bool momentum_generator_check_unnecessary(unsigned long n_particle);
+
 	// Set-methods to use with the AngularCorrelationMessenger
 	
 	void AddParticle(G4ParticleDefinition* particleDefinition){ 
 		nstates.push_back(0);
-		is_polarized.push_back(true);
+		polarization.push_back(G4ThreeVector());
+		is_polarized.push_back(false);
 		particles.push_back(particleDefinition); 
 		particleEnergies.push_back(0.);
 		relative_angle.push_back(0.);
@@ -80,7 +94,11 @@ class AngularCorrelationGenerator : public G4VUserPrimaryGeneratorAction {
 	};
 	void SetDelta(G4int n_transition, G4double delta){ 
 		mixing_ratios[mixing_ratios.end() - mixing_ratios.begin() - 1][n_transition] = delta; };
-	void SetPolarized(G4bool pol){ is_polarized[is_polarized.end() - is_polarized.begin() - 1] = pol; };
+	void SetPolarization(G4ThreeVector vec){ 
+		polarization[polarization.end() - polarization.begin() - 1] = vec; 
+		if(vec.mag() > 0.)	
+			is_polarized[is_polarized.end() - is_polarized.begin() - 1] = true;
+	};
 
 	void SetSourceX(G4double x) { source_x = x; };
 	void SetSourceY(G4double y) { source_y = y; };
@@ -105,7 +123,7 @@ class AngularCorrelationGenerator : public G4VUserPrimaryGeneratorAction {
 		return states[states.end() - states.begin() - 1][state_number]; };
 	G4double GetDelta(int transition_number) { 
 		return mixing_ratios[mixing_ratios.end() - mixing_ratios.begin() - 1][transition_number]; };
-	G4bool IsPolarized(){ return is_polarized[is_polarized.end() - is_polarized.begin() - 1]; };
+	G4ThreeVector GetPolarization(){ return polarization[polarization.end() - polarization.begin() - 1]; };
 
 	G4double GetSourceX() { return source_x; };
 	G4double GetSourceY() { return source_y; };
@@ -154,6 +172,7 @@ class AngularCorrelationGenerator : public G4VUserPrimaryGeneratorAction {
 	vector< vector<G4double> > mixing_ratios;
 
 	vector<G4bool> is_polarized;
+	vector<G4ThreeVector> polarization;
 
 	/*********************************************
 	 *  Local variables 
@@ -169,10 +188,8 @@ class AngularCorrelationGenerator : public G4VUserPrimaryGeneratorAction {
 
 	G4Navigator *navi;
 
-	G4double MAX_TRIES_POSITION;
-	G4double MAX_TRIES_MOMENTUM;
-	G4bool position_found;
-	G4bool momentum_found;
+	const G4int MAX_TRIES_POSITION;
+	const G4int MAX_TRIES_MOMENTUM;
 	G4bool direction_given;
 	vector<G4bool> relative_angle_given;
 
