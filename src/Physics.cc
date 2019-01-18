@@ -67,6 +67,8 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4HadronPhysicsShieldingLEND.hh"
 #endif
 
+#include "G4EmExtraPhysics.hh"
+
 Physics::Physics(){
 	G4cout << "================================================================"
 	          "================" << G4endl;
@@ -97,6 +99,13 @@ Physics::Physics(){
 	G4cout << "\tG4EmStandardPhysics_option4 ..." << G4endl;
 	RegisterPhysics( new G4EmStandardPhysics_option4() );
 #endif
+
+// EM extra physics. Contains photonuclear processes.
+#ifdef EM_EXTRA 
+	G4cout << "\tG4EmExtraPhysics ..." << G4endl;
+	RegisterPhysics( new G4EmExtraPhysics() );
+#endif
+
 
 // Hadronic elastic modular physics lists
 #ifdef HADRON_ELASTIC_STANDARD
@@ -130,6 +139,6 @@ Physics::Physics(){
 	RegisterPhysics( new G4HadronPhysicsShieldingLEND() );
 #endif
 
-	G4cout << "================================================================"
-	          "================" << G4endl;
+G4cout << "================================================================"
+	  "================" << G4endl;
 }

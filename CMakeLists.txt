@@ -35,6 +35,7 @@ option(EM_LIVERMORE "Use G4EmLivermorePhysics" OFF)
 option(EM_LIVERMORE_POLARIZED "Use G4EmLivermorePolarizedPhysics" ON)
 option(EM_LIVERMORE_POLARIZED_JAEA "Use G4EmLivermorePolarizedPhysics with elastic scattering processes from JAEA" OFF)
 option(EM_PENELOPE "Use G4EmPenelopePhysics" OFF)
+option(EM_EXTRA "Use G4EmExtraPhysics" OFF)
 
 option(HADRON_ELASTIC_STANDARD "Use G4HadronElasticPhysics" ON)
 option(HADRON_ELASTIC_HP "Use G4HadronElasticPhysicsHP" OFF)
