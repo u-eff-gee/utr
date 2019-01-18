@@ -448,4 +448,64 @@ void Materials::ConstructMaterials() {
 
 	one_third_density_brass->AddElement(nat_Cu, fractionmass = 70.*perCent);
 	one_third_density_brass->AddElement(nat_Zn, fractionmass = 30.*perCent);
+
+	/***********************************/
+	//      PEEK (C19H12O3) 
+	/***********************************/	
+
+	G4Element *nat_H = nist->FindOrBuildElement("H");
+
+	density = 1.32 * g / cm3; // Densitiy given in Wikipedia (https://de.wikipedia.org/wiki/Polyetheretherketon)
+
+	peek = new G4Material(name = "peek", density, ncomponents = 3);
+
+	peek->AddElement(nat_C, fractionmass = 100*19./24.*perCent);
+	peek->AddElement(nat_H, fractionmass = 100*1./24.*perCent);
+	peek->AddElement(nat_O, fractionmass = 100*4./24.*perCent);
+
+	/***********************************/
+	//      P10 gas (90Ar10CH4) 
+	/***********************************/	
+
+	density = 1.56 * kg / m3;	// Densitiy given by SRIM/TRIM database
+
+	P10 = new G4Material(name = "P10", density, ncomponents = 3);
+
+	P10->AddElement(nat_Ar, fractionmass = 90.*perCent);
+	P10->AddElement(nat_C, fractionmass = 2.*perCent);
+	P10->AddElement(nat_H, fractionmass = 8.*perCent);
+
+	/***********************************/
+	//      PCB_coating (Cu + Ni + Au) 
+	/***********************************/	
+
+	G4Element *nat_Ni = nist->FindOrBuildElement("Ni");
+	G4Element *nat_Au = nist->FindOrBuildElement("Au");
+
+	density =  8.965 * g / cm3; // calculated from relative volume of Cu, Ni and Au with densities from nist library
+
+	PCB_coating = new G4Material(name = "PCB_coating", density, ncomponents = 3);
+
+	PCB_coating->AddElement(nat_Cu, fractionmass = 87.5*perCent);
+	PCB_coating->AddElement(nat_Ni, fractionmass = 12.25*perCent);
+	PCB_coating->AddElement(nat_Au, fractionmass = 0.25*perCent);
+
+	/******************************************************/
+	// Photo-fission targets from 2019 HIgS experiments
+	/******************************************************/
+
+	// 232Th from TUD, P-1156
+	G4double density232Th = 11.72 * g / cm3;
+
+	target_Th232 = new G4Material(name = "232Th", density232Th, ncomponents = 1);
+
+	G4Isotope *Th232 = new G4Isotope(name = "232Th", z = 90, a = 232);
+
+	G4Element *enriched_Th =
+	    new G4Element(name = "enriched Th", symbol = "Th", ncomponents = 1);
+
+	enriched_Th->AddIsotope(Th232, abundance = 100. * perCent);
+
+	target_Th232->AddElement(enriched_Th, natoms = 1);
+
 }
