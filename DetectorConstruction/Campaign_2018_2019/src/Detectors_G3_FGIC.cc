@@ -80,7 +80,7 @@ void Detectors_G3_FGIC::Construct(G4ThreeVector global_coordinates){
 
 	/**************** HPGE1 *******************/
 
-	G4double HPGe1_rt = 400. * mm;
+	G4double HPGe1_rt = 250. * mm;
 	G4double HPGe1_dy = 0. * mm;
 	G4double HPGe1_dz = 0. * mm;
 	G4double HPGe1_phi = 315. * deg;
@@ -175,7 +175,7 @@ void Detectors_G3_FGIC::Construct(G4ThreeVector global_coordinates){
 
 	/**************** HPGE2 *******************/
 
-	G4double HPGe2_rt = 400. * mm;
+	G4double HPGe2_rt = 250. * mm;
 	G4double HPGe2_dy = 0. * mm;
 	G4double HPGe2_dz = 0. * mm;
 	G4double HPGe2_phi = 90. * deg;
@@ -272,7 +272,7 @@ void Detectors_G3_FGIC::Construct(G4ThreeVector global_coordinates){
 
 	/**************** HPGE3 *******************/
 
-	G4double HPGe3_rt = 400. * mm;
+	G4double HPGe3_rt = 250. * mm;
 	G4double HPGe3_dy = 0. * mm; 
 	G4double HPGe3_dz = 0. * mm;
 	G4double HPGe3_phi = 45. * deg;
@@ -369,7 +369,7 @@ void Detectors_G3_FGIC::Construct(G4ThreeVector global_coordinates){
 
 	/**************** HPGE4 *******************/
 
-	G4double HPGe4_rt = 400. * mm; 
+	G4double HPGe4_rt = 250. * mm; 
 	G4double HPGe4_dy = 0. * mm; 
 	G4double HPGe4_dz = 0. * mm; 
 	G4double HPGe4_phi = 180. * deg;
@@ -454,7 +454,7 @@ void Detectors_G3_FGIC::Construct(G4ThreeVector global_coordinates){
 
 	/**************** LABR1 *******************/
 
-	G4double LaBr1_rt = 400. * mm; 
+	G4double LaBr1_rt = 250. * mm; 
 	G4double LaBr1_dy = 0. * mm; 
 	G4double LaBr1_dz = 0. * mm; 
 	G4double LaBr1_phi = 0. * deg;
@@ -552,7 +552,7 @@ void Detectors_G3_FGIC::Construct(G4ThreeVector global_coordinates){
 
 	/**************** LABR2 *******************/
 
-	G4double LaBr2_rt = 400. * mm; 
+	G4double LaBr2_rt = 250. * mm; 
 	G4double LaBr2_dy = 0. * mm; 
 	G4double LaBr2_dz = 0. * mm; 
 	G4double LaBr2_phi = 270. * deg;
@@ -649,7 +649,7 @@ void Detectors_G3_FGIC::Construct(G4ThreeVector global_coordinates){
 
 	/**************** LABR3 *******************/
 
-	G4double LaBr3_rt = 400. * mm; 
+	G4double LaBr3_rt = 250. * mm; 
 	G4double LaBr3_dy = 0. * mm; 
 	G4double LaBr3_dz = 0. * mm; 
 	G4double LaBr3_phi = 225. * deg;
@@ -734,7 +734,7 @@ void Detectors_G3_FGIC::Construct(G4ThreeVector global_coordinates){
 
 	/**************** LABR4 *******************/
 
-	G4double LaBr4_rt = 400. * mm;
+	G4double LaBr4_rt = 250. * mm;
 	G4double LaBr4_dy = 0. * mm;
 	G4double LaBr4_dz = 0. * mm;
 	G4double LaBr4_phi = 135. * deg;
