@@ -43,8 +43,8 @@ Setup for runs 271 - 279
 #include "Beampipe_Downstream.hh"
 #include "First_UTR_Wall.hh"
 #include "First_Setup.hh"
-#include "G3_Wall_243_279.hh"
-#include "Detectors_G3_271_279.hh"
+#include "G3_Wall_FGIC.hh"
+#include "Detectors_G3_FGIC.hh"
 #include "Wheel.hh"
 #include "G3_Table.hh"
 #include "Table2_243_279.hh"
@@ -138,8 +138,8 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 //	Beampipe_Upstream beampipe_Upstream(World_Logical);
 	First_UTR_Wall first_UTR_Wall(World_Logical);
 	First_Setup first_Setup(World_Logical);
-	G3_Wall_243_279 g3_Wall(World_Logical); // Was not there in these runs. However, it still defines the floor height, so it is needed here
-	Detectors_G3_271_279 detectors_G3(World_Logical);
+	G3_Wall_FGIC g3_Wall(World_Logical); // Was not there in these runs. However, it still defines the floor height, so it is needed here
+	Detectors_G3_FGIC detectors_G3(World_Logical);
 	Wheel wheel(World_Logical);
 	G3_Table g3_Table(World_Logical);
 	Table2_243_279 table2(World_Logical);
@@ -179,11 +179,11 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	/***************** G3_WALL *****************/
 
-//	g3_Wall.Construct(G4ThreeVector(0., 0., Wheel_To_Target - First_Setup_To_Wheel + First_Setup_To_G3_Wall + g3_Wall.Get_Length()*0.5));
+	g3_Wall.Construct(G4ThreeVector(0., 0., Wheel_To_Target - First_Setup_To_Wheel + First_Setup_To_G3_Wall + g3_Wall.Get_Length()*0.5));
 
 	/***************** DETECTORS_G3 *****************/
 
-//	detectors_G3.Construct(G4ThreeVector(0., 0., 0.));
+	detectors_G3.Construct(G4ThreeVector(0., 0., 0.));
 
 	/***************** FGIC *****************/
 
