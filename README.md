@@ -115,7 +115,7 @@ Geometry which is expected to be permanent (for example detectors, or furniture)
 More volatile geometry should be placed in the corresponding campaign, i.e. `utr/DetectorConstruction/Campaign_YEAR/include` and `utr/DetectorConstruction/Campaign_YEAR/src`.
 *Sometimes, the difference may not be so clear, and at the moment the sorting is probably not consistent, but our team is still tidying up the 2018 campaign. Everything before 2018 does not follow these conventions, but has been sorted according to the directory structure above anyway to ensure backward compatibility.*
 
-At the moment, detailed implementations of the geometry of the 2016/2017 campaign and parts of the 2018 campaign exist. They include geometry close to the beamline in the collimator room and the UTR including, of course, the experimental setups (γ³ setup [[5]](#ref-g3) and second setup). Less detailed geometries exist for selected experiments in older campaigns. The geometries for the 2013 and 2014/2015 campaign are based on the geometry from 2016/2017, the geometry for the 2012 campaign is based on the geometry from 2018.
+At the moment, detailed implementations of the geometry of the 2016/2017 campaign and parts of the 2018 campaign exist. They include geometry close to the beamline in the collimator room and the UTR including, of course, the experimental setups (γ³ setup [[5]](#ref-g3), second setup and recently also an ionization chamber for photofission experiments). Less detailed geometries exist for selected experiments in older campaigns. The geometries for the 2013 and 2014/2015 campaign are based on the geometry from 2016/2017, the geometry for the 2012 campaign is based on the geometry from 2018.
 
 An implementation of the Darmstadt High-Intensity Photon Setup (DHIPS) [[6]](#ref-dhips) is under construction at the moment. Its geometry will be organized similar to the HIγS geometry from 2018.
 
@@ -623,6 +623,18 @@ Using the following physics lists:
 
 at the beginning of a simulation will show which physics lists are currently used.
 
+Most of the physics lists are probably a little too extensive for the intended use of `utr`. This is also why lots of warnings concerning very exotic particles like 
+
+```
+*** G4Exception : PART10116
+      issued by : G4ParticleDefintion::SetProcessManager
+ProcessManager is being set to eta2(1870) without proper initialization of TLS pointer vector.
+This operation is thread-unsafe.
+*** This is just a warning message. ***
+```
+
+may appear.
+
 In order to include new physics modules, include them in the `src/Physics.cc` file.
 
 ### 2.5 Random Number Engine <a name="random"></a>
@@ -1021,7 +1033,7 @@ The `TChain` file can also be post-processed with the aforementioned scripts, in
 
 ## 6 Unit Tests <a name="unittests"></a>
 
-## 6.1 AngularDistributionGenerator <a name="angulardistributiongeneratortest"></a>
+### 6.1 AngularDistributionGenerator <a name="angulardistributiongeneratortest"></a>
 
 For testing the `AngularDistributionGenerator`, a dedicated geometry can be found in `/DetectorConstruction/unit_tests/AngularDistributionGenerator_Test/` and a macro file and output processing script are located in `/unit_tests/AngularDistributionGenerator_Test/`. The test geometry consists of a very small spherical particle source surrounded by a large hollow sphere which acts as a **ParticleSD**. Geantino particles emitted by this source and detected by the hollow sphere should have the desired angular distribution. This test was originally implemented to test the built-in angular distributions which are manually coded from the output of a computer algebra program, and to get a feeling of how large the value of `W_max` has to be.
 
@@ -1071,9 +1083,15 @@ and especially the fit residuals
 
 one can see clear systematic deviations from the input distribution which are a clear indication that `W_max == 1` is not a good choice for this distribution.
 
-## 6.2 AngularCorrelationGenerator <a name="angularcorrelationgeneratortest"></a>
+### 6.2 AngularCorrelationGenerator <a name="angularcorrelationgeneratortest"></a>
 
 At the moment, the unit test for the `AngularCorrelationGenerator` is almost the same as for the `AngularDistributionGenerator`, except for the sample macro file and the ROOT processing script. The script has the additional parameter `-n` which allows to set the number of steps of the cascade that was used in the simulation to be able to sort different particles into different theta-phi histograms.
+
+### 6.3 Physics <a name="physicstest"></a>
+
+To test the physics processes of Geant4 and sensitive detector functionality of `utr`, a simple test geometry has been implemented. Almost all parts of the geometry are spherically symmetric to make it easy to study angular distributions of particles emitted by some process. At the origin, a cylindrical reaction target is placed. It is surrounded by three concentric spherical shells, representing each of the available detector types of `utr` (see [2.2 Sensitive Detectors](#sensitivedetectors)). Beginning from the center, the order is `ParticleSD`, `SecondarySD` and `EnergyDepositionSD`. The first two detector types are nondestructive, therefore they are made of vacuum. The `EnergyDepositionSD` will only work if made of matter with which the particles can react.
+
+The unit test can be activated by selecting the geometry in `DetectorConstruction/unit_tests/Physics/` via CMake build variables (see [3.3 Build configuration](#build)). For a beam-on-target experiment, usage of a modified `beam.mac` macro is recommended. Feel free to play with different physics lists and materials.
 
 ## 7 License <a name="license"></a>
 
