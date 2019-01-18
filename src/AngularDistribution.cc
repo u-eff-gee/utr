@@ -205,6 +205,16 @@ double AngularDistribution::AngDist(
 				; 
 
 		}
+		// 1^+ -> 2^+ -> 0^+ or 1^- -> 2^- -> 0^-
+		if((st[0] == 1. && st[1] == 2. && st[2] == 0.) ||
+		   (st[0] ==-1. && st[1] ==-2. && st[2] ==-0.)){
+			return (80*pow(mix[0], 2)*pow(sin(theta), 2)*cos(2*phi)*pow(cos(theta), 2) - 5*pow(mix[0], 2)*pow(sin(theta), 2)*cos(2*phi) - 80*pow(mix[0], 2)*pow(cos(theta), 4) + 75*pow(mix[0], 2)*pow(cos(theta), 2) + 15*pow(mix[0], 2) + 6*sqrt(5)*mix[0]*pow(sin(theta), 2)*cos(2*phi) - 18*sqrt(5)*mix[0]*pow(cos(theta), 2) + 6*sqrt(5)*mix[0] - 9*pow(sin(theta), 2)*cos(2*phi) - 9*pow(cos(theta), 2) + 27)/(24*pow(mix[0], 2) + 24);
+		}
+		// 1^- -> 2^+ -> 0^+ or 1^+ -> 2^- -> 0^-
+		if((st[0] ==-1. && st[1] == 2. && st[2] == 0.) ||
+		   (st[0] == 1. && st[1] ==-2. && st[2] ==-0.)){
+			return (1.0/11760.0)*(1120*pow(mix[0], 2)*(-70*pow(sin(phi), 2)*pow(sin(theta), 4) + 60*pow(sin(phi), 2)*pow(sin(theta), 2) + 10*pow(sin(theta), 2) - 8) + 11760*pow(mix[0], 2) - 3*sqrt(70)*((3*pow(cos(theta), 2) - 1)*(-5*sqrt(70)*pow(mix[0], 2) + 70*sqrt(14)*mix[0] + 7*sqrt(70)) + (15*sqrt(70)*pow(mix[0], 2) + 70*sqrt(14)*mix[0] - 21*sqrt(70))*pow(sin(theta), 2)*cos(2*phi)) + 11760)/(pow(mix[0], 2) + 1);
+		}
 
     } else if (nst == 4) {
         // 0^+ → 1^- → 0 → 1
