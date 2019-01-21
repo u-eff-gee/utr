@@ -47,6 +47,10 @@ class AngularDistributionGenerator : public G4VUserPrimaryGeneratorAction {
 
 	void GeneratePrimaries(G4Event *anEvent);
 
+	// Self-checks
+	void check_position_generator();
+	void check_momentum_generator();
+
 	// Set- and Get- methods to use with the AngularDistributionMessenger
 
 	void SetNStates(G4int nst) { nstates = nst; };
@@ -120,6 +124,12 @@ class AngularDistributionGenerator : public G4VUserPrimaryGeneratorAction {
 	G4double range_z;
 
 	G4String pv;
+	G4String pvx;
+	G4String pvmx;
+	G4String pvy;
+	G4String pvmy;
+	G4String pvz;
+	G4String pvmz;
 	G4double random_x;
 	G4double random_y;
 	G4double random_z;

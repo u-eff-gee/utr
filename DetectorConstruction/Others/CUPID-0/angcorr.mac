@@ -24,9 +24,9 @@
 /angcorr/sourceY 0. mm
 /angcorr/sourceZ 0. mm
 
-/angcorr/sourceDX 60. mm
-/angcorr/sourceDY 60. mm
-/angcorr/sourceDZ 60. mm
+/angcorr/sourceDX 46. mm
+/angcorr/sourceDY 46. mm
+/angcorr/sourceDZ 58. mm
 
 /angcorr/sourcePV crystal
 

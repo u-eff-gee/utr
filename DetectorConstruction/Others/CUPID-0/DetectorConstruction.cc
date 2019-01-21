@@ -88,7 +88,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	G4double Zn_82Se_Density = (65.38 + 81.916699)/(65.38 + 78.971)*Zn_natSe_Density; // Average atomic masses from Wikipedia
 									// 82Se atomic mass from Atomic Mass Evaluation (AME).
 	G4double crystal_Radius = sqrt(crystal_Mass/(Zn_82Se_Density*crystal_Length*pi));
-									
+
 	// ****** Build the Zn^{82}Se crystal material ******
 	// Selenium material enriched in 82Se (assume 82Se is the only isotope)
 	G4Isotope *se82 = new G4Isotope("82Se_Isotope", 34, 82);

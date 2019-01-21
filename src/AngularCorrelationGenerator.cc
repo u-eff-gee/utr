@@ -131,6 +131,10 @@ void AngularCorrelationGenerator::check_position_generator(){
 	if (!checked_position_generator) {
 		G4int position_success = 0;
 
+		G4int max_x = 0;
+		G4int max_y = 0;
+		G4int max_z = 0;
+
 		for (unsigned int j = 0; j < source_PV_names.size(); ++j) {
 
 			position_success = 0;
@@ -151,14 +155,41 @@ void AngularCorrelationGenerator::check_position_generator(){
 				pv = navi->LocateGlobalPointAndSetup(
 				             G4ThreeVector(random_x, random_y, random_z))
 				         ->GetName();
+				pvx = navi->LocateGlobalPointAndSetup(
+				             G4ThreeVector(0.5*range_x + source_x, random_y, random_z))
+				         ->GetName();
+				pvmx = navi->LocateGlobalPointAndSetup(
+				             G4ThreeVector(-0.5*range_x + source_x, random_y, random_z))
+				         ->GetName();
+				pvy = navi->LocateGlobalPointAndSetup(
+				             G4ThreeVector(random_x, 0.5*range_y + source_y, random_z))
+				         ->GetName();
+				pvmy = navi->LocateGlobalPointAndSetup(
+				             G4ThreeVector(random_x, -0.5*range_y + source_y, random_z))
+				         ->GetName();
+				pvz = navi->LocateGlobalPointAndSetup(
+				             G4ThreeVector(random_x, random_y, 0.5*range_z + source_z))
+				         ->GetName();
+				pvmz = navi->LocateGlobalPointAndSetup(
+				             G4ThreeVector(random_x, random_y, -0.5*range_z + source_z))
+				         ->GetName();
 
 				if (pv == source_PV_names[j]) {
 					++position_success;
 				}
+				if (pvx == source_PV_names[j] || pvmx == source_PV_names[j]) {
+					++max_x;
+				}
+				if (pvy == source_PV_names[j] || pvmy == source_PV_names[j]) {
+					++max_y;
+				}
+				if (pvz == source_PV_names[j] || pvmz == source_PV_names[j]) {
+					++max_z;
+				}
 			}
 
-			G4double p = (double) position_success / MAX_TRIES_POSITION;
-			G4double pnot = (double) 1. - p;
+			G4double p = (G4double) position_success / MAX_TRIES_POSITION;
+			G4double pnot = 1. - p;
 
 			G4cout << "Check finished. Of " << MAX_TRIES_POSITION
 			       << " random 3D points, " << position_success
@@ -168,6 +199,31 @@ void AngularCorrelationGenerator::check_position_generator(){
 			       << MAX_TRIES_POSITION
 			       << " ) = " << pow(pnot, MAX_TRIES_POSITION) / perCent << " %"
 			       << G4endl;
+
+			if(max_x == 0){
+				G4cout << "X range " << source_x << " +- " << 0.5*range_x << " seems to be large enough." << G4endl;
+			} else{
+				G4double p_max_x = (double) max_x/MAX_TRIES_POSITION; 
+				G4cout << G4endl;
+				G4cout << "In " << max_x << " out of " << MAX_TRIES_POSITION << " cases (" << p_max_x / perCent << " % ) the randomly sampled point (sourceX +- sourceDX, sourceY + randomY, sourceZ + randomZ) was still inside the source volume. This may mean that the x range does not encompass the whole source volume." << G4endl;
+			}
+
+			if(max_y == 0){
+				G4cout << "Y range " << source_y << " +- " << 0.5*range_y << " seems to be large enough." << G4endl;
+			} else{
+				G4double p_max_y = (double) max_y/MAX_TRIES_POSITION; 
+				G4cout << G4endl;
+				G4cout << "In " << max_y << " out of " << MAX_TRIES_POSITION << " cases (" << p_max_y / perCent << " % ) the randomly sampled point (sourceX + randomX, sourceY +- sourceDY, sourceZ + randomZ) was still inside the source volume. This may mean that the y range does not encompass the whole source volume." << G4endl;
+			}
+
+			if(max_z == 0){
+				G4cout << "Z range " << source_z << " +- " << 0.5*range_z << " seems to be large enough." << G4endl;
+			} else{
+				G4double p_max_z = (double) max_z/MAX_TRIES_POSITION; 
+				G4cout << G4endl;
+				G4cout << "In " << max_z << " out of " << MAX_TRIES_POSITION << " cases (" << p_max_z / perCent << " % ) the randomly sampled point (sourceX + randomX, sourceY + randomY, sourceZ +- sourceDZ) was still inside the source volume. This may mean that the z range does not encompass the whole source volume." << G4endl;
+			}
+
 			G4cout << "========================================================"
 			          "===="
 			          "============"

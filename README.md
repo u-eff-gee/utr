@@ -399,8 +399,8 @@ Given a(n)
 
 `AngularDistributionGenerator` generates uniform random
  
-* Positions `(random_x, random_y, random_z)` 
-* Tuples `(random_θ, random_φ, random_W)`
+* Positions `(source_x + random_x, source_y + random_y, source_z + random_z), |random_I| <= 0.5*sourceDI, I in {x, y, z}` 
+* Tuples `(random_θ, random_φ, random_W), |random_W| <= MAX_W`
 
 until 
 
@@ -413,9 +413,9 @@ The process of finding a starting point is depicted in 2 dimensions in the figur
 
 ![MC position generator](.media/MC_Position_Generator.png)
 
-Finding the correct dimensions of the container box might need visualization. Try placing a `G4Box` with the desired dimensions at the desired position in the geometry and see whether it encloses the source volume completely and as close as possible. In fact, most of the predefined geometries have such a `G4Box` called `AuxBox` which is commented out. After using it to determine the size and position of the container box, remember to comment out the code again.
+Finding the correct dimensions of the container box might need visualization. Try placing a `G4Box` with the desired dimensions at the desired position in the geometry and see whether it encloses the source volume completely and as close as possible.
 
-The process of finding a starting vector is shown in one dimension (`W` is only dependent on `θ`) in in the figure below. First, a random value `random_θ` for `θ` with a uniform random distribution **on a sphere** is sampled. Note that this is not the same as a uniform distribution of values between 0 and π for θ. Then, a unform random number between 0 and an upper limit `W_max` is drawn. If the value `W_max` is lower than `W(random_θ)` (black points), then a particle will be emitted at that angle.
+The process of finding a starting vector is shown in one dimension (`W` is only dependent on `θ`) in in the figure below. First, a random value `random_θ` for `θ` with a uniform random distribution **on a sphere** is sampled. Note that this is not the same as a uniform distribution of values between 0 and π for θ. Then, a unform random number between 0 and an upper limit `MAX_W` is drawn. If the value `MAX_W` is lower than `W(random_θ)` (black points), then a particle will be emitted at that angle.
 
 ![MC momentum generator](.media/MC_Momentum_Generator.png)
 
@@ -423,16 +423,16 @@ The process of finding a starting vector is shown in one dimension (`W` is only 
 Clearly, the algorithm works well if
 
 * the cuboid approximates the shape of the sources well and wraps it tightly
-* the angular distribution varies smoothly in the `(θ, φ)` plane and W_max is very close to the actual maximum value of `W`
+* the angular distribution varies smoothly in the `(θ, φ)` plane and `MAX_W` is very close to the actual maximum value of `W`
 
-The maximum number of randomly sampled points is hard-coded in `AngularDistributionGenerator.cc` where it says:
+The maximum number of randomly sampled points is hard-coded in `AngularDistributionGenerator.cc` and `AngularCorrelationGenerator.cc` where it says:
 
 ```
 MAX_TRIES_POSITION = 1e4
 MAX_TRIES_MOMENTUM = 1e4
 ```
 
-AngularDistributionGenerator can do a self-check before the actual simulation in which it creates `MAX_TRIES_XY` points and evaluates how many of the were valid. From this, the probability *p* of not hitting one of the source volumes / angular distribution can be estimated. An individual check is done for each source volume. If `p * N >~ 1`, where N is the number of particles to be simulated, the algorithm will very probably fail once in a while so try increasing `MAX_TRIES_XY` or optimizing the container volume or W_max. A typical output of the self-check for the position generator looks like:
+The event generators can do a self-check before the actual simulation in which they creates `MAX_TRIES_XY` points and evaluate how many of them were valid. From this, the probability *p* of not hitting one of the source volumes / angular distributions can be estimated. In the case of the position generator, an individual check is done for each source volume. If `p * N >~ 1`, where N is the number of particles to be simulated, the algorithm will very probably fail once in a while so try increasing `MAX_TRIES_XY` or optimizing the dimension of the container volume or `MAX_W`. A typical output of the self-check for the position generator looks like:
 
 ```
 G4WT0 > ========================================================================
@@ -441,19 +441,42 @@ G4WT0 > Check finished. Of 100 random 3D points, 82 were inside volume 'Se82_Tar
 G4WT0 > Probability of failure:	pow( 0.18, 100 ) = 3.36706e-73 %
 G4WT0 > ========================================================================
 ```
-The momentum generator contains one more piece of information. This is because the value of `W_max` that was introduced above has been arbitrarily set to 3 in `AngularDistributionGenerator.hh`, which should be a sensible choice for most angular distributions. However, it may be that `W(θ, φ) > 3` for some distribution. This can also be detected by the self-check with a Monte-Carlo method. For each of the MAX_TRIES_MOMENTUM tries, `utr` will also check whether the inequality `W_max <= W(random_θ, random_φ)` holds. If yes, this could be a hint that the value of `W_max` is too low and should be increased manually.
-The corresponding message would look like
+
+Both the momentum and position generator will also check whether the given limits `MAX_W` and `SOURCE_DI` are large enough. For the position generator, it is clear why this needs to be checked.
+For the momentum generator, the check is necessary because the value of `MAX_W` that was introduced above has been arbitrarily set to 3 in `AngularDistributionGenerator.hh` and `AngularCorrelationGenerator`, which should be a sensible choice for most angular distributions. However, it may be that `W(θ, φ) > 3` for some distribution. 
+Too small values of `MAX_W` and `SOURCE_DI` can also be detected by the self-check with a Monte-Carlo method. For each of the MAX_TRIES_MOMENTUM (MAX_TRIES_POSITION) tries, `utr` will also check whether 
+
+ * the inequality `W_max <= W(random_θ, random_φ)` (``) holds.
+ * the randomly sampled points `(+- 0.5*SOURCE_DX, random_y, random_z)`, `(random_x, +- 0.5*SOURCE_DY, random_z)`, `(random_x, random_y, +- 0.5*SOURCE_DY)` are still inside the source volume.
+
+If yes, this could be a hint that the value of `MAX_W` or `SOURCE_DI` is too low and should be increased.
+The corresponding messages would look like
+
 ```
 G4WT0 > In 5624 out of 10000 cases (56.24 % )
 W(random_theta, random_phi) == MAX_W == 1 was valid.
 This may mean that MAX_W is set too low and
 the angular distribution is truncated.
 ```
+and
+
+```
+G4WT0 > In 3277 out of 10000 cases (32.77 % ) the randomly sampled point (sourceX +- sourceDX, sourceY + randomY, sourceZ + randomZ) was still inside the source volume. This may mean that the x range does not encompass the whole source volume.
+```
+
 If everything is okay, it will display
+
 ```
 G4WT0 > MAX_W == 3 seems to be high enough.
 ```
-However, using `W_max = 3` might still be inefficient, so it is good to know the minimum and maximum value of the angular distribution in advance. For debugging of the angular distribution, a unit test exists in the repository, which is especially recommended if one defines new angular distributions.
+
+and
+
+```
+G4WT0 > X range 0 +- 25 seems to be large enough.
+```
+
+However, 'large enough' may still mean 'too large'. The user is encouraged to try to optimize the parameters `SOURCE_DI` and `MAX_W`, to meliorate the disadvantages of the rejection sampling algorithm. Be aware that the position and momentum sampling have to do expensive calls of trigonometric functions for each random position/momentum vector, i.e. number or tries should be kept as low as possible.
 
 ##### 2.3.2.2 Usage
 

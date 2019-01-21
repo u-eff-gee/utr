@@ -157,6 +157,12 @@ class AngularCorrelationGenerator : public G4VUserPrimaryGeneratorAction {
 	G4double range_z;
 
 	G4String pv;
+	G4String pvx;
+	G4String pvmx;
+	G4String pvy;
+	G4String pvmy;
+	G4String pvz;
+	G4String pvmz;
 
 	// Particle properties
 	vector<G4ParticleDefinition*> particles;
