@@ -290,6 +290,8 @@ Three types of sensitive detectors are implemented at the moment:
     
 No matter which type of sensitive detector is chosen, the simulation output will be a [ROOT](https://root.cern.ch/) tree with a user-defined subset (see section [2.6 Output File Format](#outputfileformat)) of the following 10 branches:
 
+* **event**
+    Number of the event to which the particle belongs. This number is the same for all secondary particles and their corresponding primary particle. It is also the same if `G4ParticleGun->GeneratePrimaryVertext()` is called multiple times in a single event. The latter point makes this variable especially useful in case of the `AngularCorrelationGenerator` (see [2.3.3 AngularCorrelationGenerator](#angularcorrelationgenerator)).
 * **ekin**
     Kinetic energy (in MeV) of the particle at the time of its first hit of the sensitive detector.
 * **edep**
@@ -522,7 +524,8 @@ This is not always desirable. Imagine the following example: The goal is to simu
 
 #### 2.3.3 AngularCorrelationGenerator<a name="angularcorrelationgenerator"></a>
 
-The `AngularCorrelationGenerator` generates monoenergetic particles that originate in a set of `G4PhysicalVolumes` of the `DetectorConstruction`, have a user-defined angular distribution and are correlated. The last point is what distinguishes it from the `AngularDistributionGenerator`: In a single event (`G4Event`), this generator launches several particles from the same origin, for which the angular distribution and polarization depends on the previously emitted particle. In other words, the particles will be part of a cascade of transitions (of a nucleus) which has an arbitrary number of steps.
+The `AngularCorrelationGenerator` generates monoenergetic particles that originate in a set of `G4PhysicalVolumes` of the `DetectorConstruction`, have a user-defined angular distribution and are correlated. The last point is what distinguishes it from the `AngularDistributionGenerator`: In a single event (`G4Event`), this generator launches several particles from the same origin by multiple calls of `G4ParticleGun::GeneratePrimaryVertex()`, for which the angular distribution and polarization depends on the previously emitted particle. In other words, the particles will be part of a cascade of transitions (of a nucleus) which has an arbitrary number of steps.
+Since the particles belong to the same events, they can be easily picked out by the event number in the ROOT output file [see 2.6 Output File Format](#outputfileformat).
 
 This is accomplished by rotating the angular distribution of the follow-up particle by the Euler angles α, β and γ which define the emission direction and polarization of the previous particle.
 
@@ -682,6 +685,7 @@ After this change, every restart of the simulation with unchanged code will yiel
 ### 2.6 Output File Format <a name="outputfileformat"></a>
 In section [2.2 Sensitive Detectors](#sensitivedetectors) the format of the ROOT output file was already introduced. The possible branches are 
 
+* **event**
 * **ekin**
 * **edep**
 * **particle** (given in the [Monte Carlo Particle Numbering Scheme](http://pdg.lbl.gov/mc_particle_id_contents.html))
@@ -802,6 +806,7 @@ clause.
 
 The options for the output file format are described in [2.6 Output File Format](#outputfileformat). By changing the corresponding flags:
 
+ * EVENT_ID
  * EVENT_EDEP
  * EVENT_EKIN
  * EVENT_PARTICLE (given in the [Monte Carlo Particle Numbering Scheme](http://pdg.lbl.gov/mc_particle_id_contents.html))
@@ -809,7 +814,7 @@ The options for the output file format are described in [2.6 Output File Format]
  * EVENT_POSX, EVENT_POSY, EVENT_POSZ
  * EVENT_MOMX, EVENT_MOMY, EVENT_MOMZ
 
-the user can decided which of the quantities are written to the ROOT output file as branches. For example, to write the x coordinate of the first step in the detector volume, type
+the user can decide which of the quantities are written to the ROOT output file as branches. For example, to write the x coordinate of the first step in the detector volume, type
 
 $ cmake -DPOSX=ON .
 
