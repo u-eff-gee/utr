@@ -29,17 +29,18 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 using std::string;
 
 enum output_flags: short {
-	EDEP = 0,	
-	EKIN = 1,	
-	PARTICLE = 2,	
-	VOLUME = 3,	
-	POSX = 4,	
-	POSY = 5,	
-	POSZ = 6,	
-	MOMX = 7,	
-	MOMY = 8,	
-	MOMZ = 9,
-	NFLAGS = 10
+	ID = 0,
+	EDEP = 1,	
+	EKIN = 2,	
+	PARTICLE = 3,	
+	VOLUME = 4,	
+	POSX = 5,	
+	POSY = 6,	
+	POSZ = 7,	
+	MOMX = 8,	
+	MOMY = 9,	
+	MOMZ = 10,
+	NFLAGS = 11
 };
 
 class RunAction : public G4UserRunAction {

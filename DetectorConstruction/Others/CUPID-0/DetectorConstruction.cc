@@ -130,8 +130,8 @@ void DetectorConstruction::ConstructSDandField() {
 	crystal_EnergyDepositionSD->SetDetectorID(0);
 	SetSensitiveDetector("crystal_Logical", crystal_EnergyDepositionSD, true);
 
-	ParticleSD *crystal_ParticleSD = new ParticleSD("crystal_pid", "crystal_pid");
-	G4SDManager::GetSDMpointer()->AddNewDetector(crystal_ParticleSD);
-	crystal_ParticleSD->SetDetectorID(1);
-	SetSensitiveDetector("crystal_Logical", crystal_ParticleSD, true);
+//	ParticleSD *crystal_ParticleSD = new ParticleSD("crystal_pid", "crystal_pid");
+//	G4SDManager::GetSDMpointer()->AddNewDetector(crystal_ParticleSD);
+//	crystal_ParticleSD->SetDetectorID(1);
+//	SetSensitiveDetector("crystal_Logical", crystal_ParticleSD, true);
 }

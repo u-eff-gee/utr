@@ -67,6 +67,9 @@ void ActionInitialization::Build() const {
 	for(short i = 0; i < NFLAGS; ++i)
 		record_quantity[i] = false;
 
+#ifdef EVENT_ID
+	record_quantity[ID] = true;
+#endif
 #ifdef EVENT_EDEP
 	record_quantity[EDEP] = true;
 #endif
