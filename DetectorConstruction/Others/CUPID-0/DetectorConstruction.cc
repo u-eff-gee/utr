@@ -76,40 +76,65 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	// One of 24 Zn^{82}Se crystals used in the CUPID-0 detector array for 0νββ search
 	// [1] O. Azzolini et al., Eur. Phys. J. C 78 (2018) 428
 	// The dimensions of the crystal were read off from the given reference.
-	// Explicitly, the dimensions in Fig. 3 are used.
-	// The image shows a length of the cylindrical crystal of 57.3 mm and a
+	// In Fig. 3, a cylindrical crystal is shown with a length of 57.3 mm and a
 	// mass of 504.70 g.
+	// However, this seems to be an extraordinarily big specimen, 
+	// since all crystals shown in Fig. 4 are smaller.
+	// Therefore an estimated mean of
+	// the enriched crystals shown in Fig. 4 was taken.
+	// Explicitly, assume a mean mass of 430 g, and a pure 82Se mass of 250 g.
 	// To estimate the radius of the crystal, the density of natural ZnSe of
 	// 5.27 g/cm^3 from Wikipedia is converted to Zn^{82}Se.
 	
-	G4double crystal_Length = 57.3*mm; // From [1]
-	G4double crystal_Mass = 504.70*g; // From [1]
+	G4double se82_enrichment = 250./430.; // From [1], estimated from Fig. 4
+	G4double crystal_Length = 57.3*mm; // From [1], shown in Fig. 3
+	G4double crystal_Mass = 430.*g; // From [1], estimated from Fig. 4
 	G4double Zn_natSe_Density = 5.27*g/cm3; // From Wikipedia
-	G4double Zn_82Se_Density = (65.38 + 81.916699)/(65.38 + 78.971)*Zn_natSe_Density; // Average atomic masses from Wikipedia
-									// 82Se atomic mass from Atomic Mass Evaluation (AME).
+	G4double Zn_82Se_Density = ((1. - se82_enrichment)*(65.38 + 78.971)+ // The natural part
+			se82_enrichment*(65.38 + 81.916699))/ // The enriched part
+		(65.38 + 78.971)*Zn_natSe_Density; // Average atomic masses from Wikipedia
+						// 82Se atomic mass from Atomic Mass Evaluation (AME).
 	G4double crystal_Radius = sqrt(crystal_Mass/(Zn_82Se_Density*crystal_Length*pi));
 
 	// ****** Build the Zn^{82}Se crystal material ******
-	// Selenium material enriched in 82Se (assume 82Se is the only isotope)
+	// Selenium material, natural and enriched in 82Se	
+	// Isotopic abundances from Wikipedia
+	G4Isotope *se74 = new G4Isotope("74Se_Isotope", 34, 74);
+	G4Isotope *se76 = new G4Isotope("76Se_Isotope", 34, 76);
+	G4Isotope *se77 = new G4Isotope("77Se_Isotope", 34, 77);
+	G4Isotope *se78 = new G4Isotope("78Se_Isotope", 34, 78);
+	G4Isotope *se80 = new G4Isotope("80Se_Isotope", 34, 80);
 	G4Isotope *se82 = new G4Isotope("82Se_Isotope", 34, 82);
+
+	G4Element *se_nat_Element = new G4Element("Se_nat_Element", "Se_nat", 6);
+	se_nat_Element->AddIsotope(se74,  0.86*perCent);
+	se_nat_Element->AddIsotope(se76,  9.23*perCent);
+	se_nat_Element->AddIsotope(se77,  7.60*perCent);
+	se_nat_Element->AddIsotope(se78, 23.69*perCent);
+	se_nat_Element->AddIsotope(se80, 49.80*perCent);
+	se_nat_Element->AddIsotope(se82,  8.82*perCent);
+
 	G4Element *se82_Element = new G4Element("82Se_Element", "82Se", 1);
 	se82_Element->AddIsotope(se82, 100.*perCent);
 
-	// Natural zinc. Isotopic abundances from Wikipedia
+	// Natural zinc, isotopic abundances from Wikipedia
 	G4Isotope *zn64 = new G4Isotope("64Zn_Isotope", 30, 64);
 	G4Isotope *zn66 = new G4Isotope("66Zn_Isotope", 30, 66);
 	G4Isotope *zn67 = new G4Isotope("67Zn_Isotope", 30, 67);
 	G4Isotope *zn68 = new G4Isotope("68Zn_Isotope", 30, 68);
+	G4Isotope *zn70 = new G4Isotope("70Zn_Isotope", 30, 70);
 
-	G4Element *zn_Element = new G4Element("Zn_Element", "Zn", 4);
+	G4Element *zn_Element = new G4Element("Zn_Element", "Zn", 5);
 	zn_Element->AddIsotope(zn64, 49.2*perCent);
 	zn_Element->AddIsotope(zn66, 27.7*perCent);
 	zn_Element->AddIsotope(zn67,  4.0*perCent);
 	zn_Element->AddIsotope(zn68, 18.5*perCent);
+	zn_Element->AddIsotope(zn70,  0.6*perCent);
 
-	G4Material *Zn_82Se = new G4Material("Zn_82Se", Zn_82Se_Density, 2);
-	Zn_82Se->AddElement(se82_Element, 1);
-	Zn_82Se->AddElement(  zn_Element, 1);
+	G4Material *Zn_82Se = new G4Material("Zn_82Se", Zn_82Se_Density, 3);
+	Zn_82Se->AddElement(  se82_Element, 50.*se82_enrichment*perCent);
+	Zn_82Se->AddElement(se_nat_Element, 50.*(1.-se82_enrichment)*perCent);
+	Zn_82Se->AddElement(    zn_Element, 50.*perCent);
 	
 	// ****** Construct the cylindrical Zn^{82}Se crystal ******
 	
@@ -117,6 +142,25 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	G4LogicalVolume *crystal_Logical = new G4LogicalVolume(crystal_Solid, Zn_82Se, "crystal_Logical");
 
 	crystal_Logical->SetVisAttributes(orange);
+
+	G4cout << G4endl;
+	G4cout << "=============================================" << G4endl;
+	G4cout << "Zn82Se crystal information" << G4endl;
+	G4cout << "Radius     : " << crystal_Solid->GetRMax()/cm << " cm" << G4endl;
+	G4cout << "Length     : " << 2.*crystal_Solid->GetDz()/cm << " cm" << G4endl;
+	G4cout << "Surface    : " << crystal_Solid->GetSurfaceArea()/cm2 << " cm^2" << G4endl;
+	G4cout << "Volume     : " << crystal_Solid->GetCubicVolume()/cm3 << " cm^3" << G4endl;
+	G4cout << "Density    : " << Zn_82Se->GetDensity()/g*cm3 << " g * cm^-3" << G4endl;
+	G4cout << "Mass       : " << Zn_82Se->GetDensity()*crystal_Solid->GetCubicVolume() / g << " g" << G4endl;
+	const G4ElementVector *elementVector = Zn_82Se->GetElementVector();
+	const G4double *fractionVector = Zn_82Se->GetFractionVector();
+	G4cout << "Components : " << G4endl;
+	for(long unsigned int i = 0; i < elementVector->size(); ++i){
+		G4cout << "\t" << (*elementVector)[i]->GetName() << " ( "
+		<< fractionVector[i]/perCent << " % )" << G4endl;
+	}
+	G4cout << "=============================================" << G4endl;
+	G4cout << G4endl;
 
 	new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), crystal_Logical, "crystal", world_log, false, 0, false);
 
