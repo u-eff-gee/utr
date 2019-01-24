@@ -467,13 +467,26 @@ void Materials::ConstructMaterials() {
 	//      P10 gas (90Ar10CH4) 
 	/***********************************/	
 
-	density = 1.56 * kg / m3;	// Densitiy given by SRIM/TRIM database
+	density = 0.00156 * g / cm3;	// Densitiy given by SRIM/TRIM database
 
 	P10 = new G4Material(name = "P10", density, ncomponents = 3);
 
 	P10->AddElement(nat_Ar, fractionmass = 90.*perCent);
 	P10->AddElement(nat_C, fractionmass = 2.*perCent);
 	P10->AddElement(nat_H, fractionmass = 8.*perCent);
+
+	/***********************************/
+	//      CF4 gas 
+	/***********************************/	
+
+	G4Element *nat_F = nist->FindOrBuildElement("F");
+
+	density = 0.00125 * g / cm3;	// Densitiy given by SRIM/TRIM database
+
+	CF4 = new G4Material(name = "CF4", density, ncomponents = 2);
+
+	CF4->AddElement(nat_C, fractionmass = 100.*1./7.*perCent);
+	CF4->AddElement(nat_F, fractionmass = 100.*6./7.*perCent);
 
 	/***********************************/
 	//      PCB_coating (Cu + Ni + Au) 
@@ -491,8 +504,22 @@ void Materials::ConstructMaterials() {
 	PCB_coating->AddElement(nat_Au, fractionmass = 0.25*perCent);
 
 	/******************************************************/
-	// Photo-fission targets from 2019 HIgS experiments
+	// Photo-fission targets for 2019 HIgS experiments
 	/******************************************************/
+
+	// 240Pu from TUD
+	G4double density240Pu = 19.84 * g / cm3;
+
+	target_Pu240 = new G4Material(name = "240Pu", density240Pu, ncomponents = 1);
+
+	G4Isotope *Pu240 = new G4Isotope(name = "240Pu", z = 94, a = 240);
+
+	G4Element *enriched_Pu =
+	    new G4Element(name = "enriched Pu", symbol = "Pu", ncomponents = 1);
+
+	enriched_Pu->AddIsotope(Pu240, abundance = 100. * perCent);
+
+	target_Pu240->AddElement(enriched_Pu, natoms = 1);
 
 	// 232Th from TUD, P-1156
 	G4double density232Th = 11.72 * g / cm3;
@@ -507,5 +534,19 @@ void Materials::ConstructMaterials() {
 	enriched_Th->AddIsotope(Th232, abundance = 100. * perCent);
 
 	target_Th232->AddElement(enriched_Th, natoms = 1);
+
+	// 238U from TUD, P-1134
+	G4double density238U = 18.95 * g / cm3;
+
+	target_U238 = new G4Material(name = "238U", density238U, ncomponents = 1);
+
+	G4Isotope *U238 = new G4Isotope(name = "238U", z = 92, a = 238);
+
+	G4Element *enriched_U =
+	    new G4Element(name = "enriched U", symbol = "U", ncomponents = 1);
+
+	enriched_U->AddIsotope(U238, abundance = 100. * perCent);
+
+	target_U238->AddElement(enriched_U, natoms = 1);
 
 }

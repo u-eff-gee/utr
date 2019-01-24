@@ -61,7 +61,7 @@ void FGIC::Construct(G4ThreeVector global_coordinates){
 	G4Material *PCB = nist->FindOrBuildMaterial("G4_POLYETHYLENE");
 	G4Material *PCB_coating = materials->Get_PCB_coating();
 	G4Material *PA = nist->FindOrBuildMaterial("G4_NYLON-8062");
-	G4Material *target_Th232 = materials->Get_target_Th232();
+	G4Material *target_Pu240 = materials->Get_target_Pu240();
 	G4Material *gold = nist->FindOrBuildMaterial("G4_Au");
 	G4Material *kapton = nist->FindOrBuildMaterial("G4_KAPTON");
 
@@ -91,73 +91,73 @@ void FGIC::Construct(G4ThreeVector global_coordinates){
 	detector_gas_logical->SetVisAttributes(blue);
 
 //***********target***********
-	auto target_solid = new G4Tubs("target_solid",0.*mm,25.*mm,7.25E-6*cm*0.5,0.,twopi);	//calculated assuming 85 ug/cm2 and density of 11.72 g/cm3
-	auto target_logical = new G4LogicalVolume(target_solid,target_Th232,"target_logical");
-	new G4PVPlacement(0,global_coordinates,target_logical,"target_phys",detector_gas_logical,false,0,false);
+	auto target_solid = new G4Tubs("target_solid",0.*mm,15.*mm,8.E-6*cm*0.5,0.,twopi);	//assumed
+	auto target_logical = new G4LogicalVolume(target_solid,target_Pu240,"target_logical");
+	new G4PVPlacement(0,G4ThreeVector(0.,0.,0.),target_logical,"target_phys",detector_gas_logical,false,0,false);
 	target_logical->SetVisAttributes(red);
 
-	auto target_Au_solid = new G4Tubs("target_Au_solid",0.*mm,25.*mm,2.59E-6*cm*0.5,0.,twopi);	//calculated assuming 50 ug/cm2 and density of 19.32 g/cm3
+	auto target_Au_solid = new G4Tubs("target_Au_solid",0.*mm,20.*mm,2.59E-6*cm*0.5,0.,twopi);	//calculated assuming 50 ug/cm2 and density of 19.32 g/cm3
 	auto target_Au_logical = new G4LogicalVolume(target_Au_solid,gold,"target_Au_logical");
-	new G4PVPlacement(0,global_coordinates + G4ThreeVector(0.,0.,7.25E-6*cm*0.5+2.59E-6*cm*0.5),target_Au_logical,"target_Au_phys",detector_gas_logical,false,0,false);
+	new G4PVPlacement(0,G4ThreeVector(0.,0.,8.E-6*cm*0.5+2.59E-6*cm*0.5),target_Au_logical,"target_Au_phys",detector_gas_logical,false,0,false);
 	target_Au_logical->SetVisAttributes(yellow);
 
 	auto target_kapton_solid = new G4Tubs("target_kapton_solid",0.*mm,25.*mm,24.64E-6*cm*0.5,0.,twopi);	//calculated assuming 35 ug/cm2 and density of 1.42 g/cm3
 	auto target_kapton_logical = new G4LogicalVolume(target_kapton_solid,kapton,"target_kapton_logical");
-	new G4PVPlacement(0,global_coordinates + G4ThreeVector(0.,0.,7.25E-6*cm*0.5+2.59E-6*cm+24.64E-6*cm*0.5),target_kapton_logical,"target_kapton_phys",detector_gas_logical,false,0,false);
+	new G4PVPlacement(0,G4ThreeVector(0.,0.,8.E-6*cm*0.5+2.59E-6*cm+24.64E-6*cm*0.5),target_kapton_logical,"target_kapton_phys",detector_gas_logical,false,0,false);
 	target_kapton_logical->SetVisAttributes(white);
 
 //***********electrodes*******
 	auto cathode_solid = new G4Tubs("cathode_solid",23.*mm,90.*mm,2.0*0.5*mm,0.,twopi);
 	auto cathode_logical = new G4LogicalVolume(cathode_solid,stainlessSteel,"cathode_logical");
-	new G4PVPlacement(0,global_coordinates,cathode_logical,"cathode_phys",detector_gas_logical,false,0,false);
+	new G4PVPlacement(0,G4ThreeVector(0.,0.,0.),cathode_logical,"cathode_phys",detector_gas_logical,false,0,false);
 	cathode_logical->SetVisAttributes(grey);
 
 	auto FG_solid = new G4Tubs("FG_solid",65.*mm,90.*mm,3.2*0.5*mm,0.,twopi);
 	auto FG_logical = new G4LogicalVolume(FG_solid,PCB,"FG_logical");
-	new G4PVPlacement(0,global_coordinates + G4ThreeVector(0.,0.,35.*mm),FG_logical,"FG_phys",detector_gas_logical,false,0,false);
-	new G4PVPlacement(0,global_coordinates + G4ThreeVector(0.,0.,-35.*mm),FG_logical,"FG_phys",detector_gas_logical,false,0,false);
+	new G4PVPlacement(0,G4ThreeVector(0.,0.,35.*mm),FG_logical,"FG_phys",detector_gas_logical,false,0,false);
+	new G4PVPlacement(0,G4ThreeVector(0.,0.,-35.*mm),FG_logical,"FG_phys",detector_gas_logical,false,0,false);
 	FG_logical->SetVisAttributes(light_orange);
 
 	auto FG_gold = new G4Tubs("FG_gold",65.*mm,72.*mm,40.E-03*mm,0.,twopi);
 	auto FG_gold_logical = new G4LogicalVolume(FG_gold,PCB_coating,"FG_gold_logical");
-	new G4PVPlacement(0,global_coordinates + G4ThreeVector(0.,0.,35.*mm+3.2*0.5*mm),FG_gold_logical,"FG_gold_phys",detector_gas_logical,false,0,false);
-	new G4PVPlacement(0,global_coordinates + G4ThreeVector(0.,0.,-35.*mm-3.2*0.5*mm),FG_gold_logical,"FG_gold_phys",detector_gas_logical,false,0,false);
+	new G4PVPlacement(0,G4ThreeVector(0.,0.,35.*mm+3.2*0.5*mm),FG_gold_logical,"FG_gold_phys",detector_gas_logical,false,0,false);
+	new G4PVPlacement(0,G4ThreeVector(0.,0.,-35.*mm-3.2*0.5*mm),FG_gold_logical,"FG_gold_phys",detector_gas_logical,false,0,false);
 	FG_gold_logical->SetVisAttributes(yellow);
 
 	auto AG_plate = new G4Tubs("AG_plate",0.*mm,90.*mm,1.6*0.5*mm,0.,twopi);
 	auto AG_box = new G4Box("AG_box",50.*mm,50.*mm,50.*mm);
 	auto AG_solid = new G4SubtractionSolid("AG_solid",AG_plate,AG_box);
 	auto AG_logical = new G4LogicalVolume(AG_solid,PCB,"AG_logical");
-	new G4PVPlacement(0,global_coordinates + G4ThreeVector(0.,0.,40.*mm),AG_logical,"AG_phys",detector_gas_logical,false,0,false);
-	new G4PVPlacement(0,global_coordinates + G4ThreeVector(0.,0.,-40.*mm),AG_logical,"AG_phys",detector_gas_logical,false,0,false);
+	new G4PVPlacement(0,G4ThreeVector(0.,0.,40.*mm),AG_logical,"AG_phys",detector_gas_logical,false,0,false);
+	new G4PVPlacement(0,G4ThreeVector(0.,0.,-40.*mm),AG_logical,"AG_phys",detector_gas_logical,false,0,false);
 	AG_logical->SetVisAttributes(green);
 
 	auto AS_solid = new G4Tubs("AS_solid",0.*mm,90.*mm,1.6*0.5*mm,0.,twopi);
 	auto AS_logical = new G4LogicalVolume(AS_solid,PCB,"AS_logical");
-	new G4PVPlacement(0,global_coordinates + G4ThreeVector(0.,0.,45.*mm),AS_logical,"AS_phys",detector_gas_logical,false,0,false);
-	new G4PVPlacement(0,global_coordinates + G4ThreeVector(0.,0.,-45.*mm),AS_logical,"AS_phys",detector_gas_logical,false,0,false);
+	new G4PVPlacement(0,G4ThreeVector(0.,0.,45.*mm),AS_logical,"AS_phys",detector_gas_logical,false,0,false);
+	new G4PVPlacement(0,G4ThreeVector(0.,0.,-45.*mm),AS_logical,"AS_phys",detector_gas_logical,false,0,false);
 	AS_logical->SetVisAttributes(green);
 
 	auto AS_gold = new G4Box("AS_gold",50.*mm,50.*mm,40.E-03*mm);
 	auto AS_gold_logical = new G4LogicalVolume(AS_gold,PCB_coating,"AS_gold_logical");
-	new G4PVPlacement(0,global_coordinates + G4ThreeVector(0.,0.,45.*mm-1.6*0.5*mm),AS_gold_logical,"AS_gold_phys",detector_gas_logical,false,0,false);
-	new G4PVPlacement(0,global_coordinates + G4ThreeVector(0.,0.,-45.*mm+1.6*0.5*mm),AS_gold_logical,"AS_gold_phys",detector_gas_logical,false,0,false);
+	new G4PVPlacement(0,G4ThreeVector(0.,0.,45.*mm-1.6*0.5*mm),AS_gold_logical,"AS_gold_phys",detector_gas_logical,false,0,false);
+	new G4PVPlacement(0,G4ThreeVector(0.,0.,-45.*mm+1.6*0.5*mm),AS_gold_logical,"AS_gold_phys",detector_gas_logical,false,0,false);
 	AS_gold_logical->SetVisAttributes(yellow);
 
 	auto PEEK_solid = new G4Tubs("PEEK_solid",0.*mm,5.*0.5*mm,270.*0.5*mm,0.,twopi);
 	auto PEEK_logical = new G4LogicalVolume(PEEK_solid,peek,"PEEK_logical");
-	new G4PVPlacement(0,global_coordinates + G4ThreeVector(80.*mm,0.,-21.*mm),PEEK_logical,"PEEK_phys",detector_gas_logical,false,0,false);
-	new G4PVPlacement(0,global_coordinates + G4ThreeVector(-80.*mm,0.,-21.*mm),PEEK_logical,"PEEK_phys",detector_gas_logical,false,0,false);
-	new G4PVPlacement(0,global_coordinates + G4ThreeVector(0.,80.*mm,-21.*mm),PEEK_logical,"PEEK_phys",detector_gas_logical,false,0,false);
-	new G4PVPlacement(0,global_coordinates + G4ThreeVector(0.,-80.*mm,-21.*mm),PEEK_logical,"PEEK_phys",detector_gas_logical,false,0,false);
+	new G4PVPlacement(0,G4ThreeVector(80.*mm,0.,-21.*mm),PEEK_logical,"PEEK_phys",detector_gas_logical,false,0,false);
+	new G4PVPlacement(0,G4ThreeVector(-80.*mm,0.,-21.*mm),PEEK_logical,"PEEK_phys",detector_gas_logical,false,0,false);
+	new G4PVPlacement(0,G4ThreeVector(0.,80.*mm,-21.*mm),PEEK_logical,"PEEK_phys",detector_gas_logical,false,0,false);
+	new G4PVPlacement(0,G4ThreeVector(0.,-80.*mm,-21.*mm),PEEK_logical,"PEEK_phys",detector_gas_logical,false,0,false);
 	PEEK_logical->SetVisAttributes(brown);
 
 	auto PA_solid = new G4Tubs("PA_solid",5.*0.5*mm,8.*0.5*mm,250.*0.5*mm,0.,twopi);
 	auto PA_logical = new G4LogicalVolume(PA_solid,PA,"PA_logical");
-	new G4PVPlacement(0,global_coordinates + G4ThreeVector(80.*mm,0.,-31.*mm),PA_logical,"PA_phys",detector_gas_logical,false,0,false);
-	new G4PVPlacement(0,global_coordinates + G4ThreeVector(-80.*mm,0.,-31.*mm),PA_logical,"PA_phys",detector_gas_logical,false,0,false);
-	new G4PVPlacement(0,global_coordinates + G4ThreeVector(0.,80.*mm,-31.*mm),PA_logical,"PA_phys",detector_gas_logical,false,0,false);
-	new G4PVPlacement(0,global_coordinates + G4ThreeVector(0.,-80.*mm,-31.*mm),PA_logical,"PA_phys",detector_gas_logical,false,0,false);
+	new G4PVPlacement(0,G4ThreeVector(80.*mm,0.,-31.*mm),PA_logical,"PA_phys",detector_gas_logical,false,0,false);
+	new G4PVPlacement(0,G4ThreeVector(-80.*mm,0.,-31.*mm),PA_logical,"PA_phys",detector_gas_logical,false,0,false);
+	new G4PVPlacement(0,G4ThreeVector(0.,80.*mm,-31.*mm),PA_logical,"PA_phys",detector_gas_logical,false,0,false);
+	new G4PVPlacement(0,G4ThreeVector(0.,-80.*mm,-31.*mm),PA_logical,"PA_phys",detector_gas_logical,false,0,false);
 	PA_logical->SetVisAttributes(white);
 
 //***********chamber pot*******
