@@ -43,6 +43,8 @@ private:
 	G4double World_z;
 
 	G4double G3_Target_To_2nd_Target;
+	G4double FGIC_Target_To_MWFGIC_Target;
+	G4double FGIC_Target_To_IC_ELI_Target;
 	G4double Collimator_Entrance_To_G3_Target;
 };
 

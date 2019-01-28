@@ -128,7 +128,7 @@ void Table2_243_279::Construct(G4ThreeVector global_coordinates){
 
 	auto neutron_shield_solid = new G4Tubs("neutron_shield_solid", 1.5*cm, 15.*cm, 2.*cm, 0., twopi);
 	auto neutron_shield_logical = new G4LogicalVolume(neutron_shield_solid,PE,"neutron_shield_logical");
-	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., 15.*inch), neutron_shield_logical, "neutron_shield_phys", World_Logical, false, 0, false);
+//	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., 15.*inch), neutron_shield_logical, "neutron_shield_phys", World_Logical, false, 0, false);
 	neutron_shield_logical->SetVisAttributes(white);
 
 	// Downstream beam pipe holder
