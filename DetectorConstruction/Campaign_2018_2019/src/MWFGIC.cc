@@ -24,6 +24,7 @@ Materials *materials2 = Materials::Instance();
 
 #include "G4Tubs.hh"
 #include "G4Box.hh"
+#include "G4Sphere.hh"
 #include "G4NistManager.hh"
 #include "G4PVPlacement.hh"
 #include "G4LogicalVolume.hh"
@@ -62,6 +63,7 @@ void MWFGIC::Construct(G4ThreeVector global_coordinates){
 	G4Material *gold = nist->FindOrBuildMaterial("G4_Au");
 	G4Material *kapton = nist->FindOrBuildMaterial("G4_KAPTON");
 	G4Material *PVC = nist->FindOrBuildMaterial("G4_POLYVINYL_CHLORIDE");
+	G4Material *vacuum = nist->FindOrBuildMaterial("G4_Galactic");
 
 //***********rotation matrices**
 	G4RotationMatrix *rotateY_90 = new G4RotationMatrix();
@@ -108,6 +110,21 @@ void MWFGIC::Construct(G4ThreeVector global_coordinates){
 	new G4PVPlacement(0,G4ThreeVector(0.,0.,6.74E-6*cm*0.5+2.59E-6*cm+24.64E-6*cm*0.5),target2_kapton_logical,"target2_kapton_phys",detector_gas2_logical,false,0,false);
 	new G4PVPlacement(0,G4ThreeVector(0.,0.,76.5*mm+7.25E-6*cm*0.5+2.59E-6*cm+24.64E-6*cm*0.5),target2_kapton_logical,"target2_kapton_phys",detector_gas2_logical,false,0,false);
 	target2_kapton_logical->SetVisAttributes(white);
+
+	auto target2_sphere = new G4Sphere("target2_sphere",29.999,30.*mm,0.,twopi,0.,twopi);
+	auto target2_sphere_logical = new G4LogicalVolume(target2_sphere,vacuum,"target2_sphere_logical");
+	new G4PVPlacement(0,G4ThreeVector(0.,0.,-76.5*mm),target2_sphere_logical,"target2_sphere_phys",detector_gas2_logical,false,0,false);
+	target2_sphere_logical->SetVisAttributes(red);
+
+	auto target3_sphere = new G4Sphere("target3_sphere",29.999,30.*mm,0.,twopi,0.,twopi);
+	auto target3_sphere_logical = new G4LogicalVolume(target3_sphere,vacuum,"target3_sphere_logical");
+	new G4PVPlacement(0,G4ThreeVector(0.,0.,0.),target3_sphere_logical,"target3_sphere_phys",detector_gas2_logical,false,0,false);
+	target3_sphere_logical->SetVisAttributes(red);
+
+	auto target4_sphere = new G4Sphere("target4_sphere",29.999,30.*mm,0.,twopi,0.,twopi);
+	auto target4_sphere_logical = new G4LogicalVolume(target4_sphere,vacuum,"target4_sphere_logical");
+	new G4PVPlacement(0,G4ThreeVector(0.,0.,+76.5*mm),target4_sphere_logical,"target4_sphere_phys",detector_gas2_logical,false,0,false);
+	target4_sphere_logical->SetVisAttributes(red);
 
 //***********electrodes*******
 	auto cathode2_solid = new G4Tubs("cathode2_solid",24.*mm,60.*mm,2.0*0.5*mm,0.,twopi);

@@ -24,6 +24,7 @@ Materials *materials = Materials::Instance();
 
 #include "G4Tubs.hh"
 #include "G4Box.hh"
+#include "G4Sphere.hh"
 #include "G4NistManager.hh"
 #include "G4PVPlacement.hh"
 #include "G4LogicalVolume.hh"
@@ -64,6 +65,7 @@ void FGIC::Construct(G4ThreeVector global_coordinates){
 	G4Material *target_Pu240 = materials->Get_target_Pu240();
 	G4Material *gold = nist->FindOrBuildMaterial("G4_Au");
 	G4Material *kapton = nist->FindOrBuildMaterial("G4_KAPTON");
+	G4Material *vacuum = nist->FindOrBuildMaterial("G4_Galactic");
 
 //***********rotation matrices**
 	G4RotationMatrix *rotateY_90 = new G4RotationMatrix();
@@ -105,6 +107,12 @@ void FGIC::Construct(G4ThreeVector global_coordinates){
 	auto target_kapton_logical = new G4LogicalVolume(target_kapton_solid,kapton,"target_kapton_logical");
 	new G4PVPlacement(0,G4ThreeVector(0.,0.,8.E-6*cm*0.5+2.59E-6*cm+24.64E-6*cm*0.5),target_kapton_logical,"target_kapton_phys",detector_gas_logical,false,0,false);
 	target_kapton_logical->SetVisAttributes(white);
+
+	auto target_sphere = new G4Sphere("target_sphere",29.999,30.*mm,0.,twopi,0.,twopi);
+	auto target_sphere_logical = new G4LogicalVolume(target_sphere,vacuum,"target_sphere_logical");
+	new G4PVPlacement(0,G4ThreeVector(0.,0.,0.),target_sphere_logical,"target_sphere_phys",detector_gas_logical,false,0,false);
+	target_sphere_logical->SetVisAttributes(red);
+	
 
 //***********electrodes*******
 	auto cathode_solid = new G4Tubs("cathode_solid",23.*mm,90.*mm,2.0*0.5*mm,0.,twopi);

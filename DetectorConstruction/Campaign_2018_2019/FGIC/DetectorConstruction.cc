@@ -343,22 +343,42 @@ void DetectorConstruction::ConstructSDandField() {
 	Pu240_targetSD->SetDetectorID(20);
 	SetSensitiveDetector("target_logical", Pu240_targetSD, true);
 
+	ParticleSD *Pu240_sphereSD = new ParticleSD("Pu240_sphereSD", "Pu240_sphereSD");
+	G4SDManager::GetSDMpointer()->AddNewDetector(Pu240_sphereSD);
+	Pu240_sphereSD->SetDetectorID(21);
+	SetSensitiveDetector("target_sphere_logical", Pu240_sphereSD, true);
+
 	/*************** Second setup **************/
 
 	ParticleSD *Th232_1_targetSD = new ParticleSD("Th232_1_targetSD", "Th232_1_targetSD");
 	G4SDManager::GetSDMpointer()->AddNewDetector(Th232_1_targetSD);
-	Th232_1_targetSD->SetDetectorID(21);
+	Th232_1_targetSD->SetDetectorID(22);
 	SetSensitiveDetector("target2_logical", Th232_1_targetSD, true);
+
+	ParticleSD *Th232_1_sphereSD = new ParticleSD("Th232_1_sphereSD", "Th232_1_sphereSD");
+	G4SDManager::GetSDMpointer()->AddNewDetector(Th232_1_sphereSD);
+	Th232_1_sphereSD->SetDetectorID(23);
+	SetSensitiveDetector("target2_sphere_logical", Th232_1_sphereSD, true);
 
 	ParticleSD *U238_targetSD = new ParticleSD("U238_targetSD", "U238_targetSD");
 	G4SDManager::GetSDMpointer()->AddNewDetector(U238_targetSD);
-	U238_targetSD->SetDetectorID(22);
+	U238_targetSD->SetDetectorID(24);
 	SetSensitiveDetector("target3_logical", U238_targetSD, true);
+
+	ParticleSD *U238_sphereSD = new ParticleSD("U238_sphereSD", "U238_sphereSD");
+	G4SDManager::GetSDMpointer()->AddNewDetector(U238_sphereSD);
+	U238_sphereSD->SetDetectorID(25);
+	SetSensitiveDetector("target3_sphere_logical", U238_sphereSD, true);
 
 	ParticleSD *Th232_2_targetSD = new ParticleSD("Th232_2_targetSD", "Th232_2_targetSD");
 	G4SDManager::GetSDMpointer()->AddNewDetector(Th232_2_targetSD);
-	Th232_2_targetSD->SetDetectorID(23);
+	Th232_2_targetSD->SetDetectorID(26);
 	SetSensitiveDetector("target3_logical", Th232_2_targetSD, true);
+
+	ParticleSD *Th232_2_sphereSD = new ParticleSD("Th232_2_sphereSD", "Th232_2_sphereSD");
+	G4SDManager::GetSDMpointer()->AddNewDetector(Th232_2_sphereSD);
+	Th232_2_sphereSD->SetDetectorID(27);
+	SetSensitiveDetector("target3_sphere_logical", Th232_2_sphereSD, true);
 }
 
 void DetectorConstruction::print_info() const {
