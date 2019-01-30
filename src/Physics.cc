@@ -67,7 +67,9 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4HadronPhysicsShieldingLEND.hh"
 #endif
 
+#ifdef EM_EXTRA
 #include "G4EmExtraPhysics.hh"
+#endif
 
 Physics::Physics(){
 	G4cout << "================================================================"
