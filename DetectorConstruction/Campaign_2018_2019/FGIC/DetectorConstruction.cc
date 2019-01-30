@@ -39,6 +39,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "Beampipe_Downstream.hh"
 #include "First_UTR_Wall.hh"
 #include "First_Setup.hh"
+
 #include "G3_Wall_FGIC.hh"
 #include "Detectors_G3_FGIC.hh"
 #include "Wheel.hh"
@@ -47,6 +48,9 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "Detectors_2nd_271_279.hh"
 #include "ZeroDegree_Setup.hh"
 #include "FGIC.hh"
+#include "MWFGIC.hh"
+#include "IC_ELI.hh"
+
 
 // Sensitive Detectors
 #include "G4SDManager.hh"
@@ -123,6 +127,8 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	G4double First_UTR_Wall_To_First_Setup = 4.2*inch;
 	G4double First_Setup_To_G3_Wall = 3.5*inch;
 	G3_Target_To_2nd_Target = 62.*inch; // Estimated
+	FGIC_Target_To_MWFGIC_Target = 65.*inch; // Estimated
+	FGIC_Target_To_IC_ELI_Target = 85.*inch; // Estimated
 	G4double ZeroDegree_To_2nd_Target = 980.*mm;
 
 	/***************************************************/
@@ -134,7 +140,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 //	Beampipe_Upstream beampipe_Upstream(World_Logical);
 	First_UTR_Wall first_UTR_Wall(World_Logical);
 	First_Setup first_Setup(World_Logical);
-	G3_Wall_FGIC g3_Wall(World_Logical); // Was not there in these runs. However, it still defines the floor height, so it is needed here
+	G3_Wall_FGIC g3_Wall(World_Logical);
 	Detectors_G3_FGIC detectors_G3(World_Logical);
 	Wheel wheel(World_Logical);
 	G3_Table g3_Table(World_Logical);
@@ -143,6 +149,8 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	Detectors_2nd_271_279 detectors_2nd(World_Logical);	
 	ZeroDegree_Setup zeroDegree_Setup(World_Logical);
 	FGIC fgic(World_Logical);
+	MWFGIC mwfgic(World_Logical);
+	IC_ELI ic_eli(World_Logical);
 //	Ni64_Target g3_Target;
 //	Ni64_Sobotka_Target second_Target;
 
@@ -181,10 +189,6 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	detectors_G3.Construct(G4ThreeVector(0., 0., 0.));
 
-	/***************** FGIC *****************/
-
-	fgic.Construct(G4ThreeVector(0., 0., 0.));
-
 	/***************** WHEEL *****************/
 
 	wheel.Construct(G4ThreeVector(0., 0., Wheel_To_Target + wheel.Get_Length()*0.5));
@@ -193,17 +197,30 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	g3_Table.Construct(G4ThreeVector(0., 0., Wheel_To_Target + wheel.Get_Length() + g3_Table.Get_Length()*0.5));
 
+	/***************** FGIC *****************/
+
+	fgic.Construct(G4ThreeVector(0., 0., 0.));
+
+	/***************** MW-FGIC *****************/
+
+	mwfgic.Construct(G4ThreeVector(0., 0., FGIC_Target_To_MWFGIC_Target));
+
+	/***************** IC_ELI *****************/
+
+
+//	ic_eli.Construct(G4ThreeVector(0., 0., FGIC_Target_To_IC_ELI_Target));
+
 	/***************** TABLE_2 *****************/
 
 	table2.Construct(G4ThreeVector(0., 0.,  Wheel_To_Target + wheel.Get_Length() + g3_Table.Get_Length() + table2.Get_Length()*0.5 + table2.Get_Z_Axis_Offset_Z()));
 
 	/***************** BEAMPIPE_DOWNSTREAM *****************/
 
-	beampipe_Downstream.Construct(G4ThreeVector(0., 0., G3_Target_To_2nd_Target + beampipe_Downstream.Get_Z_Axis_Offset_Z()), 1e-2);
+//	beampipe_Downstream.Construct(G4ThreeVector(0., 0., G3_Target_To_2nd_Target + beampipe_Downstream.Get_Z_Axis_Offset_Z()), 1e-2);
 
 	/***************** DETECTORS_2ND *****************/
 
-	detectors_2nd.Construct(G4ThreeVector(0., 0., G3_Target_To_2nd_Target));
+//	detectors_2nd.Construct(G4ThreeVector(0., 0., G3_Target_To_2nd_Target));
 
 	/***************** ZERODEGREE_SETUP *****************/
 /*
@@ -236,68 +253,132 @@ void DetectorConstruction::ConstructSDandField() {
 	SetSensitiveDetector("ZeroDegree", ZeroDegreeSD, true);
 
 	/*************** Gamma3 **************/
-/*
-	EnergyDepositionSD *HPGe1SD = new EnergyDepositionSD("HPGe1", "HPGe1");
-	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe1SD);
-	HPGe1SD->SetDetectorID(1);
-	SetSensitiveDetector("HPGe1", HPGe1SD, true);
-
-	EnergyDepositionSD *HPGe2SD = new EnergyDepositionSD("HPGe2", "HPGe2");
-	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe2SD);
-	HPGe2SD->SetDetectorID(2);
-	SetSensitiveDetector("HPGe2", HPGe2SD, true);
-
-	EnergyDepositionSD *HPGe3SD = new EnergyDepositionSD("HPGe3", "HPGe3");
-	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe3SD);
-	HPGe3SD->SetDetectorID(3);
-	SetSensitiveDetector("HPGe3", HPGe3SD, true);
-
-	EnergyDepositionSD *HPGe4SD = new EnergyDepositionSD("HPGe4", "HPGe4");
-	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe4SD);
-	HPGe4SD->SetDetectorID(4);
-	SetSensitiveDetector("HPGe4", HPGe4SD, true);
 
 	EnergyDepositionSD *LaBr1SD = new EnergyDepositionSD("LaBr1", "LaBr1");
 	G4SDManager::GetSDMpointer()->AddNewDetector(LaBr1SD);
-	LaBr1SD->SetDetectorID(5);
+	LaBr1SD->SetDetectorID(1);
 	SetSensitiveDetector("LaBr1", LaBr1SD, true);
 
 	EnergyDepositionSD *LaBr2SD = new EnergyDepositionSD("LaBr2", "LaBr2");
 	G4SDManager::GetSDMpointer()->AddNewDetector(LaBr2SD);
-	LaBr2SD->SetDetectorID(6);
+	LaBr2SD->SetDetectorID(2);
 	SetSensitiveDetector("LaBr2", LaBr2SD, true);
 
 	EnergyDepositionSD *LaBr3SD = new EnergyDepositionSD("LaBr3", "LaBr3");
 	G4SDManager::GetSDMpointer()->AddNewDetector(LaBr3SD);
-	LaBr3SD->SetDetectorID(7);
+	LaBr3SD->SetDetectorID(3);
 	SetSensitiveDetector("LaBr3", LaBr3SD, true);
 
 	EnergyDepositionSD *LaBr4SD = new EnergyDepositionSD("LaBr4", "LaBr4");
 	G4SDManager::GetSDMpointer()->AddNewDetector(LaBr4SD);
-	LaBr4SD->SetDetectorID(8);
+	LaBr4SD->SetDetectorID(4);
 	SetSensitiveDetector("LaBr4", LaBr4SD, true);
+
+	EnergyDepositionSD *LaBr5SD = new EnergyDepositionSD("LaBr5", "LaBr5");
+	G4SDManager::GetSDMpointer()->AddNewDetector(LaBr5SD);
+	LaBr5SD->SetDetectorID(5);
+	SetSensitiveDetector("LaBr5", LaBr5SD, true);
+
+	EnergyDepositionSD *LaBr6SD = new EnergyDepositionSD("LaBr6", "LaBr6");
+	G4SDManager::GetSDMpointer()->AddNewDetector(LaBr6SD);
+	LaBr6SD->SetDetectorID(6);
+	SetSensitiveDetector("LaBr6", LaBr6SD, true);
+
+	EnergyDepositionSD *LaBr7SD = new EnergyDepositionSD("LaBr7", "LaBr7");
+	G4SDManager::GetSDMpointer()->AddNewDetector(LaBr7SD);
+	LaBr7SD->SetDetectorID(7);
+	SetSensitiveDetector("LaBr7", LaBr7SD, true);
+
+	EnergyDepositionSD *LaBr8SD = new EnergyDepositionSD("LaBr8", "LaBr8");
+	G4SDManager::GetSDMpointer()->AddNewDetector(LaBr8SD);
+	LaBr8SD->SetDetectorID(8);
+	SetSensitiveDetector("LaBr8", LaBr8SD, true);
+
+	/*************** Gamma3 - neutron detectors **************/
+
+	EnergyDepositionSD *NeutronDetector1SD = new EnergyDepositionSD("NeutronDetector1", "NeutronDetector1");
+	G4SDManager::GetSDMpointer()->AddNewDetector(NeutronDetector1SD);
+	NeutronDetector1SD->SetDetectorID(11);
+	SetSensitiveDetector("NeutronDetector1", NeutronDetector1SD, true);
+
+	EnergyDepositionSD *NeutronDetector2SD = new EnergyDepositionSD("NeutronDetector2", "NeutronDetector2");
+	G4SDManager::GetSDMpointer()->AddNewDetector(NeutronDetector2SD);
+	NeutronDetector2SD->SetDetectorID(12);
+	SetSensitiveDetector("NeutronDetector2", NeutronDetector2SD, true);
+
+	EnergyDepositionSD *NeutronDetector3SD = new EnergyDepositionSD("NeutronDetector3", "NeutronDetector3");
+	G4SDManager::GetSDMpointer()->AddNewDetector(NeutronDetector3SD);
+	NeutronDetector3SD->SetDetectorID(13);
+	SetSensitiveDetector("NeutronDetector3", NeutronDetector3SD, true);
+
+	EnergyDepositionSD *NeutronDetector4SD = new EnergyDepositionSD("NeutronDetector4", "NeutronDetector4");
+	G4SDManager::GetSDMpointer()->AddNewDetector(NeutronDetector4SD);
+	NeutronDetector4SD->SetDetectorID(14);
+	SetSensitiveDetector("NeutronDetector4", NeutronDetector4SD, true);
+
+	EnergyDepositionSD *NeutronDetector5SD = new EnergyDepositionSD("NeutronDetector5", "NeutronDetector5");
+	G4SDManager::GetSDMpointer()->AddNewDetector(NeutronDetector5SD);
+	NeutronDetector5SD->SetDetectorID(15);
+	SetSensitiveDetector("NeutronDetector5", NeutronDetector5SD, true);
+
+	EnergyDepositionSD *NeutronDetector6SD = new EnergyDepositionSD("NeutronDetector6", "NeutronDetector6");
+	G4SDManager::GetSDMpointer()->AddNewDetector(NeutronDetector6SD);
+	NeutronDetector6SD->SetDetectorID(16);
+	SetSensitiveDetector("NeutronDetector6", NeutronDetector6SD, true);
+
+	EnergyDepositionSD *NeutronDetector7SD = new EnergyDepositionSD("NeutronDetector7", "NeutronDetector7");
+	G4SDManager::GetSDMpointer()->AddNewDetector(NeutronDetector7SD);
+	NeutronDetector7SD->SetDetectorID(17);
+	SetSensitiveDetector("NeutronDetector7", NeutronDetector7SD, true);
+
+	EnergyDepositionSD *NeutronDetector8SD = new EnergyDepositionSD("NeutronDetector8", "NeutronDetector8");
+	G4SDManager::GetSDMpointer()->AddNewDetector(NeutronDetector8SD);
+	NeutronDetector8SD->SetDetectorID(18);
+	SetSensitiveDetector("NeutronDetector8", NeutronDetector8SD, true);
+
+	/*************** First setup **************/
+
+	ParticleSD *Pu240_targetSD = new ParticleSD("Pu240_targetSD", "Pu240_targetSD");
+	G4SDManager::GetSDMpointer()->AddNewDetector(Pu240_targetSD);
+	Pu240_targetSD->SetDetectorID(20);
+	SetSensitiveDetector("target_logical", Pu240_targetSD, true);
+
+	ParticleSD *Pu240_sphereSD = new ParticleSD("Pu240_sphereSD", "Pu240_sphereSD");
+	G4SDManager::GetSDMpointer()->AddNewDetector(Pu240_sphereSD);
+	Pu240_sphereSD->SetDetectorID(21);
+	SetSensitiveDetector("target_sphere_logical", Pu240_sphereSD, true);
 
 	/*************** Second setup **************/
 
-	//EnergyDepositionSD *HPGe9SD = new EnergyDepositionSD("HPGe9", "HPGe9");
-	//G4SDManager::GetSDMpointer()->AddNewDetector(HPGe9SD);
-	//HPGe9SD->SetDetectorID(9);
-	//SetSensitiveDetector("HPGe9", HPGe9SD, true);
-/*
-	EnergyDepositionSD *HPGe10SD = new EnergyDepositionSD("HPGe10", "HPGe10");
-	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe10SD);
-	HPGe10SD->SetDetectorID(10);
-	SetSensitiveDetector("HPGe_Cologne", HPGe10SD, true);
+	ParticleSD *Th232_1_targetSD = new ParticleSD("Th232_1_targetSD", "Th232_1_targetSD");
+	G4SDManager::GetSDMpointer()->AddNewDetector(Th232_1_targetSD);
+	Th232_1_targetSD->SetDetectorID(22);
+	SetSensitiveDetector("target2_logical", Th232_1_targetSD, true);
 
-	EnergyDepositionSD *HPGe11SD = new EnergyDepositionSD("HPGe11", "HPGe11");
-	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe11SD);
-	HPGe11SD->SetDetectorID(11);
-	SetSensitiveDetector("HPGe_Stuttgart", HPGe11SD, true);
-*/
-	ParticleSD *Th232_targetSD = new ParticleSD("Th232_targetSD", "Th232_targetSD");
-	G4SDManager::GetSDMpointer()->AddNewDetector(Th232_targetSD);
-	Th232_targetSD->SetDetectorID(0);
-	SetSensitiveDetector("target_logical", Th232_targetSD, true);
+	ParticleSD *Th232_1_sphereSD = new ParticleSD("Th232_1_sphereSD", "Th232_1_sphereSD");
+	G4SDManager::GetSDMpointer()->AddNewDetector(Th232_1_sphereSD);
+	Th232_1_sphereSD->SetDetectorID(23);
+	SetSensitiveDetector("target2_sphere_logical", Th232_1_sphereSD, true);
+
+	ParticleSD *U238_targetSD = new ParticleSD("U238_targetSD", "U238_targetSD");
+	G4SDManager::GetSDMpointer()->AddNewDetector(U238_targetSD);
+	U238_targetSD->SetDetectorID(24);
+	SetSensitiveDetector("target3_logical", U238_targetSD, true);
+
+	ParticleSD *U238_sphereSD = new ParticleSD("U238_sphereSD", "U238_sphereSD");
+	G4SDManager::GetSDMpointer()->AddNewDetector(U238_sphereSD);
+	U238_sphereSD->SetDetectorID(25);
+	SetSensitiveDetector("target3_sphere_logical", U238_sphereSD, true);
+
+	ParticleSD *Th232_2_targetSD = new ParticleSD("Th232_2_targetSD", "Th232_2_targetSD");
+	G4SDManager::GetSDMpointer()->AddNewDetector(Th232_2_targetSD);
+	Th232_2_targetSD->SetDetectorID(26);
+	SetSensitiveDetector("target3_logical", Th232_2_targetSD, true);
+
+	ParticleSD *Th232_2_sphereSD = new ParticleSD("Th232_2_sphereSD", "Th232_2_sphereSD");
+	G4SDManager::GetSDMpointer()->AddNewDetector(Th232_2_sphereSD);
+	Th232_2_sphereSD->SetDetectorID(27);
+	SetSensitiveDetector("target3_sphere_logical", Th232_2_sphereSD, true);
 }
 
 void DetectorConstruction::print_info() const {

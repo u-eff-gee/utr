@@ -1,0 +1,30 @@
+ * The Blowfish geometry was imported from https://github.com/ryan-duve/blowfishGDHfridge/blob/master/blowfish.cc
+ * Below you can find the original licence notice
+ *
+ * Original author:
+ * Ward Wurtz (waw113@mail.usask.ca)
+ * Subatomic Physics Graduate Student
+ * Supervisor: Rob Pywell
+ *
+ * Modified by Rob Pywell for the GDH experiment
+ *
+ * University of Saskatchewan
+ * Saskatoon, SK CANADA
+ *
+ * Description:
+ *
+ * This program provides the base for building a simulation of the
+ * Blowfish neutron detector array.  It defines the geometry and other
+ * characteristics of Blowfish and the Blowfish detectors.  It is ment
+ * as a template where you can add geometries for experiment-dependent
+ * uses.  The 'X' means 'fill in the blank'.
+ *
+ * Credits:
+ * 
+ * Much of this code is from my supervisor, Dr. Pywell and the
+ * examples produced by the Geant4 Collaboration and distributed
+ * with GEANT4.  Lisence details for the GEANT4 collaboration code
+ * can be found at http://geant4.web.cern.ch/geant4/license/
+ * Since these details are vague, I assume that all code is released
+ * under an LGPL or BSD-like license.
+ * 

@@ -53,7 +53,9 @@ class Materials {
 	G4Material *Get_target_Dy164() { return target_Dy164; }
 	G4Material *Get_target_Dy164_2O3() { return target_Dy164_2O3; }
 	G4Material *Get_target_Cr54_2O3() { return target_Cr54_2O3; }
+	G4Material *Get_target_Pu240() { return target_Pu240; }
 	G4Material *Get_target_Th232() { return target_Th232; }
+	G4Material *Get_target_U238() { return target_U238; }
 
 	G4Material *Get_Stainless_Steel() { return stainlessSteel; }
 	G4Material *Get_Brass() { return brass; }
@@ -62,6 +64,7 @@ class Materials {
 	G4Material *Get_One_Third_Density_Al() { return one_third_density_Al; }
 	G4Material *Get_Peek() { return peek; }
 	G4Material *Get_P10() { return P10; }
+	G4Material *Get_CF4() { return CF4; }
 	G4Material *Get_PCB_coating() { return PCB_coating; }
 
 	G4Material *Get_Labr3() { return LaBr3; }
@@ -80,7 +83,9 @@ class Materials {
 	G4Material *target_Dy164;
 	G4Material *target_Dy164_2O3;
 	G4Material *target_Cr54_2O3;
+	G4Material *target_Pu240;
 	G4Material *target_Th232;
+	G4Material *target_U238;
 
 	G4Material *half_density_Al;
 	G4Material *one_third_density_Al;
@@ -89,6 +94,7 @@ class Materials {
 	G4Material *one_third_density_brass;
 	G4Material *peek;
 	G4Material *P10;
+	G4Material *CF4;
 	G4Material *PCB_coating;
 
 	G4Material *LaBr3;

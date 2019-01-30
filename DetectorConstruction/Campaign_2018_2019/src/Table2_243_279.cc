@@ -51,6 +51,7 @@ void Table2_243_279::Construct(G4ThreeVector global_coordinates){
 	G4Material *Al = nist->FindOrBuildMaterial("G4_Al");
 	G4Material *Fe = nist->FindOrBuildMaterial("G4_Fe");
 	G4Material *Plexiglass = nist->FindOrBuildMaterial("G4_PLEXIGLASS");
+	G4Material *PE = nist->FindOrBuildMaterial("G4_POLYETHYLENE");
 	G4Material *one_third_density_brass = nist->FindOrBuildMaterial("one_third_density_brass");
 
 	G4double Table_Plate_Radius = 17.*inch;
@@ -123,6 +124,13 @@ void Table2_243_279::Construct(G4ThreeVector global_coordinates){
 	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., -Table2_Length*0.5 + Lead_Brick_Z*0.5), Lead_Brick_Logical, "Lead_Brick_1", World_Logical, false, 0, false);
 	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., -Table2_Length*0.5 + Upstream_Holder_Ring_Length - Lead_Brick_Z*0.5), Lead_Brick_Logical, "Lead_Brick_2", World_Logical, false, 0, false);
 
+	// neutron shield
+
+	auto neutron_shield_solid = new G4Tubs("neutron_shield_solid", 1.5*cm, 15.*cm, 2.*cm, 0., twopi);
+	auto neutron_shield_logical = new G4LogicalVolume(neutron_shield_solid,PE,"neutron_shield_logical");
+//	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., 15.*inch), neutron_shield_logical, "neutron_shield_phys", World_Logical, false, 0, false);
+	neutron_shield_logical->SetVisAttributes(white);
+
 	// Downstream beam pipe holder
 	
 	G4double Downstream_Holder_Ring_Outer_Radius = 3.*inch;
@@ -141,14 +149,14 @@ void Table2_243_279::Construct(G4ThreeVector global_coordinates){
 	G4LogicalVolume *Downstream_Holder_Base_Logical = new G4LogicalVolume(Downstream_Holder_Base_Solid, Al, "Downstream_Holder_Base_Logical");
 	Downstream_Holder_Base_Logical->SetVisAttributes(grey);
 
-	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., -Downstream_Holder_Ring_Outer_Radius + Downstream_Holder_Hole_Depth - Downstream_Holder_Base_Y*0.5, Table_Plate_Hole_Radius + Downstream_Holder_Base_Z*0.5), Downstream_Holder_Base_Logical, "Downstream_Holder_Base", World_Logical, false, 0, false);
+//	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., -Downstream_Holder_Ring_Outer_Radius + Downstream_Holder_Hole_Depth - Downstream_Holder_Base_Y*0.5, Table_Plate_Hole_Radius + Downstream_Holder_Base_Z*0.5), Downstream_Holder_Base_Logical, "Downstream_Holder_Base", World_Logical, false, 0, false);
 
 	G4Tubs *Downstream_Holder_Ring_Solid = new G4Tubs("Downstream_Holder_Ring_Solid", Downstream_Holder_Ring_Inner_Radius, Downstream_Holder_Ring_Outer_Radius, Downstream_Holder_Ring_Length*0.5, 0., twopi);
 
 	G4LogicalVolume *Downstream_Holder_Ring_Logical = new G4LogicalVolume(Downstream_Holder_Ring_Solid, Al, "Downstream_Holder_Ring_Logical");
 	Downstream_Holder_Ring_Logical->SetVisAttributes(grey);
 
-	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., Table_Plate_Hole_Radius + Downstream_Holder_Ring_Length*0.5), Downstream_Holder_Ring_Logical, "Downstream_Holder_Ring", World_Logical, false, 0, false);
+//	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., Table_Plate_Hole_Radius + Downstream_Holder_Ring_Length*0.5), Downstream_Holder_Ring_Logical, "Downstream_Holder_Ring", World_Logical, false, 0, false);
 
 	G4double Downstream_Plexi_Ring_Radius = 2.5*inch; // Estimated
 	G4double Downstream_Plexi_Ring_Thickness = 4.*mm; // Estimated
@@ -158,7 +166,7 @@ void Table2_243_279::Construct(G4ThreeVector global_coordinates){
 	G4LogicalVolume *Downstream_Plexi_Ring_Logical = new G4LogicalVolume(Downstream_Plexi_Ring_Solid, Plexiglass, "Downstream_Plexi_Ring_Logical");
 	Downstream_Plexi_Ring_Logical->SetVisAttributes(white);
 
-	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., Table_Plate_Hole_Radius + Downstream_Holder_Ring_Length*0.5), Downstream_Plexi_Ring_Logical, "Downstream_Holder_Ring", World_Logical, false, 0, false);
+//	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., Table_Plate_Hole_Radius + Downstream_Holder_Ring_Length*0.5), Downstream_Plexi_Ring_Logical, "Downstream_Holder_Ring", World_Logical, false, 0, false);
 
     // Downstream holder fixture
     // A peculiar, custom-made shape that fixes the beam pipe holder ring to the second table. It was accurately modeled by OP as an ExtrudedSolid. 
@@ -231,7 +239,7 @@ void Table2_243_279::Construct(G4ThreeVector global_coordinates){
     G4LogicalVolume *Downstream_Holder_Fixture_Logical = new G4LogicalVolume(Downstream_Holder_Fixture_Solid, Al, "Downstream_Holder_Fixture_Logical");
 	Downstream_Holder_Fixture_Logical->SetVisAttributes(grey);
 
-    new G4PVPlacement(0, global_coordinates + G4ThreeVector(-30.*mm, -40.*mm, 430.*mm), Downstream_Holder_Fixture_Logical, "Downstream_Holder_Fixture", World_Logical, false, 0, false);
+//    new G4PVPlacement(0, global_coordinates + G4ThreeVector(-30.*mm, -40.*mm, 430.*mm), Downstream_Holder_Fixture_Logical, "Downstream_Holder_Fixture", World_Logical, false, 0, false);
 
 	// Holding structure for vertical detectors
 	
@@ -343,7 +351,7 @@ void Table2_243_279::Construct(G4ThreeVector global_coordinates){
 	G4LogicalVolume *Lead_On_Bar_Logical = new G4LogicalVolume(Lead_On_Bar_Solid, Pb, "Lead_On_Bar_Logical");
 	Lead_On_Bar_Logical->SetVisAttributes(green);
 
-	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., Table_Plate_Offset_Y + Iron_Bar_Wall_Thickness + 5.*inch*0.5, -4.5*inch - Iron_Bar_Z*0.5), Lead_On_Bar_Logical, "Lead_On_Bar", World_Logical, false, 0, false);
+//	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., Table_Plate_Offset_Y + Iron_Bar_Wall_Thickness + 5.*inch*0.5, -4.5*inch - Iron_Bar_Z*0.5), Lead_On_Bar_Logical, "Lead_On_Bar", World_Logical, false, 0, false);
 
 	G4Box *Lead_On_Bar_2_Solid_Solid = new G4Box("Lead_On_Bar_2_Solid_Solid", 10.*inch*0.5, fabs(Table_Plate_Offset_Y) - Iron_Bar_Wall_Thickness - 5.*inch, 2.*inch*0.5);
 	G4Tubs *Lead_On_Bar_2_Hole_Solid = new G4Tubs("Lead_On_Bar_2_Hole_Solid", 0., 1.*inch, 2.*inch, 0., twopi);
@@ -353,14 +361,14 @@ void Table2_243_279::Construct(G4ThreeVector global_coordinates){
 	G4LogicalVolume* Lead_On_Bar_2_Logical = new G4LogicalVolume(Lead_On_Bar_2_Solid, Pb, "Lead_On_Bar_2_Logical");
 	Lead_On_Bar_2_Logical->SetVisAttributes(green);
 
-	new G4PVPlacement(0, global_coordinates + G4ThreeVector(2.*inch, 0., -4.5*inch - Iron_Bar_Z*0.5), Lead_On_Bar_2_Logical, "Lead_On_Bar_2", World_Logical, false, 0, false);
+//	new G4PVPlacement(0, global_coordinates + G4ThreeVector(2.*inch, 0., -4.5*inch - Iron_Bar_Z*0.5), Lead_On_Bar_2_Logical, "Lead_On_Bar_2", World_Logical, false, 0, false);
 
 	G4Box *Lead_On_Bar_3_Solid = new G4Box("Lead_On_Bar_3_Solid", 4.*inch*0.5, 4.*inch*0.5, 2.*inch*0.5);
 
 	G4LogicalVolume *Lead_On_Bar_3_Logical = new G4LogicalVolume(Lead_On_Bar_3_Solid, Pb, "Lead_On_Bar_3_Logical");
 	Lead_On_Bar_3_Logical->SetVisAttributes(green);
 
-	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0.,fabs(Table_Plate_Offset_Y) - Iron_Bar_Wall_Thickness - 5.*inch + 4.*inch*0.5, -4.5*inch - Iron_Bar_Z*0.5), Lead_On_Bar_3_Logical, "Lead_On_Bar_3", World_Logical, false, 0, false);
+//	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0.,fabs(Table_Plate_Offset_Y) - Iron_Bar_Wall_Thickness - 5.*inch + 4.*inch*0.5, -4.5*inch - Iron_Bar_Z*0.5), Lead_On_Bar_3_Logical, "Lead_On_Bar_3", World_Logical, false, 0, false);
 	
 	// Lead wrap around beam pipe
 	
@@ -369,5 +377,5 @@ void Table2_243_279::Construct(G4ThreeVector global_coordinates){
 	G4LogicalVolume *Lead_Wrap_Logical = new G4LogicalVolume(Lead_Wrap_Solid, Pb, "Lead_Wrap_Logical");
 	Lead_Wrap_Logical->SetVisAttributes(green);
 
-	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., Table_Plate_Hole_Radius - 6.*inch*0.5), Lead_Wrap_Logical, "Lead_Wrap", World_Logical, false, 0, false);
+//	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., Table_Plate_Hole_Radius - 6.*inch*0.5), Lead_Wrap_Logical, "Lead_Wrap", World_Logical, false, 0, false);
 }

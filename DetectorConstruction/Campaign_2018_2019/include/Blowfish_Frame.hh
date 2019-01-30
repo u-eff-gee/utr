@@ -18,34 +18,20 @@ You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef DETECTORCONSTRUCTION_HH
-#define DETECTORCONSTRUCTION_HH 1
+#ifndef Blowfish_Frame_HH
+#define Blowfish_Frame_HH 1
 
-#include "G4SystemOfUnits.hh"
-#include "G4UnitsTable.hh"
-#include "G4VUserDetectorConstruction.hh"
+#include "G4LogicalVolume.hh"
 
-#include "utrConfig.h"
+class Blowfish_Frame{
+public:
+	Blowfish_Frame(G4LogicalVolume *World_Log);
+	~Blowfish_Frame(){};
 
-class DetectorConstruction : public G4VUserDetectorConstruction {
-  public:
-	DetectorConstruction();
-	~DetectorConstruction();
-
-	virtual G4VPhysicalVolume *Construct();
-	virtual void ConstructSDandField();
-
-	void print_info() const;
+	void Construct(G4ThreeVector global_coordinates);
 
 private:
-	G4double World_x;
-	G4double World_y;
-	G4double World_z;
-
-	G4double G3_Target_To_2nd_Target;
-	G4double FGIC_Target_To_MWFGIC_Target;
-	G4double FGIC_Target_To_IC_ELI_Target;
-	G4double Collimator_Entrance_To_G3_Target;
+	G4LogicalVolume *World_Logical;
 };
 
 #endif
