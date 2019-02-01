@@ -115,24 +115,24 @@ void LeadCastle::ConsturctCollimator(G4ThreeVector local_coordinates)
 	G4double colholeradius_max=10. * mm;
 
 	G4double hole_radius;
-	G4Tubs *hole;
-	G4SubtractionSolid *Collimator_block; 
+	G4Tubs *hole[NBlocks];
+	G4SubtractionSolid *Collimator_block[NBlocks]; 
 	G4LogicalVolume *Collimator_blocks_Logical[NBlocks];
 	
 	// _________________________ Block Loop _________________________
 	for (G4int i=0; i<NBlocks;++i)
 	{
-		hole_radius = (colholeradius_min+(colholeradius_max-colholeradius_min)/NBlocks*i);
-		hole = new G4Tubs(("hole"+std::to_string(i)).c_str(), 0., hole_radius, block_z*0.5, 0., s);
+		hole_radius = colholeradius_max-i*(colholeradius_max-colholeradius_min)/(NBlocks-1);
+		hole[i] = new G4Tubs(("hole"+std::to_string(i)).c_str(), 0., hole_radius, block_z*0.5, 0., 360*deg);
 		if (i<4)
 		{
-			Collimator_block = new G4SubtractionSolid(("Collimator_Block"+std::to_string(i)).c_str(),small_block, hole);
+			Collimator_block[i] = new G4SubtractionSolid(("Collimator_Block"+std::to_string(i)).c_str(),small_block, hole[i]);
 		}
 		else
 		{
-			Collimator_block = new G4SubtractionSolid( ("Collimator_Block"+std::to_string(i)).c_str(),big_block, hole);
+			Collimator_block[i] = new G4SubtractionSolid( ("Collimator_Block"+std::to_string(i)).c_str(),big_block, hole[i]);
 		}
-		Collimator_blocks_Logical[i] = new G4LogicalVolume(Collimator_block, Cu, ("Collimator_Block"+std::to_string(i)).c_str(), 0, 0, 0);
+		Collimator_blocks_Logical[i] = new G4LogicalVolume(Collimator_block[i], Cu, ("Collimator_Block"+std::to_string(i)).c_str(), 0, 0, 0);
 		Collimator_blocks_Logical[i]->SetVisAttributes(light_orange);
 
 		new G4PVPlacement(0, local_coordinates+G4ThreeVector(0., 0., (NBlocks*0.5-i-0.5)* block_z), Collimator_blocks_Logical[i],("Collimator_Block"+std::to_string(i)).c_str(),World_Logical, 0, 0);

@@ -55,6 +55,7 @@ Materials *materials = Materials::Instance();
 #include "LeadCastle.hh"
 #include "Detectors.hh"
 #include "B11_Target.hh"
+#include "B11_Absorber.hh"
 
 // Geometry
 #include "G4Box.hh"
@@ -146,7 +147,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct()
 	BeamPipe_Upstream.Construct(G4ThreeVector(0,0,-2500*mm),0.1);
 	RadiatorTarget.Construct(G4ThreeVector(0,0,-2000*mm),"Radiator1","Au",3*mm,"Al",0.); 
 	RadiatorTarget.Construct(G4ThreeVector(0,0,-1800*mm),"Radiator2","Au",3*mm,"Al",0.);
-	BeamPipe_Downstream.Construct(G4ThreeVector(0,0,285*mm),0.1);//285*mm measured
+	// BeamPipe_Downstream.Construct(G4ThreeVector(0,0,285*mm),0.1);//285*mm measured
 	LeadCastle.Construct(G4ThreeVector());
 	Detectors.Construct(G4ThreeVector());
 	Detectors.ConstructDetectorFilter(G4ThreeVector(),"Det1",10*mm,10*mm);//Cu Filter Length, Pb Filter Length
@@ -154,8 +155,14 @@ G4VPhysicalVolume *DetectorConstruction::Construct()
 	Detectors.ConstructDetectorFilter(G4ThreeVector(),"DetPol",10*mm,10*mm);//Cu Filter Length, Pb Filter Length
 
 #ifdef USE_TARGETS
-	B11_Target B11_Target(BeamPipe_Downstream.Get_Beampipe_Vacuum());
-	B11_Target.Construct(G4ThreeVector(0., 0., -BeamPipe_Downstream.Get_Z_Axis_Offset_Z()));
+	B11_Absorber B11_Absorber(World_Logical);
+	B11_Absorber.Construct(G4ThreeVector(0,0,-212*mm));
+
+	// B11_Target B11_Target(BeamPipe_Downstream.Get_Beampipe_Vacuum());
+	// B11_Target.Construct(G4ThreeVector(0., 0., -BeamPipe_Downstream.Get_Z_Axis_Offset_Z()));
+	B11_Target B11_Target(World_Logical);
+	B11_Target.Construct(G4ThreeVector(0., 0., 0.));
+
 #endif
 	
 	print_info();
