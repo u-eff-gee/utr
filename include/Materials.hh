@@ -54,6 +54,7 @@ class Materials {
 	G4Material *Get_target_Dy164_2O3() { return target_Dy164_2O3; }
 	G4Material *Get_target_Cr54_2O3() { return target_Cr54_2O3; }
 	G4Material *Get_target_Pu240() { return target_Pu240; }
+	G4Material *Get_target_Pu239() { return target_Pu239; }
 	G4Material *Get_target_Th232() { return target_Th232; }
 	G4Material *Get_target_U238() { return target_U238; }
 
@@ -84,6 +85,7 @@ class Materials {
 	G4Material *target_Dy164_2O3;
 	G4Material *target_Cr54_2O3;
 	G4Material *target_Pu240;
+	G4Material *target_Pu239;
 	G4Material *target_Th232;
 	G4Material *target_U238;
 

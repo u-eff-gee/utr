@@ -521,6 +521,20 @@ void Materials::ConstructMaterials() {
 
 	target_Pu240->AddElement(enriched_Pu, natoms = 1);
 
+	// 239Pu from TUD, not a real target!!! 239Pu(n,f) used to simulate gamma/neutron emission of 240Pu(g,f)
+	G4double density239Pu = 19.84 * g / cm3;
+
+	target_Pu239 = new G4Material(name = "239Pu", density239Pu, ncomponents = 1);
+
+	G4Isotope *Pu239 = new G4Isotope(name = "239Pu", z = 94, a = 239);
+
+	G4Element *enriched_Pu2 =
+	    new G4Element(name = "enriched Pu2", symbol = "Pu", ncomponents = 1);
+
+	enriched_Pu2->AddIsotope(Pu239, abundance = 100. * perCent);
+
+	target_Pu239->AddElement(enriched_Pu2, natoms = 1);
+
 	// 232Th from TUD, P-1156
 	G4double density232Th = 11.72 * g / cm3;
 
