@@ -63,6 +63,7 @@ void FGIC::Construct(G4ThreeVector global_coordinates){
 	G4Material *PCB_coating = materials->Get_PCB_coating();
 	G4Material *PA = nist->FindOrBuildMaterial("G4_NYLON-8062");
 	G4Material *target_Pu240 = materials->Get_target_Pu240();
+	G4Material *target_Pu239 = materials->Get_target_Pu239();
 	G4Material *gold = nist->FindOrBuildMaterial("G4_Au");
 	G4Material *kapton = nist->FindOrBuildMaterial("G4_KAPTON");
 	G4Material *vacuum = nist->FindOrBuildMaterial("G4_Galactic");
@@ -93,8 +94,9 @@ void FGIC::Construct(G4ThreeVector global_coordinates){
 	detector_gas_logical->SetVisAttributes(blue);
 
 //***********target***********
-	auto target_solid = new G4Tubs("target_solid",0.*mm,15.*mm,8.E-6*cm*0.5,0.,twopi);	//assumed
-	auto target_logical = new G4LogicalVolume(target_solid,target_Pu240,"target_logical");
+	auto target_solid = new G4Tubs("target_solid",0.*mm,15.*mm,8.E-6*cm*0.5,0.,twopi);	//assumed 8.E-6*cm*0.5
+//	auto target_logical = new G4LogicalVolume(target_solid,target_Pu240,"target_logical");
+	auto target_logical = new G4LogicalVolume(target_solid,target_Pu239,"target_logical");
 	new G4PVPlacement(0,G4ThreeVector(0.,0.,0.),target_logical,"target_phys",detector_gas_logical,false,0,false);
 	target_logical->SetVisAttributes(red);
 
@@ -108,7 +110,7 @@ void FGIC::Construct(G4ThreeVector global_coordinates){
 	new G4PVPlacement(0,G4ThreeVector(0.,0.,8.E-6*cm*0.5+2.59E-6*cm+24.64E-6*cm*0.5),target_kapton_logical,"target_kapton_phys",detector_gas_logical,false,0,false);
 	target_kapton_logical->SetVisAttributes(white);
 
-	auto target_sphere = new G4Sphere("target_sphere",29.999,30.*mm,0.,twopi,0.,twopi);
+	auto target_sphere = new G4Sphere("target_sphere",29.999*mm,30.*mm,0.,twopi,0.,twopi);
 	auto target_sphere_logical = new G4LogicalVolume(target_sphere,vacuum,"target_sphere_logical");
 	new G4PVPlacement(0,G4ThreeVector(0.,0.,0.),target_sphere_logical,"target_sphere_phys",detector_gas_logical,false,0,false);
 	target_sphere_logical->SetVisAttributes(red);
