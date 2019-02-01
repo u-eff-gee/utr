@@ -18,30 +18,22 @@ You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef DETECTORCONSTRUCTION_HH
-#define DETECTORCONSTRUCTION_HH 1
+#ifndef B11_ABSORBER_HH
+#define B11_ABSORBER_HH 1
 
-#include "G4SystemOfUnits.hh"
-#include "G4UnitsTable.hh"
-#include "G4VUserDetectorConstruction.hh"
+#include "G4LogicalVolume.hh"
 
-#include "utrConfig.h"
+class B11_Absorber{
+public:
+	B11_Absorber();
+	B11_Absorber(G4LogicalVolume *World_Log);
+	~B11_Absorber(){};
 
-class DetectorConstruction : public G4VUserDetectorConstruction {
-  public:
-	DetectorConstruction();
-	~DetectorConstruction();
-
-	virtual G4VPhysicalVolume *Construct();
-	// virtual void ConstructSDandField();
-
-	void print_info() const;
+	void Construct(G4ThreeVector global_coordinates);
+	void Set_Containing_Volume(G4LogicalVolume *World_Log){ World_Logical = World_Log; };
 
 private:
-	G4double World_x;
-	G4double World_y;
-	G4double World_z;
-
+	G4LogicalVolume *World_Logical;
 };
 
 #endif
