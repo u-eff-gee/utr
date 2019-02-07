@@ -75,7 +75,7 @@ G4bool SecondarySD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
 	++nentry;
 #endif
 #ifdef EVENT_EKIN
-	analysisManager->FillNtupleDColumn(nentry, track->GetKineticEnergy());	
+	analysisManager->FillNtupleDColumn(nentry, aStep->GetPreStepPoint()->GetKineticEnergy());	
 	++nentry;
 #endif
 #ifdef EVENT_PARTICLE

@@ -42,7 +42,7 @@ void RunAction::BeginOfRunAction(const G4Run *) {
 	G4AnalysisManager *analysisManager = G4AnalysisManager::Instance();
 
 	analysisManager->CreateNtuple("utr", "Particle information");
-#ifdef EVENT_EDEP
+#ifdef EVENT_ID
 	analysisManager->CreateNtupleDColumn("event");
 #endif
 #ifdef EVENT_EDEP

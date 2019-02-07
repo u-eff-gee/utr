@@ -59,7 +59,7 @@ G4bool EnergyDepositionSD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
 
 	G4Track *track = aStep->GetTrack();
 
-	hit->SetKineticEnergy(track->GetKineticEnergy());
+	hit->SetKineticEnergy(aStep->GetPreStepPoint()->GetKineticEnergy());
 	hit->SetEnergyDeposition(aStep->GetTotalEnergyDeposit());
 	hit->SetParticleType(track->GetDefinition()->GetPDGEncoding());
 	hit->SetDetectorID(GetDetectorID());
