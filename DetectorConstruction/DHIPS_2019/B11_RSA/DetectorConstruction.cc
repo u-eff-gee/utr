@@ -150,9 +150,9 @@ G4VPhysicalVolume *DetectorConstruction::Construct()
 	// BeamPipe_Downstream.Construct(G4ThreeVector(0,0,285*mm),0.1);//285*mm measured
 	LeadCastle.Construct(G4ThreeVector());
 	Detectors.Construct(G4ThreeVector());
-	Detectors.ConstructDetectorFilter(G4ThreeVector(),"Det1",10*mm,10*mm);//Cu Filter Length, Pb Filter Length
-	Detectors.ConstructDetectorFilter(G4ThreeVector(),"Det2",10*mm,10*mm);//Cu Filter Length, Pb Filter Length
-	Detectors.ConstructDetectorFilter(G4ThreeVector(),"DetPol",10*mm,10*mm);//Cu Filter Length, Pb Filter Length
+	Detectors.ConstructDetectorFilter(G4ThreeVector(),"HPGe1",10*mm,10*mm);//Cu Filter Length, Pb Filter Length
+	Detectors.ConstructDetectorFilter(G4ThreeVector(),"HPGe2",10*mm,10*mm);//Cu Filter Length, Pb Filter Length
+	Detectors.ConstructDetectorFilter(G4ThreeVector(),"HPGePol",10*mm,10*mm);//Cu Filter Length, Pb Filter Length
 
 #ifdef USE_TARGETS
 	B11_Absorber B11_Absorber(World_Logical);
@@ -167,6 +167,25 @@ G4VPhysicalVolume *DetectorConstruction::Construct()
 	
 	print_info();
 	return World_Physical;
+
+}
+
+void DetectorConstruction::ConstructSDandField() {
+
+	EnergyDepositionSD *HPGe1SD = new EnergyDepositionSD("HPGe1", "HPGe1");
+	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe1SD);
+	HPGe1SD->SetDetectorID(1);
+	SetSensitiveDetector("HPGe1", HPGe1SD, true);
+
+	EnergyDepositionSD *HPGe2SD = new EnergyDepositionSD("HPGe2", "HPGe2");
+	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe2SD);
+	HPGe2SD->SetDetectorID(2);
+	SetSensitiveDetector("HPGe2", HPGe2SD, true);
+
+	EnergyDepositionSD *HPGePolSD = new EnergyDepositionSD("HPGePol", "HPGePol");
+	G4SDManager::GetSDMpointer()->AddNewDetector(HPGePolSD);
+	HPGePolSD->SetDetectorID(3);
+	SetSensitiveDetector("HPGePol", HPGePolSD, true);
 
 }
 

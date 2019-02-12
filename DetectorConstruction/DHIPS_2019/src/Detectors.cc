@@ -81,28 +81,27 @@ void Detectors::Construct(G4ThreeVector global_coordinates)
 	new G4PVPlacement(0,G4ThreeVector(0,0,-0.5*BGO1->Get_Length()+BGOPol->Get_Max_Penetration_Depth()-0.5*HPGePol->Get_Length()),HPGePol_Logical,"HPGePol",BGOPol_Logical,0,0); 
 	
 }
-
 void Detectors::ConstructDetectorFilter(G4ThreeVector global_coordinates,std::string det, G4double CuLength, G4double PbLength)
 {
 	bool detcheck = false;
 	G4double det_phi=0;
 	G4double det_theta=0;
 	G4double det_dist=0;
-	if(det=="Det1")
+	if(det=="HPGe1")
 		{
 			det_phi=g1_phi;
 			det_theta=g1_theta;
 			det_dist=detectordistance1;
 			detcheck=true;
 		}
-		else if(det=="Det2")
+		else if(det=="HPGe2")
 			{
 				det_phi=g2_phi;
 				det_theta=g2_theta;
 				det_dist=detectordistance2;
 				detcheck=true;
 			}
-			else if(det=="DetPol")
+			else if(det=="HPGePol")
 				{
 					det_phi=gPol_phi;
 					det_theta=gPol_theta;
@@ -130,7 +129,7 @@ void Detectors::ConstructDetectorFilter(G4ThreeVector global_coordinates,std::st
 		G4Tubs* Pb_Filter_Solid= new G4Tubs("Pb_Filter_Solid", 0, 25*mm, PbLength*0.5, 0. * deg, 360. * deg);
 
 		G4LogicalVolume* Cu_Filter_Logical = new G4LogicalVolume(Cu_Filter_Solid, Cu, "Cu_Filter_Logical", 0, 0, 0);
-		G4LogicalVolume* Pb_Filter_Logical = new G4LogicalVolume(Pb_Filter_Solid, Pb, "Pb_Filter_Solid", 0, 0, 0);
+		G4LogicalVolume* Pb_Filter_Logical = new G4LogicalVolume(Pb_Filter_Solid, Pb, "Pb_Filter_Logical", 0, 0, 0);
 
 		Cu_Filter_Logical->SetVisAttributes(orange);
 		Pb_Filter_Logical->SetVisAttributes(grey);
