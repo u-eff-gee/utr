@@ -1,7 +1,7 @@
 #----------------------------------------------------------------------------
 # Setup the project
 #
-cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.5.2 FATAL_ERROR)
 project(utr)
 
 #----------------------------------------------------------------------------
@@ -19,14 +19,42 @@ endif()
 #----------------------------------------------------------------------------
 
 # Build options
+#----------------------------------------------------------------------------
+
+MACRO(SUBDIRLIST result curdir)
+  FILE(GLOB children RELATIVE ${curdir} ${curdir}/*)
+  SET(dirlist "")
+  FOREACH(child ${children})
+    IF(IS_DIRECTORY ${curdir}/${child})
+      LIST(APPEND dirlist ${child})
+    ENDIF()
+  ENDFOREACH()
+  list(REMOVE_ITEM dirlist src)
+  list(REMOVE_ITEM dirlist include)
+  SET(${result} ${dirlist})
+ENDMACRO()
+
+#----------------------------------------------------------------------------
 # Choose campaign (an experimental campaign usually has a bulk geometry which is not changed, and several files like the detector arrangment which differ from run to run)
-set(CAMPAIGN "Campaign_2018" CACHE STRING "Select experimental campaign from directory DetectorConstruction/")
+set(CAMPAIGN "DHIPS_2019" CACHE STRING "Select experimental campaign from directory DetectorConstruction/")
+SUBDIRLIST(SETUP_CHOICE ${CMAKE_CURRENT_BINARY_DIR}/DetectorConstruction)
+set_property(CACHE CAMPAIGN PROPERTY STRINGS ${SETUP_CHOICE})
 # Choose geometry
 set(DETECTOR_CONSTRUCTION "64Ni_271_279" CACHE STRING "Select detector construction from directory DetectorConstruction/$CAMPAIGN/")
+SUBDIRLIST(DETECTOR_CONSTRUCTION_CHOICE ${CMAKE_CURRENT_BINARY_DIR}/DetectorConstruction/${CAMPAIGN})
+set_property(CACHE DETECTOR_CONSTRUCTION PROPERTY STRINGS ${DETECTOR_CONSTRUCTION_CHOICE})
+
+mark_as_advanced(CLEAR CAMPAIGN DETECTOR_CONSTRUCTION)
+
 set(PRINT_PROGRESS 100000 CACHE STRING "Set the frequency of printed updates about the progress of utr (unit: number of events processed)")
 # Choose primary generator
 option(USE_GPS "Use G4GeneralParticleSource as primary generator" ON)
 option(USE_TARGETS "Use Targets in the geometry" ON)
+string(SUBSTRING ${CAMPAIGN} 0 5 SETUP)
+string(COMPARE ${SETUP} "DHIPS" SETUP_BOOL)
+if(SETUP_BOOL)
+  message(STATUS ${SETUP})
+endif()
 
 option(EM_FAST "Use G4EmStandardPhysics_option1" OFF)
 option(EM_STANDARD "Use G4EmStandardPhysics_option4" OFF)
@@ -61,7 +89,6 @@ configure_file(
 	"${PROJECT_SOURCE_DIR}/utrConfig.h.in"
 	"${PROJECT_SOURCE_DIR}/include/utrConfig.h"
 )
-
 #----------------------------------------------------------------------------
 
 # Setup Geant4 include directories and compile definitions
