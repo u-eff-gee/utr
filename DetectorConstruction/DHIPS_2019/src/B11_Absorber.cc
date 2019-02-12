@@ -76,7 +76,7 @@ void B11_Absorber::Construct(G4ThreeVector global_coordinates){
 	G4double LidLength=2*mm;
 	G4Tubs *Cu_ContainerLid_Solid = new G4Tubs("Cu_ContainerLid_Solid",0,Target_Radius,LidLength*0.5,0,twopi);
 	G4LogicalVolume *Cu_ContainerLid_Logical = new G4LogicalVolume(Cu_ContainerLid_Solid, nat_Cu, "Cu_ContainerLid_Logical");
-	Cu_ContainerLid_Logical->SetVisAttributes(grey);
+	Cu_ContainerLid_Logical->SetVisAttributes(orange);
 	
 	// 1mm wall thickness
 	G4Tubs *Cu_Container_Solid = new G4Tubs("Cu_Container_Solid", Target_Radius, Target_Radius+1.*mm, Target_Length*0.5+LidLength, 0., twopi);
