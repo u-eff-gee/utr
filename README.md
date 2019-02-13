@@ -276,34 +276,34 @@ Information about the simulated particles is recorded by instances of the G4VSen
 
 *Unique* means volumes with a unique logical volume name. This precaution is here because all bricks and filters of the same type from the previous sections have the same logical volume names. Making one of those a sensitive detector might yield unexpected results.
 
-Any time a particle executes a step inside a G4VSensitiveDetector object, its ProcessHits routine will access information of the step. This way, live information about a particle can be accessed. Note that a "step" in the GEANT4 sense does not necessarily imply an interaction with the sensitive detector and that a "step" is sometimes also refered to as a "hit". Any volume crossing is also a step. Therefore, also non-interacting geantinos can generate steps, making them a nice tool to explore the geometry, measure solid-angle coverage etc. 
-After a complete event, a collection of all steps inside a given volume will be accessible via its HitsCollection. This way, cumulative information like the energy deposition inside the volume can be accessed.
+Any time a particle produces a hit inside a G4VSensitiveDetector object, its ProcessHits routine will access information of the hit. This way, live information about a particle can be accessed. Note that a "hit" in the GEANT4 sense does not necessarily imply an interaction with the sensitive detector. Any volume crossing is also a hit. Therefore, also non-interacting geantinos can generate hits, making them a nice tool to explore the geometry, measure solid-angle coverage etc. 
+After a complete event, a collection of all hits inside a given volume will be accessible via its HitsCollection. This way, cumulative information like the energy deposition inside the volume can be accessed.
 
 Three types of sensitive detectors are implemented at the moment:
 
 * **EnergyDepositionSD**
     Records the total energy deposition by any particle per single event inside the sensitive detector.
 * **ParticleSD**
-    Records the first step of any particle inside the sensitive detector.
+    Records the first hit of any particle inside the sensitive detector.
 * **SecondarySD**
-    Records the first step of any secondary particle inside the sensitive detector.
+    Records the first hit of any secondary particle inside the sensitive detector.
     
 No matter which type of sensitive detector is chosen, the simulation output will be a [ROOT](https://root.cern.ch/) tree with a user-defined subset (see section [2.6 Output File Format](#outputfileformat)) of the following 10 branches:
 
 * **event**
     Number of the event to which the particle belongs. This number is the same for all secondary particles and their corresponding primary particle. It is also the same if `G4ParticleGun->GeneratePrimaryVertext()` is called multiple times in a single event. The latter point makes this variable especially useful in case of the `AngularCorrelationGenerator` (see [2.3.3 AngularCorrelationGenerator](#angularcorrelationgenerator)).
 * **ekin**
-    Kinetic energy (in MeV) of the particle at the time of its first step in the sensitive detector.
+    Kinetic energy (in MeV) of the particle at the time of its first hit of the sensitive detector.
 * **edep**
-    Total energy deposition (in MeV) of the event (EnergyDepositionSD) OR energy deposition of the first step in the sensitive detector (ParticleSD, SecondarySD)
+    Total energy deposition (in MeV) of the event (EnergyDepositionSD) OR energy deposition of the first hit of the sensitive detector (ParticleSD, SecondarySD)
 * **particle**
-    Type of the particle whose first step in the sensitive detector it was (ParticleSD, SecondarySD) OR type of the very first particle in this event that hit the sensitive detector (EnergyDepositionSD). The type of the particle is encoded in the [Monte Carlo Particle Numbering Scheme](http://pdg.lbl.gov/mc_particle_id_contents.html).
+    Type of the particle whose first hit of the sensitive detector it was (ParticleSD, SecondarySD) OR type of the very first particle in this event that hit the sensitive detector (EnergyDepositionSD). The type of the particle is encoded in the [Monte Carlo Particle Numbering Scheme](http://pdg.lbl.gov/mc_particle_id_contents.html).
 * **volume**
     User-defined identifier of the sensitive detector that recorded this set of data.
 * **x/y/z**
-    Coordinates (in mm) of the first step in the sensitive detector by a particle (ParticleSD, SecondarySD) OR coordinates of the first step of the first particle in this event that hit the sensitive detector (EnergyDepositionSD)
+    Coordinates (in mm) of the first hit of the sensitive detector by a particle (ParticleSD, SecondarySD) OR coordinates of the first hit by the first particle in this event that hit the sensitive detector (EnergyDepositionSD)
 * **vx/vy/vz**
-    Momentum (in MeV/c) of the particle at the position of the first step in the sensitive detector (ParticleSD, SecondarySD) OR momentum of the first particle hitting the sensitive detector in this event at the position of its first step (EnergyDepositionSD).
+    Momentum (in MeV/c) of the particle at the position of the first hit of the sensitive detector (ParticleSD, SecondarySD) OR momentum of the first particle hitting the sensitive detector in this event at the position of its first hit (EnergyDepositionSD).
     
 The meaning of the columns sometimes changes with the choice of the sensitive detector.
 
@@ -320,7 +320,7 @@ The following examples illustrates how the different sensitive detectors work.
 
 ![Interaction with sensitive detector](.media/grid.png)
 
-In the figure, a photon (orange, sinusoidal line) and several electrons (blue arrow) are shown which are part of a single event. Each step in the sensitive detector (black circle) has a label that contains the particle number and the number of the step. The history of the event is as follows:
+In the figure, a photon (orange, sinusoidal line) and several electrons (blue arrow) are shown which are part of a single event. Each hit in the sensitive detector (black circle) has a label that contains the particle number and the number of the hit. The history of the event is as follows:
 
 The primary particle 1 (a photon with an energy of 2.5 MeV) enters the sensitive detector at (0,3). It is Compton-scattered at (2,5) and transfers 1.0 MeV to an electron (particle 2). The electron slowly loses its kinetic energy again in scattering processes at (4,8), (6,9) and (7,8) inside the sensitive detector which do not create new secondary particles. In the meantime, particle 1 travels to (6,1) and creates an e-/e+ pair with its remaining 1.5 MeV. Each lepton (3 and 4) gets an initial energy of (1.500 - 1.022)/2 = 0.239 MeV. Lepton 3 loses its kinetic energy inside the sensitive detector, Lepton 4 leaves the sensitive detector.
 
@@ -815,7 +815,7 @@ The options for the output file format are described in [2.6 Output File Format]
  * EVENT_POSX, EVENT_POSY, EVENT_POSZ
  * EVENT_MOMX, EVENT_MOMY, EVENT_MOMZ
 
-the user can decide which of the quantities are written to the ROOT output file as branches. For example, to write the x coordinate of the first step in the detector volume, type
+the user can decide which of the quantities are written to the ROOT output file as branches. For example, to write the x coordinate of the first hit in the detector volume, type
 
 $ cmake -DPOSX=ON .
 
