@@ -241,14 +241,15 @@ void LeadCastle::ConsturctLeadShield(G4ThreeVector local_coordinates)
 	G4UnionSolid* Det2_Pol_Box_Solid= new G4UnionSolid("Det2_Pol_Box_Solid", Det2_Box_Solid, Pol_Box_Solid,0, G4ThreeVector(9*cm, 0.,-(14.55/2)*cm+15.5*cm+36*cm-0.1*cm));
 	
 	vector <G4TwoVector> vertices1{
-		G4TwoVector(5.*cm,25*cm),
-		G4TwoVector(5.*cm,-25*cm),
 		G4TwoVector(-5.*cm,-25*cm),
 		G4TwoVector(-5.*cm,25*cm),
+		G4TwoVector(5.*cm,25*cm),
 		G4TwoVector(23.*cm,25*cm),
 		G4TwoVector(23.*cm,-25*cm),
+		G4TwoVector(5.*cm,-25*cm),
 		G4TwoVector(-5.*cm,-25*cm),
-		G4TwoVector(-5.*cm,25*cm)};
+		G4TwoVector(-5.*cm,25*cm)
+	};
 
 	G4GenericTrap* Middle_Box_Solid = new G4GenericTrap("Middle_Box_Solid",(21.55/2)*cm, vertices1);
 	G4UnionSolid* LeadCollimator_Pol_Det2_Plain_Solid= new G4UnionSolid("LeadCollimator_Pol_Det2_Plain_Solid", Det2_Pol_Box_Solid, Middle_Box_Solid,0, G4ThreeVector(0, 0.,(36/2)*cm));
@@ -334,14 +335,16 @@ void LeadCastle::ConsturctLeadShield(G4ThreeVector local_coordinates)
 	
 	//Beginning LeadFrontDet2-------------------------------------
 	vector <G4TwoVector> vertices2{
+
 		G4TwoVector(-7.5*cm,25*cm),
-		G4TwoVector(-7.5*cm,-25*cm),
-		G4TwoVector(0.*cm,-25*cm),
 		G4TwoVector(0.*cm,25*cm),
 		G4TwoVector(0.*cm,25*cm),
+		G4TwoVector(0.*cm,25*cm),
 		G4TwoVector(0.*cm,-25*cm),
 		G4TwoVector(0.*cm,-25*cm),
-		G4TwoVector(0.*cm,25*cm)};
+		G4TwoVector(0.*cm,-25*cm),
+		G4TwoVector(-7.5*cm,-25*cm)
+	};
 	G4GenericTrap* LeadFrontDet2_Triangle = new G4GenericTrap("LeadFrontDet2_Triangle",(8.938/2)*cm,vertices2);
 	G4ThreeVector TranslationLeadFrontDet2(-(+12.5*cm) +BGO2_Distance*sin(g2_theta)*cos(g2_phi),BGO2_Distance*cos(g2_theta),-(-distcollimatortotarget+2.262*cm+(8.938/2)*cm)+BGO2_Distance*sin(g2_theta)*sin(g2_phi));
 	G4SubtractionSolid* LeadFrontDet2Hole_Solid = new G4SubtractionSolid("LeadFrontDet2Hole_Solid",LeadFrontDet2_Triangle,FilterHole_Solid, &RotationDet2_Y, TranslationLeadFrontDet2);
