@@ -50,11 +50,6 @@ set(PRINT_PROGRESS 100000 CACHE STRING "Set the frequency of printed updates abo
 # Choose primary generator
 option(USE_GPS "Use G4GeneralParticleSource as primary generator" ON)
 option(USE_TARGETS "Use Targets in the geometry" ON)
-string(SUBSTRING ${CAMPAIGN} 0 5 SETUP)
-string(COMPARE ${SETUP} "DHIPS" SETUP_BOOL)
-if(SETUP_BOOL)
-  message(STATUS ${SETUP})
-endif()
 
 option(EM_FAST "Use G4EmStandardPhysics_option1" OFF)
 option(EM_STANDARD "Use G4EmStandardPhysics_option4" OFF)
