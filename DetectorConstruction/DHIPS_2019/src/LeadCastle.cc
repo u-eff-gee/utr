@@ -335,13 +335,14 @@ void LeadCastle::ConsturctLeadShield(G4ThreeVector local_coordinates)
 	//Beginning LeadFrontDet2-------------------------------------
 	vector <G4TwoVector> vertices2{
 		G4TwoVector(-7.5*cm,25*cm),
+		G4TwoVector(0.*cm,25*cm),
+		G4TwoVector(0.*cm,-25*cm),
 		G4TwoVector(-7.5*cm,-25*cm),
-		G4TwoVector(0.*cm,-25*cm),
+		G4TwoVector(-0.001*cm,24.999*cm),
 		G4TwoVector(0.*cm,25*cm),
-		G4TwoVector(0.*cm,25*cm),
 		G4TwoVector(0.*cm,-25*cm),
-		G4TwoVector(0.*cm,-25*cm),
-		G4TwoVector(0.*cm,25*cm)};
+		G4TwoVector(-0.001*cm,-24.999*cm)
+	};
 	G4GenericTrap* LeadFrontDet2_Triangle = new G4GenericTrap("LeadFrontDet2_Triangle",(8.938/2)*cm,vertices2);
 	G4ThreeVector TranslationLeadFrontDet2(-(+12.5*cm) +BGO2_Distance*sin(g2_theta)*cos(g2_phi),BGO2_Distance*cos(g2_theta),-(-distcollimatortotarget+2.262*cm+(8.938/2)*cm)+BGO2_Distance*sin(g2_theta)*sin(g2_phi));
 	G4SubtractionSolid* LeadFrontDet2Hole_Solid = new G4SubtractionSolid("LeadFrontDet2Hole_Solid",LeadFrontDet2_Triangle,FilterHole_Solid, &RotationDet2_Y, TranslationLeadFrontDet2);
