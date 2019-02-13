@@ -44,7 +44,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "Detectors_G3_FGIC.hh"
 #include "Wheel.hh"
 #include "G3_Table.hh"
-#include "Table2_243_279.hh"
+#include "Table2_FGIC.hh"
 #include "Detectors_2nd_271_279.hh"
 #include "ZeroDegree_Setup.hh"
 #include "FGIC.hh"
@@ -144,7 +144,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	Detectors_G3_FGIC detectors_G3(World_Logical);
 	Wheel wheel(World_Logical);
 	G3_Table g3_Table(World_Logical);
-	Table2_243_279 table2(World_Logical);
+	Table2_FGIC table2(World_Logical);
 	Beampipe_Downstream beampipe_Downstream(World_Logical);
 	Detectors_2nd_271_279 detectors_2nd(World_Logical);	
 	ZeroDegree_Setup zeroDegree_Setup(World_Logical);
