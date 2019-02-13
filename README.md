@@ -435,7 +435,7 @@ MAX_TRIES_POSITION = 1e4
 MAX_TRIES_MOMENTUM = 1e4
 ```
 
-The event generators can do a self-check before the actual simulation in which they creates `MAX_TRIES_XY` points and evaluate how many of them were valid. From this, the probability `p=(N_NotValid/MAX_TRIES_XY)^MAX_TRIES_XY` of never hitting one of the source volumes / angular distributions in `MAX_TRIES_XY` attempts can be estimated. In the case of the position generator, an individual check is done for each source volume. If `p * N >~ 1`, where N is the number of particles to be simulated, the algorithm will very probably fail once in a while so try increasing `MAX_TRIES_XY` or optimizing the dimension of the container volume or `MAX_W`. A typical output of the self-check for the position generator looks like:
+The event generators can do a self-check before the actual simulation in which they creates `MAX_TRIES_XY` points and evaluate how many of them were valid or not (`N_NotValid`). From this, the probability `p=(N_NotValid/MAX_TRIES_XY)^MAX_TRIES_XY` of never hitting one of the source volumes / angular distributions in `MAX_TRIES_XY` attempts can be estimated. In the case of the position generator, an individual check is done for each source volume. If `p * N >~ 1`, where `N` is the number of particles to be simulated, the algorithm will very probably fail once in a while so try increasing `MAX_TRIES_XY` or optimizing the dimension of the container volume or `MAX_W`. A typical output of the self-check for the position generator looks like:
 
 ```
 G4WT0 > ========================================================================
