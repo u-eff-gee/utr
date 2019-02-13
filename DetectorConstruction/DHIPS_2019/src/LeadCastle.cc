@@ -341,6 +341,7 @@ void LeadCastle::ConsturctLeadShield(G4ThreeVector local_coordinates)
 		G4TwoVector(-0.001*cm,24.999*cm),
 		G4TwoVector(0.*cm,25*cm),
 		G4TwoVector(0.*cm,-25*cm),
+		G4TwoVector(0.*cm,-25*cm),
 		G4TwoVector(-0.001*cm,-24.999*cm)
 	};
 	G4GenericTrap* LeadFrontDet2_Triangle = new G4GenericTrap("LeadFrontDet2_Triangle",(8.938/2)*cm,vertices2);
