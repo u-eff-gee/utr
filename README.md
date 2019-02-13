@@ -110,7 +110,7 @@ utr/
                 DetectorConstruction.cc
 ```
 
-As in reality, a geometry file only holds for a certain number of runs, which are part of a campaign. Therefore, unique `DetectorConstruction.cc` files can be found at the run-level. In principle, one could put all the geometry into this file, and before the 2018 campaign, it was done like that because the file was growing and growing. In the meantime, UG has tried to learn from his mistakes: The `DetectorConstructiion.cc` files should be as short as possible, delegating all the low-level construction jobs to auxiliary classes (please see [2.1.1 Note on auxiliary files](#auxiliary_files)). The auxiliary classes can be placed into different directories, depending on their nature:
+As in reality, a geometry file only holds for a certain number of runs, which are part of a campaign. Therefore, unique `DetectorConstruction.cc` files can be found at the run-level. In principle, one could put all the geometry into this file, and before the 2018 campaign, it was done like that because the file was growing and growing. In the meantime, UG has tried to learn from his mistakes: The `DetectorConstruction.cc` files should be as short as possible, delegating all the low-level construction jobs to auxiliary classes (please see [2.1.1 Note on auxiliary files](#auxiliary_files)). The auxiliary classes can be placed into different directories, depending on their nature:
 Geometry which is expected to be permanent (for example detectors, or furniture), even between different campaigns, should be placed in the `utr/include` and `utr/src` directories.
 More volatile geometry should be placed in the corresponding campaign, i.e. `utr/DetectorConstruction/Campaign_YEAR/include` and `utr/DetectorConstruction/Campaign_YEAR/src`.
 *Sometimes, the difference may not be so clear, and at the moment the sorting is probably not consistent, but our team is still tidying up the 2018 campaign. Everything before 2018 does not follow these conventions, but has been sorted according to the directory structure above anyway to ensure backward compatibility.*
@@ -276,7 +276,7 @@ Information about the simulated particles is recorded by instances of the G4VSen
 
 *Unique* means volumes with a unique logical volume name. This precaution is here because all bricks and filters of the same type from the previous sections have the same logical volume names. Making one of those a sensitive detector might yield unexpected results.
 
-Any time a particle executes a step inside a G4VSensitiveDetector object, its ProcessHits routine will access information of the step. This way, live information about a particle can be accessed. Note that a "hit" in the GEANT4 sense does not necessarily imply an interaction with the sensitive detector. Any volume crossing is also a hit. Therefore, also non-interacting geantinos can generate hits, making them a nice tool to explore to explore the geometry, measure solid-angle coverage, etc. ...
+Any time a particle produces a hit inside a G4VSensitiveDetector object, its ProcessHits routine will access information of the hit. This way, live information about a particle can be accessed. Note that a "hit" in the GEANT4 sense does not necessarily imply an interaction with the sensitive detector. Any volume crossing is also a hit. Therefore, also non-interacting geantinos can generate hits, making them a nice tool to explore the geometry, measure solid-angle coverage etc. 
 After a complete event, a collection of all hits inside a given volume will be accessible via its HitsCollection. This way, cumulative information like the energy deposition inside the volume can be accessed.
 
 Three types of sensitive detectors are implemented at the moment:
@@ -284,9 +284,9 @@ Three types of sensitive detectors are implemented at the moment:
 * **EnergyDepositionSD**
     Records the total energy deposition by any particle per single event inside the sensitive detector.
 * **ParticleSD**
-    Records the first step of any particle inside the sensitive detector.
+    Records the first hit of any particle inside the sensitive detector.
 * **SecondarySD**
-    Records the first step of any secondary particle inside the sensitive detector.
+    Records the first hit of any secondary particle inside the sensitive detector.
     
 No matter which type of sensitive detector is chosen, the simulation output will be a [ROOT](https://root.cern.ch/) tree with a user-defined subset (see section [2.6 Output File Format](#outputfileformat)) of the following 10 branches:
 
@@ -399,10 +399,11 @@ Given a(n)
 * Cuboid in 3 dimensions ("container volume") that completely contains the source volume
 * Angular distribution W(θ, φ)
 
-`AngularDistributionGenerator` generates uniform random
+`AngularDistributionGenerator` generates
  
-* Positions `(source_x + random_x, source_y + random_y, source_z + random_z), |random_I| <= 0.5*sourceDI, I in {x, y, z}` 
-* Tuples `(random_θ, random_φ, random_W), |random_W| <= MAX_W`
+* Uniform random positions `(source_x + random_x, source_y + random_y, source_z + random_z), |random_I| <= 0.5*sourceDI, I in {x, y, z}` 
+* Random tuples `(random_θ, random_φ)` with a distribution such that they represent uniformly distributed random directional vectors in spherical coordinates
+* Uniform random numbers `random_W, so that  |random_W| <= MAX_W`
 
 until 
 
@@ -434,7 +435,7 @@ MAX_TRIES_POSITION = 1e4
 MAX_TRIES_MOMENTUM = 1e4
 ```
 
-The event generators can do a self-check before the actual simulation in which they creates `MAX_TRIES_XY` points and evaluate how many of them were valid. From this, the probability *p* of not hitting one of the source volumes / angular distributions can be estimated. In the case of the position generator, an individual check is done for each source volume. If `p * N >~ 1`, where N is the number of particles to be simulated, the algorithm will very probably fail once in a while so try increasing `MAX_TRIES_XY` or optimizing the dimension of the container volume or `MAX_W`. A typical output of the self-check for the position generator looks like:
+The event generators can do a self-check before the actual simulation in which they creates `MAX_TRIES_XY` points and evaluate how many of them were valid or not (`N_NotValid`). From this, the probability `p=(N_NotValid/MAX_TRIES_XY)^MAX_TRIES_XY` of never hitting one of the source volumes / angular distributions in `MAX_TRIES_XY` attempts can be estimated. In the case of the position generator, an individual check is done for each source volume. If `p * N >~ 1`, where `N` is the number of particles to be simulated, the algorithm will very probably fail once in a while so try increasing `MAX_TRIES_XY` or optimizing the dimension of the container volume or `MAX_W`. A typical output of the self-check for the position generator looks like:
 
 ```
 G4WT0 > ========================================================================
@@ -448,7 +449,7 @@ Both the momentum and position generator will also check whether the given limit
 For the momentum generator, the check is necessary because the value of `MAX_W` that was introduced above has been arbitrarily set to 3 in `AngularDistributionGenerator.hh` and `AngularCorrelationGenerator`, which should be a sensible choice for most angular distributions. However, it may be that `W(θ, φ) > 3` for some distribution. 
 Too small values of `MAX_W` and `SOURCE_DI` can also be detected by the self-check with a Monte-Carlo method. For each of the MAX_TRIES_MOMENTUM (MAX_TRIES_POSITION) tries, `utr` will also check whether 
 
- * the inequality `W_max <= W(random_θ, random_φ)` (``) holds.
+ * the inequality `W_max <= W(random_θ, random_φ)` holds.
  * the randomly sampled points `(+- 0.5*SOURCE_DX, random_y, random_z)`, `(random_x, +- 0.5*SOURCE_DY, random_z)`, `(random_x, random_y, +- 0.5*SOURCE_DY)` are still inside the source volume.
 
 If yes, this could be a hint that the value of `MAX_W` or `SOURCE_DI` is too low and should be increased.
@@ -501,7 +502,7 @@ To change parameters of the AngularDistributionGenerator, an AngularDistribution
 * `/ang/sourcePV VALUE`
     Enter the name of a physical volume that should act as a source. To add more physical volumes, call `/ang/sourcePV` multiple times with different arguments (about using multiple sources, see also the [caveat](#multiplesources) at the end of this section).
 * `/ang/polarized VALUE`
-    Determine whether the excitation (i.e. the first transition in the cascade) is caused by a polarized photon (default value). To simulate unpolarized photons, the angular distributions for the two possible polarizations are added up in the code. This is done by choosing different parities for the first excited state in the cascade. This means that both distributions (for example 0<sup>+</sup> → 1<sup>+</sup> → 0<sup>+</sup> and 0<sup>+</sup> → 1<sup>-</sup> → 0<sup>+</sup>) need to be implemented. The user needs to give only of the two possible cascades as a macro command.
+    Determine whether the excitation (i.e. the first transition in the cascade) is caused by a polarized photon (default value). To simulate unpolarized photons, the angular distributions for the two possible polarizations are added up in the code. This is done by choosing different parities for the first excited state in the cascade. This means that both distributions (for example 0<sup>+</sup> → 1<sup>+</sup> → 0<sup>+</sup> and 0<sup>+</sup> → 1<sup>-</sup> → 0<sup>+</sup>) need to be implemented. The user needs to give only one of the two possible cascades as a macro command.
 
 The container volume's inside will be the interval [X - DX/2, X + DX/2], [Y - DY/2, Y + DY/2] and [Z - DZ/2, Z + DZ/2].
 
@@ -814,7 +815,7 @@ The options for the output file format are described in [2.6 Output File Format]
  * EVENT_POSX, EVENT_POSY, EVENT_POSZ
  * EVENT_MOMX, EVENT_MOMY, EVENT_MOMZ
 
-the user can decide which of the quantities are written to the ROOT output file as branches. For example, to write the x coordinate of the first step in the detector volume, type
+the user can decide which of the quantities are written to the ROOT output file as branches. For example, to write the x coordinate of the first hit in the detector volume, type
 
 $ cmake -DPOSX=ON .
 
