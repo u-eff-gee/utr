@@ -158,6 +158,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct()
 
 	// B11_Target B11_Target(BeamPipe_Downstream.Get_Beampipe_Vacuum());
 	// B11_Target.Construct(G4ThreeVector(0., 0., -BeamPipe_Downstream.Get_Z_Axis_Offset_Z()));
+	
 	B11_Target B11_Target(World_Logical);
 	B11_Target.Construct(G4ThreeVector(0., 0., 0.));
 	B11_Target.ConstructAbsorber(G4ThreeVector(0,0,-212*mm));
@@ -171,20 +172,20 @@ G4VPhysicalVolume *DetectorConstruction::Construct()
 
 void DetectorConstruction::ConstructSDandField() {
 
-	EnergyDepositionSD *HPGe1SD = new EnergyDepositionSD("HPGe1", "HPGe1");
-	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe1SD);
-	HPGe1SD->SetDetectorID(1);
-	SetSensitiveDetector("HPGe1", HPGe1SD, true);
+	// EnergyDepositionSD *HPGe1SD = new EnergyDepositionSD("HPGe1", "HPGe1");
+	// G4SDManager::GetSDMpointer()->AddNewDetector(HPGe1SD);
+	// HPGe1SD->SetDetectorID(1);
+	// SetSensitiveDetector("HPGe1", HPGe1SD, true);
 
-	EnergyDepositionSD *HPGe2SD = new EnergyDepositionSD("HPGe2", "HPGe2");
-	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe2SD);
-	HPGe2SD->SetDetectorID(2);
-	SetSensitiveDetector("HPGe2", HPGe2SD, true);
+	// EnergyDepositionSD *HPGe2SD = new EnergyDepositionSD("HPGe2", "HPGe2");
+	// G4SDManager::GetSDMpointer()->AddNewDetector(HPGe2SD);
+	// HPGe2SD->SetDetectorID(2);
+	// SetSensitiveDetector("HPGe2", HPGe2SD, true);
 
-	EnergyDepositionSD *HPGePolSD = new EnergyDepositionSD("HPGePol", "HPGePol");
-	G4SDManager::GetSDMpointer()->AddNewDetector(HPGePolSD);
-	HPGePolSD->SetDetectorID(3);
-	SetSensitiveDetector("HPGePol", HPGePolSD, true);
+	// EnergyDepositionSD *HPGePolSD = new EnergyDepositionSD("HPGePol", "HPGePol");
+	// G4SDManager::GetSDMpointer()->AddNewDetector(HPGePolSD);
+	// HPGePolSD->SetDetectorID(3);
+	// SetSensitiveDetector("HPGePol", HPGePolSD, true);
 
 }
 
