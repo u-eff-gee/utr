@@ -94,7 +94,8 @@ void ActionInitialization::Build() const {
 	record_quantity[MOMZ] = true;
 #endif
 
-	G4cout << "================================================================"
+if(G4Threading::G4GetThreadId()==0)
+{	G4cout << "================================================================"
 	          "================"
 	       << G4endl;
 	G4cout << "ActionInitialization: The following quantities will be saved to "
@@ -108,6 +109,6 @@ void ActionInitialization::Build() const {
 	G4cout << "================================================================"
 	          "================"
 	       << G4endl;
-
+}
 	SetUserAction(runAction);
 }
