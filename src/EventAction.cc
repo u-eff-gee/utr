@@ -47,6 +47,10 @@ void EventAction::EndOfEventAction(const G4Event *event) {
 
 	int eID = event->GetEventID();
 	int NbEvents = runManager->GetNumberOfEventsToBeProcessed();
+	int threadID = G4Threading::G4GetThreadId();
+	int numberofpadchars=floor(log10(n_threads));
+	if(threadID!=0){numberofpadchars=floor(log10(n_threads-1))-floor(log10(threadID));}
+	std::string padchars(numberofpadchars,' ');
         if((0 == (eID % print_progress))  ||  (eID == print_progress) ) {
 		CurrentRunTime = clock();
 		int ElapsedTime = (CurrentRunTime-StartRunTime)/CLOCKS_PER_SEC*thread_norm;
@@ -54,10 +58,12 @@ void EventAction::EndOfEventAction(const G4Event *event) {
 		int hours 	= (ElapsedTime-days*(24*3600))/3600;
 		int minutes 	= (ElapsedTime-days*(24*3600)-hours*3600)/60;
 		int sec 	= (ElapsedTime-days*(24*3600)-hours*3600-minutes*60);
+		float percent = (float)((float)eID/(float)NbEvents*100.);
 
-		G4cout	<< "Progress: ["<<setw(16)<<eID<<"/"<<NbEvents<<"]  "
-				<<setw(4)<<(float)((float)eID/(float)NbEvents*100.)<<" %"
-				<<"\tRunning time: "<< setw(3)<<days<<"d "<<setw(2)<<hours<<"h "<<setw(3)<<minutes<<"mn "<<setw(3)<<sec<<"s   "
-				<< G4endl;
+		G4cout << padchars <<"Progress: ["<<setw(16)<<eID<<"/"<<NbEvents<<"]  "
+		<<setw(4)<<std::setprecision(2)<<std::fixed<<percent<<" %"
+		<<"\tRunning time: "<< setw(3)<<days<<"d "<<setw(2)<<hours<<"h "<<setw(3)<<minutes<<"mn "<<setw(3)<<sec<<"s   "
+		<< G4endl;
+			
         }
 }

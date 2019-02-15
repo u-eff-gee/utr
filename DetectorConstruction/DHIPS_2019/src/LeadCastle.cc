@@ -137,6 +137,11 @@ void LeadCastle::ConsturctCollimator(G4ThreeVector local_coordinates)
 
 		new G4PVPlacement(0, local_coordinates+G4ThreeVector(0., 0., (NBlocks*0.5-i-0.5)* block_z), Collimator_blocks_Logical[i],("Collimator_Block"+std::to_string(i)).c_str(),World_Logical, 0, 0);
 	}
+	G4Box* Collimator_Lead_Top_Bottom_Solid = new G4Box("Collimator_Lead_Top_Bottom_Solid",block_small_x *0.5,(25*cm-block_y*0.5)*0.5,4*0.5*block_z);
+	G4LogicalVolume *Collimator_Lead_Top_Bottom_Logical = new G4LogicalVolume(Collimator_Lead_Top_Bottom_Solid, Pb, "Collimator_Lead_Top_Bottom_Logical", 0, 0, 0);
+	Collimator_Lead_Top_Bottom_Logical->SetVisAttributes(grey);
+	new G4PVPlacement(0, local_coordinates+G4ThreeVector(0.,block_y*0.5+(25*cm-block_y*0.5)*0.5,3*block_z), Collimator_Lead_Top_Bottom_Logical, "Collimator_Lead_Top", World_Logical, 0, 0);
+	new G4PVPlacement(0, local_coordinates+G4ThreeVector(0., -block_y*0.5-(25*cm-block_y*0.5)*0.5, 3*block_z), Collimator_Lead_Top_Bottom_Logical, "Collimator_Lead_Bottom", World_Logical, 0, 0);
 }
 
 void LeadCastle::ConsturctLeadShield(G4ThreeVector local_coordinates)
@@ -172,7 +177,7 @@ void LeadCastle::ConsturctLeadShield(G4ThreeVector local_coordinates)
 	LeadBackWall_Logical->SetVisAttributes(grey);
 	
 	new G4PVPlacement(0, local_coordinates+G4ThreeVector(0.,0.,110.*cm), LeadBackWall_Logical, "LeadBackWall", World_Logical, 0, 0);
-	//End LeadBackWall---
+	// End LeadBackWall---
 
 	//Beginning LeadRightWall-------------------------------------
 	G4LogicalVolume *LeadRightWall_Logical;
@@ -230,133 +235,125 @@ void LeadCastle::ConsturctLeadShield(G4ThreeVector local_coordinates)
 	//End LeadCastle_LeftWall---------------------------------------
 
 	//Beginning LeadDetectorCollimator_Pol_Det2-------------------------------------
-	G4double g2_theta=90.*deg;
 	G4double g2_phi= 140*deg;
-
-	G4double pol_theta=90.*deg;
-	G4double pol_phi=180.*deg;
-
-	G4Box* Det2_Box_Solid = new G4Box("Det2_Box_Solid",5.*cm,25*cm, (14.55/2)*cm+3*cm); 
-	G4Box* Pol_Box_Solid = new G4Box("Pol_Box_Solid",14.*cm,25*cm, 15.6*cm); //1mm Overlap between the blocks
-	G4UnionSolid* Det2_Pol_Box_Solid= new G4UnionSolid("Det2_Pol_Box_Solid", Det2_Box_Solid, Pol_Box_Solid,0, G4ThreeVector(9*cm, 0.,-(14.55/2)*cm+15.5*cm+36*cm-0.1*cm));
-	
-	vector <G4TwoVector> vertices1{
-		G4TwoVector(5.*cm,25*cm),
-		G4TwoVector(5.*cm,-25*cm),
-		G4TwoVector(-5.*cm,-25*cm),
-		G4TwoVector(-5.*cm,25*cm),
-		G4TwoVector(23.*cm,25*cm),
-		G4TwoVector(23.*cm,-25*cm),
-		G4TwoVector(-5.*cm,-25*cm),
-		G4TwoVector(-5.*cm,25*cm)};
-
-	G4GenericTrap* Middle_Box_Solid = new G4GenericTrap("Middle_Box_Solid",(21.55/2)*cm, vertices1);
-	G4UnionSolid* LeadCollimator_Pol_Det2_Plain_Solid= new G4UnionSolid("LeadCollimator_Pol_Det2_Plain_Solid", Det2_Pol_Box_Solid, Middle_Box_Solid,0, G4ThreeVector(0, 0.,(36/2)*cm));
-	
-	G4double BGO2_Distance=-(detectordistance2 + BGO2->Get_Length()/2)+block_small_x;
 	G4RotationMatrix RotationDet2_Y;
 	RotationDet2_Y.rotateY(M_PI*230/180.*rad);
-	G4ThreeVector TranslationDet2(-17.5*cm +BGO2_Distance*sin(g2_theta)*cos(g2_phi),BGO2_Distance*cos(g2_theta),-(-distcollimatortotarget+14.55/2*cm-35*cm)+BGO2_Distance*sin(g2_theta)*sin(g2_phi));
 
-
-	G4UnionSolid* BGO2_AlCase = BGO2->Get_Al_Case_Solid();
-	G4SubtractionSolid* LeadCollimator_Pol_Det2BGO_Solid=new G4SubtractionSolid("LeadCollimator_Pol_Det2BGO_Solid",LeadCollimator_Pol_Det2_Plain_Solid,BGO2_AlCase, &RotationDet2_Y, TranslationDet2);
-	G4Tubs* FilterHole_Solid= new G4Tubs("FilterHole_Solid", 0, 25*mm, 1000*mm/2, 0. * deg, 360. * deg);
-	G4SubtractionSolid* LeadCollimator_Pol_Det2Complete_Solid=new G4SubtractionSolid("LeadCollimator_Pol_Det2Complete_Solid",LeadCollimator_Pol_Det2BGO_Solid,FilterHole_Solid,&RotationDet2_Y,TranslationDet2);
-
-	G4double BGOPol_Distance=-(detectordistancepol + BGOPol->Get_Length()/2)+block_small_x;
 	G4RotationMatrix RotationPol_Y;
 	RotationPol_Y.rotateY(M_PI*270/180.*rad);
-	G4ThreeVector TranslationPol(-17.5*cm +BGOPol_Distance*sin(pol_theta)*cos(pol_phi),BGOPol_Distance*cos(pol_theta),-(-distcollimatortotarget+14.55/2*cm-35*cm)+BGOPol_Distance*sin(pol_theta)*sin(pol_phi));
 
+	G4Box* Box1_Solid = new G4Box("Box1_Solid",13.5*cm,25*cm, 15.6*cm);
+	G4Box* Box2_Solid = new G4Box("Box2_Solid",20.*cm,25*cm, 13.25*cm);
+	G4Box* Box3_Solid = new G4Box("Box3_Solid",5.*cm+3.75*cm,25*cm, block_z *0.5*4+1.131*cm);
+	G4Box* cutBox_Solid = new G4Box("cutBox_Solid",5*cm,26*cm,1*m);
+	G4UnionSolid* Det2_Pol_Box_pre_Solid= new G4UnionSolid("Det2_Pol_Box_pre_Solid", Box1_Solid, Box2_Solid,&RotationDet2_Y, G4ThreeVector(-4.5*cm,0,-15*cm));
+	G4UnionSolid* Det2_Pol_Box_Solid= new G4UnionSolid("Det2_Pol_Box_Solid", Det2_Pol_Box_pre_Solid, Box3_Solid,0, G4ThreeVector(-12.25*cm,0,-34*cm));
+	G4SubtractionSolid* cutDet2_Pol_Box_Solid= new G4SubtractionSolid("cutDet2_Pol_Box_Solid", Det2_Pol_Box_Solid, cutBox_Solid,0, G4ThreeVector(18*cm,0,0));
+	G4SubtractionSolid* cut2Det2_Pol_Box_Solid= new G4SubtractionSolid("cut2Det2_Pol_Box_Solid", cutDet2_Pol_Box_Solid, cutBox_Solid,0, G4ThreeVector(-26*cm,0,0));
+	
+	G4ThreeVector TranslationDet2(11.5*cm*cos(g2_phi),0,11.5*cm*sin(g2_phi)-21.9*cm);
+	G4ThreeVector TranslationPol(-13.5*cm+BGOPol->Get_Length()*0.5,0,0);
+
+	G4Tubs* FilterHole_Solid= new G4Tubs("FilterHole_Solid", 0, 25*mm, 1000*mm, 0. * deg, 360. * deg);
+	G4SubtractionSolid* oneFilterHole_Det2_Pol_Box_Solid= new G4SubtractionSolid("oneFilterHole_Det2_Pol_Box_Solid", cut2Det2_Pol_Box_Solid, FilterHole_Solid,&RotationDet2_Y, G4ThreeVector(0,0,-21.9*cm));
+	G4SubtractionSolid* FilterHoles_Det2_Pol_Box_Solid= new G4SubtractionSolid("FilterHoles_Det2_Pol_Box_Solid", oneFilterHole_Det2_Pol_Box_Solid, FilterHole_Solid,&RotationPol_Y, G4ThreeVector(0,0,0));
+
+	G4UnionSolid* BGO2_AlCase = BGO2->Get_Al_Case_Solid();
 	G4UnionSolid* BGOPol_AlCase = BGOPol->Get_Al_Case_Solid();
-	G4SubtractionSolid* LeadCollimator_PolBGO_Det2Complete_Solid=new G4SubtractionSolid("LeadCollimator_PolBGO_Det2Complete_Solid",LeadCollimator_Pol_Det2Complete_Solid,BGOPol_AlCase, &RotationPol_Y, TranslationPol);
-	G4SubtractionSolid* LeadCollimator_Pol_Det2_Solid=new G4SubtractionSolid("LeadCollimator_Pol_Det2_Solid",LeadCollimator_PolBGO_Det2Complete_Solid,FilterHole_Solid,&RotationPol_Y,TranslationPol);
 
+	G4SubtractionSolid* Det2_Pol_BGO_Solid=new G4SubtractionSolid("Det2_Pol_BGO_Solid",FilterHoles_Det2_Pol_Box_Solid,BGOPol_AlCase, &RotationPol_Y, TranslationPol);
+	G4SubtractionSolid* LeadCollimator_Pol_Det2_Solid=new G4SubtractionSolid("LeadCollimator_Pol_Det2_Solid",Det2_Pol_BGO_Solid,BGO2_AlCase,&RotationDet2_Y,TranslationDet2);
 
 	G4LogicalVolume* LeadCollimator_Pol_Det2_Logical = new G4LogicalVolume(LeadCollimator_Pol_Det2_Solid, Pb, "LeadCollimator_Pol_Det2_Logical", 0, 0, 0);
 	LeadCollimator_Pol_Det2_Logical->SetVisAttributes(grey);
 	
-	new G4PVPlacement(0, local_coordinates+G4ThreeVector(17.5*cm ,0,+14.55*0.5*cm-35*cm), LeadCollimator_Pol_Det2_Logical, "LeadCollimator_Pol_Det2", World_Logical, 0, 0);
+	new G4PVPlacement(0, local_coordinates+G4ThreeVector(261*mm ,0,distcollimatortotarget), LeadCollimator_Pol_Det2_Logical, "LeadCollimator_Pol_Det2", World_Logical, 0, 0);
 
-	//End LeadDetectorCollimator_Pol_Det2-------------------------------------
-
-	// // Beginning LeadDetectorCollimator_Pol_Det2-------------------------------------
-	// G4double FilterRadius= 25*mm;
-	// G4double X_Box= 15.6*cm;
-	// G4double Y_Box= 25.*cm;
-	// G4double Z_Box= 14.*cm;
-
-	// G4Tubs* FilterHole_Solid= new G4Tubs("FilterHole_Solid", 0, FilterRadius, 500*mm, 0. * deg, 360. * deg);
+	//////////////////////
+	///
+	/// Old implementation of DetPol Det2 Collimator Block
+	///
+	//////////////////////
 
 	// G4double g2_theta=90.*deg;
-	// G4double g2_phi= (130-180)*deg;
+	// G4double g2_phi= 140*deg;
 
 	// G4double pol_theta=90.*deg;
 	// G4double pol_phi=180.*deg;
 
-	// G4double BGODet2_Distance=-(detectordistance2 + BGO2->Get_Length()/2)+block_small_x;
-	// G4RotationMatrix* RotationDet2_Y= new G4RotationMatrix();
-	// RotationDet2_Y->rotateY(g2_phi);
+	// G4Box* Old_Det2_Box_Solid = new G4Box("Old_Det2_Box_Solid",5.*cm,25*cm, (14.55/2)*cm+3*cm); 
+	// G4Box* Old_Pol_Box_Solid = new G4Box("Old_Pol_Box_Solid",14.*cm,25*cm, 15.6*cm); //1mm Overlap between the blocks
+	// G4UnionSolid* Old_Det2_Pol_Box_Solid= new G4UnionSolid("Old_Det2_Pol_Box_Solid", Old_Det2_Box_Solid, Old_Pol_Box_Solid,0, G4ThreeVector(9*cm, 0.,-(14.55/2)*cm+15.5*cm+36*cm-0.1*cm));
+	
+	// vector <G4TwoVector> vertices1{
+	// 	G4TwoVector(5.*cm,25*cm),
+	// 	G4TwoVector(5.*cm,-25*cm),
+	// 	G4TwoVector(-5.*cm,-25*cm),
+	// 	G4TwoVector(-5.*cm,25*cm),
+	// 	G4TwoVector(23.*cm,25*cm),
+	// 	G4TwoVector(23.*cm,-25*cm),
+	// 	G4TwoVector(-5.*cm,-25*cm),
+	// 	G4TwoVector(-5.*cm,25*cm)};
 
+	// G4GenericTrap* Old_Middle_Box_Solid = new G4GenericTrap("Old_Middle_Box_Solid",(21.55/2)*cm, vertices1);
+	// G4UnionSolid* Old_LeadCollimator_Pol_Det2_Plain_Solid= new G4UnionSolid("Old_LeadCollimator_Pol_Det2_Plain_Solid", Old_Det2_Pol_Box_Solid, Old_Middle_Box_Solid,0, G4ThreeVector(0, 0.,(36/2)*cm));
+	
+	// G4double Old_BGO2_Distance=-(detectordistance2 + BGO2->Get_Length()/2)+block_small_x;
+	// G4RotationMatrix Old_RotationDet2_Y;
+	// Old_RotationDet2_Y.rotateY(M_PI*230/180.*rad);
+	// G4ThreeVector Old_TranslationDet2(-17.5*cm +Old_BGO2_Distance*sin(g2_theta)*cos(g2_phi),Old_BGO2_Distance*cos(g2_theta),-(-distcollimatortotarget+14.55/2*cm-35*cm)+Old_BGO2_Distance*sin(g2_theta)*sin(g2_phi));
+
+
+	// G4UnionSolid* BGO2_AlCase = BGO2->Get_Al_Case_Solid();
+	// G4SubtractionSolid* LeadCollimator_Pol_Det2BGO_Solid=new G4SubtractionSolid("LeadCollimator_Pol_Det2BGO_Solid",LeadCollimator_Pol_Det2_Plain_Solid,BGO2_AlCase, &RotationDet2_Y, TranslationDet2);
+	// G4Tubs* FilterHole_Solid= new G4Tubs("FilterHole_Solid", 0, 25*mm, 1000*mm/2, 0. * deg, 360. * deg);
+	// G4SubtractionSolid* LeadCollimator_Pol_Det2Complete_Solid=new G4SubtractionSolid("LeadCollimator_Pol_Det2Complete_Solid",LeadCollimator_Pol_Det2BGO_Solid,FilterHole_Solid,&RotationDet2_Y,TranslationDet2);
 
 	// G4double BGOPol_Distance=-(detectordistancepol + BGOPol->Get_Length()/2)+block_small_x;
-	// G4double BGO2_Distance=-(detectordistance2 + BGO2->Get_Length()/2)+10*cm;
-	// G4ThreeVector TranslationDet2((FilterRadius+1.8*cm+Z_Box*cos(50*deg)-(+Z_Box-Z_Box*sin(50*deg))*tan(50*deg)),0,0);
-	// G4ThreeVector TranslationPol(sin(pol_theta)*cos(pol_phi),cos(pol_theta),sin(pol_theta)*sin(pol_phi));
+	// G4RotationMatrix RotationPol_Y;
+	// RotationPol_Y.rotateY(M_PI*270/180.*rad);
+	// G4ThreeVector TranslationPol(-17.5*cm +BGOPol_Distance*sin(pol_theta)*cos(pol_phi),BGOPol_Distance*cos(pol_theta),-(-distcollimatortotarget+14.55/2*cm-35*cm)+BGOPol_Distance*sin(pol_theta)*sin(pol_phi));
 
-	// G4Box* Pol_Box_Solid = new G4Box("Pol_Box_Solid",X_Box,Y_Box, Z_Box);
 	// G4UnionSolid* BGOPol_AlCase = BGOPol->Get_Al_Case_Solid();
+	// G4SubtractionSolid* LeadCollimator_PolBGO_Det2Complete_Solid=new G4SubtractionSolid("LeadCollimator_PolBGO_Det2Complete_Solid",LeadCollimator_Pol_Det2Complete_Solid,BGOPol_AlCase, &RotationPol_Y, TranslationPol);
+	// G4SubtractionSolid* LeadCollimator_Pol_Det2_Solid=new G4SubtractionSolid("LeadCollimator_Pol_Det2_Solid",LeadCollimator_PolBGO_Det2Complete_Solid,FilterHole_Solid,&RotationPol_Y,TranslationPol);
 
-	// G4Box* Det2_Box_Solid = new G4Box("Det2_Box_Solid",20*cm,Y_Box, Z_Box);
-	// G4UnionSolid* BGODet2_AlCase = BGO2->Get_Al_Case_Solid();
 
-	// G4UnionSolid* LeadCollimator_Plain_Solid = new G4UnionSolid("Lead_Collimator_Plain_Solid",Pol_Box_Solid,Det2_Box_Solid,RotationDet2_Y,TranslationDet2);
-	// G4SubtractionSolid* LeadCollimator_PolFilter_Solid=new G4SubtractionSolid("LeadCollimator_PolFilter_Solid",LeadCollimator_Plain_Solid,FilterHole_Solid, 0, G4ThreeVector());
-	// G4SubtractionSolid* LeadCollimator_Det2Filter_Solid=new G4SubtractionSolid("LeadCollimator_Det2Filter_Solid",LeadCollimator_PolFilter_Solid,FilterHole_Solid,RotationDet2_Y,TranslationDet2);
-	// G4SubtractionSolid* LeadCollimator_PolBGO_Solid=new G4SubtractionSolid("LeadCollimator_Det2BGO_Det2Complete_Solid",LeadCollimator_Det2Filter_Solid,BGOPol_AlCase, 0, G4ThreeVector());
-	// G4SubtractionSolid* LeadCollimator_Det2_Pol_Solid=new G4SubtractionSolid("LeadCollimator_Det2_Det2_Solid",LeadCollimator_PolBGO_Solid,BGODet2_AlCase,RotationDet2_Y,TranslationDet2);
-
-	// G4ThreeVector TranslationLeadCollimator1_Detector(0,0,BGO2_Distance-block_small_x*0.5);
-	// G4Box* LeadCollimator_Detector_Block_Solid = new G4Box("LeadCollimator_Detector_Block_Solid",1*m,1.1*Y_Box,block_small_x*0.5);
-	// G4SubtractionSolid* LeadCollimator_Cut1_Solid= new G4SubtractionSolid("LeadCollimator_Cut1_Solid",LeadCollimator_Det2_Pol_Solid,LeadCollimator_Detector_Block_Solid,0,TranslationLeadCollimator1_Detector);
-
-	// G4ThreeVector TranslationLeadCollimator_Detector(34*cm,0,-Z_Box-block_small_x);
-	// G4SubtractionSolid* LeadCollimator_Complete_Solid= new G4SubtractionSolid("LeadCollimator_Complete_Solid",LeadCollimator_Cut1_Solid,LeadCollimator_Detector_Block_Solid,0,TranslationLeadCollimator_Detector);
-
-	// G4LogicalVolume* LeadCollimator_Det2_Pol_Logical = new G4LogicalVolume(LeadCollimator_PolFilter_Solid, Pb, "LeadCollimator_Det2_Pol_Logical", 0, 0, 0);
-	// LeadCollimator_Det2_Pol_Logical->SetVisAttributes(yellow);
-	// G4RotationMatrix* RotationDetectorCollimator = new G4RotationMatrix();
-	// RotationDetectorCollimator->rotateY(-0*deg);
-	// new G4PVPlacement(Rotlocal_coordinates+ationDetectorCollimator, G4ThreeVector(0,0,Z_Box), LeadCollimator_Det2_Pol_Logical, "LeadCollimator_Det2_Pol", World_Logical, 0, 0);
-	// // End LeadDetectorCollimator_Pol_Det2-------------------------------------
-
+	// G4LogicalVolume* LeadCollimator_Pol_Det2_Logical = new G4LogicalVolume(LeadCollimator_Pol_Det2_Solid, Pb, "LeadCollimator_Pol_Det2_Logical", 0, 0, 0);
+	// LeadCollimator_Pol_Det2_Logical->SetVisAttributes(grey);
 	
-	//Beginning LeadFrontDet2-------------------------------------
-	vector <G4TwoVector> vertices2{
-		G4TwoVector(-7.5*cm,25*cm),
-		G4TwoVector(-7.5*cm,-25*cm),
-		G4TwoVector(0.*cm,-25*cm),
-		G4TwoVector(0.*cm,25*cm),
-		G4TwoVector(0.*cm,25*cm),
-		G4TwoVector(0.*cm,-25*cm),
-		G4TwoVector(0.*cm,-25*cm),
-		G4TwoVector(0.*cm,25*cm)};
-	G4GenericTrap* LeadFrontDet2_Triangle = new G4GenericTrap("LeadFrontDet2_Triangle",(8.938/2)*cm,vertices2);
-	G4ThreeVector TranslationLeadFrontDet2(-(+12.5*cm) +BGO2_Distance*sin(g2_theta)*cos(g2_phi),BGO2_Distance*cos(g2_theta),-(-distcollimatortotarget+2.262*cm+(8.938/2)*cm)+BGO2_Distance*sin(g2_theta)*sin(g2_phi));
-	G4SubtractionSolid* LeadFrontDet2Hole_Solid = new G4SubtractionSolid("LeadFrontDet2Hole_Solid",LeadFrontDet2_Triangle,FilterHole_Solid, &RotationDet2_Y, TranslationLeadFrontDet2);
-	G4LogicalVolume* LeadFrontDet2Hole_Logical = new G4LogicalVolume(LeadFrontDet2Hole_Solid, Pb, "LeadFrontDet2Hole_Logical", 0, 0, 0);
-	LeadFrontDet2Hole_Logical->SetVisAttributes(grey);
+	// new G4PVPlacement(0, local_coordinates+G4ThreeVector(17.5*cm ,0,+14.55*0.5*cm-35*cm), LeadCollimator_Pol_Det2_Logical, "LeadCollimator_Pol_Det2", World_Logical, 0, 0);
+	// vector <G4TwoVector> vertices2{
+	// 	G4TwoVector(-7.5*cm,25*cm),
+	// 	G4TwoVector(-7.5*cm,-25*cm),
+	// 	G4TwoVector(0.*cm,-25*cm),
+	// 	G4TwoVector(0.*cm,25*cm),
+	// 	G4TwoVector(0.*cm,25*cm),
+	// 	G4TwoVector(0.*cm,-25*cm),
+	// 	G4TwoVector(0.*cm,-25*cm),
+	// 	G4TwoVector(0.*cm,25*cm)};
+	// G4GenericTrap* LeadFrontDet2_Triangle = new G4GenericTrap("LeadFrontDet2_Triangle",(8.938/2)*cm,vertices2);
+	// G4ThreeVector TranslationLeadFrontDet2(-(+12.5*cm) +BGO2_Distance*sin(g2_theta)*cos(g2_phi),BGO2_Distance*cos(g2_theta),-(-distcollimatortotarget+2.262*cm+(8.938/2)*cm)+BGO2_Distance*sin(g2_theta)*sin(g2_phi));
+	// G4SubtractionSolid* LeadFrontDet2Hole_Solid = new G4SubtractionSolid("LeadFrontDet2Hole_Solid",LeadFrontDet2_Triangle,FilterHole_Solid, &RotationDet2_Y, TranslationLeadFrontDet2);
+	// G4LogicalVolume* LeadFrontDet2Hole_Logical = new G4LogicalVolume(LeadFrontDet2Hole_Solid, Pb, "LeadFrontDet2Hole_Logical", 0, 0, 0);
+	// LeadFrontDet2Hole_Logical->SetVisAttributes(grey);
 
-	new G4PVPlacement(0, local_coordinates+G4ThreeVector(+12.5*cm , 0,2.262*cm+(8.938/2)*cm ), LeadFrontDet2Hole_Logical, "LeadFrontDet2Hole", World_Logical, 0, 0);
-	G4Box* LeadCollimatorConector_Solid = new G4Box("LeadCollimatorConector_Solid",3.75*cm,block_y*0.5,block_z *0.5*4+1.131*cm);
-	G4LogicalVolume* LeadCollimatorConector_Logical = new G4LogicalVolume(LeadCollimatorConector_Solid, Pb, "LeadCollimatorConector_Logical", 0, 0, 0);
-	LeadCollimatorConector_Logical->SetVisAttributes(grey);
+	// new G4PVPlacement(0, local_coordinates+G4ThreeVector(+12.5*cm , 0,2.262*cm+(8.938/2)*cm ), LeadFrontDet2Hole_Logical, "LeadFrontDet2Hole", World_Logical, 0, 0);
+	// G4Box* LeadCollimatorConector_Solid = new G4Box("LeadCollimatorConector_Solid",3.75*cm,block_y*0.5,block_z *0.5*4+1.131*cm);
+	// G4LogicalVolume* LeadCollimatorConector_Logical = new G4LogicalVolume(LeadCollimatorConector_Solid, Pb, "LeadCollimatorConector_Logical", 0, 0, 0);
+	// LeadCollimatorConector_Logical->SetVisAttributes(grey);
 
-	new G4PVPlacement(0, local_coordinates+G4ThreeVector(8.75*cm , 0,-block_z *0.5*4+1.131*cm),LeadCollimatorConector_Logical,"LeadCollimatorConector",World_Logical,0,0); 
-	//End LeadFrontDet2-------------------------------------
+	// new G4PVPlacement(0, local_coordinates+G4ThreeVector(8.75*cm , 0,-block_z *0.5*4+1.131*cm),LeadCollimatorConector_Logical,"LeadCollimatorConector",World_Logical,0,0); 
 
-	//Begin LeadDownstream Pol
+	//////////////////////
+	///
+	/// End of Old implementation
+	///
+	//////////////////////
+
+	// End LeadDetectorCollimator_Pol_Det2-------------------------------------
+
+	// Begin LeadDownstream Pol-------------------------------------
 	G4double LeadDownstream_Pol_Z=34*cm;
 
 	G4Box* LeadDownstream_Pol_Solid = new G4Box("LeadDownstream_Pol_Solid",14.*cm,25*cm,LeadDownstream_Pol_Z);
@@ -365,9 +362,7 @@ void LeadCastle::ConsturctLeadShield(G4ThreeVector local_coordinates)
 
 	new G4PVPlacement(0, local_coordinates+G4ThreeVector(26.5*cm , 0,120*cm-20*cm-LeadDownstream_Pol_Z),LeadDownstream_Pol_Logical,"LeadDownstream_Pol",World_Logical,0,0); 
 	
-
-
-	//End LeadDownstream Pol
+	// End LeadDownstream Pol-------------------------------------
 
 
 	//Beginning Det1House-------------------------------------
@@ -407,4 +402,5 @@ void LeadCastle::ConsturctLeadShield(G4ThreeVector local_coordinates)
 	new G4PVPlacement(0, local_coordinates+G4ThreeVector(detectordistance1-0.5*block_small_x-UpstreamDet1_X+BGO1_Distance*sin(g1_theta)*cos(g1_phi)+10*cm*cos(g1_phi),0,UpstreamDet1_Z+10*cm*sin(g1_phi)+13.938*cm*2-2*cm),DownstreamDet1_Logical,"DownstreamDet1",World_Logical,0,0); 
 
 	//End Det1House-------------------------------------
+
 }
