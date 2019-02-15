@@ -46,6 +46,7 @@ class TargetHit : public G4VHit {
 	void SetEnergyDeposition(G4double ed) { edep = ed; };
 	void SetParticleType(G4int t) { type = t; };
 	void SetDetectorID(G4int id) { detectorID = id; };
+	void SetEventID(G4int id) { eventID = id; };
 	void SetPosition(G4ThreeVector p) { pos = p; };
 	void SetMomentum(G4ThreeVector momentum) { mom = momentum; };
 
@@ -53,6 +54,7 @@ class TargetHit : public G4VHit {
 	G4double GetEnergyDeposition() { return edep; };
 	G4int GetParticleType() { return type; };
 	G4int GetDetectorID() { return detectorID; };
+	G4int GetEventID() { return eventID; };
 	G4ThreeVector GetPosition() { return pos; };
 	G4ThreeVector GetMomentum() { return mom; };
 
@@ -61,6 +63,7 @@ class TargetHit : public G4VHit {
 	G4double edep;
 	G4int type;
 	G4int detectorID;
+	G4int eventID;
 	G4ThreeVector pos;
 	G4ThreeVector mom;
 };

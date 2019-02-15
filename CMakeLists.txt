@@ -39,6 +39,7 @@ ENDMACRO()
 set(CAMPAIGN "DHIPS_2019" CACHE STRING "Select experimental campaign from directory DetectorConstruction/")
 SUBDIRLIST(SETUP_CHOICE ${CMAKE_CURRENT_BINARY_DIR}/DetectorConstruction)
 set_property(CACHE CAMPAIGN PROPERTY STRINGS ${SETUP_CHOICE})
+
 # Choose geometry
 set(DETECTOR_CONSTRUCTION "64Ni_271_279" CACHE STRING "Select detector construction from directory DetectorConstruction/$CAMPAIGN/")
 SUBDIRLIST(DETECTOR_CONSTRUCTION_CHOICE ${CMAKE_CURRENT_BINARY_DIR}/DetectorConstruction/${CAMPAIGN})
@@ -48,7 +49,8 @@ mark_as_advanced(CLEAR CAMPAIGN DETECTOR_CONSTRUCTION)
 
 set(PRINT_PROGRESS 100000 CACHE STRING "Set the frequency of printed updates about the progress of utr (unit: number of events processed)")
 # Choose primary generator
-option(USE_GPS "Use G4GeneralParticleSource as primary generator" ON)
+option(GENERATOR_ANGDIST "Use AngularDistributionGenerator as primary generator instead of G4GeneralParticleSource (has a higher priority than USE_ANGCORR if both are checked)" OFF)
+option(GENERATOR_ANGCORR "Use AngularCorrelationGenerator as primary generator instead of G4GeneralParticleSource" OFF)
 option(USE_TARGETS "Use Targets in the geometry" ON)
 
 option(EM_FAST "Use G4EmStandardPhysics_option1" OFF)
@@ -57,6 +59,7 @@ option(EM_LIVERMORE "Use G4EmLivermorePhysics" OFF)
 option(EM_LIVERMORE_POLARIZED "Use G4EmLivermorePolarizedPhysics" ON)
 option(EM_LIVERMORE_POLARIZED_JAEA "Use G4EmLivermorePolarizedPhysics with elastic scattering processes from JAEA" OFF)
 option(EM_PENELOPE "Use G4EmPenelopePhysics" OFF)
+option(EM_EXTRA "Use G4EmExtraPhysics" OFF)
 
 option(HADRON_ELASTIC_STANDARD "Use G4HadronElasticPhysics" ON)
 option(HADRON_ELASTIC_HP "Use G4HadronElasticPhysicsHP" OFF)
@@ -67,6 +70,8 @@ option(HADRON_INELASTIC_HP "Use G4HadronPhysicsFTFP_BERT_HP" OFF)
 option(HADRON_INELASTIC_LEND "Use G4HadronPhysicsShieldingLEND" OFF)
 
 option(BACKWARD_COMPATIBLE_BUILD "Build for Geant4 versions < 10.5" OFF)
+
+option(EVENT_ID "For each event, record the event number." OFF)
 option(EVENT_EDEP "For each event, record total energy deposition in the detectors" ON)
 option(EVENT_EKIN "For each event, record kinetic energy at the time a particle first hits a detector" OFF)
 option(EVENT_PARTICLE "For each event, record type of the first particle that hit a detector" ON)
@@ -75,8 +80,8 @@ option(EVENT_POSX "For each event, record the X position of the first particle t
 option(EVENT_POSY "For each event, record the Y position of the first particle that hit a detector" OFF)
 option(EVENT_POSZ "For each event, record the Z position of the first particle that hit a detector" OFF)
 option(EVENT_MOMX "For each event, record the momentum in X direction of the first particle that hit a detector" OFF)
-option(EVENT_MOMX "For each event, record the momentum in X direction of the first particle that hit a detector" OFF)
-option(EVENT_MOMX "For each event, record the momentum in X direction of the first particle that hit a detector" OFF)
+option(EVENT_MOMY "For each event, record the momentum in Y direction of the first particle that hit a detector" OFF)
+option(EVENT_MOMZ "For each event, record the momentum in Z direction of the first particle that hit a detector" OFF)
 
 #----------------------------------------------------------------------------
 # Enable configuration of the source code by cmake

@@ -1,7 +1,18 @@
+/*
+ *
+ * This file was created automatically by cmake.
+ * To change settings of utrConfig.h, edit
+ * the utrConfig.h.in file in the top-level
+ * directory.
+ *
+ */
+
 #ifndef UTR_CONFIG_H
 #define UTR_CONFIG_H 1
 
-#cmakedefine USE_GPS
+#cmakedefine GENERATOR_ANGDIST
+#cmakedefine GENERATOR_ANGCORR
+
 #cmakedefine USE_TARGETS
 
 #cmakedefine EM_FAST 
@@ -10,6 +21,7 @@
 #cmakedefine EM_LIVERMORE_POLARIZED
 #cmakedefine EM_LIVERMORE_POLARIZED_JAEA
 #cmakedefine EM_PENELOPE
+#cmakedefine EM_EXTRA
 
 #cmakedefine HADRON_ELASTIC_STANDARD
 #cmakedefine HADRON_ELASTIC_HP
@@ -19,6 +31,7 @@
 #cmakedefine HADRON_INELASTIC_HP
 #cmakedefine HADRON_INELASTIC_LEND
 
+#cmakedefine EVENT_ID
 #cmakedefine EVENT_EDEP
 #cmakedefine EVENT_EKIN
 #cmakedefine EVENT_PARTICLE

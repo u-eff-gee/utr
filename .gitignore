@@ -13,10 +13,12 @@ getHistogram
 histogramToTxt
 rootToTxt
 angdisttest
+angcorrtest
 mergeFiles
 
 # C++ objects
 unit_test/AngularDistributionGenerator/AngularDistribution.o
+unit_test/AngularCorrelationGenerator/AngularDistribution.o
 
 # Scripts for output processing
 loop*.sh

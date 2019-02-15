@@ -40,15 +40,13 @@ class EnergyDepositionSD : public G4VSensitiveDetector {
 	virtual void Initialize(G4HCofThisEvent *hitCollection);
 	virtual G4bool ProcessHits(G4Step *step, G4TouchableHistory *history);
 	virtual void EndOfEvent(G4HCofThisEvent *hitCollection);
-	unsigned int getCurrentTrackID() { return currentTrackID; };
-	void setCurrentTrackID(unsigned int trackID) { currentTrackID = trackID; };
 	unsigned int GetDetectorID() { return detectorID; };
 	void SetDetectorID(unsigned int detID) { detectorID = detID; };
 
   private:
 	TargetHitsCollection *hitsCollection;
-	unsigned int currentTrackID;
-	unsigned int detectorID;
+	G4int detectorID;
+	G4int eventID;
 };
 
 #endif

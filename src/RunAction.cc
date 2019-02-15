@@ -42,6 +42,9 @@ void RunAction::BeginOfRunAction(const G4Run *) {
 	G4AnalysisManager *analysisManager = G4AnalysisManager::Instance();
 
 	analysisManager->CreateNtuple("utr", "Particle information");
+#ifdef EVENT_ID
+	analysisManager->CreateNtupleDColumn("event");
+#endif
 #ifdef EVENT_EDEP
 	analysisManager->CreateNtupleDColumn("edep");
 #endif
@@ -132,6 +135,8 @@ void RunAction::EndOfRunAction(const G4Run *) {
 
 G4String RunAction::GetOutputFlagName(unsigned int n) {
 	switch (n) {
+	case ID:
+		return "ID";
 	case EKIN:
 		return "EKIN";
 	case EDEP:

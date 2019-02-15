@@ -1,0 +1,33 @@
+/run/initialize
+
+/angcorr/steps 2
+
+/angcorr/particle gamma
+/angcorr/energy 2.325 MeV
+
+/angcorr/nstates 3
+/angcorr/state1 0.
+/angcorr/state2 0.
+/angcorr/state3 0.
+/angcorr/polarization 0. 0. 0.
+
+/angcorr/particle gamma
+/angcorr/energy 0.655 MeV
+
+/angcorr/nstates 3
+/angcorr/state1 1.
+/angcorr/state2 2.
+/angcorr/state3 0.
+/angcorr/polarization 0. 0. 0.
+
+/angcorr/sourceX 0. mm
+/angcorr/sourceY 0. mm
+/angcorr/sourceZ 0. mm
+
+/angcorr/sourceDX 46. mm
+/angcorr/sourceDY 46. mm
+/angcorr/sourceDZ 58. mm
+
+/angcorr/sourcePV crystal
+
+/run/beamOn 1000000

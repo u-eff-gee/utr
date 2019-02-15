@@ -448,4 +448,119 @@ void Materials::ConstructMaterials() {
 
 	one_third_density_brass->AddElement(nat_Cu, fractionmass = 70.*perCent);
 	one_third_density_brass->AddElement(nat_Zn, fractionmass = 30.*perCent);
+
+	/***********************************/
+	//      PEEK (C19H12O3) 
+	/***********************************/	
+
+	G4Element *nat_H = nist->FindOrBuildElement("H");
+
+	density = 1.32 * g / cm3; // Densitiy given in Wikipedia (https://de.wikipedia.org/wiki/Polyetheretherketon)
+
+	peek = new G4Material(name = "peek", density, ncomponents = 3);
+
+	peek->AddElement(nat_C, fractionmass = 100*19./24.*perCent);
+	peek->AddElement(nat_H, fractionmass = 100*1./24.*perCent);
+	peek->AddElement(nat_O, fractionmass = 100*4./24.*perCent);
+
+	/***********************************/
+	//      P10 gas (90Ar10CH4) 
+	/***********************************/	
+
+	density = 0.00156 * g / cm3;	// Densitiy given by SRIM/TRIM database
+
+	P10 = new G4Material(name = "P10", density, ncomponents = 3);
+
+	P10->AddElement(nat_Ar, fractionmass = 90.*perCent);
+	P10->AddElement(nat_C, fractionmass = 2.*perCent);
+	P10->AddElement(nat_H, fractionmass = 8.*perCent);
+
+	/***********************************/
+	//      CF4 gas 
+	/***********************************/	
+
+	G4Element *nat_F = nist->FindOrBuildElement("F");
+
+	density = 0.00125 * g / cm3;	// Densitiy given by SRIM/TRIM database
+
+	CF4 = new G4Material(name = "CF4", density, ncomponents = 2);
+
+	CF4->AddElement(nat_C, fractionmass = 100.*1./7.*perCent);
+	CF4->AddElement(nat_F, fractionmass = 100.*6./7.*perCent);
+
+	/***********************************/
+	//      PCB_coating (Cu + Ni + Au) 
+	/***********************************/	
+
+	G4Element *nat_Ni = nist->FindOrBuildElement("Ni");
+	G4Element *nat_Au = nist->FindOrBuildElement("Au");
+
+	density =  8.965 * g / cm3; // calculated from relative volume of Cu, Ni and Au with densities from nist library
+
+	PCB_coating = new G4Material(name = "PCB_coating", density, ncomponents = 3);
+
+	PCB_coating->AddElement(nat_Cu, fractionmass = 87.5*perCent);
+	PCB_coating->AddElement(nat_Ni, fractionmass = 12.25*perCent);
+	PCB_coating->AddElement(nat_Au, fractionmass = 0.25*perCent);
+
+	/******************************************************/
+	// Photo-fission targets for 2019 HIgS experiments
+	/******************************************************/
+
+	// 240Pu from TUD
+	G4double density240Pu = 19.84 * g / cm3;
+
+	target_Pu240 = new G4Material(name = "240Pu", density240Pu, ncomponents = 1);
+
+	G4Isotope *Pu240 = new G4Isotope(name = "240Pu", z = 94, a = 240);
+
+	G4Element *enriched_Pu =
+	    new G4Element(name = "enriched Pu", symbol = "Pu", ncomponents = 1);
+
+	enriched_Pu->AddIsotope(Pu240, abundance = 100. * perCent);
+
+	target_Pu240->AddElement(enriched_Pu, natoms = 1);
+
+	// 239Pu from TUD, not a real target!!! 239Pu(n,f) used to simulate gamma/neutron emission of 240Pu(g,f)
+	G4double density239Pu = 19.84 * g / cm3;
+
+	target_Pu239 = new G4Material(name = "239Pu", density239Pu, ncomponents = 1);
+
+	G4Isotope *Pu239 = new G4Isotope(name = "239Pu", z = 94, a = 239);
+
+	G4Element *enriched_Pu2 =
+	    new G4Element(name = "enriched Pu2", symbol = "Pu", ncomponents = 1);
+
+	enriched_Pu2->AddIsotope(Pu239, abundance = 100. * perCent);
+
+	target_Pu239->AddElement(enriched_Pu2, natoms = 1);
+
+	// 232Th from TUD, P-1156
+	G4double density232Th = 11.72 * g / cm3;
+
+	target_Th232 = new G4Material(name = "232Th", density232Th, ncomponents = 1);
+
+	G4Isotope *Th232 = new G4Isotope(name = "232Th", z = 90, a = 232);
+
+	G4Element *enriched_Th =
+	    new G4Element(name = "enriched Th", symbol = "Th", ncomponents = 1);
+
+	enriched_Th->AddIsotope(Th232, abundance = 100. * perCent);
+
+	target_Th232->AddElement(enriched_Th, natoms = 1);
+
+	// 238U from TUD, P-1134
+	G4double density238U = 18.95 * g / cm3;
+
+	target_U238 = new G4Material(name = "238U", density238U, ncomponents = 1);
+
+	G4Isotope *U238 = new G4Isotope(name = "238U", z = 92, a = 238);
+
+	G4Element *enriched_U =
+	    new G4Element(name = "enriched U", symbol = "U", ncomponents = 1);
+
+	enriched_U->AddIsotope(U238, abundance = 100. * perCent);
+
+	target_U238->AddElement(enriched_U, natoms = 1);
+
 }

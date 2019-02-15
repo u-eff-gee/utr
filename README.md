@@ -62,7 +62,7 @@ See section [4 Usage and Visualization](#usage)
 
 ### 1.5 Choose a primary source
 
-Configure `utr` to use either the `G4GeneralParticleSource` or the `AngularDistributionGenerator` using the CMake build option (see sections [2.3 Event Generation](#eventgeneration) and [3.3 Build configuration](#build))
+Configure `utr` to use either the `G4GeneralParticleSource`, the `AngularDistributionGenerator` or the `AngularCorrelationGenerator` using the CMake build option (see sections [2.3 Event Generation](#eventgeneration) and [3.3 Build configuration](#build))
 
 ### 1.6 Choose the physics processes
 
@@ -110,12 +110,12 @@ utr/
                 DetectorConstruction.cc
 ```
 
-As in reality, a geometry file only holds for a certain number of runs, which are part of a campaign. Therefore, unique `DetectorConstruction.cc` files can be found at the run-level. In principle, one could put all the geometry into this file, and before the 2018 campaign, it was done like that because the file was growing and growing. In the meantime, UG has tried to learn from his mistakes: The `DetectorConstructiion.cc` files should be as short as possible, delegating all the low-level construction jobs to auxiliary classes (please see [2.1.1 Note on auxiliary files](#auxiliary_files)). The auxiliary classes can be placed into different directories, depending on their nature:
+As in reality, a geometry file only holds for a certain number of runs, which are part of a campaign. Therefore, unique `DetectorConstruction.cc` files can be found at the run-level. In principle, one could put all the geometry into this file, and before the 2018 campaign, it was done like that because the file was growing and growing. In the meantime, UG has tried to learn from his mistakes: The `DetectorConstruction.cc` files should be as short as possible, delegating all the low-level construction jobs to auxiliary classes (please see [2.1.1 Note on auxiliary files](#auxiliary_files)). The auxiliary classes can be placed into different directories, depending on their nature:
 Geometry which is expected to be permanent (for example detectors, or furniture), even between different campaigns, should be placed in the `utr/include` and `utr/src` directories.
 More volatile geometry should be placed in the corresponding campaign, i.e. `utr/DetectorConstruction/Campaign_YEAR/include` and `utr/DetectorConstruction/Campaign_YEAR/src`.
 *Sometimes, the difference may not be so clear, and at the moment the sorting is probably not consistent, but our team is still tidying up the 2018 campaign. Everything before 2018 does not follow these conventions, but has been sorted according to the directory structure above anyway to ensure backward compatibility.*
 
-At the moment, detailed implementations of the geometry of the 2016/2017 campaign and parts of the 2018 campaign exist. They include geometry close to the beamline in the collimator room and the UTR including, of course, the experimental setups (γ³ setup [[5]](#ref-g3) and second setup). Less detailed geometries exist for selected experiments in older campaigns. The geometries for the 2013 and 2014/2015 campaign are based on the geometry from 2016/2017, the geometry for the 2012 campaign is based on the geometry from 2018.
+At the moment, detailed implementations of the geometry of the 2016/2017 campaign and parts of the 2018 campaign exist. They include geometry close to the beamline in the collimator room and the UTR including, of course, the experimental setups (γ³ setup [[5]](#ref-g3), second setup and recently also an ionization chamber for photofission experiments). Less detailed geometries exist for selected experiments in older campaigns. The geometries for the 2013 and 2014/2015 campaign are based on the geometry from 2016/2017, the geometry for the 2012 campaign is based on the geometry from 2018.
 
 An implementation of the Darmstadt High-Intensity Photon Setup (DHIPS) [[6]](#ref-dhips) is under construction at the moment. Its geometry will be organized similar to the HIγS geometry from 2018.
 
@@ -276,7 +276,7 @@ Information about the simulated particles is recorded by instances of the G4VSen
 
 *Unique* means volumes with a unique logical volume name. This precaution is here because all bricks and filters of the same type from the previous sections have the same logical volume names. Making one of those a sensitive detector might yield unexpected results.
 
-Any time a particle executes a step inside a G4VSensitiveDetector object, its ProcessHits routine will access information of the step. This way, live information about a particle can be accessed. Note that a "hit" in the GEANT4 sense does not necessarily imply an interaction with the sensitive detector. Any volume crossing is also a hit. Therefore, also non-interacting geantinos can generate hits, making them a nice tool to explore to explore the geometry, measure solid-angle coverage, etc. ...
+Any time a particle produces a hit inside a G4VSensitiveDetector object, its ProcessHits routine will access information of the hit. This way, live information about a particle can be accessed. Note that a "hit" in the GEANT4 sense does not necessarily imply an interaction with the sensitive detector. Any volume crossing is also a hit. Therefore, also non-interacting geantinos can generate hits, making them a nice tool to explore the geometry, measure solid-angle coverage etc. 
 After a complete event, a collection of all hits inside a given volume will be accessible via its HitsCollection. This way, cumulative information like the energy deposition inside the volume can be accessed.
 
 Three types of sensitive detectors are implemented at the moment:
@@ -284,12 +284,14 @@ Three types of sensitive detectors are implemented at the moment:
 * **EnergyDepositionSD**
     Records the total energy deposition by any particle per single event inside the sensitive detector.
 * **ParticleSD**
-    Records the first step of any particle inside the sensitive detector.
+    Records the first hit of any particle inside the sensitive detector.
 * **SecondarySD**
-    Records the first step of any secondary particle inside the sensitive detector.
+    Records the first hit of any secondary particle inside the sensitive detector.
     
 No matter which type of sensitive detector is chosen, the simulation output will be a [ROOT](https://root.cern.ch/) tree with a user-defined subset (see section [2.6 Output File Format](#outputfileformat)) of the following 10 branches:
 
+* **event**
+    Number of the event to which the particle belongs. This number is the same for all secondary particles and their corresponding primary particle. It is also the same if `G4ParticleGun->GeneratePrimaryVertext()` is called multiple times in a single event. The latter point makes this variable especially useful in case of the `AngularCorrelationGenerator` (see [2.3.3 AngularCorrelationGenerator](#angularcorrelationgenerator)).
 * **ekin**
     Kinetic energy (in MeV) of the particle at the time of its first hit of the sensitive detector.
 * **edep**
@@ -361,32 +363,47 @@ vy_real = 1/sqrt(vx^2 + vy^2)*sin(arctan(y/x))*ekin/c
 
 ### 2.3 Event Generation <a name="eventgeneration"></a>
 
-Event generation is done by classes derived from the `G4VUserPrimaryGeneratorAction`. In the following, the two existing event generators are described. 
+Event generation is done by classes derived from the `G4VUserPrimaryGeneratorAction`. In the following, the three existing event generators are described. 
 
-By default, `utr` uses the Geant4 standard G4GeneralParticleSource. To use the AngularDistributionGenerator of `utr`, which implements angular distributions for Nuclear Resonance Fluorescence (NRF) applications, unset the `USE_GPS` option when building the source code (see also [3.3 Build configuration](#build)):
+By default, `utr` uses the Geant4 standard [`G4GeneralParticleSource`](#generalparticlesource). To use the [`AngularDistributionGenerator`](#angulardistributiongenerator) or the [`AngularCorrelationGenerator`](#angularcorrelationgenerator) of `utr`, which implement angular distributions and correlations (not exclusively, but mainly for Nuclear Resonance Fluorescence (NRF) applications at the moment), set the corresponding `GENERATOR_XY` option when building the source code (see also [3.3 Build configuration](#build)):
 
 ```bash
-$ cmake -DUSE_GPS=OFF .
+$ cmake -DGENERATOR_ANGDIST=ON -DGENERATOR_ANGCORR=OFF .
 ```
- 
-#### 2.3.1 GeneralParticleSource
+
+All of the event generators have macro commands defined that simplify their control. Sample macro files can be found in the home directory. As a rule of thumb, a user should use ...
+
+ * ... `G4GeneralParticleSource` if the source is sufficiently simple to be controlled via the macro commands of Geant4. For an overview, see the webpage given below. An typical application would be the simulation of a point-like radioactive source or a beam with an intensity distribution that depends on the energy of the particles and the spatial coordinates.
+ * ... `AngularDistributionGenerator`, if monoenergetic particles should be emitted from a set of user-defined volumes with a user-defined angular distribution, that has an arbitrary dependence on the solid angle. A typical application would be the simulation of gamma-rays that are emitted by a target that was excited with a (polarized) beam of particles.
+ * ... `AngularCorrelationGenerator`, if user-defined volumes and angular distributions are used, and, in addition, several monoenergetic particles should be correlated. This means that the emission angles and the polarization plane of the n-th particle depend on the emission angles and polarization of the (n-1)-th particle. Typical applications would be the simulation of beta-plus decay where ultimately two correlated photons from the annihilation of the positron are emitted, simulations of particle cascades from an excited nucleus that has been excited via a beam or decays via exotic double-gamma or double-beta decays.
+
+The event generators are listed by complexity above. If in doubt which event generator to use, it is strongly recommended to take the most simple one that can do a given task, because espacially the distribution- and correlation generators create a lot of overhead due to their Monte-Carlo sampling and heavy usage of trigonometric functions.
+
+#### 2.3.1 GeneralParticleSource<a name="generalparticlesource"></a>
 
 This event generator uses the G4GeneralParticleSource (GPS) whose parameters can be controlled by a macro file. For further information, see the [GPS documentation](http://geant4.web.cern.ch/geant4/UserDocumentation/UsersGuides/ForApplicationDeveloper/html/ch02s07.html).
 
-#### 2.3.2 AngularDistributionGenerator
+##### 2.3.1.1 Usage
 
-The AngularDistributionGenerator generates monoenergetic particles that originate in a set of G4PhysicalVolumes of the DetectorConstruction and have a certain angular distribution.
+The macros `source.mac` and `beam.mac` in the `utr/` directory model an isotropic point-source and a circular beam using the `G4GeneralParticleSource`. Many more examples can be found in the manual of Geant4.
 
-The physical volumes (the "sources") and angular distribution can have arbitrary shapes. Starting positions and momentum directions are created using a Monte-Carlo method:
+#### 2.3.2 AngularDistributionGenerator<a name="angulardistributiongenerator"></a>
+
+The `AngularDistributionGenerator` generates monoenergetic particles that originate in a set of `G4PhysicalVolumes` of the `DetectorConstruction` and have a certain angular distribution.
+
+##### 2.3.2.1 The algorithm
+
+The physical volumes (the "sources") and angular distribution can have arbitrary shapes. Starting positions and momentum directions are created using a Monte-Carlo method (**'rejection sampling'**), which is explained shortly in the following:
 Given a(n)
 
 * Cuboid in 3 dimensions ("container volume") that completely contains the source volume
 * Angular distribution W(θ, φ)
 
-AngularDistributionGenerator generates uniform random
+`AngularDistributionGenerator` generates
  
-* Positions `(random_x, random_y, random_z)` 
-* Tuples `(random_θ, random_φ, random_W)`
+* Uniform random positions `(source_x + random_x, source_y + random_y, source_z + random_z), |random_I| <= 0.5*sourceDI, I in {x, y, z}` 
+* Random tuples `(random_θ, random_φ)` with a distribution such that they represent uniformly distributed random directional vectors in spherical coordinates
+* Uniform random numbers `random_W, so that  |random_W| <= MAX_W`
 
 until 
 
@@ -399,7 +416,9 @@ The process of finding a starting point is depicted in 2 dimensions in the figur
 
 ![MC position generator](.media/MC_Position_Generator.png)
 
-The process of finding a starting vector is shown in one dimension (`W` is only dependent on `θ`) in in the figure below. First, a random value `random_θ` for `θ` with a uniform random distribution **on a sphere**. Note that this is not the same as a uniform distribution of values between 0 and π for θ. Then, a unform random number between 0 and an upper limit `W_max` is drawn. If the value `W_max` is lower than `W(random_θ)` (black points), then a particle will be emitted at that angle.
+Finding the correct dimensions of the container box might need visualization. Try placing a `G4Box` with the desired dimensions at the desired position in the geometry and see whether it encloses the source volume completely and as close as possible.
+
+The process of finding a starting vector is shown in one dimension (`W` is only dependent on `θ`) in in the figure below. First, a random value `random_θ` for `θ` with a uniform random distribution **on a sphere** is sampled. Note that this is not the same as a uniform distribution of values between 0 and π for θ. Then, a unform random number between 0 and an upper limit `MAX_W` is drawn. If the value `MAX_W` is lower than `W(random_θ)` (black points), then a particle will be emitted at that angle.
 
 ![MC momentum generator](.media/MC_Momentum_Generator.png)
 
@@ -407,16 +426,16 @@ The process of finding a starting vector is shown in one dimension (`W` is only 
 Clearly, the algorithm works well if
 
 * the cuboid approximates the shape of the sources well and wraps it tightly
-* the angular distribution varies smoothly in the `(θ, φ)` plane and W_max is very close to the actual maximum value of `W`
+* the angular distribution varies smoothly in the `(θ, φ)` plane and `MAX_W` is very close to the actual maximum value of `W`
 
-The maximum number of randomly sampled points is hard-coded `AngularDistributionGenerator.cc` where it says:
+The maximum number of randomly sampled points is hard-coded in `AngularDistributionGenerator.cc` and `AngularCorrelationGenerator.cc` where it says:
 
 ```
-MAX_TRIES_POSITION = 10000
-MAX_TRIES_MOMENTUM = 10000
+MAX_TRIES_POSITION = 1e4
+MAX_TRIES_MOMENTUM = 1e4
 ```
 
-AngularDistributionGenerator can do a self-check before the actual simulation in which it creates `MAX_TRIES_XY` points and evaluates how many of the were valid. From this, the probability *p* of not hitting one of the source volumes / angular distribution can be estimated. An individual check is done for each source volume. If `p * N >~ 1`, where N is the number of particles to be simulated, the algorithm will very probably fail once in a while so try increasing `MAX_TRIES_XY`. A typical output of the self-check for the position generator looks like:
+The event generators can do a self-check before the actual simulation in which they creates `MAX_TRIES_XY` points and evaluate how many of them were valid or not (`N_NotValid`). From this, the probability `p=(N_NotValid/MAX_TRIES_XY)^MAX_TRIES_XY` of never hitting one of the source volumes / angular distributions in `MAX_TRIES_XY` attempts can be estimated. In the case of the position generator, an individual check is done for each source volume. If `p * N >~ 1`, where `N` is the number of particles to be simulated, the algorithm will very probably fail once in a while so try increasing `MAX_TRIES_XY` or optimizing the dimension of the container volume or `MAX_W`. A typical output of the self-check for the position generator looks like:
 
 ```
 G4WT0 > ========================================================================
@@ -425,19 +444,44 @@ G4WT0 > Check finished. Of 100 random 3D points, 82 were inside volume 'Se82_Tar
 G4WT0 > Probability of failure:	pow( 0.18, 100 ) = 3.36706e-73 %
 G4WT0 > ========================================================================
 ```
-The momentum generator contains one more piece of information. This is because the value of `W_max` that was introduced above has been arbitrarily set to 3 in `AngularDistributionGenerator.hh`, which should be a sensible choice for most angular distributions. However, it may be that `W(θ, φ) > 3` for some distribution. This can also be detected by the self-check with a Monte-Carlo method. For each of the MAX_TRIES_MOMENTUM tries, `utr` will also check whether the inequality `W_max <= W(random_θ, random_φ)` holds. If yes, this could be a hint that the value of `W_max` is too low and should be increased manually.
-The corresponding message would look like
+
+Both the momentum and position generator will also check whether the given limits `MAX_W` and `SOURCE_DI` are large enough. For the position generator, it is clear why this needs to be checked.
+For the momentum generator, the check is necessary because the value of `MAX_W` that was introduced above has been arbitrarily set to 3 in `AngularDistributionGenerator.hh` and `AngularCorrelationGenerator`, which should be a sensible choice for most angular distributions. However, it may be that `W(θ, φ) > 3` for some distribution. 
+Too small values of `MAX_W` and `SOURCE_DI` can also be detected by the self-check with a Monte-Carlo method. For each of the MAX_TRIES_MOMENTUM (MAX_TRIES_POSITION) tries, `utr` will also check whether 
+
+ * the inequality `W_max <= W(random_θ, random_φ)` holds.
+ * the randomly sampled points `(+- 0.5*SOURCE_DX, random_y, random_z)`, `(random_x, +- 0.5*SOURCE_DY, random_z)`, `(random_x, random_y, +- 0.5*SOURCE_DY)` are still inside the source volume.
+
+If yes, this could be a hint that the value of `MAX_W` or `SOURCE_DI` is too low and should be increased.
+The corresponding messages would look like
+
 ```
-G4WT0 > In 5624 out of 10000 cases (56.24 % ) 
-W(random_theta, random_phi) == MAX_W == 1 was valid. 
-This may mean that MAX_W is set too low and 
+G4WT0 > In 5624 out of 10000 cases (56.24 % )
+W(random_theta, random_phi) == MAX_W == 1 was valid.
+This may mean that MAX_W is set too low and
 the angular distribution is truncated.
 ```
+and
+
+```
+G4WT0 > In 3277 out of 10000 cases (32.77 % ) the randomly sampled point (sourceX +- sourceDX, sourceY + randomY, sourceZ + randomZ) was still inside the source volume. This may mean that the x range does not encompass the whole source volume.
+```
+
 If everything is okay, it will display
+
 ```
 G4WT0 > MAX_W == 3 seems to be high enough.
 ```
-However, using `W_max = 3` might still be inefficient, so it is good to know the minimum and maximum value of the angular distribution in advance. For debugging of the angular distribution, a unit test exists in the repository, which is especially recommended if one defines new angular distributions.
+
+and
+
+```
+G4WT0 > X range 0 +- 25 seems to be large enough.
+```
+
+However, 'large enough' may still mean 'too large'. The user is encouraged to try to optimize the parameters `SOURCE_DI` and `MAX_W`, to meliorate the disadvantages of the rejection sampling algorithm. Be aware that the position and momentum sampling have to do expensive calls of trigonometric functions for each random position/momentum vector, i.e. number or tries should be kept as low as possible.
+
+##### 2.3.2.2 Usage
 
 To change parameters of the AngularDistributionGenerator, an AngularDistributionMessenger has been implemented that makes the following macro commands available:
 
@@ -457,270 +501,108 @@ To change parameters of the AngularDistributionGenerator, an AngularDistribution
     Along with `sourceDY` and `sourceDZ`, defines the dimensions of the container box.
 * `/ang/sourcePV VALUE`
     Enter the name of a physical volume that should act as a source. To add more physical volumes, call `/ang/sourcePV` multiple times with different arguments (about using multiple sources, see also the [caveat](#multiplesources) at the end of this section).
-    
+* `/ang/polarized VALUE`
+    Determine whether the excitation (i.e. the first transition in the cascade) is caused by a polarized photon (default value). To simulate unpolarized photons, the angular distributions for the two possible polarizations are added up in the code. This is done by choosing different parities for the first excited state in the cascade. This means that both distributions (for example 0<sup>+</sup> → 1<sup>+</sup> → 0<sup>+</sup> and 0<sup>+</sup> → 1<sup>-</sup> → 0<sup>+</sup>) need to be implemented. The user needs to give only one of the two possible cascades as a macro command.
+
 The container volume's inside will be the interval [X - DX/2, X + DX/2], [Y - DY/2, Y + DY/2] and [Z - DZ/2, Z + DZ/2].
 
 The identifiers of the angular distribution are given to the simulation as an array of numbers `states  = {state1, state2, ...}` whose length `NSTATES` can to be specified by the user.
 For "real" NRF angular distributions, this array of numbers will be the spins of the excited states in a cascade, with the parity indicated by the sign of the numbers.
 
-Due to parity symmetry, an inversion of all the parities in a cascade will result in the same angular distribution. For example, the transition 0+ -> 1- -> 0+ has the same angular distribution as 0- -> 1+ -> 0-. This is indicated by the notation "+-" and "-+" in the list below (the example is listed as "0+- -> 1-+ -> 0+-").
+Due to parity symmetry, an inversion of all the parities in a cascade will result in the same angular distribution. For example, the transition 0<sup>+</sup> -> 1<sup>-</sup> -> 0<sup>+</sup> has the same angular distribution as 0<sup>-</sup> -> 1<sup>+</sup> -> 0<sup>-</sup>. This is indicated by the notation "+-" and "-+" in the list below (the example is listed as "0<sup>±</sup> -> 1<sup>∓</sup> -> 0<sup>±</sup>").
 
 It was chosen to represent the parity of a state as the sign of the spin quantum number. Unfortunately, this makes it impossible to represent 0- states, because the number "-0" is the same as "+0". Therefore, the value "-0.1" represents a 0- state.
 
-At the moment, the following distributions are implemented:
+A list of all implemented angular distributions can be found at the bottom of the `angdist.mac` sample macro for `AngularDistributionGenerator`.
 
-* `states == {0.1, 0.1, 0.1}`
-    Wildcard for test distributions
-* `states == {0., 0., 0.}`
-    Isotropic distribution
-* `states == {0., 1., 0.} or {-0.1, -1., -0.1}`
-    0<sup>±</sup> → 1<sup>±</sup> → 0<sup>±</sup>
-* `states == {0., -1., 0.} or {-0.1, 1., -0.1}`
-    0<sup>±</sup> → 1<sup>∓</sup> → 0<sup>±</sup>
-* `states == {0., 2., 0.} or {-0.1, -2., -0.1}`
-    0<sup>±</sup> → 2<sup>±</sup> → 0<sup>±</sup>
-* `states == {0., 2., 2.} or {-0.1, -2., -2.}`
-    0<sup>±</sup> → 2<sup>±</sup> → 2<sup>±</sup>
-* `states == {0., 1., 2.} or {-0.1, -1., -2.}`
-    0<sup>±</sup> → 1<sup>±</sup> → 2<sup>±</sup>
-* `states == {0., -1., 2.} or {-0.1, 1., -2.}`
-    0<sup>±</sup> → 1<sup>∓</sup> → 2<sup>±</sup>
-* `states == {1.5, -2.5, 1.5} or {-1.5, 2.5, -1.5}`
-    3/2<sup>±</sup> → 5/2<sup>∓</sup> → 3/2<sup>±</sup>
-* `states == {1.5, 2.5, 1.5} or {-1.5, -2.5, -1.5}`
-    3/2<sup>±</sup> → 5/2<sup>±</sup> → 3/2<sup>±</sup>
-* `states == {1.5, 1.5, 1.5} or {-1.5, -1.5, -1.5}`
-    3/2<sup>±</sup> → 3/2<sup>±</sup> → 3/2<sup>±</sup>
-* `states == {1.5, -1.5, 1.5} or {-1.5, 1.5, -1.5}`
-    3/2<sup>±</sup> → 3/2<sup>∓</sup> → 3/2<sup>±</sup>
-* `states == {0.5, 1.5, 0.5} or {-0.5, -1.5, -0.5}`
-    1/2<sup>±</sup> → 3/2<sup>±</sup> → 1/2<sup>±</sup>
-* `states == {0.5, -1.5, 0.5} or {-0.5, 1.5, -0.5}`
-    1/2<sup>±</sup> → 3/2<sup>∓</sup> → 1/2<sup>±</sup>
-* `states == {2.5, 1.5, 2.5} or {-2.5, -1.5, -2.5}`
-    5/2<sup>±</sup> → 3/2<sup>±</sup> → 5/2<sup>±</sup>
-* `states == {2.5, -1.5, 2.5} or {-2.5, 1.5, -2.5}`
-    5/2<sup>±</sup> → 3/2<sup>∓</sup> → 5/2<sup>±</sup>
-* `states == {2.5, 2.5, 2.5} or {-2.5, -2.5, -2.5}`
-    5/2<sup>±</sup> → 5/2<sup>±</sup> → 5/2<sup>±</sup>
-* `states == {2.5, -2.5, 2.5} or {-2.5, 2.5, -2.5}`
-    5/2<sup>±</sup> → 5/2<sup>∓</sup> → 5/2<sup>±</sup>
-* `states == {2.5, 3.5, 2.5} or {-2.5, -3.5, -2.5}`
-    5/2<sup>±</sup> → 7/2<sup>±</sup> → 5/2<sup>±</sup>
-* `states == {2.5, -3.5, 2.5} or {-2.5, 3.5, -2.5}`
-    5/2<sup>±</sup> → 7/2<sup>∓</sup> → 5/2<sup>±</sup>
-* `states == {0., -1.0, 0.0, 1.0} or states == {-0.1, 1.0, 0.0, 1.0}`
-    0<sup>±</sup> → 1<sup>∓</sup> → 0 → 1
-* `states == {0., -1.0, 0.0, 2.0} or states == {-0.1, 1.0, 0.0, 2.0}`
-    0<sup>±</sup> → 1<sup>∓</sup> → 0 → 2
-* `states == {0., -1.0, 0.0, 3.0} or states == {-0.1, 1.0, 0.0, 3.0}`
-    0<sup>±</sup> → 1<sup>∓</sup> → 0 → 3
-* `states == {0., -1.0, 0.0, 4.0} or states == {-0.1, 1.0, 0.0, 4.0}`
-    0<sup>±</sup> → 1<sup>∓</sup> → 0 → 4
-* `states == {0., -1.0, 0.0, 5.0} or states == {-0.1, 1.0, 0.0, 5.0}`
-    0<sup>±</sup> → 1<sup>∓</sup> → 0 → 5
-* `states == {0., -1.0, 0.0, 6.0} or states == {-0.1, 1.0, 0.0, 6.0}`
-    0<sup>±</sup> → 1<sup>∓</sup> → 0 → 6
-* `states == {0., -1.0, 1.0, 0.0} or states == {-0.1, 1.0, 1.0, 0.0}`
-    0<sup>±</sup> → 1<sup>∓</sup> → 1 → 0
-* `states == {0., -1.0, 1.0, 1.0} or states == {-0.1, 1.0, 1.0, 1.0}`
-    0<sup>±</sup> → 1<sup>∓</sup> → 1 → 1
-* `states == {0., -1.0, 1.0, 2.0} or states == {-0.1, 1.0, 1.0, 2.0}`
-    0<sup>±</sup> → 1<sup>∓</sup> → 1 → 2
-* `states == {0., -1.0, 1.0, 3.0} or states == {-0.1, 1.0, 1.0, 3.0}`
-    0<sup>±</sup> → 1<sup>∓</sup> → 1 → 3
-* `states == {0., -1.0, 1.0, 4.0} or states == {-0.1, 1.0, 1.0, 4.0}`
-    0<sup>±</sup> → 1<sup>∓</sup> → 1 → 4
-* `states == {0., -1.0, 1.0, 5.0} or states == {-0.1, 1.0, 1.0, 5.0}`
-    0<sup>±</sup> → 1<sup>∓</sup> → 1 → 5
-* `states == {0., -1.0, 1.0, 6.0} or states == {-0.1, 1.0, 1.0, 6.0}`
-    0<sup>±</sup> → 1<sup>∓</sup> → 1 → 6
-* `states == {0., -1.0, 2.0, 0.0} or states == {-0.1, 1.0, 2.0, 0.0}`
-    0<sup>±</sup> → 1<sup>∓</sup> → 2 → 0
-* `states == {0., -1.0, 2.0, 1.0} or states == {-0.1, 1.0, 2.0, 1.0}`
-    0<sup>±</sup> → 1<sup>∓</sup> → 2 → 1
-* `states == {0., -1.0, 2.0, 2.0} or states == {-0.1, 1.0, 2.0, 2.0}`
-    0<sup>±</sup> → 1<sup>∓</sup> → 2 → 2
-* `states == {0., -1.0, 2.0, 3.0} or states == {-0.1, 1.0, 2.0, 3.0}`
-    0<sup>±</sup> → 1<sup>∓</sup> → 2 → 3
-* `states == {0., -1.0, 2.0, 4.0} or states == {-0.1, 1.0, 2.0, 4.0}`
-    0<sup>±</sup> → 1<sup>∓</sup> → 2 → 4
-* `states == {0., -1.0, 2.0, 5.0} or states == {-0.1, 1.0, 2.0, 5.0}`
-    0<sup>±</sup> → 1<sup>∓</sup> → 2 → 5
-* `states == {0., -1.0, 2.0, 6.0} or states == {-0.1, 1.0, 2.0, 6.0}`
-    0<sup>±</sup> → 1<sup>∓</sup> → 2 → 6
-* `states == {0., -1.0, 3.0, 0.0} or states == {-0.1, 1.0, 3.0, 0.0}`
-    0<sup>±</sup> → 1<sup>∓</sup> → 3 → 0
-* `states == {0., -1.0, 3.0, 1.0} or states == {-0.1, 1.0, 3.0, 1.0}`
-    0<sup>±</sup> → 1<sup>∓</sup> → 3 → 1
-* `states == {0., -1.0, 3.0, 2.0} or states == {-0.1, 1.0, 3.0, 2.0}`
-    0<sup>±</sup> → 1<sup>∓</sup> → 3 → 2
-* `states == {0., -1.0, 3.0, 3.0} or states == {-0.1, 1.0, 3.0, 3.0}`
-    0<sup>±</sup> → 1<sup>∓</sup> → 3 → 3
-* `states == {0., -1.0, 3.0, 4.0} or states == {-0.1, 1.0, 3.0, 4.0}`
-    0<sup>±</sup> → 1<sup>∓</sup> → 3 → 4
-* `states == {0., -1.0, 3.0, 5.0} or states == {-0.1, 1.0, 3.0, 5.0}`
-    0<sup>±</sup> → 1<sup>∓</sup> → 3 → 5
-* `states == {0., -1.0, 3.0, 6.0} or states == {-0.1, 1.0, 3.0, 6.0}`
-    0<sup>±</sup> → 1<sup>∓</sup> → 3 → 6
-* `states == {0., -1.0, 4.0, 0.0} or states == {-0.1, 1.0, 4.0, 0.0}`
-    0<sup>±</sup> → 1<sup>∓</sup> → 4 → 0
-* `states == {0., -1.0, 4.0, 1.0} or states == {-0.1, 1.0, 4.0, 1.0}`
-    0<sup>±</sup> → 1<sup>∓</sup> → 4 → 1
-* `states == {0., -1.0, 4.0, 2.0} or states == {-0.1, 1.0, 4.0, 2.0}`
-    0<sup>±</sup> → 1<sup>∓</sup> → 4 → 2
-* `states == {0., -1.0, 4.0, 3.0} or states == {-0.1, 1.0, 4.0, 3.0}`
-    0<sup>±</sup> → 1<sup>∓</sup> → 4 → 3
-* `states == {0., -1.0, 4.0, 4.0} or states == {-0.1, 1.0, 4.0, 4.0}`
-    0<sup>±</sup> → 1<sup>∓</sup> → 4 → 4
-* `states == {0., -1.0, 4.0, 5.0} or states == {-0.1, 1.0, 4.0, 5.0}`
-    0<sup>±</sup> → 1<sup>∓</sup> → 4 → 5
-* `states == {0., -1.0, 4.0, 6.0} or states == {-0.1, 1.0, 4.0, 6.0}`
-    0<sup>±</sup> → 1<sup>∓</sup> → 4 → 6
-* `states == {0., 1.0, 0.0, 1.0} or states == {-0.1, -1.0, 0.0, 1.0}`
-    0<sup>±</sup> → 1<sup>±</sup> → 0 → 1
-* `states == {0., 1.0, 0.0, 2.0} or states == {-0.1, -1.0, 0.0, 2.0}`
-    0<sup>±</sup> → 1<sup>±</sup> → 0 → 2
-* `states == {0., 1.0, 0.0, 3.0} or states == {-0.1, -1.0, 0.0, 3.0}`
-    0<sup>±</sup> → 1<sup>±</sup> → 0 → 3
-* `states == {0., 1.0, 0.0, 4.0} or states == {-0.1, -1.0, 0.0, 4.0}`
-    0<sup>±</sup> → 1<sup>±</sup> → 0 → 4
-* `states == {0., 1.0, 0.0, 5.0} or states == {-0.1, -1.0, 0.0, 5.0}`
-    0<sup>±</sup> → 1<sup>±</sup> → 0 → 5
-* `states == {0., 1.0, 0.0, 6.0} or states == {-0.1, -1.0, 0.0, 6.0}`
-    0<sup>±</sup> → 1<sup>±</sup> → 0 → 6
-* `states == {0., 1.0, 1.0, 0.0} or states == {-0.1, -1.0, 1.0, 0.0}`
-    0<sup>±</sup> → 1<sup>±</sup> → 1 → 0
-* `states == {0., 1.0, 1.0, 1.0} or states == {-0.1, -1.0, 1.0, 1.0}`
-    0<sup>±</sup> → 1<sup>±</sup> → 1 → 1
-* `states == {0., 1.0, 1.0, 2.0} or states == {-0.1, -1.0, 1.0, 2.0}`
-    0<sup>±</sup> → 1<sup>±</sup> → 1 → 2
-* `states == {0., 1.0, 1.0, 3.0} or states == {-0.1, -1.0, 1.0, 3.0}`
-    0<sup>±</sup> → 1<sup>±</sup> → 1 → 3
-* `states == {0., 1.0, 1.0, 4.0} or states == {-0.1, -1.0, 1.0, 4.0}`
-    0<sup>±</sup> → 1<sup>±</sup> → 1 → 4
-* `states == {0., 1.0, 1.0, 5.0} or states == {-0.1, -1.0, 1.0, 5.0}`
-    0<sup>±</sup> → 1<sup>±</sup> → 1 → 5
-* `states == {0., 1.0, 1.0, 6.0} or states == {-0.1, -1.0, 1.0, 6.0}`
-    0<sup>±</sup> → 1<sup>±</sup> → 1 → 6
-* `states == {0., 1.0, 2.0, 0.0} or states == {-0.1, -1.0, 2.0, 0.0}`
-    0<sup>±</sup> → 1<sup>±</sup> → 2 → 0
-* `states == {0., 1.0, 2.0, 1.0} or states == {-0.1, -1.0, 2.0, 1.0}`
-    0<sup>±</sup> → 1<sup>±</sup> → 2 → 1
-* `states == {0., 1.0, 2.0, 2.0} or states == {-0.1, -1.0, 2.0, 2.0}`
-    0<sup>±</sup> → 1<sup>±</sup> → 2 → 2
-* `states == {0., 1.0, 2.0, 3.0} or states == {-0.1, -1.0, 2.0, 3.0}`
-    0<sup>±</sup> → 1<sup>±</sup> → 2 → 3
-* `states == {0., 1.0, 2.0, 4.0} or states == {-0.1, -1.0, 2.0, 4.0}`
-    0<sup>±</sup> → 1<sup>±</sup> → 2 → 4
-* `states == {0., 1.0, 2.0, 5.0} or states == {-0.1, -1.0, 2.0, 5.0}`
-    0<sup>±</sup> → 1<sup>±</sup> → 2 → 5
-* `states == {0., 1.0, 2.0, 6.0} or states == {-0.1, -1.0, 2.0, 6.0}`
-    0<sup>±</sup> → 1<sup>±</sup> → 2 → 6
-* `states == {0., 1.0, 3.0, 0.0} or states == {-0.1, -1.0, 3.0, 0.0}`
-    0<sup>±</sup> → 1<sup>±</sup> → 3 → 0
-* `states == {0., 1.0, 3.0, 1.0} or states == {-0.1, -1.0, 3.0, 1.0}`
-    0<sup>±</sup> → 1<sup>±</sup> → 3 → 1
-* `states == {0., 1.0, 3.0, 2.0} or states == {-0.1, -1.0, 3.0, 2.0}`
-    0<sup>±</sup> → 1<sup>±</sup> → 3 → 2
-* `states == {0., 1.0, 3.0, 3.0} or states == {-0.1, -1.0, 3.0, 3.0}`
-    0<sup>±</sup> → 1<sup>±</sup> → 3 → 3
-* `states == {0., 1.0, 3.0, 4.0} or states == {-0.1, -1.0, 3.0, 4.0}`
-    0<sup>±</sup> → 1<sup>±</sup> → 3 → 4
-* `states == {0., 1.0, 3.0, 5.0} or states == {-0.1, -1.0, 3.0, 5.0}`
-    0<sup>±</sup> → 1<sup>±</sup> → 3 → 5
-* `states == {0., 1.0, 3.0, 6.0} or states == {-0.1, -1.0, 3.0, 6.0}`
-    0<sup>±</sup> → 1<sup>±</sup> → 3 → 6
-* `states == {0., 1.0, 4.0, 0.0} or states == {-0.1, -1.0, 4.0, 0.0}`
-    0<sup>±</sup> → 1<sup>±</sup> → 4 → 0
-* `states == {0., 1.0, 4.0, 1.0} or states == {-0.1, -1.0, 4.0, 1.0}`
-    0<sup>±</sup> → 1<sup>±</sup> → 4 → 1
-* `states == {0., 1.0, 4.0, 2.0} or states == {-0.1, -1.0, 4.0, 2.0}`
-    0<sup>±</sup> → 1<sup>±</sup> → 4 → 2
-* `states == {0., 1.0, 4.0, 3.0} or states == {-0.1, -1.0, 4.0, 3.0}`
-    0<sup>±</sup> → 1<sup>±</sup> → 4 → 3
-* `states == {0., 1.0, 4.0, 4.0} or states == {-0.1, -1.0, 4.0, 4.0}`
-    0<sup>±</sup> → 1<sup>±</sup> → 4 → 4
-* `states == {0., 1.0, 4.0, 5.0} or states == {-0.1, -1.0, 4.0, 5.0}`
-    0<sup>±</sup> → 1<sup>±</sup> → 4 → 5
-* `states == {0., 1.0, 4.0, 6.0} or states == {-0.1, -1.0, 4.0, 6.0}`
-    0<sup>±</sup> → 1<sup>±</sup> → 4 → 6
-* `states == {0., 2.0, 0.0, 1.0} or states == {-0.1, -2.0, 0.0, 1.0}`
-    0<sup>±</sup> → 2<sup>±</sup> → 0 → 1
-* `states == {0., 2.0, 0.0, 2.0} or states == {-0.1, -2.0, 0.0, 2.0}`
-    0<sup>±</sup> → 2<sup>±</sup> → 0 → 2
-* `states == {0., 2.0, 0.0, 3.0} or states == {-0.1, -2.0, 0.0, 3.0}`
-    0<sup>±</sup> → 2<sup>±</sup> → 0 → 3
-* `states == {0., 2.0, 0.0, 4.0} or states == {-0.1, -2.0, 0.0, 4.0}`
-    0<sup>±</sup> → 2<sup>±</sup> → 0 → 4
-* `states == {0., 2.0, 0.0, 5.0} or states == {-0.1, -2.0, 0.0, 5.0}`
-    0<sup>±</sup> → 2<sup>±</sup> → 0 → 5
-* `states == {0., 2.0, 0.0, 6.0} or states == {-0.1, -2.0, 0.0, 6.0}`
-    0<sup>±</sup> → 2<sup>±</sup> → 0 → 6
-* `states == {0., 2.0, 1.0, 0.0} or states == {-0.1, -2.0, 1.0, 0.0}`
-    0<sup>±</sup> → 2<sup>±</sup> → 1 → 0
-* `states == {0., 2.0, 1.0, 1.0} or states == {-0.1, -2.0, 1.0, 1.0}`
-    0<sup>±</sup> → 2<sup>±</sup> → 1 → 1
-* `states == {0., 2.0, 1.0, 2.0} or states == {-0.1, -2.0, 1.0, 2.0}`
-    0<sup>±</sup> → 2<sup>±</sup> → 1 → 2
-* `states == {0., 2.0, 1.0, 3.0} or states == {-0.1, -2.0, 1.0, 3.0}`
-    0<sup>±</sup> → 2<sup>±</sup> → 1 → 3
-* `states == {0., 2.0, 1.0, 4.0} or states == {-0.1, -2.0, 1.0, 4.0}`
-    0<sup>±</sup> → 2<sup>±</sup> → 1 → 4
-* `states == {0., 2.0, 1.0, 5.0} or states == {-0.1, -2.0, 1.0, 5.0}`
-    0<sup>±</sup> → 2<sup>±</sup> → 1 → 5
-* `states == {0., 2.0, 1.0, 6.0} or states == {-0.1, -2.0, 1.0, 6.0}`
-    0<sup>±</sup> → 2<sup>±</sup> → 1 → 6
-* `states == {0., 2.0, 2.0, 0.0} or states == {-0.1, -2.0, 2.0, 0.0}`
-    0<sup>±</sup> → 2<sup>±</sup> → 2 → 0
-* `states == {0., 2.0, 2.0, 1.0} or states == {-0.1, -2.0, 2.0, 1.0}`
-    0<sup>±</sup> → 2<sup>±</sup> → 2 → 1
-* `states == {0., 2.0, 2.0, 2.0} or states == {-0.1, -2.0, 2.0, 2.0}`
-    0<sup>±</sup> → 2<sup>±</sup> → 2 → 2
-* `states == {0., 2.0, 2.0, 3.0} or states == {-0.1, -2.0, 2.0, 3.0}`
-    0<sup>±</sup> → 2<sup>±</sup> → 2 → 3
-* `states == {0., 2.0, 2.0, 4.0} or states == {-0.1, -2.0, 2.0, 4.0}`
-    0<sup>±</sup> → 2<sup>±</sup> → 2 → 4
-* `states == {0., 2.0, 2.0, 5.0} or states == {-0.1, -2.0, 2.0, 5.0}`
-    0<sup>±</sup> → 2<sup>±</sup> → 2 → 5
-* `states == {0., 2.0, 2.0, 6.0} or states == {-0.1, -2.0, 2.0, 6.0}`
-    0<sup>±</sup> → 2<sup>±</sup> → 2 → 6
-* `states == {0., 2.0, 3.0, 0.0} or states == {-0.1, -2.0, 3.0, 0.0}`
-    0<sup>±</sup> → 2<sup>±</sup> → 3 → 0
-* `states == {0., 2.0, 3.0, 1.0} or states == {-0.1, -2.0, 3.0, 1.0}`
-    0<sup>±</sup> → 2<sup>±</sup> → 3 → 1
-* `states == {0., 2.0, 3.0, 2.0} or states == {-0.1, -2.0, 3.0, 2.0}`
-    0<sup>±</sup> → 2<sup>±</sup> → 3 → 2
-* `states == {0., 2.0, 3.0, 3.0} or states == {-0.1, -2.0, 3.0, 3.0}`
-    0<sup>±</sup> → 2<sup>±</sup> → 3 → 3
-* `states == {0., 2.0, 3.0, 4.0} or states == {-0.1, -2.0, 3.0, 4.0}`
-    0<sup>±</sup> → 2<sup>±</sup> → 3 → 4
-* `states == {0., 2.0, 3.0, 5.0} or states == {-0.1, -2.0, 3.0, 5.0}`
-    0<sup>±</sup> → 2<sup>±</sup> → 3 → 5
-* `states == {0., 2.0, 3.0, 6.0} or states == {-0.1, -2.0, 3.0, 6.0}`
-    0<sup>±</sup> → 2<sup>±</sup> → 3 → 6
-* `states == {0., 2.0, 4.0, 0.0} or states == {-0.1, -2.0, 4.0, 0.0}`
-    0<sup>±</sup> → 2<sup>±</sup> → 4 → 0
-* `states == {0., 2.0, 4.0, 1.0} or states == {-0.1, -2.0, 4.0, 1.0}`
-    0<sup>±</sup> → 2<sup>±</sup> → 4 → 1
-* `states == {0., 2.0, 4.0, 2.0} or states == {-0.1, -2.0, 4.0, 2.0}`
-    0<sup>±</sup> → 2<sup>±</sup> → 4 → 2
-* `states == {0., 2.0, 4.0, 3.0} or states == {-0.1, -2.0, 4.0, 3.0}`
-    0<sup>±</sup> → 2<sup>±</sup> → 4 → 3
-* `states == {0., 2.0, 4.0, 4.0} or states == {-0.1, -2.0, 4.0, 4.0}`
-    0<sup>±</sup> → 2<sup>±</sup> → 4 → 4
-* `states == {0., 2.0, 4.0, 5.0} or states == {-0.1, -2.0, 4.0, 5.0}`
-    0<sup>±</sup> → 2<sup>±</sup> → 4 → 5
-* `states == {0., 2.0, 4.0, 6.0} or states == {-0.1, -2.0, 4.0, 6.0}`
-    0<sup>±</sup> → 2<sup>±</sup> → 4 → 6
+The macro file `angdist.mac` in the `utr/` directory shows a commented example of the usage of `AngularDistributionGenerator`.
 
-Finding the correct dimensions of the container box might need visualization. Try placing a `G4Box` with the desired dimensions at the desired position in the geometry and see whether it encloses the source volume completely and as close as possible. In fact, most of the predefined geometries have such a `G4Box` called `AuxBox` which is commented out. After using it to determine the size and position of the container box, remember to comment out the code again.
-
-#### 2.3.1 Caveat: Multiple sources <a name="multiplesources"></a>
+##### 2.3.2.3 Caveat: Multiple sources <a name="multiplesources"></a>
 
 When using multiple sources, be aware that `AngularDistributionGenerator` samples the points with a uniform random distribution inside the container volume. How many particles are emitted from a certain part of the source will only depend on its volume. 
 
 This is not always desirable. Imagine the following example: The goal is to simulate a beam on two disconnected targets. The first target has twice the volume of the second target, but the second target has a four times larger density. That means, the reaction would occur approximately twice as often in the second target than in the first. Implementing the targets like this in `AngularDistributionGenerator` would not give realistic results because of the weighting by volume. In a case like this, one would rather simulate the individual parts of the target and compute a weighted sum of the results.
+
+#### 2.3.3 AngularCorrelationGenerator<a name="angularcorrelationgenerator"></a>
+
+The `AngularCorrelationGenerator` generates monoenergetic particles that originate in a set of `G4PhysicalVolumes` of the `DetectorConstruction`, have a user-defined angular distribution and are correlated. The last point is what distinguishes it from the `AngularDistributionGenerator`: In a single event (`G4Event`), this generator launches several particles from the same origin by multiple calls of `G4ParticleGun::GeneratePrimaryVertex()`, for which the angular distribution and polarization depends on the previously emitted particle. In other words, the particles will be part of a cascade of transitions (of a nucleus) which has an arbitrary number of steps.
+Since the particles belong to the same events, they can be easily picked out by the event number in the ROOT output file [see 2.6 Output File Format](#outputfileformat).
+
+This is accomplished by rotating the angular distribution of the follow-up particle by the Euler angles α, β and γ which define the emission direction and polarization of the previous particle.
+
+The reference emission direction is `(0, 0, 1)`, i.e. the z-axis, and the reference polarization axis is the x-axis `(1, 0, 0)`. The rotations with the Euler angles are executed in the extrinsic reference frame (i.e. the original coordinate system) in the order `z-x-z`, i.e. a rotation around the z-axis, followed by a rotation around the x-axis and again around the z-axis as they are defined above.
+
+In the following, the rotation matrices around the x- and z-axis are called M_x(ω) and M_z(ω), where ω is the rotation angle around the corresponding axis. The first particle is assumed to be emitted in a direction `v1` with its polarization axis `p1`.
+
+It is now the task to find the emission direction `v2` and polarization `p2` of the second particle, whose emission is subject to the angular distribution `W2(θ, φ)` in the laboratory frame. To get the emission direction with respect to the first particle which defines the quantization axes, the three Euler angles are determine which yield `v1` and `p1` if applied to the reference vectors:
+
+```
+p1 = M_z(α) M_x(β) M_z(γ) (1, 0, 0)
+
+v1 = M_z(α) M_x(β) M_z(γ) (0, 0, 1) = M_z(α) M_x(β) (0, 0, 1)
+```
+
+The second equation can be simplified, because a rotation about the z-axis leaves the vector (0, 0, 1) unchanged.
+For the known normalized vectors `v1` and `p1`, this results in a set of equations for the Euler angles α, β and γ.
+At the moment, in the case of of polarization, the ultrarelativistic approximation that `p1 . v1 == 0` (scalar product) is taken. This means that the polarization can only be perpendicular to the propagation direction. This approximation is valid for highly-energetic or massless particles. It allows for an easy determination of the angle γ: M_z(γ) only acts on the polarization, and the product of M_z(α) M_x(β) acts on both. Therefore, it can be used to described the difference of emission and polarization direction with respect to the reference frame. It the first particle is assumed to be unpolarized, the angle γ is sampled from a uniform random distribution to mimick an arbitrary behavior of the polarization.
+
+After the determination of the Euler angles, a random emission direction of the second particle `v2'` is sampled from `W2(θ, φ)` in the laboratory frame as described in [2.3.2 AngularDistributionGenerator](#angulardistributiongenerator) (using the same algorithm). By applying the three rotation matrices as shown above using the determined angles, it is rotated into the reference frame of the first particle:
+
+```
+v2 = M_z(α) M_x(β) M_z(γ) v2'
+
+p2 = M_z(α) M_x(β) M_z(γ) p2'
+```
+
+In this case, the first action of M_z can not be neglected, of course.
+The given polarization direction `p2'` is rotated in the same way.
+
+##### 2.3.3.1 Usage
+
+To change parameters of the `AngularCorrelationGenerator`, an `AngularCorrelationMessenger` has been implemented that makes macro commands available. The following commands retain their functionality from the messenger of the [`AngularDistributionGenerator`](#angulardistributiongenerator) exactly (note the different parent directory, however):
+
+* `/angcorr/particle NAME` (m)
+* `/angcorr/energy ENERGY UNIT` (m)
+* `/angcorr/nstates NSTATES` (m)
+* `/angcorr/stateN VALUE` (m)
+* `/angcorr/deltaN1N2 VALUE` (m)
+
+* `/angcorr/sourceX VALUE UNIT` (s)
+* `/angcorr/sourceDX VALUE UNIT` (s)
+* `/angcorr/sourcePV VALUE` (s)
+
+Please refer to the documentation of these commands in section [`2.3.2 AngularDistributionGenerator`](#angulardistributiongenerator). The label 'm' or 's' indicates whether the commands can be used multiple times, or whether only a single use makes sense. Since the `AngularCorrelationGenerator` emits multiple particles in a single event, `/angcorr/particle` must be used several times. On the contrary, the location, size and name of the source can be defined only once, because the particles are assumed to be emitted from a common origin. Note that the `polarized` command does not exist here.
+
+Any macro for `AngularCorrelationGenerator` must give the number of steps in the cascade of emitted particles via the macro `/angcorr/steps`. After that, the single steps are initiated by the `/angcorr/particle` command which is followed by a description of the angular distribution of the particle (see below). The description must be finished before the next call of `/angcorr/particle` to avoid unexpected behavior.
+
+One new available macro command that can be used only once is:
+
+* `/angcorr/steps NSTEPS`: Specify the number of steps in the cascade which will be defined in the macro. This must be equal to the number of calls of `/angcorr/particle`
+
+All other new macro commands can be used to specify an angular distribution and can be used `NSTEPS` times each:
+
+* `/angcorr/direction X Y Z`: Instead of specifying an angular distribution, sets a constant emission direction of the given particle. This option can only be used for the first particle. It is useful if one only wants to rotate the given angular distribution of the follow-up particle.
+* `/angcorr/relativeangle ANGLE UNIT`: Instead of specifying an angular distribution, determines that the current particle will be emitted at an angle `ANGLE` with respect to the previous particle, i.e. it will be emitted in a cone around the emission direction of the previous particle. For `ANGLE == 180 deg`, the particle will be emitted exactly in the opposite direction, for `ANGLE == 90 deg`, it will be emitted in the perpendicular plane.
+* `/angcorr/polarization X Y Z`: Sets the polarization direction of the current particle, which will also be rotated with respect to the emission angle of the previous particle. If `X == Y == Z == 0`, the particle is assumed to be unpolarized, i.e. the Euler angle γ can be chosen at random. If an angular distribution is specified by the `/angcorr/stateN` commands, the emission direction will be sampled from the unpolarized angular distribution and transformed.
+
+The first two options were found to be very useful for debugging of the code as well.
+
+At the start of a simulation using the `AngularCorrelationGenerator`, the code will print a summary of the checked options along with the self-test that contains lines like
+
+```
+G4WT0 > ========================================================================
+G4WT0 > Monte-Carlo momentum generator with 10000 3D vectors for
+G4WT0 > Cascade step #2 ( Particle: geantino ) 
+G4WT0 > Angular distribution : 0 -> 1 -> 0 
+G4WT0 > Polarization         : ( 1, 0, 0 )
+G4WT0 > Check finished. Of 10000 random 3D momentum vectors, 3315 were valid ( 33.15 % )
+G4WT0 > Probability of failure: pow( 0.6685, 10000 ) = 0 %
+G4WT0 > MAX_W == 3 seems to be high enough.
+G4WT0 > ========================================================================
+
+```
+
+For a commented example, see the `angcorr.mac` macro file in the `utr/` directory, which implements a three-step cascade that uses all the features of `AngularCorrelationGenerator`.
 
 ### 2.4 Physics <a name="physics"></a>
 `utr` makes use of the `G4VModularPhysicsList`, which allows to integrate physics modules in a straightforward way by calling the `G4ModularPhysicsList::RegisterPhysics(G4VPhysicsConstructor*)` method. The registered `G4VPhysicsConstructor` class takes care of the introduction of particles and physics processes.
@@ -768,6 +650,18 @@ Using the following physics lists:
 
 at the beginning of a simulation will show which physics lists are currently used.
 
+Most of the physics lists are probably a little too extensive for the intended use of `utr`. This is also why lots of warnings concerning very exotic particles like 
+
+```
+*** G4Exception : PART10116
+      issued by : G4ParticleDefintion::SetProcessManager
+ProcessManager is being set to eta2(1870) without proper initialization of TLS pointer vector.
+This operation is thread-unsafe.
+*** This is just a warning message. ***
+```
+
+may appear.
+
 In order to include new physics modules, include them in the `src/Physics.cc` file.
 
 ### 2.5 Random Number Engine <a name="random"></a>
@@ -792,6 +686,7 @@ After this change, every restart of the simulation with unchanged code will yiel
 ### 2.6 Output File Format <a name="outputfileformat"></a>
 In section [2.2 Sensitive Detectors](#sensitivedetectors) the format of the ROOT output file was already introduced. The possible branches are 
 
+* **event**
 * **ekin**
 * **edep**
 * **particle** (given in the [Monte Carlo Particle Numbering Scheme](http://pdg.lbl.gov/mc_particle_id_contents.html))
@@ -802,8 +697,6 @@ In section [2.2 Sensitive Detectors](#sensitivedetectors) the format of the ROOT
 By using cmake build options (see [3.3 Build configuration](#build)), the user can specify which of these quantities should be written to the ROOT file, to avoid creating unnecessarily large files.
 
 ## 3 Installation <a name="installation"></a>
-
-These instructions will get you a copy of the simulation running.
 
 ### 3.1 Dependencies <a name="dependencies"></a>
 
@@ -820,7 +713,7 @@ Furthermore, to use the analysis scripts:
 Optional components:
 
 * [Qt](https://www.qt.io/) as a visualization driver. Compile Geant4 with the `GEANT4_USE_QT` option (tested with Qt4)
-* [ccmake](https://cmake.org/cmake/help/v3.0/manual/ccmake.1.html) UI for CMake which gives an overview of available build options
+* [ccmake](https://cmake.org/cmake/help/v3.0/manual/ccmake.1.html) UI for CMake which gives a quick overview of available build options
 
 ### 3.2 Compilation <a name="compilation"></a>
 
@@ -882,11 +775,13 @@ Note that the previously used physics list needs to be switched off as well, to 
 
 #### 3.3.3 Configuration of the primary generator
 
-`utr` offers two different primary generators (see [2.3 Event Generation]()), the Geant4-builtin `G4GeneralParticleSource` and a generator for custom angular distributions. To switch between them, set the `USE_GPS` flag:
+`utr` offers three different primary generators (see [2.3 Event Generation]()), the Geant4-builtin `G4GeneralParticleSource` (GPS) and the generators for angular distributions and angular correlations. To replace the default GPS with either `AngularDistributionGenerator` or `AngularCorrelationGenerator`, use one of the `GENERATOR` options
 
 ```
-$ cmake -DUSE_GPS=ON .
+$ cmake -DGENERATOR_XY=ON .
 ```
+
+Switching both generator options to `ON` works, but leads to unexpected behavior.
 
 #### 3.3.4 Cofiguration of the targets
 
@@ -912,16 +807,19 @@ clause.
 
 The options for the output file format are described in [2.6 Output File Format](#outputfileformat). By changing the corresponding flags:
 
- * EDEP
- * EKIN
- * PARTICLE (given in the [Monte Carlo Particle Numbering Scheme](http://pdg.lbl.gov/mc_particle_id_contents.html))
- * VOLUME
- * POSX, POSY, POSZ
- * MOMX, MOMY, MOMZ
+ * EVENT_ID
+ * EVENT_EDEP
+ * EVENT_EKIN
+ * EVENT_PARTICLE (given in the [Monte Carlo Particle Numbering Scheme](http://pdg.lbl.gov/mc_particle_id_contents.html))
+ * EVENT_VOLUME
+ * EVENT_POSX, EVENT_POSY, EVENT_POSZ
+ * EVENT_MOMX, EVENT_MOMY, EVENT_MOMZ
 
-the user can decided which of the quantities are written to the ROOT output file as branches. For example, to write the x coordinate of the first step in the detector volume, type
+the user can decide which of the quantities are written to the ROOT output file as branches. For example, to write the x coordinate of the first hit in the detector volume, type
 
 $ cmake -DPOSX=ON .
+
+For the three implemented detector types (see [Sensitive Detectors](#sensitivedetectors)), the output quantities may have a different meaning.
 
 #### 3.3.6 Backward compatibility
 
@@ -1164,7 +1062,7 @@ The `TChain` file can also be post-processed with the aforementioned scripts, in
 
 ## 6 Unit Tests <a name="unittests"></a>
 
-## 6.1 AngularDistributionGenerator <a name="angulardistributiongenerator"></a>
+### 6.1 AngularDistributionGenerator <a name="angulardistributiongeneratortest"></a>
 
 For testing the `AngularDistributionGenerator`, a dedicated geometry can be found in `/DetectorConstruction/unit_tests/AngularDistributionGenerator_Test/` and a macro file and output processing script are located in `/unit_tests/AngularDistributionGenerator_Test/`. The test geometry consists of a very small spherical particle source surrounded by a large hollow sphere which acts as a **ParticleSD**. Geantino particles emitted by this source and detected by the hollow sphere should have the desired angular distribution. This test was originally implemented to test the built-in angular distributions which are manually coded from the output of a computer algebra program, and to get a feeling of how large the value of `W_max` has to be.
 
@@ -1214,10 +1112,19 @@ and especially the fit residuals
 
 one can see clear systematic deviations from the input distribution which are a clear indication that `W_max == 1` is not a good choice for this distribution.
 
+### 6.2 AngularCorrelationGenerator <a name="angularcorrelationgeneratortest"></a>
+
+At the moment, the unit test for the `AngularCorrelationGenerator` is almost the same as for the `AngularDistributionGenerator`, except for the sample macro file and the ROOT processing script. The script has the additional parameter `-n` which allows to set the number of steps of the cascade that was used in the simulation to be able to sort different particles into different theta-phi histograms.
+
+### 6.3 Physics <a name="physicstest"></a>
+
+To test the physics processes of Geant4 and sensitive detector functionality of `utr`, a simple test geometry has been implemented. Almost all parts of the geometry are spherically symmetric to make it easy to study angular distributions of particles emitted by some process. At the origin, a cylindrical reaction target is placed. It is surrounded by three concentric spherical shells, representing each of the available detector types of `utr` (see [2.2 Sensitive Detectors](#sensitivedetectors)). Beginning from the center, the order is `ParticleSD`, `SecondarySD` and `EnergyDepositionSD`. The first two detector types are nondestructive, therefore they are made of vacuum. The `EnergyDepositionSD` will only work if made of matter with which the particles can react.
+
+The unit test can be activated by selecting the geometry in `DetectorConstruction/unit_tests/Physics/` via CMake build variables (see [3.3 Build configuration](#build)). For a beam-on-target experiment, usage of a modified `beam.mac` macro is recommended. Feel free to play with different physics lists and materials.
 
 ## 7 License <a name="license"></a>
 
-Copyright (C) 2017, 2018
+Copyright (C) 2017-2019
 
 U. Gayer (ugayer@ikp.tu-darmstadt.de)
 

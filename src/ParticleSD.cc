@@ -45,10 +45,9 @@ void ParticleSD::Initialize(G4HCofThisEvent *) {}
 
 G4bool ParticleSD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
 	G4Track *track = aStep->GetTrack();
-	unsigned int trackID = track->GetTrackID();
 
-	const G4Event *event = G4RunManager::GetRunManager()->GetCurrentEvent();
-	unsigned int eventID = event->GetEventID();
+	G4int trackID = track->GetTrackID();
+	G4int eventID = G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID();
 
 	if (trackID != getCurrentTrackID() || eventID != getCurrentEventID()) {
 
@@ -62,12 +61,16 @@ G4bool ParticleSD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
 
 		unsigned int nentry = 0;
 
+#ifdef EVENT_ID
+	analysisManager->FillNtupleDColumn(nentry, eventID);
+	++nentry;
+#endif
 #ifdef EVENT_EDEP
 	analysisManager->FillNtupleDColumn(nentry, aStep->GetTotalEnergyDeposit());
 	++nentry;
 #endif
 #ifdef EVENT_EKIN
-	analysisManager->FillNtupleDColumn(nentry, track->GetKineticEnergy());	
+	analysisManager->FillNtupleDColumn(nentry, aStep->GetPreStepPoint()->GetKineticEnergy());	
 	++nentry;
 #endif
 #ifdef EVENT_PARTICLE

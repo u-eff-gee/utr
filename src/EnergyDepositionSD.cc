@@ -34,11 +34,9 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 EnergyDepositionSD::EnergyDepositionSD(const G4String &name,
                                        const G4String &hitsCollectionName)
-    : G4VSensitiveDetector(name), hitsCollection(NULL) {
+    : G4VSensitiveDetector(name), hitsCollection(NULL), detectorID(0), eventID(0) {
+	
 	collectionName.insert(hitsCollectionName);
-
-	currentTrackID = 0;
-	detectorID = 0;
 }
 
 EnergyDepositionSD::~EnergyDepositionSD() {}
@@ -51,6 +49,8 @@ void EnergyDepositionSD::Initialize(G4HCofThisEvent *hce) {
 	G4int hcID =
 	    G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]);
 	hce->AddHitsCollection(hcID, hitsCollection);
+
+	eventID = G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID();	
 }
 
 G4bool EnergyDepositionSD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
@@ -59,10 +59,11 @@ G4bool EnergyDepositionSD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
 
 	G4Track *track = aStep->GetTrack();
 
-	hit->SetKineticEnergy(track->GetKineticEnergy());
+	hit->SetKineticEnergy(aStep->GetPreStepPoint()->GetKineticEnergy());
 	hit->SetEnergyDeposition(aStep->GetTotalEnergyDeposit());
 	hit->SetParticleType(track->GetDefinition()->GetPDGEncoding());
 	hit->SetDetectorID(GetDetectorID());
+	hit->SetEventID(eventID);
 	hit->SetPosition(track->GetPosition());
 	hit->SetMomentum(track->GetMomentum());
 
@@ -88,6 +89,10 @@ void EnergyDepositionSD::EndOfEvent(G4HCofThisEvent *) {
 
 		unsigned int nentry = 0;
 
+#ifdef EVENT_ID
+	analysisManager->FillNtupleDColumn(nentry, eventID);
+	++nentry;
+#endif
 #ifdef EVENT_EDEP
 	analysisManager->FillNtupleDColumn(nentry, totalEnergyDeposition);
 	++nentry;

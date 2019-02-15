@@ -9,13 +9,6 @@ using std::endl;
 // PI/(180 DEGREE_TO_RAD)
 #define DEGREE_TO_RAD 0.017453292519943295
 
-bool AngularDistribution::IsInside(double rand_theta, double rand_phi, double rand_w, double *st, int nst, double *mix) const {
-	if (rand_w <= AngDist(rand_theta, rand_phi, st, nst, mix)){
-		return true;
-	}
-	return false;
-}
-
 double AngularDistribution::AngDist(
     double theta, double phi, double *st,
     int nst, double *mix) const {
@@ -211,6 +204,16 @@ double AngularDistribution::AngDist(
 			return (1.0/2.0)*(308*pow(mix[0], 2)*pow(mix[1], 2)*(0.0016454049495837645*(7*pow(cos(theta), 2) - 1)*pow(sin(theta), 2)*cos(2*phi) + 0.011517834647086349*pow(cos(theta), 4) - 0.0098724296975025837*pow(cos(theta), 2) + 0.00098724296975025833) + 4*(0.70710678118654768*pow(mix[0], 2) + 0.70710678118654746)*(0.70710678118654768*pow(mix[1], 2) + 0.70710678118654746) + ((3*pow(cos(theta), 2) - 1)*(-0.0053780232315788759*sqrt(210)*pow(mix[0], 2) + 0.29160592175990219*sqrt(42)*mix[0] + 0.02258769757263128*sqrt(210)) + (0.016134069694736623*sqrt(210)*pow(mix[0], 2) + 0.29160592175990208*sqrt(42)*mix[0] - 0.067763092717893825*sqrt(210))*pow(sin(theta), 2)*cos(2*phi))*(-0.0053780232315788759*sqrt(210)*pow(mix[1], 2) - 0.29160592175990219*sqrt(42)*mix[1] + 0.02258769757263128*sqrt(210)))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1))
 				; 
 
+		}
+		// 1^+ -> 2^+ -> 0^+ or 1^- -> 2^- -> 0^-
+		if((st[0] == 1. && st[1] == 2. && st[2] == 0.) ||
+		   (st[0] ==-1. && st[1] ==-2. && st[2] ==-0.)){
+			return (80*pow(mix[0], 2)*pow(sin(theta), 2)*cos(2*phi)*pow(cos(theta), 2) - 5*pow(mix[0], 2)*pow(sin(theta), 2)*cos(2*phi) - 80*pow(mix[0], 2)*pow(cos(theta), 4) + 75*pow(mix[0], 2)*pow(cos(theta), 2) + 15*pow(mix[0], 2) + 6*sqrt(5)*mix[0]*pow(sin(theta), 2)*cos(2*phi) - 18*sqrt(5)*mix[0]*pow(cos(theta), 2) + 6*sqrt(5)*mix[0] - 9*pow(sin(theta), 2)*cos(2*phi) - 9*pow(cos(theta), 2) + 27)/(24*pow(mix[0], 2) + 24);
+		}
+		// 1^- -> 2^+ -> 0^+ or 1^+ -> 2^- -> 0^-
+		if((st[0] ==-1. && st[1] == 2. && st[2] == 0.) ||
+		   (st[0] == 1. && st[1] ==-2. && st[2] ==-0.)){
+			return (1.0/11760.0)*(1120*pow(mix[0], 2)*(-70*pow(sin(phi), 2)*pow(sin(theta), 4) + 60*pow(sin(phi), 2)*pow(sin(theta), 2) + 10*pow(sin(theta), 2) - 8) + 11760*pow(mix[0], 2) - 3*sqrt(70)*((3*pow(cos(theta), 2) - 1)*(-5*sqrt(70)*pow(mix[0], 2) + 70*sqrt(14)*mix[0] + 7*sqrt(70)) + (15*sqrt(70)*pow(mix[0], 2) + 70*sqrt(14)*mix[0] - 21*sqrt(70))*pow(sin(theta), 2)*cos(2*phi)) + 11760)/(pow(mix[0], 2) + 1);
 		}
 
     } else if (nst == 4) {

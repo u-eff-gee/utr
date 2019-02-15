@@ -21,6 +21,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef AngularDistributionMessenger_h
 #define AngularDistributionMessenger_h 1
 
+#include "G4UIcmdWithABool.hh"
 #include "G4UIcmdWithADouble.hh"
 #include "G4UIcmdWithADoubleAndUnit.hh"
 #include "G4UIcmdWithAString.hh"
@@ -69,6 +70,8 @@ class AngularDistributionMessenger : public G4UImessenger {
 	G4UIcmdWithADoubleAndUnit *sourceDZCmd;
 
 	G4UIcmdWithAString *sourcePVCmd;
+
+	G4UIcmdWithABool *polarizationCmd;
 };
 
 #endif
