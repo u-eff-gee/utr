@@ -36,8 +36,8 @@ private:
 	G4double block_z       = 95. * mm;   //z lies in the direction of the beam
 
 	G4double detectordistance1 = 225.*mm;
-	G4double detectordistance2 = 225.*mm;
-	G4double detectordistancepol = 225.*mm;
+	// G4double detectordistance2 = 225.*mm;
+	// G4double detectordistancepol = 225.*mm;
 	G4double distcollimatortotarget = 162*mm;
 
 	Germanium1_TUD* HPGe1;
