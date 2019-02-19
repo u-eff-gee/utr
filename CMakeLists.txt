@@ -36,7 +36,7 @@ ENDMACRO()
 
 #----------------------------------------------------------------------------
 # Choose campaign (an experimental campaign usually has a bulk geometry which is not changed, and several files like the detector arrangment which differ from run to run)
-set(CAMPAIGN "DHIPS_2019" CACHE STRING "Select experimental campaign from directory DetectorConstruction/")
+set(CAMPAIGN "Campaign_2018_2019" CACHE STRING "Select experimental campaign from directory DetectorConstruction/")
 SUBDIRLIST(SETUP_CHOICE ${CMAKE_CURRENT_BINARY_DIR}/DetectorConstruction)
 set_property(CACHE CAMPAIGN PROPERTY STRINGS ${SETUP_CHOICE})
 
