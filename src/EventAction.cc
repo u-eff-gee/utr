@@ -61,7 +61,7 @@ void EventAction::EndOfEventAction(const G4Event *event) {
 		float percent = (float)((float)eID/(float)NbEvents*100.);
 
 		G4cout << padchars <<"Progress: ["<<setw(16)<<eID<<"/"<<NbEvents<<"]  "
-		<<setw(4)<<std::setprecision(2)<<std::fixed<<percent<<" %"
+		<<setw(5)<<std::setprecision(2)<<std::fixed<<percent<<" %"
 		<<"\tRunning time: "<< setw(3)<<days<<"d "<<setw(2)<<hours<<"h "<<setw(3)<<minutes<<"mn "<<setw(3)<<sec<<"s   "
 		<< G4endl;
 			
