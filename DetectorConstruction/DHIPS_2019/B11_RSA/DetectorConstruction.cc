@@ -146,7 +146,9 @@ G4VPhysicalVolume *DetectorConstruction::Construct()
 	BeamPipe_Upstream.Construct(G4ThreeVector(0,0,-2500*mm),0.1);
 	RadiatorTarget.Construct(G4ThreeVector(0,0,-2000*mm),"Radiator1","Au",3*mm,"Al",0.); 
 	RadiatorTarget.Construct(G4ThreeVector(0,0,-1800*mm),"Radiator2","Au",3*mm,"Al",0.);
-	// BeamPipe_Downstream.Construct(G4ThreeVector(0,0,285*mm),0.1);//285*mm measured
+#ifdef DEUTERON_BREAK_UP
+	BeamPipe_Downstream.Construct(G4ThreeVector(0,0,285*mm),0.1);//285*mm measured
+#endif
 	LeadCastle.Construct(G4ThreeVector());
 	Detectors.Construct(G4ThreeVector());
 	Detectors.ConstructDetectorFilter(G4ThreeVector(),"HPGe1",10*mm,10*mm);//Cu Filter Length, Pb Filter Length
@@ -155,14 +157,15 @@ G4VPhysicalVolume *DetectorConstruction::Construct()
 
 #ifdef USE_TARGETS
 	
-
-	// B11_Target B11_Target(BeamPipe_Downstream.Get_Beampipe_Vacuum());
-	// B11_Target.Construct(G4ThreeVector(0., 0., -BeamPipe_Downstream.Get_Z_Axis_Offset_Z()));
-	
+#ifdef DEUTERON_BREAK_UP
+	B11_Target B11_Target(BeamPipe_Downstream.Get_Beampipe_Vacuum());
+	B11_Target.Construct(G4ThreeVector(0., 0., -BeamPipe_Downstream.Get_Z_Axis_Offset_Z()));
+#endif
+#ifndef DEUTERON_BREAK_UP
 	B11_Target B11_Target(World_Logical);
 	B11_Target.Construct(G4ThreeVector(0., 0., 0.));
+#endif
 	B11_Target.ConstructAbsorber(G4ThreeVector(0,0,-212*mm));
-
 #endif
 	
 	print_info();
@@ -172,27 +175,50 @@ G4VPhysicalVolume *DetectorConstruction::Construct()
 
 void DetectorConstruction::ConstructSDandField() {
 
-	// EnergyDepositionSD *HPGe1SD = new EnergyDepositionSD("HPGe1", "HPGe1");
-	// G4SDManager::GetSDMpointer()->AddNewDetector(HPGe1SD);
-	// HPGe1SD->SetDetectorID(1);
-	// SetSensitiveDetector("HPGe1", HPGe1SD, true);
+	EnergyDepositionSD *HPGe1SD = new EnergyDepositionSD("HPGe1", "HPGe1");
+	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe1SD);
+	HPGe1SD->SetDetectorID(HPGe1ID);
+	SetSensitiveDetector("HPGe1", HPGe1SD, true);
 
-	// EnergyDepositionSD *HPGe2SD = new EnergyDepositionSD("HPGe2", "HPGe2");
-	// G4SDManager::GetSDMpointer()->AddNewDetector(HPGe2SD);
-	// HPGe2SD->SetDetectorID(2);
-	// SetSensitiveDetector("HPGe2", HPGe2SD, true);
+	EnergyDepositionSD *HPGe2SD = new EnergyDepositionSD("HPGe2", "HPGe2");
+	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe2SD);
+	HPGe2SD->SetDetectorID(HPGe2ID);
+	SetSensitiveDetector("HPGe2", HPGe2SD, true);
 
-	// EnergyDepositionSD *HPGePolSD = new EnergyDepositionSD("HPGePol", "HPGePol");
-	// G4SDManager::GetSDMpointer()->AddNewDetector(HPGePolSD);
-	// HPGePolSD->SetDetectorID(3);
-	// SetSensitiveDetector("HPGePol", HPGePolSD, true);
+	EnergyDepositionSD *HPGePolSD = new EnergyDepositionSD("HPGePol", "HPGePol");
+	G4SDManager::GetSDMpointer()->AddNewDetector(HPGePolSD);
+	HPGePolSD->SetDetectorID(HPGePolID);
+	SetSensitiveDetector("HPGePol", HPGePolSD, true);
+#ifdef DEUTERON_BREAK_UP
+	EnergyDepositionSD *Si_Detector1SD = new EnergyDepositionSD("Si_Detector1", "Si_Detector1");
+	G4SDManager::GetSDMpointer()->AddNewDetector(Si_Detector1SD);
+	Si_Detector1SD->SetDetectorID(Si1ID);
+	SetSensitiveDetector("Si_Detector", Si_Detector1SD, true);
 
+	EnergyDepositionSD *Si_Detector2SD = new EnergyDepositionSD("Si_Detector2", "Si_Detector2");
+	G4SDManager::GetSDMpointer()->AddNewDetector(Si_Detector2SD);
+	Si_Detector2SD->SetDetectorID(Si2ID);
+	SetSensitiveDetector("Si_Detector", Si_Detector2SD, true);
+
+	EnergyDepositionSD *D_TargetSD = new EnergyDepositionSD("D_Target", "D_Target");
+	G4SDManager::GetSDMpointer()->AddNewDetector(D_TargetSD);
+	D_TargetSD->SetDetectorID(6);
+	SetSensitiveDetector("D_Target_Logical", D_TargetSD, true);
+#endif
 }
 
 void DetectorConstruction::print_info() const {
 	printf("==============================================================\n");
 	printf("  DetectorConstruction: Info (all dimensions in mm)\n");
 	G4cout << G4endl;
+	printf("Detector ID assignment:\n");
+	printf("HPGe1:   %d \n",HPGe1ID);
+	printf("HPGe2:   %d \n",HPGe2ID);
+	printf("HPGePol: %d \n",HPGePolID);
+#ifdef DEUTERON_BREAK_UP
+	printf("Si1:     %d \n",Si1ID);
+	printf("Si2:     %d \n",Si2ID);
+#endif
 	printf("> World dimensions             : ( %5.2f, %5.2f, %5.2f )\n", World_x, World_y, World_z);
 	printf("==============================================================\n");
 }

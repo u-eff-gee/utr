@@ -40,9 +40,15 @@ void BeamPipe_Downstream::Construct(G4ThreeVector global_coordinates,G4double re
 
 	G4NistManager *nist = G4NistManager::Instance();
 	G4Material *PE = nist->FindOrBuildMaterial("G4_POLYETHYLENE");
-	G4Material *Pb = nist->FindOrBuildMaterial("G4_Pb");
 	G4Material *Al = nist->FindOrBuildMaterial("G4_Al");
 	G4Material *Si = nist->FindOrBuildMaterial("G4_Si");
+
+
+	G4Isotope* iso_H2 = new G4Isotope("H2",1,2,2.014*g/mole);
+	G4Element* ele_D = new G4Element("Deuterium Atom","D",1);
+	ele_D->AddIsotope(iso_H2, 100.*perCent);
+	G4Material* Deuterium = new G4Material("Deuterium Atom", 1*g/cm3, 1);
+	Deuterium->AddElement(ele_D, 1);
 
 	Vacuum vac(relative_density, "beampipe_downstream_vacuum");
 	G4Material *vacuum = vac.Get_Material();
@@ -89,12 +95,12 @@ void BeamPipe_Downstream::Construct(G4ThreeVector global_coordinates,G4double re
 ////////////////////////
 	// Deuterium Target
 ////////////////////////// 
-	G4double D_Thickness = 10*mm;
+	G4double D_Thickness = 40*um;
 	G4double D_Radius    = 20*mm;
 
 	G4Tubs *D_Target_Solid= new G4Tubs("D_Target", 0, D_Radius, D_Thickness*0.5, 0., twopi);
 
-	G4LogicalVolume *D_Target_Logical = new G4LogicalVolume(D_Target_Solid, Pb, "D_Target_Logical");
+	G4LogicalVolume *D_Target_Logical = new G4LogicalVolume(D_Target_Solid, Deuterium, "D_Target_Logical");
 	D_Target_Logical->SetVisAttributes(red);
 
 	G4RotationMatrix* D_Rotate=new G4RotationMatrix();
@@ -122,7 +128,7 @@ void BeamPipe_Downstream::Construct(G4ThreeVector global_coordinates,G4double re
 	Si_Rotate2->rotateY(-90*deg);
 
 	G4Tubs* Si_Detector_Solid=new G4Tubs("Si_Detector_Solid", 0., Si_Radius, Si_Thickness*0.5, 0., twopi);
-	G4LogicalVolume *Si_Detector_Logical = new G4LogicalVolume(Si_Detector_Solid, Si, "Si_Detector_Logical");
+	G4LogicalVolume *Si_Detector_Logical = new G4LogicalVolume(Si_Detector_Solid, Si, "Si_Detector");
 	Si_Detector_Logical->SetVisAttributes(orange);
 
 /*Pipe*/	    	new G4PVPlacement(0, global_coordinates+G4ThreeVector(0., 0., (-Chamber_Outer_Length+diff)*0.5), beamPipe_NRF_Logical, "beamPipe_NRF_Logical", World_Logical, false, 0);
