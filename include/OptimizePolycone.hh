@@ -21,6 +21,8 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef OptimizePolycone_h
 #define OptimizePolycone_h 1
 
+#include "G4SystemOfUnits.hh"
+
 class OptimizePolycone {
 
   public:
@@ -33,7 +35,7 @@ class OptimizePolycone {
 		G4double last_ri = rInner[0];
 		G4double last_ro = rOuter[0];
 
-		zPlaneOpt[0] = 0.;
+		zPlaneOpt[0] = zPlane[0];
 		rInnerOpt[0] = last_ri;
 		rOuterOpt[0] = last_ro;
 
