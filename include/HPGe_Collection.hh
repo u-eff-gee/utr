@@ -23,10 +23,12 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4SystemOfUnits.hh"
 
 #include "HPGe_Coaxial_Properties.hh"
+#include "HPGe_Clover_Properties.hh"
 #include "Units.hh"
 
 struct HPGe_Collection{
 	HPGe_Coaxial_Properties HPGe_60_TUNL_21033;
+	HPGe_Clover_Properties HPGe_Clover_Yale;
 
 	HPGe_Collection(){
 		HPGe_60_TUNL_21033.detector_radius = 0.5*68.*mm;
@@ -55,5 +57,15 @@ struct HPGe_Collection{
 		HPGe_60_TUNL_21033.dewar_outer_radius = 3.*inch;
 		HPGe_60_TUNL_21033.dewar_wall_thickness = 5.*mm;
 		HPGe_60_TUNL_21033.dewar_material = "G4_Al";
+
+		HPGe_Clover_Yale.crystal_radius = 0.5*50.*mm;
+		HPGe_Clover_Yale.crystal_length = 80.*mm;
+		HPGe_Clover_Yale.crystal_face_radius = 2.*mm;
+		HPGe_Clover_Yale.end_cap_outer_side_length = 101.*mm;
+		HPGe_Clover_Yale.end_cap_radius = 15.5*mm;
+		HPGe_Clover_Yale.end_cap_thickness = 1.*mm;
+		HPGe_Clover_Yale.end_cap_window_thickness = 0.5*mm;
+		HPGe_Clover_Yale.end_cap_material = "G4_Al";
+		HPGe_Clover_Yale.end_cap_window_material = "G4_Al";
 	}
 };

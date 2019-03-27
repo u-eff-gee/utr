@@ -18,24 +18,24 @@ You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// Class for a generic coaxial High-purity Germanium (HPGe) detector
+// Class for a generic High-purity Germanium (HPGe) clover detector
 
-#ifndef HPGE_COAXIAL_h
-#define HPGE_COAXIAL_h 1
+#ifndef HPGE_CLOVER_h
+#define HPGE_CLOVER_h 1
 
 #include "G4LogicalVolume.hh"
 
-#include "HPGe_Coaxial_Properties.hh"
+#include "HPGe_Clover_Properties.hh"
 
-class HPGe_Coaxial{
+class HPGe_Clover{
 	public:
-		HPGe_Coaxial(HPGe_Coaxial_Properties prop, G4LogicalVolume *World_Logical, G4String name);
-		~HPGe_Coaxial(){};
+		HPGe_Clover(HPGe_Clover_Properties prop, G4LogicalVolume *World_Logical, G4String name);
+		~HPGe_Clover(){};
 
 		void Construct(G4ThreeVector global_coordinates, G4double theta, G4double phi, G4double dist_from_center);
 	private:
 		G4LogicalVolume *world_Logical;	
-		HPGe_Coaxial_Properties properties;
+		HPGe_Clover_Properties properties;
 		G4String detector_name;
 };
 
