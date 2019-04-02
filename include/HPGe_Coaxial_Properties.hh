@@ -62,10 +62,16 @@ struct HPGe_Coaxial_Properties{
 	// Cylindrical cube which covers the whole mount cup.
 	// The end cap length is assumed to be the same as the mount cup length plus
 	// the vacuum layer
-	G4double end_cap_to_crystal_gap; // Distance from the outside of the mount cup
-	                                 // to the inside of the end cap i.e. thickness
+	G4double end_cap_to_crystal_gap_front; // Distance from the front of the mount cup
+	                                 // to the inside of the end cap window, i.e. thickness
+					 // of the vacuum layer between both
+	G4double end_cap_to_crystal_gap_side; // Distance from the side of the mount cup
+	                                 // to the inner side of the end cap, i.e. thickness
 					 // of the vacuum layer between both
 	G4double end_cap_thickness; // Thickness of the end cap side
+	G4double end_cap_outer_radius; // Outer radius of the end cap. Not used in the actual
+		                       // construction, but can be used for placements or
+				       // calculation of the size of the vacuum gap
 	G4double end_cap_window_thickness; // Thickness of the window which faces the target
 	G4String end_cap_material;
 	G4String end_cap_window_material;
