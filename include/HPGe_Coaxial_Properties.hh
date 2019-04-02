@@ -76,8 +76,8 @@ struct HPGe_Coaxial_Properties{
 	// on other dimensions.
 	G4double cold_finger_radius; // Radius of the cold finger, which is equal to the 
 	                             // rounding radius
-	G4double cold_finger_penetration_depth; // Determines how far the cold finger
-	                                        // reaches into the crystal
+	G4double cold_finger_penetration_depth; // Determines how far the cold finger, including
+						// the rounded tip, reaches into the crystal
 	G4String cold_finger_material;
 
 	/* The following parts are implemented mainly for aesthetic reasons and
