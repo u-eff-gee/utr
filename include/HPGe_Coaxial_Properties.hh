@@ -69,6 +69,7 @@ struct HPGe_Coaxial_Properties{
 	                                 // to the inner side of the end cap, i.e. thickness
 					 // of the vacuum layer between both
 	G4double end_cap_thickness; // Thickness of the end cap side
+	G4double end_cap_length; // Length of the end cap, including end cap window thickness
 	G4double end_cap_outer_radius; // Outer radius of the end cap. Not used in the actual
 		                       // construction, but can be used for placements or
 				       // calculation of the size of the vacuum gap
