@@ -1,4 +1,10 @@
 /*
+ * This geometry is deprecated and not safe against volume overlaps.
+ * It will be removed in a future version, and a much safer alternative
+ * exists in Filter_Case.hh
+ */
+
+/*
 utr - Geant4 simulation of the UTR at HIGS
 Copyright (C) 2017 the developing team (see README.md)
 

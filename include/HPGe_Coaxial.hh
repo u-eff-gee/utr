@@ -23,20 +23,41 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef HPGE_COAXIAL_h
 #define HPGE_COAXIAL_h 1
 
+#include <vector>
+
 #include "G4LogicalVolume.hh"
 
 #include "HPGe_Coaxial_Properties.hh"
+
+using std::vector;
 
 class HPGe_Coaxial{
 	public:
 		HPGe_Coaxial(HPGe_Coaxial_Properties prop, G4LogicalVolume *World_Logical, G4String name);
 		~HPGe_Coaxial(){};
 
-		void Construct(G4ThreeVector global_coordinates, G4double theta, G4double phi, G4double dist_from_center);
+		void Construct(G4ThreeVector global_coordinates, G4double theta, G4double phi,
+			       G4double dist_from_center, bool use_filter_case);
+		// Possibility to add disks of solid material in front of the detector to shield low-energy
+		// radiation. The first filter will be placed onto the front part of the detector that faces
+		// the target, all others will be placed on top of the previous one in the direction of the
+		// target.
+		void Add_Filter(G4String filter_material, G4double filter_thickness, G4double filter_radius);
+		// Possibility to wrap the detector end cap in a sheet of solid material
+		// to shield low-energy radiation. Similar to the filters, additional wraps
+		// will be wrapped around previous ones.
+		void Add_Wrap(G4String wrap_material, G4double wrap_thickness);
 	private:
 		G4LogicalVolume *world_Logical;	
 		HPGe_Coaxial_Properties properties;
 		G4String detector_name;
+
+		vector<G4String> filter_materials;
+		vector<G4double> filter_thicknesses;
+		vector<G4double> filter_radii;
+
+		vector<G4String> wrap_materials;
+		vector<G4double> wrap_thicknesses;
 };
 
 #endif
