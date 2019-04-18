@@ -128,7 +128,7 @@ void Blowfish_Frame::Construct(G4ThreeVector global_coordinates){
 	//---------------------------------- Aluminum visual attributes 
 
 	G4Colour yellowOffWhite = G4Colour(1.0,1.0,224.0/255.0);
-	G4Colour grey = G4Colour(128.0/255.0,128.0/255.0,128.0/255.0);
+	//G4Colour grey = G4Colour(128.0/255.0,128.0/255.0,128.0/255.0);
 	
 	G4VisAttributes* frameAtt = new G4VisAttributes(yellowOffWhite); 
 	
@@ -175,13 +175,13 @@ void Blowfish_Frame::Construct(G4ThreeVector global_coordinates){
 	const G4double baseSupportZX_px = baseSupportZY_px + baseSupportZY_x - baseSupportZX_x;
 	const G4double baseSupportZX_py = baseSupportZY_py - baseSupportZY_y - baseSupportZX_y;
 	
-	const G4ThreeVector baseSupportZXaPos = G4ThreeVector(baseSupportZX_px, baseSupportZX_py,0.0) + origin;
-	const G4ThreeVector baseSupportZYaPos = G4ThreeVector(baseSupportZY_px, baseSupportZY_py,0.0) + origin;
+	const G4ThreeVector baseSupportZXaPos = global_coordinates + G4ThreeVector(baseSupportZX_px, baseSupportZX_py,0.0) + origin;
+	const G4ThreeVector baseSupportZYaPos = global_coordinates + G4ThreeVector(baseSupportZY_px, baseSupportZY_py,0.0) + origin;
 	new G4PVPlacement(0,baseSupportZXaPos, baseSupportZXLV, "BaseSupportZXPhys", World_Logical,false,0);
 	new G4PVPlacement(0,baseSupportZYaPos, baseSupportZYLV, "BaseSupportZYPhys", World_Logical,false,0);
 	
-	const G4ThreeVector baseSupportZXbPos = G4ThreeVector(-baseSupportZX_px, baseSupportZX_py,0.0) + origin;
-	const G4ThreeVector baseSupportZYbPos = G4ThreeVector(-baseSupportZY_px, baseSupportZY_py,0.0) + origin;
+	const G4ThreeVector baseSupportZXbPos = global_coordinates + G4ThreeVector(-baseSupportZX_px, baseSupportZX_py,0.0) + origin;
+	const G4ThreeVector baseSupportZYbPos = global_coordinates + G4ThreeVector(-baseSupportZY_px, baseSupportZY_py,0.0) + origin;
 	new G4PVPlacement(0,baseSupportZXbPos, baseSupportZXLV, "BaseSupportZXPhys", World_Logical,false,1);
 	new G4PVPlacement(0,baseSupportZYbPos, baseSupportZYLV, "BaseSupportZYPhys", World_Logical,false,1);
 
@@ -213,13 +213,13 @@ void Blowfish_Frame::Construct(G4ThreeVector global_coordinates){
 	const G4double baseSupportXZ_py = baseSupportXY_py - baseSupportXY_y - baseSupportXZ_y;
 	const G4double baseSupportXZ_pz = baseSupportXY_pz + baseSupportXY_z - baseSupportXZ_z;
 	
-	const G4ThreeVector baseSupportXZaPos = G4ThreeVector(0.0, baseSupportXZ_py,baseSupportXZ_pz) + origin;
-	const G4ThreeVector baseSupportXYaPos = G4ThreeVector(0.0, baseSupportXY_py,baseSupportXY_pz) + origin;
+	const G4ThreeVector baseSupportXZaPos = global_coordinates + G4ThreeVector(0.0, baseSupportXZ_py,baseSupportXZ_pz) + origin;
+	const G4ThreeVector baseSupportXYaPos = global_coordinates + G4ThreeVector(0.0, baseSupportXY_py,baseSupportXY_pz) + origin;
 	new G4PVPlacement(0,baseSupportXZaPos, baseSupportXZLV, "BaseSupportXZPhys", World_Logical,false,0);
 	new G4PVPlacement(0,baseSupportXYaPos, baseSupportXYLV, "BaseSupportXYPhys", World_Logical,false,0);
 	
-	const G4ThreeVector baseSupportXZbPos = G4ThreeVector(0.0, baseSupportXZ_py,-baseSupportXZ_pz) + origin;
-	const G4ThreeVector baseSupportXYbPos = G4ThreeVector(0.0, baseSupportXY_py,-baseSupportXY_pz) + origin;
+	const G4ThreeVector baseSupportXZbPos = global_coordinates + G4ThreeVector(0.0, baseSupportXZ_py,-baseSupportXZ_pz) + origin;
+	const G4ThreeVector baseSupportXYbPos = global_coordinates + G4ThreeVector(0.0, baseSupportXY_py,-baseSupportXY_pz) + origin;
 	new G4PVPlacement(0,baseSupportXZbPos, baseSupportXZLV, "BaseSupportXZPhys", World_Logical,false,1);
 	new G4PVPlacement(0,baseSupportXYbPos, baseSupportXYLV, "BaseSupportXYPhys", World_Logical,false,1);
 
@@ -249,8 +249,8 @@ void Blowfish_Frame::Construct(G4ThreeVector global_coordinates){
 	const G4double centerSupportZX_py = baseSupportXZ_py + baseSupportXZ_y + centerSupportZX_y;
 	const G4double centerSupportZY_py = centerSupportZX_py + centerSupportZX_y + centerSupportZY_y;
 
-	const G4ThreeVector centerSupportZXPos = G4ThreeVector(0.0,centerSupportZX_py,0.0) + origin;
-	const G4ThreeVector centerSupportZYPos = G4ThreeVector(0.0,centerSupportZY_py,0.0) + origin;
+	const G4ThreeVector centerSupportZXPos = global_coordinates + G4ThreeVector(0.0,centerSupportZX_py,0.0) + origin;
+	const G4ThreeVector centerSupportZYPos = global_coordinates + G4ThreeVector(0.0,centerSupportZY_py,0.0) + origin;
 	new G4PVPlacement(0,centerSupportZXPos,centerSupportZXLV,"CenterSupportZXPhys",World_Logical,false,0);
 	new G4PVPlacement(0,centerSupportZYPos,centerSupportZYLV,"CenterSupportZYPhys",World_Logical,false,0);
 	
@@ -288,23 +288,23 @@ void Blowfish_Frame::Construct(G4ThreeVector global_coordinates){
 	const G4double vertSupportYX_py = vertSupportYZ_py;
 	const G4double vertSupportYX_pz = vertSupportYZ_pz + vertSupportYZ_z - vertSupportYX_z;
 
-	const G4ThreeVector vertSupportYZaPos = G4ThreeVector(vertSupportYZ_px,vertSupportYZ_py,vertSupportYZ_pz) + origin;
-	const G4ThreeVector vertSupportYXaPos = G4ThreeVector(vertSupportYX_px,vertSupportYX_py,vertSupportYX_pz) + origin;
+	const G4ThreeVector vertSupportYZaPos = global_coordinates + G4ThreeVector(vertSupportYZ_px,vertSupportYZ_py,vertSupportYZ_pz) + origin;
+	const G4ThreeVector vertSupportYXaPos = global_coordinates + G4ThreeVector(vertSupportYX_px,vertSupportYX_py,vertSupportYX_pz) + origin;
 	new G4PVPlacement(0,vertSupportYZaPos, vertSupportYZLV, "VertSupportYZPhys",World_Logical,false,0);
 	new G4PVPlacement(0,vertSupportYXaPos, vertSupportYXLV, "VertSupportYXPhys",World_Logical,false,0);
 	
-	const G4ThreeVector vertSupportYZbPos = G4ThreeVector(vertSupportYZ_px,vertSupportYZ_py,-vertSupportYZ_pz) + origin;
-	const G4ThreeVector vertSupportYXbPos = G4ThreeVector(vertSupportYX_px,vertSupportYX_py,-vertSupportYX_pz) + origin;
+	const G4ThreeVector vertSupportYZbPos = global_coordinates + G4ThreeVector(vertSupportYZ_px,vertSupportYZ_py,-vertSupportYZ_pz) + origin;
+	const G4ThreeVector vertSupportYXbPos = global_coordinates + G4ThreeVector(vertSupportYX_px,vertSupportYX_py,-vertSupportYX_pz) + origin;
 	new G4PVPlacement(0,vertSupportYZbPos, vertSupportYZLV, "VertSupportYZPhys",World_Logical,false,1);
 	new G4PVPlacement(0,vertSupportYXbPos, vertSupportYXLV, "VertSupportYXPhys",World_Logical,false,1);
 
-	const G4ThreeVector vertSupportYZcPos = G4ThreeVector(-vertSupportYZ_px,vertSupportYZ_py,vertSupportYZ_pz) + origin;
-	const G4ThreeVector vertSupportYXcPos = G4ThreeVector(-vertSupportYX_px,vertSupportYX_py,vertSupportYX_pz) + origin;
+	const G4ThreeVector vertSupportYZcPos = global_coordinates + G4ThreeVector(-vertSupportYZ_px,vertSupportYZ_py,vertSupportYZ_pz) + origin;
+	const G4ThreeVector vertSupportYXcPos = global_coordinates + G4ThreeVector(-vertSupportYX_px,vertSupportYX_py,vertSupportYX_pz) + origin;
 	new G4PVPlacement(0,vertSupportYZcPos, vertSupportYZLV, "VertSupportYZPhys",World_Logical,false,2);
 	new G4PVPlacement(0,vertSupportYXcPos, vertSupportYXLV, "VertSupportYXPhys",World_Logical,false,2);
 	
-	const G4ThreeVector vertSupportYZdPos = G4ThreeVector(-vertSupportYZ_px,vertSupportYZ_py,-vertSupportYZ_pz) + origin;
-	const G4ThreeVector vertSupportYXdPos = G4ThreeVector(-vertSupportYX_px,vertSupportYX_py,-vertSupportYX_pz) + origin;
+	const G4ThreeVector vertSupportYZdPos = global_coordinates + G4ThreeVector(-vertSupportYZ_px,vertSupportYZ_py,-vertSupportYZ_pz) + origin;
+	const G4ThreeVector vertSupportYXdPos = global_coordinates + G4ThreeVector(-vertSupportYX_px,vertSupportYX_py,-vertSupportYX_pz) + origin;
 	new G4PVPlacement(0,vertSupportYZdPos, vertSupportYZLV, "VertSupportYZPhys",World_Logical,false,3);
 	new G4PVPlacement(0,vertSupportYXdPos, vertSupportYXLV, "VertSupportYXPhys",World_Logical,false,3);
 
@@ -339,23 +339,23 @@ void Blowfish_Frame::Construct(G4ThreeVector global_coordinates){
 	const G4double angleSupportXZ_py = centerSupportZX_py + centerSupportZX_y + (angleSupportXZ_x + angleSupportXZ_y)*cos(45.0*deg);
 	const G4double angleSupportXZ_pz = angleSupportXY_pz - angleSupportXY_z - angleSupportXZ_z;
 	
-	const G4ThreeVector angleSupportXYaPos = G4ThreeVector(angleSupportXY_px,angleSupportXY_py,angleSupportXY_pz) + origin;
-	const G4ThreeVector angleSupportXZaPos = G4ThreeVector(angleSupportXZ_px,angleSupportXZ_py,angleSupportXZ_pz) + origin;
+	const G4ThreeVector angleSupportXYaPos = global_coordinates + G4ThreeVector(angleSupportXY_px,angleSupportXY_py,angleSupportXY_pz) + origin;
+	const G4ThreeVector angleSupportXZaPos = global_coordinates + G4ThreeVector(angleSupportXZ_px,angleSupportXZ_py,angleSupportXZ_pz) + origin;
 	new G4PVPlacement(rotm45z,angleSupportXYaPos, angleSupportXYLV,"AngleSupportXYPhys",World_Logical,false,0);
 	new G4PVPlacement(rotm45z,angleSupportXZaPos, angleSupportXZLV,"AngleSupportXZPhys",World_Logical,false,0);
 	
-	const G4ThreeVector angleSupportXYbPos = G4ThreeVector(angleSupportXY_px,angleSupportXY_py,-angleSupportXY_pz) + origin;
-	const G4ThreeVector angleSupportXZbPos = G4ThreeVector(angleSupportXZ_px,angleSupportXZ_py,-angleSupportXZ_pz) + origin;
+	const G4ThreeVector angleSupportXYbPos = global_coordinates + G4ThreeVector(angleSupportXY_px,angleSupportXY_py,-angleSupportXY_pz) + origin;
+	const G4ThreeVector angleSupportXZbPos = global_coordinates + G4ThreeVector(angleSupportXZ_px,angleSupportXZ_py,-angleSupportXZ_pz) + origin;
 	new G4PVPlacement(rotm45z,angleSupportXYbPos, angleSupportXYLV,"AngleSupportXYPhys",World_Logical,false,1);
 	new G4PVPlacement(rotm45z,angleSupportXZbPos, angleSupportXZLV,"AngleSupportXZPhys",World_Logical,false,1);
 
-	const G4ThreeVector angleSupportXYcPos = G4ThreeVector(-angleSupportXY_px,angleSupportXY_py,angleSupportXY_pz) + origin;
-	const G4ThreeVector angleSupportXZcPos = G4ThreeVector(-angleSupportXZ_px,angleSupportXZ_py,angleSupportXZ_pz) + origin;
+	const G4ThreeVector angleSupportXYcPos = global_coordinates + G4ThreeVector(-angleSupportXY_px,angleSupportXY_py,angleSupportXY_pz) + origin;
+	const G4ThreeVector angleSupportXZcPos = global_coordinates + G4ThreeVector(-angleSupportXZ_px,angleSupportXZ_py,angleSupportXZ_pz) + origin;
 	new G4PVPlacement(rot45z,angleSupportXYcPos, angleSupportXYLV,"AngleSupportXYPhys",World_Logical,false,2);
 	new G4PVPlacement(rot45z,angleSupportXZcPos, angleSupportXZLV,"AngleSupportXZPhys",World_Logical,false,2);
 
-	const G4ThreeVector angleSupportXYdPos = G4ThreeVector(-angleSupportXY_px,angleSupportXY_py,-angleSupportXY_pz) + origin;
-	const G4ThreeVector angleSupportXZdPos = G4ThreeVector(-angleSupportXZ_px,angleSupportXZ_py,-angleSupportXZ_pz) + origin;
+	const G4ThreeVector angleSupportXYdPos = global_coordinates + G4ThreeVector(-angleSupportXY_px,angleSupportXY_py,-angleSupportXY_pz) + origin;
+	const G4ThreeVector angleSupportXZdPos = global_coordinates + G4ThreeVector(-angleSupportXZ_px,angleSupportXZ_py,-angleSupportXZ_pz) + origin;
 	new G4PVPlacement(rot45z,angleSupportXYdPos, angleSupportXYLV,"AngleSupportXYPhys",World_Logical,false,3);
 	new G4PVPlacement(rot45z,angleSupportXZdPos, angleSupportXZLV,"AngleSupportXZPhys",World_Logical,false,3);
 
@@ -386,13 +386,13 @@ void Blowfish_Frame::Construct(G4ThreeVector global_coordinates){
 	const G4double crossSupportZX_px = vertSupportYX_px;//an approximation to make the box fit without intersections
 	const G4double crossSupportZX_py = crossSupportZY_py + crossSupportZY_y - crossSupportZX_y;
 	
-	const G4ThreeVector crossSupportZYaPos = G4ThreeVector(crossSupportZY_px,crossSupportZY_py,0.0) + origin;
-	const G4ThreeVector crossSupportZXaPos = G4ThreeVector(crossSupportZX_px,crossSupportZX_py,0.0) + origin;
+	const G4ThreeVector crossSupportZYaPos = global_coordinates + G4ThreeVector(crossSupportZY_px,crossSupportZY_py,0.0) + origin;
+	const G4ThreeVector crossSupportZXaPos = global_coordinates + G4ThreeVector(crossSupportZX_px,crossSupportZX_py,0.0) + origin;
 	new G4PVPlacement(0,crossSupportZYaPos, crossSupportZYLV, "CrossSupportZYPhys", World_Logical,false,0);
 	new G4PVPlacement(0,crossSupportZXaPos, crossSupportZXLV, "CrossSupportZXPhys", World_Logical,false,0);
 	
-	const G4ThreeVector crossSupportZYbPos = G4ThreeVector(-crossSupportZY_px,crossSupportZY_py,0.0) + origin;
-	const G4ThreeVector crossSupportZXbPos = G4ThreeVector(-crossSupportZX_px,crossSupportZX_py,0.0) + origin;
+	const G4ThreeVector crossSupportZYbPos = global_coordinates + G4ThreeVector(-crossSupportZY_px,crossSupportZY_py,0.0) + origin;
+	const G4ThreeVector crossSupportZXbPos = global_coordinates + G4ThreeVector(-crossSupportZX_px,crossSupportZX_py,0.0) + origin;
 	new G4PVPlacement(0,crossSupportZYbPos, crossSupportZYLV, "CrossSupportZYPhys", World_Logical,false,1);
 	new G4PVPlacement(0,crossSupportZXbPos, crossSupportZXLV, "CrossSupportZXPhys", World_Logical,false,1);
 
@@ -422,10 +422,10 @@ void Blowfish_Frame::Construct(G4ThreeVector global_coordinates){
 	//place the mount plate at the end of the hub: upstream and down
 	//We have to rotate the hub z->x.
 	const G4double hubMount_px = vertSupportYZ_px - vertSupportYZ_x - hubMount_z;
-	const G4ThreeVector downHubMountPos = G4ThreeVector(hubMount_px,0.0,0.0) + origin;
+	const G4ThreeVector downHubMountPos = global_coordinates + G4ThreeVector(hubMount_px,0.0,0.0) + origin;
 	new G4PVPlacement(rot90y, downHubMountPos, hubMountLV, "HubMountPhys",World_Logical,false,0); 
 	
-	const G4ThreeVector upHubMountPos = G4ThreeVector(-hubMount_px,0.0,0.0) + origin;
+	const G4ThreeVector upHubMountPos = global_coordinates + G4ThreeVector(-hubMount_px,0.0,0.0) + origin;
 	new G4PVPlacement(rot90y, upHubMountPos, hubMountLV, "HubMountPhys",World_Logical,false,1); 
 	
 
@@ -519,13 +519,13 @@ void Blowfish_Frame::Construct(G4ThreeVector global_coordinates){
 	const G4double underSupportZY_px = underSupportZX_px + underSupportZX_x - underSupportZY_x;
 	const G4double underSupportZY_py = underSupportZX_py + underSupportZX_y + underSupportZY_y; 
 
-	const G4ThreeVector underSupportZXaPos = G4ThreeVector(underSupportZX_px,underSupportZX_py,0.0) + origin;
-	const G4ThreeVector underSupportZYaPos = G4ThreeVector(underSupportZY_px,underSupportZY_py,0.0) + origin;
+	const G4ThreeVector underSupportZXaPos = global_coordinates + G4ThreeVector(underSupportZX_px,underSupportZX_py,0.0) + origin;
+	const G4ThreeVector underSupportZYaPos = global_coordinates + G4ThreeVector(underSupportZY_px,underSupportZY_py,0.0) + origin;
 	new G4PVPlacement(0,underSupportZXaPos, underSupportZXLV, "UnderSupportZXPhys", World_Logical,false,0);
 	new G4PVPlacement(0,underSupportZYaPos, underSupportZYLV, "UnderSupportZYPhys", World_Logical,false,0);
 	
-	const G4ThreeVector underSupportZXbPos = G4ThreeVector(-underSupportZX_px,underSupportZX_py,0.0) + origin;
-	const G4ThreeVector underSupportZYbPos = G4ThreeVector(-underSupportZY_px,underSupportZY_py,0.0) + origin;
+	const G4ThreeVector underSupportZXbPos = global_coordinates + G4ThreeVector(-underSupportZX_px,underSupportZX_py,0.0) + origin;
+	const G4ThreeVector underSupportZYbPos = global_coordinates + G4ThreeVector(-underSupportZY_px,underSupportZY_py,0.0) + origin;
 	new G4PVPlacement(0,underSupportZXbPos, underSupportZXLV, "UnderSupportZXPhys", World_Logical,false,1);
 	new G4PVPlacement(0,underSupportZYbPos, underSupportZYLV, "UnderSupportZYPhys", World_Logical,false,1);
 	
@@ -557,13 +557,13 @@ void Blowfish_Frame::Construct(G4ThreeVector global_coordinates){
 	const G4double underSupportXY_py = underSupportXZ_py + underSupportXZ_y + underSupportXY_y; 
 	const G4double underSupportXY_pz = underSupportXZ_pz + underSupportXZ_z - underSupportXY_z;
 
-	const G4ThreeVector underSupportXZaPos = G4ThreeVector(0.0,underSupportXZ_py,underSupportXZ_pz) + origin;
-	const G4ThreeVector underSupportXYaPos = G4ThreeVector(0.0,underSupportXY_py,underSupportXY_pz) + origin;
+	const G4ThreeVector underSupportXZaPos = global_coordinates + G4ThreeVector(0.0,underSupportXZ_py,underSupportXZ_pz) + origin;
+	const G4ThreeVector underSupportXYaPos = global_coordinates + G4ThreeVector(0.0,underSupportXY_py,underSupportXY_pz) + origin;
 	new G4PVPlacement(0,underSupportXZaPos, underSupportXZLV, "UnderSupportXZPhys", World_Logical,false,0);
 	new G4PVPlacement(0,underSupportXYaPos, underSupportXYLV, "UnderSupportXYPhys", World_Logical,false,0);
 	
-	const G4ThreeVector underSupportXZbPos = G4ThreeVector(0.0,underSupportXZ_py,-underSupportXZ_pz) + origin;
-	const G4ThreeVector underSupportXYbPos = G4ThreeVector(0.0,underSupportXY_py,-underSupportXY_pz) + origin;
+	const G4ThreeVector underSupportXZbPos = global_coordinates + G4ThreeVector(0.0,underSupportXZ_py,-underSupportXZ_pz) + origin;
+	const G4ThreeVector underSupportXYbPos = global_coordinates + G4ThreeVector(0.0,underSupportXY_py,-underSupportXY_pz) + origin;
 	new G4PVPlacement(0,underSupportXZbPos, underSupportXZLV, "UnderSupportXZPhys", World_Logical,false,1);
 	new G4PVPlacement(0,underSupportXYbPos, underSupportXYLV, "UnderSupportXYPhys", World_Logical,false,1);
 	
@@ -582,8 +582,8 @@ void Blowfish_Frame::Construct(G4ThreeVector global_coordinates){
 	const G4double underSpacer_py = underSupportXZ_py + underSupportXZ_y + underSpacer_y;
 	const G4double underSpacer_pz = underSupportXZ_pz - underSupportXZ_z + underSpacer_z;
 
-	const G4ThreeVector underSpaceraPos = G4ThreeVector(0.0,underSpacer_py,underSpacer_pz) + origin;
-	const G4ThreeVector underSpacerbPos = G4ThreeVector(0.0,underSpacer_py,-underSpacer_pz) + origin;
+	const G4ThreeVector underSpaceraPos = global_coordinates + G4ThreeVector(0.0,underSpacer_py,underSpacer_pz) + origin;
+	const G4ThreeVector underSpacerbPos = global_coordinates + G4ThreeVector(0.0,underSpacer_py,-underSpacer_pz) + origin;
 	new G4PVPlacement(0,underSpaceraPos,underSpacerLV,"UnderSpaceraPhys",World_Logical,false,0);
 	new G4PVPlacement(0,underSpacerbPos,underSpacerLV,"UnderSpacerbPhys",World_Logical,false,0);
 	
@@ -625,19 +625,19 @@ void Blowfish_Frame::Construct(G4ThreeVector global_coordinates){
 	const G4double cornerSupportXY_py = cornerSupportXZ_py - cornerSupportXZ_y - cornerSupportXY_y;
 	const G4double cornerSupportXY_pz = cornerSupportXZ_pz - (cornerSupportXZ_z - cornerSupportXY_z)*cos(45.0*deg);
 
-	const G4ThreeVector cornerSupportXZaPos = G4ThreeVector( cornerSupportXZ_px,cornerSupportXZ_py, cornerSupportXZ_pz) + origin;
-	const G4ThreeVector cornerSupportXZbPos = G4ThreeVector( cornerSupportXZ_px,cornerSupportXZ_py,-cornerSupportXZ_pz) + origin;
-	const G4ThreeVector cornerSupportXZcPos = G4ThreeVector(-cornerSupportXZ_px,cornerSupportXZ_py, cornerSupportXZ_pz) + origin;
-	const G4ThreeVector cornerSupportXZdPos = G4ThreeVector(-cornerSupportXZ_px,cornerSupportXZ_py,-cornerSupportXZ_pz) + origin;
+	const G4ThreeVector cornerSupportXZaPos = global_coordinates + G4ThreeVector( cornerSupportXZ_px,cornerSupportXZ_py, cornerSupportXZ_pz) + origin;
+	const G4ThreeVector cornerSupportXZbPos = global_coordinates + G4ThreeVector( cornerSupportXZ_px,cornerSupportXZ_py,-cornerSupportXZ_pz) + origin;
+	const G4ThreeVector cornerSupportXZcPos = global_coordinates + G4ThreeVector(-cornerSupportXZ_px,cornerSupportXZ_py, cornerSupportXZ_pz) + origin;
+	const G4ThreeVector cornerSupportXZdPos = global_coordinates + G4ThreeVector(-cornerSupportXZ_px,cornerSupportXZ_py,-cornerSupportXZ_pz) + origin;
 	new G4PVPlacement(rot315y,cornerSupportXZaPos,cornerSupportXZLV,"CornerSupportXZPhys", World_Logical,false,0);
 	new G4PVPlacement(rot225y,cornerSupportXZbPos,cornerSupportXZLV,"CornerSupportXZPhys", World_Logical,false,1);
 	new G4PVPlacement(rot45y ,cornerSupportXZcPos,cornerSupportXZLV,"CornerSupportXZPhys", World_Logical,false,2);
 	new G4PVPlacement(rot135y,cornerSupportXZdPos,cornerSupportXZLV,"CornerSupportXZPhys", World_Logical,false,3);
 
-	const G4ThreeVector cornerSupportXYaPos = G4ThreeVector( cornerSupportXY_px,cornerSupportXY_py, cornerSupportXY_pz) + origin;
-	const G4ThreeVector cornerSupportXYbPos = G4ThreeVector( cornerSupportXY_px,cornerSupportXY_py,-cornerSupportXY_pz) + origin;
-	const G4ThreeVector cornerSupportXYcPos = G4ThreeVector(-cornerSupportXY_px,cornerSupportXY_py, cornerSupportXY_pz) + origin;
-	const G4ThreeVector cornerSupportXYdPos = G4ThreeVector(-cornerSupportXY_px,cornerSupportXY_py,-cornerSupportXY_pz) + origin;
+	const G4ThreeVector cornerSupportXYaPos = global_coordinates + G4ThreeVector( cornerSupportXY_px,cornerSupportXY_py, cornerSupportXY_pz) + origin;
+	const G4ThreeVector cornerSupportXYbPos = global_coordinates + G4ThreeVector( cornerSupportXY_px,cornerSupportXY_py,-cornerSupportXY_pz) + origin;
+	const G4ThreeVector cornerSupportXYcPos = global_coordinates + G4ThreeVector(-cornerSupportXY_px,cornerSupportXY_py, cornerSupportXY_pz) + origin;
+	const G4ThreeVector cornerSupportXYdPos = global_coordinates + G4ThreeVector(-cornerSupportXY_px,cornerSupportXY_py,-cornerSupportXY_pz) + origin;
 	new G4PVPlacement(rot315y,cornerSupportXYaPos,cornerSupportXYLV,"CornerSupportXYPhys", World_Logical,false,0);
 	new G4PVPlacement(rot225y,cornerSupportXYbPos,cornerSupportXYLV,"CornerSupportXYPhys", World_Logical,false,1);
 	new G4PVPlacement(rot45y ,cornerSupportXYcPos,cornerSupportXYLV,"CornerSupportXYPhys", World_Logical,false,2);
@@ -685,7 +685,7 @@ void Blowfish_Frame::Construct(G4ThreeVector global_coordinates){
 	const G4double powerSupply_py = baseSupportZX_py + baseSupportZX_y + power_supply_y + power_supply_height_from_frame;
 	const G4double powerSupply_pz = 0.0; //centered in the array
 
-	const G4ThreeVector powerSupplyPos = G4ThreeVector(powerSupply_px,powerSupply_py,powerSupply_pz) + origin;
+	const G4ThreeVector powerSupplyPos = global_coordinates + G4ThreeVector(powerSupply_px,powerSupply_py,powerSupply_pz) + origin;
 	new G4PVPlacement(0,powerSupplyPos,powerSupplyLV, "PowerSupplyPhys", World_Logical, false, 0);
 	
 	//Set the visual attributes

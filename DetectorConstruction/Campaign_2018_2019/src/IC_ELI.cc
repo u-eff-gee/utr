@@ -52,16 +52,16 @@ void IC_ELI::Construct(G4ThreeVector global_coordinates){
 	G4Colour orange(1.0, 0.5, 0.0);
 	G4Colour brown(0.45,0.25,0.0);
 
-	G4NistManager *nist = G4NistManager::Instance();
+	//G4NistManager *nist = G4NistManager::Instance();
 
-	G4Material *stainlessSteel = nist->FindOrBuildMaterial("G4_STAINLESS-STEEL");
-	G4Material *aluminum = nist->FindOrBuildMaterial("G4_Al");
+	//G4Material *stainlessSteel = nist->FindOrBuildMaterial("G4_STAINLESS-STEEL");
+	//G4Material *aluminum = nist->FindOrBuildMaterial("G4_Al");
 	G4Material *CF4 = materials3->Get_CF4();
-	G4Material *target_Th232 = materials3->Get_target_Th232();
-	G4Material *target_U238 = materials3->Get_target_U238();
-	G4Material *gold = nist->FindOrBuildMaterial("G4_Au");
-	G4Material *kapton = nist->FindOrBuildMaterial("G4_KAPTON");
-	G4Material *PVC = nist->FindOrBuildMaterial("G4_POLYVINYL_CHLORIDE");
+	//G4Material *target_Th232 = materials3->Get_target_Th232();
+	//G4Material *target_U238 = materials3->Get_target_U238();
+	//G4Material *gold = nist->FindOrBuildMaterial("G4_Au");
+	//G4Material *kapton = nist->FindOrBuildMaterial("G4_KAPTON");
+	//G4Material *PVC = nist->FindOrBuildMaterial("G4_POLYVINYL_CHLORIDE");
 
 //***********rotation matrices**
 	G4RotationMatrix *rotateY_90 = new G4RotationMatrix();

@@ -62,7 +62,7 @@ void FGIC::Construct(G4ThreeVector global_coordinates){
 	G4Material *PCB = nist->FindOrBuildMaterial("G4_POLYETHYLENE");
 	G4Material *PCB_coating = materials->Get_PCB_coating();
 	G4Material *PA = nist->FindOrBuildMaterial("G4_NYLON-8062");
-	G4Material *target_Pu240 = materials->Get_target_Pu240();
+	//G4Material *target_Pu240 = materials->Get_target_Pu240();
 	G4Material *target_Pu239 = materials->Get_target_Pu239();
 	G4Material *gold = nist->FindOrBuildMaterial("G4_Au");
 	G4Material *kapton = nist->FindOrBuildMaterial("G4_KAPTON");

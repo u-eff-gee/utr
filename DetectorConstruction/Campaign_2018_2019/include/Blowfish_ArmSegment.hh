@@ -25,7 +25,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 class Blowfish_ArmSegment{
 public:
-	Blowfish_ArmSegment(G4LogicalVolume *World_Log);
+	Blowfish_ArmSegment();
 	~Blowfish_ArmSegment(){};
 
 	void Construct(G4ThreeVector global_coordinates);
@@ -40,7 +40,6 @@ public:
 	inline G4double GetInnerRadius(void){return innerRadius;}
 
 private:
-	G4LogicalVolume *World_Logical;
 	G4LogicalVolume *theArmSegLogicalVolume;
 
 	//dimensions of the arm's container

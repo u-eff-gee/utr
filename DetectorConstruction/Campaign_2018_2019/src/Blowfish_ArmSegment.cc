@@ -34,8 +34,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4Colour.hh"
 #include "G4Transform3D.hh"
 
-Blowfish_ArmSegment::Blowfish_ArmSegment(G4LogicalVolume *World_Log):
-World_Logical(World_Log)
+Blowfish_ArmSegment::Blowfish_ArmSegment()
 {	theArmSegLogicalVolume = 0;
 	contArmWidth = 0.0;
 	outerRadius = 0.0;
@@ -177,7 +176,7 @@ void Blowfish_ArmSegment::Construct(G4ThreeVector global_coordinates){
 	G4double arm_radius = arm_inner_radius + arm_thickness/2.;
 	rotp->rotateY(-90.*deg);
 	rotp->rotateZ(-delta_angle/2.);
-	G4ThreeVector position = G4ThreeVector(0., 0., 0.);
+	G4ThreeVector position = global_coordinates + G4ThreeVector(0., 0., 0.);
 	position.setX( arm_radius*cos(delta_angle/2.) );
 	position.setY( arm_radius*sin(delta_angle/2.) );
 	G4SubtractionSolid * 
@@ -188,7 +187,7 @@ void Blowfish_ArmSegment::Construct(G4ThreeVector global_coordinates){
 	G4VisAttributes* armAtt = new G4VisAttributes(yellowOffWhite); 
 	armAtt->SetForceSolid(true);
 	ArmSegWithHoleLV->SetVisAttributes(armAtt);
-	new G4PVPlacement(0, G4ThreeVector(0.,0.,0.), ArmSegWithHoleLV, "Arm Al segment place", theArmSegLogicalVolume, false, 0); 
+	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0.,0.,0.), ArmSegWithHoleLV, "Arm Al segment place", theArmSegLogicalVolume, false, 0); 
 
 	// add cell support collar
 	G4double collar_diam = housing_diam + 0.01*in;
@@ -241,7 +240,7 @@ void Blowfish_ArmSegment::Construct(G4ThreeVector global_coordinates){
 	G4LogicalVolume * luciteLV = new G4LogicalVolume(luciteBox,Lucite,"CellLuciteLV");
 
 	//inside the wrapper box
-	const G4ThreeVector lucitePos = G4ThreeVector(0.0, 0.0, wrap_thickness/2.);
+	const G4ThreeVector lucitePos = global_coordinates + G4ThreeVector(0.0, 0.0, wrap_thickness/2.);
 	new G4PVPlacement(0, lucitePos, luciteLV, "CellLucitePhys", wrapLV ,false,0);
   	
 	//sets attributes (used for all Lucite objects)
@@ -254,7 +253,7 @@ void Blowfish_ArmSegment::Construct(G4ThreeVector global_coordinates){
 	G4LogicalVolume * activeLV = new G4LogicalVolume(activeBox,BC505,"CellActiveLV");
 
 	//inside the Lucite box
-	const G4ThreeVector activePos = G4ThreeVector(0.0,0.0,0.0);
+	const G4ThreeVector activePos = global_coordinates + G4ThreeVector(0.0,0.0,0.0);
 	new G4PVPlacement(0, activePos, activeLV, "CellActivePhys", luciteLV, false, 0);
 
 	//set the visible attribues: always solid blue
