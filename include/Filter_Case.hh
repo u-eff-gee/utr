@@ -35,11 +35,13 @@ class Filter_Case {
 			G4double dist_from_center);
 
 	G4double get_filter_case_ring_thickness(){ return filter_case_ring_thickness; };
+	G4double get_filter_case_bottom_thickness(){ return filter_case_bottom_thickness; };
 
   private:
 	G4LogicalVolume *World_Log;
 	G4String filter_case_name;
 	G4double filter_case_ring_thickness;
+	G4double filter_case_bottom_thickness;
 };
 
 #endif

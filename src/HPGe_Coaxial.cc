@@ -51,7 +51,7 @@ void HPGe_Coaxial::Add_Wrap(G4String wrap_material, G4double wrap_thickness){
 	wrap_thicknesses.push_back(wrap_thickness);
 };
 
-void HPGe_Coaxial::Construct(G4ThreeVector global_coordinates, G4double theta, G4double phi, G4double dist_from_center, bool use_filter_case){
+void HPGe_Coaxial::Construct(G4ThreeVector global_coordinates, G4double theta, G4double phi, G4double dist_from_center, bool use_filter_case, bool use_filter_case_ring){
 
 	G4NistManager *nist = G4NistManager::Instance();
 	G4ThreeVector symmetry_axis(sin(theta)*cos(phi), sin(theta)*sin(phi), cos(theta)); // Symmetry axis along which the single elements of the detector are constructed
@@ -234,17 +234,19 @@ void HPGe_Coaxial::Construct(G4ThreeVector global_coordinates, G4double theta, G
 	new G4PVPlacement(rotation, global_coordinates + (dist_from_center + properties.end_cap_window_thickness + end_cap_side_length + properties.connection_length + properties.dewar_wall_thickness*1.5 + dewar_side_length)*symmetry_axis, dewar_base_logical, "dewar_base", world_Logical, 0, 0, false);
 
 	// Filter case
-	if(use_filter_case){
-		Filter_Case filter_case(world_Logical, detector_name);
+	Filter_Case filter_case(world_Logical, detector_name);
+	if(use_filter_case_ring){
 		filter_case.Construct_Ring(global_coordinates, theta, phi,
 				dist_from_center - 
 				filter_case.get_filter_case_ring_thickness()*0.5);
 	}
 
 	// Filters
+	G4double filter_position_z = 0.; // Will be gradually increased to be able to place
+					// filters on top of each other
 	if(filter_materials.size()){
-		G4double filter_position_z = 0.; // Will be gradually increased to be able to place
-						// filters on top of each other
+		if(use_filter_case_ring)
+			filter_position_z = filter_position_z + filter_case.get_filter_case_ring_thickness();
 		G4Tubs *filter_solid = nullptr;
 		G4LogicalVolume *filter_logical = nullptr;
 		stringstream filter_solid_name, filter_logical_name, filter_name;
@@ -270,6 +272,12 @@ void HPGe_Coaxial::Construct(G4ThreeVector global_coordinates, G4double theta, G
 			filter_name.clear();
 			filter_position_z = filter_position_z + filter_thicknesses[i];
 		}
+	}
+
+	if(use_filter_case){
+		filter_case.Construct_Case(global_coordinates, theta, phi,
+				dist_from_center - filter_case.get_filter_case_bottom_thickness()*0.5-
+				filter_position_z);
 	}
 
 	// Wraps

@@ -95,11 +95,11 @@ void Detectors_G3_271_279::Construct(G4ThreeVector global_coordinates){
 	hpge1_rotation->rotateY(-hpge1_theta);
 
 	HPGe_Coaxial hpge1(hpge_Collection.HPGe_60_TUNL_40663, World_Logical, "HPGe1");
-	//hpge1.Add_Filter("G4_Cu", 1.*1.15*mm, 45.*mm);
-	//hpge1.Add_Filter("G4_Pb", 2.*1.2*mm, 45.*mm);
-	//hpge1.Add_Wrap("G4_Pb", 1.2*mm);
+	hpge1.Add_Filter("G4_Cu", 1.*1.15*mm, 45.*mm);
+	hpge1.Add_Filter("G4_Pb", 2.*1.2*mm, 45.*mm);
+	hpge1.Add_Wrap("G4_Pb", 1.2*mm);
 	hpge1.Construct(global_coordinates + G4ThreeVector(0., hpge1_dy, hpge1_dz),
-			hpge1_theta, hpge1_phi, hpge1_rt, true);
+			hpge1_theta, hpge1_phi, hpge1_rt, true, true);
 
 //	if(hpge1_Pb_Wrap_Thickness != 0.){
 //		hpge1_rt += hpge_Collection.HPGe_60_TUNL_40663.end_cap_length*0.5;
