@@ -55,7 +55,7 @@ struct HPGe_Collection{
 		HPGe_55_TUNL_21638.mount_cup_thickness = 0.8*mm; // (K) in ORTEC data sheet
 		HPGe_55_TUNL_21638.mount_cup_base_thickness = 3.*mm; // ORTEC data sheet
 		HPGe_55_TUNL_21638.mount_cup_material = "G4_Al"; // ORTEC data sheet
-		HPGe_55_TUNL_21638.end_cap_outer_radius = 0.5*85.*mm; // Estimated
+		HPGe_55_TUNL_21638.end_cap_outer_radius = 0.5*80.*mm; // Estimated
 		HPGe_55_TUNL_21638.end_cap_to_crystal_gap_front = 4.*mm; // (G) in ORTEC data sheet
 		HPGe_55_TUNL_21638.end_cap_thickness = 1.*mm; // (L) in ORTEC data sheet
 		HPGe_55_TUNL_21638.end_cap_to_crystal_gap_side = 
@@ -94,7 +94,7 @@ struct HPGe_Collection{
 		HPGe_55_TUNL_31524.mount_cup_thickness = 0.76*mm; // (H) in ORTEC data sheet
 		HPGe_55_TUNL_31524.mount_cup_base_thickness = 3.2*mm; // (C) in ORTEC data sheet
 		HPGe_55_TUNL_31524.mount_cup_material = "G4_Al"; // ORTEC data sheet
-		HPGe_55_TUNL_31524.end_cap_outer_radius = 0.5*85.*mm; // Estimated
+		HPGe_55_TUNL_31524.end_cap_outer_radius = 0.5*80.*mm; // Estimated
 		HPGe_55_TUNL_31524.end_cap_to_crystal_gap_front = 4.*mm; // (B) in ORTEC data sheet
 		HPGe_55_TUNL_31524.end_cap_thickness = 1.*mm; // (I) in ORTEC data sheet
 		HPGe_55_TUNL_31524.end_cap_to_crystal_gap_side = 
@@ -559,7 +559,7 @@ struct HPGe_Collection{
 		HPGe_86_Stuttgart_31120.mount_cup_base_thickness = 6.*mm; // CT scan
 		HPGe_86_Stuttgart_31120.mount_cup_material = "G4_Al"; // Estimated
 		HPGe_86_Stuttgart_31120.end_cap_to_crystal_gap_front = 5.*mm; // CANBERRA data sheet
-		HPGe_86_Stuttgart_31120.end_cap_outer_radius = 90.*mm; // Estimated
+		HPGe_86_Stuttgart_31120.end_cap_outer_radius = 0.5*90.*mm; // Estimated
 		HPGe_86_Stuttgart_31120.end_cap_thickness = 1.*mm; // Estimated
 		HPGe_86_Stuttgart_31120.end_cap_to_crystal_gap_side = 
 			HPGe_86_Stuttgart_31120.end_cap_outer_radius- 

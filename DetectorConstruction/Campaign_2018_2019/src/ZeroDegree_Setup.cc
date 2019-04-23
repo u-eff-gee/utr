@@ -18,19 +18,9 @@ You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "G4Box.hh"
-#include "G4Tubs.hh"
-#include "G4NistManager.hh"
-#include "G4PVPlacement.hh"
-#include "G4LogicalVolume.hh"
-#include "G4SystemOfUnits.hh"
-#include "G4PhysicalConstants.hh"
-#include "G4VisAttributes.hh"
-
 #include "HPGe_Coaxial.hh"
 #include "HPGe_Collection.hh"
 #include "ZeroDegree_Setup.hh"
-#include "Units.hh"
 
 ZeroDegree_Setup::ZeroDegree_Setup(G4LogicalVolume *World_Log):
 World_Logical(World_Log)

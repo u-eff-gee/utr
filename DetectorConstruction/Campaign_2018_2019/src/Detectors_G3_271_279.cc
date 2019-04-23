@@ -18,22 +18,11 @@ You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "G4Box.hh"
-#include "G4Tubs.hh"
-#include "G4NistManager.hh"
-#include "G4PVPlacement.hh"
-#include "G4LogicalVolume.hh"
-#include "G4SystemOfUnits.hh"
-#include "G4PhysicalConstants.hh"
-#include "G4VisAttributes.hh"
-
 #include "Units.hh"
 #include "Detectors_G3_271_279.hh"
 #include "HPGe_Coaxial.hh"
 #include "HPGe_Collection.hh"
 #include "LaBr_3x3.hh"
-#include "LaBr_TUD.hh"
-#include "FilterCase.hh"
 
 Detectors_G3_271_279::Detectors_G3_271_279(G4LogicalVolume *World_Log):
 World_Logical(World_Log)
@@ -41,42 +30,6 @@ World_Logical(World_Log)
 
 void Detectors_G3_271_279::Construct(G4ThreeVector global_coordinates){
 
-	G4Colour orange(1.0, 0.5, 0.0);
-	G4Colour green(0.0, 1.0, 0.0);
-	
-	G4NistManager *nist = G4NistManager::Instance();
-
-	G4Material *Cu= nist->FindOrBuildMaterial("G4_Cu");
-	G4Material *Pb= nist->FindOrBuildMaterial("G4_Pb");
-
-	/************************** Detectors ***************************/
-	//
-	// Placement in spherical coordinate system
-	//
-	//                      y      z = beam direction
-	//
-	//                      |   /
-	//                      |  /
-	//                      | /
-	//                      O------ x = polarization plane
-	//
-	//
-	//			y
-	//
-	//			|   /Λ
-	//			|  / |  phi
-	//			| /  |
-	//			|/___|__ x
-	//
-	//
-	//			x-y-Plane
-	//
-	//			|   /Λ
-	//			|  / |  theta
-	//			| /  |
-	//			|/___|__ z
-	//
-	
 	HPGe_Collection hpge_Collection;
 
 	/**************** HPGE1 *******************/
@@ -90,9 +43,9 @@ void Detectors_G3_271_279::Construct(G4ThreeVector global_coordinates){
 	HPGe_Coaxial hpge1(hpge_Collection.HPGe_60_TUNL_40663, World_Logical, "HPGe1");
 	hpge1.Add_Filter("G4_Cu", 1.*1.15*mm, 45.*mm);
 	hpge1.Add_Filter("G4_Pb", 2.*1.2*mm, 45.*mm);
-	hpge1.Add_Wrap("G4_Pb", 1.2*mm);
+	hpge1.Add_Wrap("G4_Pb", 1.*1.2*mm);
 	hpge1.Construct(global_coordinates + G4ThreeVector(0., hpge1_dy, hpge1_dz),
-			hpge1_theta, hpge1_phi, hpge1_rt, true, true, true);
+			hpge1_theta, hpge1_phi, hpge1_rt, true, false, true);
 
 	/**************** HPGE2 *******************/
 
@@ -105,9 +58,9 @@ void Detectors_G3_271_279::Construct(G4ThreeVector global_coordinates){
 	HPGe_Coaxial hpge2(hpge_Collection.HPGe_60_TUNL_30986, World_Logical, "HPGe2");
 	hpge2.Add_Filter("G4_Cu", 1.*1.15*mm, 45.*mm);
 	hpge2.Add_Filter("G4_Pb", (1.*1.2 + 2.*2.)*mm, 45.*mm);
-	hpge2.Add_Wrap("G4_Pb", 1.2*mm);
+	hpge2.Add_Wrap("G4_Pb", 1.*1.2*mm);
 	hpge2.Construct(global_coordinates + G4ThreeVector(0., hpge2_dy, hpge2_dz),
-			hpge2_theta, hpge2_phi, hpge2_rt, true, true, true);
+			hpge2_theta, hpge2_phi, hpge2_rt, true, false, true);
 
 	/**************** HPGE3 *******************/
 
@@ -122,7 +75,7 @@ void Detectors_G3_271_279::Construct(G4ThreeVector global_coordinates){
 	hpge3.Add_Filter("G4_Pb", 1.*1.2*mm, 45.*mm);
 	hpge3.Add_Wrap("G4_Pb", 2.*1.2*mm);
 	hpge3.Construct(global_coordinates + G4ThreeVector(0., hpge3_dy, hpge3_dz),
-			hpge3_theta, hpge3_phi, hpge3_rt, true, true, true);
+			hpge3_theta, hpge3_phi, hpge3_rt, true, false, true);
 
 	/**************** HPGE4 *******************/
 
@@ -164,7 +117,7 @@ void Detectors_G3_271_279::Construct(G4ThreeVector global_coordinates){
 	labr2.Add_Filter("G4_Cu", 1.*1.15*mm, 45.*mm);
 	labr2.Add_Wrap("G4_Pb", 1.*1.2*mm);
 	labr2.Construct(global_coordinates + G4ThreeVector(0., labr2_dy, labr2_dz),
-			labr2_theta, labr2_phi, labr2_rt, true, true, true);
+			labr2_theta, labr2_phi, labr2_rt, true, false, true);
 
 	/**************** LABR3 *******************/
 
@@ -178,7 +131,7 @@ void Detectors_G3_271_279::Construct(G4ThreeVector global_coordinates){
 	labr3.Add_Filter("G4_Cu", 1.*3.15*mm, 45.*mm);
 	labr3.Add_Wrap("G4_Pb", 2.*1.2*mm);
 	labr3.Construct(global_coordinates + G4ThreeVector(0., labr3_dy, labr3_dz),
-			labr3_theta, labr3_phi, labr3_rt, true, true, true);
+			labr3_theta, labr3_phi, labr3_rt, false, false, true);
 
 	/**************** LABR4 *******************/
 
@@ -192,5 +145,5 @@ void Detectors_G3_271_279::Construct(G4ThreeVector global_coordinates){
 	labr4.Add_Filter("G4_Cu", 1.*3.15*mm, 45.*mm);
 	labr4.Add_Wrap("G4_Pb", 2.*1.2*mm);
 	labr4.Construct(global_coordinates + G4ThreeVector(0., labr4_dy, labr4_dz),
-			labr4_theta, labr4_phi, labr4_rt, true, true, true);
+			labr4_theta, labr4_phi, labr4_rt, false, false, true);
 }
