@@ -33,6 +33,7 @@ struct HPGe_Collection{
 	HPGe_Coaxial_Properties HPGe_60_TUNL_30986;
 	HPGe_Coaxial_Properties HPGe_60_TUNL_31061;
 	HPGe_Coaxial_Properties HPGe_60_TUNL_40663;
+	HPGe_Coaxial_Properties HPGe_120_TUNL_40383;
 	HPGe_Coaxial_Properties HPGe_80_TUD_90006;
 	HPGe_Coaxial_Properties HPGe_100_TUD_72902;
 	HPGe_Coaxial_Properties HPGe_100_TUD_72930;
@@ -279,6 +280,50 @@ struct HPGe_Collection{
 		HPGe_60_TUNL_40663.dewar_outer_radius = 3.*inch; // Measured
 		HPGe_60_TUNL_40663.dewar_wall_thickness = 5.*mm; // Estimated
 		HPGe_60_TUNL_40663.dewar_material = "G4_Al"; // Estimated
+
+		// 120% coaxial HPGe with ORTEC serial number 33-P40383A
+		// 'zero-degree detector'
+		// Note that this is a detector with a tabletop dewar, which is definitely
+		// not coaxial. Do not set the 'use_dewar' flag to 'true' when constructing
+		// this detector!
+		// Property of TUNL
+		HPGe_120_TUNL_40383.detector_radius = 0.5*82.*mm; // ORTEC data sheet
+		HPGe_120_TUNL_40383.detector_length = 108.7*mm; // ORTEC data sheet
+		HPGe_120_TUNL_40383.detector_face_radius = 8.*mm; // (J) in ORTEC data sheet
+		HPGe_120_TUNL_40383.hole_radius = 0.5*10.9*mm; // ORTEC data sheet
+		HPGe_120_TUNL_40383.hole_depth = 96.1*mm; // ORTEC data sheet
+		HPGe_120_TUNL_40383.hole_face_radius = HPGe_120_TUNL_40383.hole_radius; // Estimated to be the same as hole radius
+		HPGe_120_TUNL_40383.mount_cup_thickness = 0.76*mm; // (H) in ORTEC data sheet
+		HPGe_120_TUNL_40383.mount_cup_base_thickness = 3.2*mm; // (C) in ORTEC data sheet
+		HPGe_120_TUNL_40383.mount_cup_material = "G4_Al"; // ORTEC data sheet
+		HPGe_120_TUNL_40383.end_cap_outer_radius = 0.5*90.*mm; // Estimated
+		HPGe_120_TUNL_40383.end_cap_to_crystal_gap_front = 4.*mm; // (B) in ORTEC data sheet
+		HPGe_120_TUNL_40383.end_cap_to_crystal_gap_side = 4.*mm; // (B) in ORTEC data sheet
+		HPGe_120_TUNL_40383.end_cap_thickness = 1.5*mm; // (I) in ORTEC data sheet
+		HPGe_120_TUNL_40383.end_cap_to_crystal_gap_side = 
+			HPGe_120_TUNL_40383.end_cap_outer_radius- 
+			HPGe_120_TUNL_40383.end_cap_thickness- 
+			HPGe_120_TUNL_40383.mount_cup_thickness-
+			HPGe_120_TUNL_40383.detector_radius; // Calculated from outer radius and other given dimensions
+		HPGe_120_TUNL_40383.end_cap_window_thickness = 1.5*mm; // (D) in ORTEC data sheet
+		HPGe_120_TUNL_40383.end_cap_length = 5.5*inch; // Estimated
+		HPGe_120_TUNL_40383.mount_cup_length = 
+			HPGe_120_TUNL_40383.end_cap_length-
+			HPGe_120_TUNL_40383.end_cap_window_thickness-
+			HPGe_120_TUNL_40383.end_cap_to_crystal_gap_front; // Calculated from end cap length. Different from (A) in ORTEC data sheet, because it shows only the part which contains the detector crystal.
+		HPGe_120_TUNL_40383.end_cap_material = "G4_Al"; // ORTEC data sheet
+		HPGe_120_TUNL_40383.end_cap_window_material = "G4_Be"; // ORTEC data sheet
+		HPGe_120_TUNL_40383.cold_finger_radius = 0.5*4.*mm; // Suggestion by B. Fallin, Duke University. Not in ORTEC data sheet
+		HPGe_120_TUNL_40383.cold_finger_penetration_depth = HPGe_120_TUNL_40383.hole_depth - 5.*mm; // Estimated
+		HPGe_120_TUNL_40383.cold_finger_material = "G4_Cu"; // Estimated
+		HPGe_120_TUNL_40383.connection_length = 2.*inch; // Estimated and irrelevant
+		HPGe_120_TUNL_40383.connection_radius = 0.75*inch; // Estimated and irrelevant
+		HPGe_120_TUNL_40383.dewar_offset = 0.*inch; // Estimated and irrelevant
+		HPGe_120_TUNL_40383.connection_material = "G4_Al"; // Estimated and irrelevant
+		HPGe_120_TUNL_40383.dewar_length = 9.*inch; // Estimated and irrelevant
+		HPGe_120_TUNL_40383.dewar_outer_radius = 3.*inch; // Estimated and irrelevant
+		HPGe_120_TUNL_40383.dewar_wall_thickness = 5.*mm; // Estimated and irrelevant
+		HPGe_120_TUNL_40383.dewar_material = "G4_Al"; // Estimated and irrelevant
 
 		// 80% (68.2% according to data sheet) coaxial HPGe with
 		// CANBERRA serial number b90006

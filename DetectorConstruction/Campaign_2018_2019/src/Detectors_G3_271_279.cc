@@ -99,163 +99,26 @@ void Detectors_G3_271_279::Construct(G4ThreeVector global_coordinates){
 	hpge1.Add_Filter("G4_Pb", 2.*1.2*mm, 45.*mm);
 	hpge1.Add_Wrap("G4_Pb", 1.2*mm);
 	hpge1.Construct(global_coordinates + G4ThreeVector(0., hpge1_dy, hpge1_dz),
-			hpge1_theta, hpge1_phi, hpge1_rt, true, true);
-
-//	if(hpge1_Pb_Wrap_Thickness != 0.){
-//		hpge1_rt += hpge_Collection.HPGe_60_TUNL_40663.end_cap_length*0.5;
-//
-//		G4Tubs *hpge1_Pb_Wrap_Solid = new G4Tubs("hpge1_Pb_Wrap_Solid", hpge_Collection.HPGe_60_TUNL_40663.end_cap_outer_radius, hpge_Collection.HPGe_60_TUNL_40663.end_cap_outer_radius + hpge1_Pb_Wrap_Thickness, hpge_Collection.HPGe_60_TUNL_40663.end_cap_length*0.5, 0., twopi);
-//
-//		G4LogicalVolume *hpge1_Pb_Wrap_Logical = new G4LogicalVolume(hpge1_Pb_Wrap_Solid, Pb, "hpge1_Pb_Wrap_Logical");
-//		hpge1_Pb_Wrap_Logical->SetVisAttributes(green);
-//
-//		new G4PVPlacement(hpge1_rotation,
-//	    global_coordinates + G4ThreeVector(hpge1_rt * sin(hpge1_theta) * cos(hpge1_phi),
-//	                  hpge1_rt * sin(hpge1_theta) * sin(hpge1_phi) + hpge1_dy,
-//	                  hpge1_rt * cos(hpge1_theta) + hpge1_dz),
-//	    hpge1_Pb_Wrap_Logical, "hpge1_Pb_Wrap", World_Logical, false, 0);
-//
-//		hpge1_rt -= hpge_Collection.HPGe_60_TUNL_40663.end_cap_length * 0.5;
-//	}
-
-//	FilterCase filterCase1(hpge1_Pb_Thickness + hpge1_Cu_Thickness, false);
-//	hpge1_rt -= filterCase1.Get_Offset_From_Detector();
-//
-//	new G4PVPlacement(rotatehpge1, 
-//	    global_coordinates + G4ThreeVector(hpge1_rt * sin(hpge1_theta) * cos(hpge1_phi),
-//	                  hpge1_rt * sin(hpge1_theta) * sin(hpge1_phi) + hpge1_dy,
-//	                  hpge1_rt * cos(hpge1_theta) + hpge1_dz),
-//	    filterCase1.Get_Logical(), "hpge1_FilterCase", World_Logical, false, 0, false
-//	    );
-//	
-//	hpge1_rt += filterCase1.Get_Offset_From_Detector();
-//
-//	if(hpge1_Cu_Thickness > 0.){
-//		hpge1_rt -= hpge1_Cu_Thickness * 0.5;
-//
-//		G4Tubs* hpge1_Cu_Solid = new G4Tubs("hpge1_Cu_Solid", 0., hpge1_Cu_Radius, hpge1_Cu_Thickness*0.5, 0., twopi);
-//		G4LogicalVolume *hpge1_Cu_Logical = new G4LogicalVolume(hpge1_Cu_Solid, Cu, "hpge1_Cu_Logical");
-//		hpge1_Cu_Logical->SetVisAttributes(orange);
-//
-//		new G4PVPlacement(rotatehpge1,
-//	    global_coordinates + G4ThreeVector(hpge1_rt * sin(hpge1_theta) * cos(hpge1_phi),
-//	                  hpge1_rt * sin(hpge1_theta) * sin(hpge1_phi) + hpge1_dy,
-//	                  hpge1_rt * cos(hpge1_theta) + hpge1_dz),
-//	    hpge1_Cu_Logical, "hpge1_Cu", World_Logical, false, 0);
-//	}
-//
-//	hpge1_rt -= hpge1_Cu_Thickness*0.5;
-//
-//	if(hpge1_Pb_Thickness > 0.){
-//		hpge1_rt -= hpge1_Pb_Thickness * 0.5;
-//
-//		G4Tubs* hpge1_Pb_Solid = new G4Tubs("hpge1_Pb_Solid", 0., hpge1_Pb_Radius, hpge1_Pb_Thickness*0.5, 0., twopi);
-//		G4LogicalVolume *hpge1_Pb_Logical = new G4LogicalVolume(hpge1_Pb_Solid, Pb, "hpge1_Pb_Logical");
-//		hpge1_Pb_Logical->SetVisAttributes(green);
-//
-//		new G4PVPlacement(rotatehpge1,
-//	    global_coordinates + G4ThreeVector(hpge1_rt * sin(hpge1_theta) * cos(hpge1_phi),
-//	                  hpge1_rt * sin(hpge1_theta) * sin(hpge1_phi) + hpge1_dy,
-//	                  hpge1_rt * cos(hpge1_theta) + hpge1_dz),
-//	    hpge1_Pb_Logical, "hpge1_Pb", World_Logical, false, 0);
-//	}
+			hpge1_theta, hpge1_phi, hpge1_rt, true, true, true);
 
 	/**************** HPGE2 *******************/
 
-	G4double HPGe2_rt = 124.4 * mm;
-	G4double HPGe2_dy = 0. * mm;
-	G4double HPGe2_dz = 0. * mm;
-	G4double HPGe2_phi = 90. * deg;
-	G4double HPGe2_theta = 90. * deg;
+	G4double hpge2_rt = 124.4 * mm;
+	G4double hpge2_dy = 0. * mm;
+	G4double hpge2_dz = 0. * mm;
+	G4double hpge2_phi = 90. * deg;
+	G4double hpge2_theta = 90. * deg;
 
-	G4double HPGe2_AngleX = 270. * deg;
-	G4double HPGe2_AngleY = 0. * deg;
-	G4double HPGe2_AngleZ = 180. * deg;
+	G4RotationMatrix* hpge2_rotation = new G4RotationMatrix();
+	hpge2_rotation->rotateZ(-hpge2_phi);
+	hpge2_rotation->rotateY(-hpge2_theta);
 
-	G4double HPGe2_Cu_Radius = 45.*mm;
-	G4double HPGe2_Cu_Thickness = 1.*1.15*mm;
-	G4double HPGe2_Pb_Radius = 45.*mm;
-	G4double HPGe2_Pb_Thickness = (1.*1.2 + 2.*2.)*mm;
-	G4double HPGe2_Pb_Wrap_Thickness = 1.*1.2*mm;
-	G4double HPGe2_Pb_Wrap_Length = 130.*mm;
-
-	HPGe_60_TUNL_30986 *HPGe2_Instance = new HPGe_60_TUNL_30986("HPGe2");
-	G4LogicalVolume *HPGe2_Logical = HPGe2_Instance->Get_Logical();
-
-	G4RotationMatrix *rotateHPGe2 = new G4RotationMatrix();
-	rotateHPGe2->rotateX(HPGe2_AngleX);
-	rotateHPGe2->rotateY(HPGe2_AngleY);
-	rotateHPGe2->rotateZ(HPGe2_AngleZ);
-
-	HPGe2_rt = HPGe2_rt + HPGe2_Instance->Get_Length() * 0.5;
-
-	new G4PVPlacement(
-	    rotateHPGe2,
-	    global_coordinates + G4ThreeVector(HPGe2_rt * sin(HPGe2_theta) * cos(HPGe2_phi),
-	                  HPGe2_rt * sin(HPGe2_theta) * sin(HPGe2_phi) + HPGe2_dy,
-	                  HPGe2_rt * cos(HPGe2_theta) + HPGe2_dz),
-	    HPGe2_Logical, "HPGe2", World_Logical, false, 0);
-
-	HPGe2_rt -= HPGe2_Instance->Get_Length() * 0.5;
-
-	if(HPGe2_Pb_Wrap_Thickness != 0.){
-		HPGe2_rt += HPGe2_Pb_Wrap_Length * 0.5;
-
-		G4Tubs *HPGe2_Pb_Wrap_Solid = new G4Tubs("HPGe2_Pb_Wrap_Solid", HPGe2_Instance->Get_Front_Radius(), HPGe2_Instance->Get_Front_Radius() + HPGe2_Pb_Wrap_Thickness, HPGe2_Pb_Wrap_Length*0.5, 0., twopi);
-
-		G4LogicalVolume *HPGe2_Pb_Wrap_Logical = new G4LogicalVolume(HPGe2_Pb_Wrap_Solid, Pb, "HPGe2_Pb_Wrap_Logical");
-		HPGe2_Pb_Wrap_Logical->SetVisAttributes(green);
-
-		new G4PVPlacement(rotateHPGe2,
-	    global_coordinates + G4ThreeVector(HPGe2_rt * sin(HPGe2_theta) * cos(HPGe2_phi),
-	                  HPGe2_rt * sin(HPGe2_theta) * sin(HPGe2_phi) + HPGe2_dy,
-	                  HPGe2_rt * cos(HPGe2_theta) + HPGe2_dz),
-	    HPGe2_Pb_Wrap_Logical, "HPGe2_Pb_Wrap", World_Logical, false, 0);
-
-		HPGe2_rt -= HPGe2_Pb_Wrap_Length * 0.5;
-	}
-
-	FilterCase filterCase2(HPGe2_Pb_Thickness + HPGe2_Cu_Thickness, false);
-	HPGe2_rt -= filterCase2.Get_Offset_From_Detector();
-
-	new G4PVPlacement(rotateHPGe2, 
-	    global_coordinates + G4ThreeVector(HPGe2_rt * sin(HPGe2_theta) * cos(HPGe2_phi),
-	                  HPGe2_rt * sin(HPGe2_theta) * sin(HPGe2_phi) + HPGe2_dy,
-	                  HPGe2_rt * cos(HPGe2_theta) + HPGe2_dz),
-	    filterCase2.Get_Logical(), "HPGe2_FilterCase", World_Logical, false, 0, false
-	    );
-	
-	HPGe2_rt += filterCase2.Get_Offset_From_Detector();
-
-	if(HPGe2_Cu_Thickness > 0.){
-		HPGe2_rt -= HPGe2_Cu_Thickness * 0.5;
-
-		G4Tubs* HPGe2_Cu_Solid = new G4Tubs("HPGe2_Cu_Solid", 0., HPGe2_Cu_Radius, HPGe2_Cu_Thickness*0.5, 0., twopi);
-		G4LogicalVolume *HPGe2_Cu_Logical = new G4LogicalVolume(HPGe2_Cu_Solid, Cu, "HPGe2_Cu_Logical");
-		HPGe2_Cu_Logical->SetVisAttributes(orange);
-
-		new G4PVPlacement(rotateHPGe2,
-	    global_coordinates + G4ThreeVector(HPGe2_rt * sin(HPGe2_theta) * cos(HPGe2_phi),
-	                  HPGe2_rt * sin(HPGe2_theta) * sin(HPGe2_phi) + HPGe2_dy,
-	                  HPGe2_rt * cos(HPGe2_theta) + HPGe2_dz),
-	    HPGe2_Cu_Logical, "HPGe2_Cu", World_Logical, false, 0);
-	}
-
-	HPGe2_rt -= HPGe2_Cu_Thickness*0.5;
-
-	if(HPGe2_Pb_Thickness > 0.){
-		HPGe2_rt -= HPGe2_Pb_Thickness * 0.5;
-
-		G4Tubs* HPGe2_Pb_Solid = new G4Tubs("HPGe2_Pb_Solid", 0., HPGe2_Pb_Radius, HPGe2_Pb_Thickness*0.5, 0., twopi);
-		G4LogicalVolume *HPGe2_Pb_Logical = new G4LogicalVolume(HPGe2_Pb_Solid, Pb, "HPGe2_Pb_Logical");
-		HPGe2_Pb_Logical->SetVisAttributes(green);
-
-		new G4PVPlacement(rotateHPGe2,
-	    global_coordinates + G4ThreeVector(HPGe2_rt * sin(HPGe2_theta) * cos(HPGe2_phi),
-	                  HPGe2_rt * sin(HPGe2_theta) * sin(HPGe2_phi) + HPGe2_dy,
-	                  HPGe2_rt * cos(HPGe2_theta) + HPGe2_dz),
-	    HPGe2_Pb_Logical, "HPGe2_Pb", World_Logical, false, 0);
-	}
+	HPGe_Coaxial hpge2(hpge_Collection.HPGe_60_TUNL_30986, World_Logical, "HPGe2");
+	hpge2.Add_Filter("G4_Cu", 1.*1.15*mm, 45.*mm);
+	hpge2.Add_Filter("G4_Pb", (1.*1.2 + 2.*2.)*mm, 45.*mm);
+	hpge2.Add_Wrap("G4_Pb", 1.2*mm);
+	hpge2.Construct(global_coordinates + G4ThreeVector(0., hpge2_dy, hpge2_dz),
+			hpge2_theta, hpge2_phi, hpge2_rt, true, true, true);
 
 	/**************** HPGE3 *******************/
 

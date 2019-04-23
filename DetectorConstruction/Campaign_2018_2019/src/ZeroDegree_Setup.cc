@@ -27,8 +27,9 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4PhysicalConstants.hh"
 #include "G4VisAttributes.hh"
 
+#include "HPGe_Coaxial.hh"
+#include "HPGe_Collection.hh"
 #include "ZeroDegree_Setup.hh"
-#include "ZeroDegree.hh"
 #include "Units.hh"
 
 ZeroDegree_Setup::ZeroDegree_Setup(G4LogicalVolume *World_Log):
@@ -39,19 +40,17 @@ void ZeroDegree_Setup::Construct(G4ThreeVector global_coordinates){
 
 	// Zero degree detector
 	
-	ZeroDegree zeroDegree("ZeroDegree");
+	HPGe_Collection hpge_Collection;
+	G4double zerodegree_rt = 0. * mm;
+	G4double zerodegree_dy = 30. * mm;
+	G4double zerodegree_phi = 180. * deg;
+	G4double zerodegree_theta = 0. * deg;
 
-	G4double ZeroDegree_X = 0.*mm; // X = 0, if beam profile is measured, otherwise, X < 0
-	G4double ZeroDegree_Y = 30.*mm; // Seems to reproduce the beam spectra best
-	G4double ZeroDegree_Z = zeroDegree.Get_Length()*0.5;
+	G4RotationMatrix* zerodegree_rotation = new G4RotationMatrix();
+	zerodegree_rotation->rotateZ(-zerodegree_phi);
+	zerodegree_rotation->rotateY(-zerodegree_theta);
 
-	G4double ZeroDegree_AngleX = 0 * deg;
-	G4double ZeroDegree_AngleY = 180. * deg;
-
-	G4RotationMatrix *rotateZeroDegree = new G4RotationMatrix();
-	rotateZeroDegree->rotateX(ZeroDegree_AngleX);
-	rotateZeroDegree->rotateY(ZeroDegree_AngleY);
-
-	new G4PVPlacement(rotateZeroDegree, global_coordinates + G4ThreeVector(ZeroDegree_X, ZeroDegree_Y, ZeroDegree_Z), zeroDegree.Get_Logical(), "ZeroDegree", World_Logical, false, 0, false);
-
+	HPGe_Coaxial zerodegree(hpge_Collection.HPGe_120_TUNL_40383, World_Logical, "ZeroDegree");
+	zerodegree.Construct(global_coordinates + G4ThreeVector(0., zerodegree_dy, 0.),
+			zerodegree_theta, zerodegree_phi, zerodegree_rt, false, false, false);
 }
