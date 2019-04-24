@@ -193,7 +193,7 @@ struct HPGe_Collection{
 		HPGe_60_TUNL_30986.cold_finger_material = "G4_Cu"; // Estimated
 		HPGe_60_TUNL_30986.connection_length = 2.*inch; // Measured
 		HPGe_60_TUNL_30986.connection_radius = 0.75*inch; // Estimated
-		HPGe_60_TUNL_30986.dewar_offset = 0.*inch; // Measured
+		HPGe_60_TUNL_30986.dewar_offset = 1.*inch; // Measured
 		HPGe_60_TUNL_30986.connection_material = "G4_Al"; // Estimated
 		HPGe_60_TUNL_30986.dewar_length = 9.*inch; // Measured
 		HPGe_60_TUNL_30986.dewar_outer_radius = 3.*inch; // Measured
@@ -274,7 +274,7 @@ struct HPGe_Collection{
 		HPGe_60_TUNL_40663.cold_finger_material = "G4_Cu"; // Estimated
 		HPGe_60_TUNL_40663.connection_length = 2.*inch; // Measured
 		HPGe_60_TUNL_40663.connection_radius = 0.75*inch; // Estimated
-		HPGe_60_TUNL_40663.dewar_offset = 0.*inch; // Measured
+		HPGe_60_TUNL_40663.dewar_offset = 1.*inch; // Measured
 		HPGe_60_TUNL_40663.connection_material = "G4_Al"; // Estimated
 		HPGe_60_TUNL_40663.dewar_length = 9.*inch; // Measured
 		HPGe_60_TUNL_40663.dewar_outer_radius = 3.*inch; // Measured

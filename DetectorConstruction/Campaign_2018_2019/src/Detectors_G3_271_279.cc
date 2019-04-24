@@ -45,7 +45,7 @@ void Detectors_G3_271_279::Construct(G4ThreeVector global_coordinates){
 	hpge1.Add_Filter("G4_Pb", 2.*1.2*mm, 45.*mm);
 	hpge1.Add_Wrap("G4_Pb", 1.*1.2*mm);
 	hpge1.Construct(global_coordinates + G4ThreeVector(0., hpge1_dy, hpge1_dz),
-			hpge1_theta, hpge1_phi, hpge1_rt, true, false, true);
+			hpge1_theta, hpge1_phi, hpge1_rt, true, false, true, 220.*deg);
 
 	/**************** HPGE2 *******************/
 

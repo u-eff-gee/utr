@@ -37,8 +37,8 @@ class HPGe_Coaxial{
 		~HPGe_Coaxial(){};
 
 		void Construct(G4ThreeVector global_coordinates, G4double theta, G4double phi,
-			       G4double dist_from_center, bool use_filter_case,
-			       bool use_filter_case_ring, bool use_dewar);
+			       G4double dist_from_center, bool use_filter_case = false,
+			       bool use_filter_case_ring = false, bool use_dewar = true, G4double intrinsic_rotation_angle = 0.);
 		// Possibility to add disks of solid material in front of the detector to shield low-energy
 		// radiation. The first filter will be placed onto the front part of the detector that faces
 		// the target, all others will be placed on top of the previous one in the direction of the
