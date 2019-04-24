@@ -1003,9 +1003,14 @@ $ ./getHistogram --help
 Usage: getHistogram [OPTION...] Create histograms from a list of events
 GetHistogram
 
+  -a                         Add back energy depositions that occurred in a
+                             single event to the first detector which was hit.
   -b BIN                     Number of energy bin whose value should be
                              displayed
-  -m MULTIPLICITY            Particle multiplicity
+  -e EMAX                    Maximum energy displayed in histogram (default: 15
+                             MeV)
+  -m MULTIPLICITY            Particle multiplicity (default: 1)
+  -n NHISTOGRAMS             Number of detection volumes (default: 12)
   -o OUTPUTFILENAME          Output file name
   -p PATTERN1                File name pattern 1
   -q PATTERN2                File name pattern 2
@@ -1017,11 +1022,14 @@ GetHistogram
 
 shows how to use the script. The meaning of the arguments to the options is:
 
-* TREE: Name of the ROOT tree (Default: TREE=="utr") in all of the output files.
-* PATTERN1 and 2: Two strings that identify the set of files to be merged. See also the example below. (Default: PATTERN1=="utr", PATTERN2==".root")
+* EMAX: All energy depositions are stored in a histogram. This parameter sets the maximum energy of the histogram, while keeping the hard-coded number of bins (default: 15000) and the minimum energy (default: 0.0005 MeV) in `OutputProcessing/GetHistogram.cc`. Using the default values means that a single bin is equal to an energy window of 1 keV, which is convenient sometimes.
+* TREENAME: Name of the ROOT tree (Default: TREENAME=="utr") in all of the output files.
+* PATTERN1 and PATTERN2: Two strings that identify the set of files to be merged. See also the example below. (Default: PATTERN1=="utr", PATTERN2==".root")
 * OUTPUTFILE: Name of the output file that contains the histograms. (Default: OUTPUTFILENAME=="hist.root")
 * MULTIPLICITY: Determines how many events should be accumulated before adding information to the histogram. This can be used, for example, to simulate higher multiplicity events in a detector: Imagine two photons with energies of 511 keV hit a detector and deposit all their energy. However, the two events cannot be distinguished by the detector due to pileup, so a single event with an energy of 1022 keV will be added to the spectrum. Similarly, Geant4 simulates events by event. In order to simulate pileup of n events, set MULTIPLICITY==n. (Default: MULTIPLICITY==1)
 * BIN: Number of the histogram bin that should be printed to the screen while executing `getHistogram`. This option was introduced because often, one is only interested in the content of a special bin in the histograms (for example the full-energy peak). If the histograms are defined such that bin `3000` contains the events with an energy deposition between `2.9995 MeV` and `3.0005 MeV` and so on, so there is an easy correspondence between bin number and energy. (Default: BIN==-1)
+
+The options `-v` and `-a` do not have arguments. The former simply produces more verbose output when `getHistogram` is executed. The latter implements a simple add-back capability to sum up all energy depositions that happened during a single event. This is interesting, for example, when segmented detectors are used. In its current implementation, the add-back algorithm will accumulate all energy depositions in a single event, even if there was cross-talk between physically separated detectors. This may or may not be desired by the user. In order for the add-back to work, the parameter `EVENT_ID` must be written to the output files, of course (see also [2.6 Output File Format](#outputfileformat) and [3.3 Build configuration](#build)).
 
 **A short example:**
 The typical output of two different simulations on 2 threads each are the files
