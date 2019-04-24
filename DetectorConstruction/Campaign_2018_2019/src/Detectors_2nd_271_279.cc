@@ -41,7 +41,7 @@ void Detectors_2nd_271_279::Construct(G4ThreeVector global_coordinates){
 
 	HPGe_Coaxial hpge10(hpge_Collection.HPGe_100_Cologne_73954, World_Logical, "HPGe10");
 	hpge10.Add_Filter("G4_Cu", 1.*1.15*mm, 50.*mm);
-	hpge10.Add_Filter("G4_Pb", 1.*1.2*mm, 50.*mm);
+	hpge10.Add_Filter("G4_Pb", 1.*2.*mm, 50.*mm);
 	hpge10.Add_Wrap("G4_Pb", 2.*1.2*mm);
 	hpge10.Construct(global_coordinates + G4ThreeVector(0., hpge10_dy, hpge10_dz),
 			hpge10_theta, hpge10_phi, hpge10_rt, false, false, true);

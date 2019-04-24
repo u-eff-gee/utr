@@ -601,7 +601,7 @@ struct HPGe_Collection{
 		HPGe_ANL_P075689.mount_cup_thickness = 1.*mm;
 		HPGe_ANL_P075689.mount_cup_base_thickness = 5.*mm;
 		HPGe_ANL_P075689.mount_cup_material = "G4_Al";
-		HPGe_ANL_P075689.end_cap_outer_radius = 0.5*100.*mm;
+		HPGe_ANL_P075689.end_cap_outer_radius = 0.5*80.*mm;
 		HPGe_ANL_P075689.end_cap_to_crystal_gap_front = 3.*mm;
 		HPGe_ANL_P075689.end_cap_to_crystal_gap_side = 3.*mm;
 		HPGe_ANL_P075689.end_cap_thickness = 1.*mm;
