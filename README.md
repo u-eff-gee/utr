@@ -160,10 +160,10 @@ A common practice is to create `LogicalVolume` objects (pointers) in the auxilia
     ...
 ```
 
-However, this caused some problems in the case of `utr`. 
+However, this caused some problems in the case of `utr`.
 For example, the floor and the walls are clearly a logical unit that can be implemented in a separate file. Since the floor and the walls are as long and wide as the whole setup, the mother volume of this auxiliary class would unnecessarily overlap with everything.
 
-Here, instead (except for the detectors, see also [2.1.2 Detectors](#detectors)), we chose to pass the global mother volume to the auxiliary classes and let them make the placements in a `Construct(G4ThreeVector global_coordinates)` method.
+Here, instead, we chose to pass the global mother volume to the auxiliary classes and let them make the placements in a `Construct(G4ThreeVector global_coordinates)` method.
 
 ```
 // Auxiliary.hh
@@ -187,7 +187,7 @@ Here, instead (except for the detectors, see also [2.1.2 Detectors](#detectors))
 // DetectorConstruction.cc
     ...
     Auxiliary_Logical aux(World_Logical);
-    aux.Construct(global_Coordinates);
+    aux.Construct(global_coordinates);
     ...
 ```
 
@@ -214,6 +214,58 @@ would place the beam pipe on top of the target, and therefore ignore the target 
 A disadvantage of this placement scheme is that the volume hierarchy is very flat, because everything is placed inside the global mother volume. This makes it harder, to find a specific volume in the UI mode and easier to have name clashes. Nevertheless, we think that the advantages are more important.
 
 #### 2.1.2 Detectors <a name="detectors"></a>
+
+Since the 2018/2019 campaigns (for older geometries, see the next section, [2.1.3 Detectors before 2018 campaign](#detectors_before_2018)), the detector placement is done by an auxiliary class, in complete analogy to the procedure described in [2.1.1 Note on auxiliary files](#auxiliary_files)). All parts of the detectors are placed inside the global world volume to minimize the risk of overlaps.
+
+To simplify the placement of a detector, their `Construct()` method takes three additional mandatory arguments, which are the angles θ and φ in spherical coordinates and a radial distance `rt` to the point indicated by `global_coordinates`. The symmetry axis of the detector crystal will be parallel to the unit vector in spherical coordinates defined by θ and φ, and it will face a target at the point `global_coordinates`. To be precise, `rt` defines the distance from `global_coordinates` to the center of the detector face.
+
+Assuming that a detector of the class `Detector` should be placed in the world logical volume `World_Logical` at angles `theta` and `phi`, with the distance `distance_from_center` to the point `global_coordinates`, the most general procedure for the placement is:
+
+```
+Detector detector_instance(World_Logical, detector_name);
+detector_instance.Construct(global_coordinates, theta, phi, distance_from_center);
+```
+
+The second argument of the constructor is the name of the detector object, which should be unique in the whole detector geometry. It will be appended as a prefix to all solid/logical/physical volumes of the object to be able to identify them unambiguously. Furthermore, it will be the name of the logical volume of the detector crystal, which must be passed to the `SetSensitiveDetector()` method in order to make it a sensitive detector (see also [2.2 Sensitive Detectors](#sensitivedetectors)). Depending on the detector type, the constructor of the `Detector` class and the `Construct()` method may have more mandatory or optional arguments.
+
+In addition, most of the implemented detectors have an additional method to automatize the placement of shielding in on the face of the detector (*filters*) and around the front part of the detector (*wraps*). They are called `Add_Filter()` and `Add_Wrap()` and must be called before the `Construct()` method is invoked, because they append new entries to an internal list of filters and wraps which will be iterated through during construction. The position of the detector as defined by the variables θ, φ and `rt` will not be changed by the addition of filters and wraps. If multiple calls of `Add_XY()` are made, the corresponding filters (wraps) will be stacked on top (wrapped around) the previously constructed objects automatically. The first filter or wrap place by the `Add_XY()` method will be in direct contact with the detector surface if no filter cases are used. Filter cases are white plastic cases which were designed by B. Löher and J. Isaak and manufactured by the TUNL workshop at some point during the 2015/2016 campaign to simplify the placement of filters. They consist of a plastic case with an inner thread that contains a set of filters. A ring can be screwed into the thread to keep the filters in place. Some `Construct()` methods provide flags to enable the construction of such a filter case with or without the aforementioned ring (At some point, it was found that the screwing and unscrewing of the rings is tedious, so they are not used frequently anymore. Since using the ring or avoiding it changes the distance of the filters slightly, this options also exists in the simulation code).
+
+Most of the detectors are implemented by reading off the dimensions from some data sheet. Usually, these data sheets, for example the ones from the [ORTEC](https://www.ortec-online.com/) company, only include the front part of the detector around the crystal. However, all detectors have an additional case for the electronics/photomultipliers/preamplifiers, and most HPGe detectors, in particular, have a dewar vessel for liquid nitrogen cooling. To get a better feeling for the dimensions of the setup and for aesthetic reasons, the dimensions of these parts have been measured or estimated by the the authors. Usually, the dimensions that can be measured without taking a detector apart are known well (for example the length of the dewar vessel), while the inner structure is poorly known (for example the wall thickness of the cases, or the composition of the electronics). Therefore, they have mostly been constructed as empty shells (mostly made of aluminium). The hope is that they represent a zero-order approximation to the actual composition of the detector parts. If desired, only the parts that are actually taken from data sheets can be constructed by setting the corresponding flags. For example, setting `use_dewar=false` in `HPGe_Coaxial::Construct()` will not construct the dewar vessels of the coaxial HPGe detectors.
+
+The `utr` code includes implementations of several different detectors. Depending on the topology of the detector, general classes exist in some cases to avoid copying and pasting. For example, all coaxial HPGe detectors contain essentially the same components, but with different dimensions. Therefore, a general `HPGe_Coaxial` class and a dictionary of dimensions, called `HPGe_Collection`, have been implemented to avoid very repetitive class definitions for each detector. Below is a list of real detectors that can be built with the existing code, ordered by the style of implementation.
+
+**Coaxial HPGe detectors**: An abstract class `HPGe_Coaxial` exists, which implements the main parts of a coaxial detector (crystal, mount cup, end cap, cold finger, dewar). The particular dimensions of the parts for each detector are stored in a data structure called `HPGe_Coaxial_Properties`. The dimensions of each of the following detectors and a short description can be found in an additional header file, `src/HPGe_Collection.hh`:
+
+ * Duke 55% HPGe (Ortec serial number 4-TN21638A)
+ * Duke 55% HPGe (Ortec serial number 4-TN31524A)
+ * Duke 60% HPGe (Ortec serial number 36-TN21033A)
+ * Duke 60% HPGe (Ortec serial number 36-TN30986A)
+ * Duke 60% HPGe (Ortec serial number 36-TN31061A)
+ * Duke 60% HPGe (Ortec serial number 36-TN40663A)
+ * Duke 120% HPGe "Zero degree detector" (Ortec serial number 33-P40383A)
+ * TUD 80% HPGe (Canberra serial number 90006)
+ * TUD 100% HPGe (Canberra serial number 73760)
+ * TUD 100% HPGe (Canberra serial number 72902)
+ * TUD 100% segmented HPGe (Canberra serial number 72930)
+ * Cologne 100% HPGe (Ortec serial number 73954)
+ * Stuttgart 86% HPGe (Canberra serial number 37-N31120A)
+ * ANL ?% HPGe (Ortec serial number P075689) (only dummy implementation)
+
+**Clover HPGe detectors**: An abstract class `HPGe_Clover` exists, which implements the front part of a standard Eurisys/Canberra clover detector (four germanium crystal and an aluminium case). The particular dimensions of the parts for each detector are stored in a data structure called `HPGe_Clover_Properties`. The dimensions of each of the following detectors and a short description can be found in an additional header file, `src/HPGe_Collection.hh`:
+
+* Yale Clover HPGe (Eurisys serial number OC107395)
+
+**3"x3" LaBr detectors**: These detectors are based on a 3"x3" cerium-doped lanthanum-bromide crystal (the material is manufactured by the company Saint Gobain and it is called "BrillanCe 380") and belong to TU Darmstadt. They are implemented in a class called `LaBr_3x3`. All of the four existing detectors are approximately equal.
+
+**1.5"x1.5" LaBr detectors**: These detectors are based on a 1.5"x1.5" cerium-doped lanthanum-bromide crystal (the material is manufactured by the company Saint Gobain and it is called "BrillanCe 380") and belong to the university of Cologne. At the moment, they are not used by any geometry of `utr`. They were originally intended to be used at forward angles in the γ3 setup.  All of the four existing detectors are approximately equal.
+
+**Ionization chambers**: Different types of ionization chambers for use in photofission experiments are implemented in the subdirectories of the 2018/2019 campaign.
+
+**Blowfish array**: The dimension of the Blowfish array of neutron detectors, which is available at HIγS, were imported from the repository [https://github.com/ryan-duve/blowfishGDHfridge](https://github.com/ryan-duve/blowfishGDHfridge). The classes `Blowfish_Frame` and `Blowfish_ArmSegment` implement the holding structure and the detectors, and can be constructed by calling their respective `Construct()` methods. Since they were found to be much too large for the `utr`, they are not used in any geometry at the moment.
+
+#### 2.1.3 Detectors before 2018 campaign <a name="detectors_before_2018"></a>
+*Deprecated! Only valid for geometries before 2018 campaign*
+
 Classes for several different detectors exist. In all of those, a G4LogicalVolume that contains all the parts of a detector is implemented which is returned by the class' Get_Logical() method. Furthermore, each detector class can return its mother volume's length and radius.
 
 To place a detector DetectorXY in the geometry, create an instance of the detector class in DetectorConstruction.cc, get the logical volume and place it in the geometry (using Get_Length() and Get_Radius() if necessary):
@@ -230,27 +282,15 @@ At the moment, the following detectors are implemented:
 
 * Cologne LaBr, Saint Gobain BrilLanCe 380 1.5x1.5"
 * Darmstadt LaBr, Saint Gobain BrilLanCe 380, 3x3"
-* Duke 60% HPGe "1" (Ortec serial number 36-TN31061A)
-* Duke 60% HPGe "2" (Ortec serial number 36-TN30986A)
-* Duke 60% HPGe "3" (Ortec serial number 36-TN40663A)
-* Duke 60% HPGe "4" (Ortec serial number 36-TN21033A)
-* Duke 55% HPGe (Ortec serial number 4-TN21638A)
-* Duke 55% HPGe (Ortec serial number 4-TN31524A)
-* Duke 120% HPGe "Zero degree detector" (Ortec serial number 33-P40383A)
-* Darmstadt 100% HPGe "1" (Canberra serial number 10PC473156-A)
-* Darmstadt 100% HPGe "2" (Eurisys Mesures serial number 10PC447589-A)
-* Darmstadt Clover 100% "Polarimeter" (Eurisys Mesures serial number 10PC447590-a)
-* Cologne 100% HPGe (Ortec serial number 73954)
-* Stuttgart 86.2% HPGe (Canberra serial number 37-N311204)
 
-#### 2.1.3 Why so much code?
+#### 2.1.4 Why so much code?
 
-When looking at the code, even at the latest campaign, you may notice that parts of the code are redundant (for example several `Table2_XY.cc` files which contain almost the same information except for little changes). Furthermore, if you are used to codes like the [Agata Simulation Code](http://agata.pd.infn.it/documents/simulations/agataCode.html) or [G4Horus](https://gitlab.ikp.uni-koeln.de/jmayer/g4horus.git), you may notice that they heavily employ templates or abstract classes to reduce the code volume, for example for HPGe detectors, which all have about the same topology (a crystal, a cold finger, some housing ...).
+When looking at the code, even at the latest campaign, you may notice that parts of the code are redundant (for example several `DetectorConstruction/Campaign_2018_2019/src/Table2_XY.cc` files which contain almost the same information except for little changes).
 
-However, if there is one thing we have learned about the UTR over the years, it is that anything can change. We are using different detectors every time, which have to be moved/shielded/exchanged between runs, shielding on the tables is reinforced or removed, new things are very often custom-made and don't have simple shapes, ...
-The code somehow reflects this volatility of the setup, therefore it includes some more copy & paste and less abstract programming than other simulations.
+This is because we have learned, that, in the UTR, anything can change at any. We are using different detectors every time, which have to be moved/shielded/exchanged between runs, shielding on the tables is reinforced or removed, new things are very often custom-made and don't have simple shapes, ...
+The code somehow reflects this volatility of the setup, therefore it must include some more copy & paste and less abstract programming than other simulations with a well-defined setup.
 
-#### 2.1.4 Bricks
+#### 2.1.5 Bricks
 *Deprecated! Only valid for geometries before 2018 campaign*
 
 For maximum flexibility, the shielding of the setup can be constructed brick by brick. To avoid the `G4Solid->G4LogicalVolume->G4PhysicalVolume` procedure each time one would like to place a standardized brick, a lot of them are predefined as classes in `Bricks.hh`.
@@ -259,13 +299,13 @@ Once instantiated in DetectorConstruction.cc, bricks can be placed inside the G4
 
 Bricks are assumed to be cuboid objects, i.e. they can have 3 different side lengths. In `Bricks.hh`, the convention is that the long side points in z-direction, the medium side in x-direction and the short side in y-direction, if they can be distinguished. The respective lengths can be accessed via the member variables L, M and S.
 
-#### 2.1.5 Filters
+#### 2.1.6 Filters
 *Deprecated! Only valid for geometries before 2018 campaign*
 
 Similar to bricks, filters and filter cases in front of detectors are implemented in `Filters.hh` and can be placed using their `Put()` methods.
 The intent of this was to give the user an overview which filters are really there at the UTR. Sometimes, the documentation of experiments only mentions "thin", "medium" and "thick" filters, but no actual dimensions. Providing fixed filter types hopefully helps with such issues.
 
-#### 2.1.6 Targets
+#### 2.1.7 Targets
 *Deprecated! Only valid for geometries before 2018 campaign*
 
 Complicated targets can be implemented in `Targets.hh`. The placement in DetectorConstruction.cc works analog to the placement of detectors. Relevant properties of the targets can be made accessible by implementing Get() methods.
@@ -757,6 +797,8 @@ As described in section [2.1 Geometry](#geometry), the different available `Dete
 $ cmake -DCAMPAIGN=Campaign_2018 -DDETECTOR_CONSTRUCTION=64Ni_271_279 .
 ```
 
+If the ccmake GUI of CMake is used, it is possible to loop over the available campaigns and detector constructions by repeatedly pressing enter. The campaign takes precedence over the detector construction, i.e. if the campaign is changed, the build needs to be reconfigured before the correct selection of detector constructions is displayed. If a new directory has been added, rerun `cmake` again in the `utr/` directory to register it to CMake.
+
 #### 3.3.2 Configuration of the physics list
 
 As described in section [2.4 Physics](#physics), different physics models can be selected by setting the corresponding flag to `ON`. By default, the following models are used by `utr` (the name of the flag is given in parentheses):
@@ -1130,11 +1172,9 @@ U. Gayer (ugayer@ikp.tu-darmstadt.de)
 
 O. Papst (opapst@ikp.tu-darmstadt.de)
 
+J. Kleemann, M. Peck, M. Schilling
+
 This code is distributed under the terms of the GNU General Public License. See the COPYING file for more information.
-
-## 8 Acknowledgements <a name="acknowledgements"></a>
-
-UG would like to acknowledge the untiring effort of user Jörn Kleemann in debugging the code and making `utr` better in general.
 
 ## 9 References <a name="references"></a>
 

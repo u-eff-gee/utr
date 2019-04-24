@@ -18,6 +18,11 @@ You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/*
+ * General topology of a clover detector was taken from an
+ * Eurysis manual for clover detectors.
+ */
+
 #include "G4Box.hh"
 #include "G4Color.hh"
 #include "G4NistManager.hh"
