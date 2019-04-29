@@ -84,7 +84,7 @@ void Detectors_G3_409_489::Construct(G4ThreeVector global_coordinates){
 	G4double hpge4_phi = 180. * deg;
 	G4double hpge4_theta = 90. * deg;
 
-	HPGe_Coaxial hpge4(hpge_Collection.HPGe_ANL_P075689, World_Logical, "HPGe4");
+	HPGe_Coaxial hpge4(hpge_Collection.HPGe_ANL_41203, World_Logical, "HPGe4");
 	hpge4.Add_Filter("G4_Cu", 1.*1.15*mm, 45.*mm);
 	hpge4.Add_Filter("G4_Pb", 1.*1.2*mm, 45.*mm);
 	hpge4.Add_Wrap("G4_Pb", 2.*1.2*mm);

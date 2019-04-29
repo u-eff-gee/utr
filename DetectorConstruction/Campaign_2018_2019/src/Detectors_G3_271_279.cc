@@ -85,7 +85,10 @@ void Detectors_G3_271_279::Construct(G4ThreeVector global_coordinates){
 	G4double hpge4_phi = 180. * deg;
 	G4double hpge4_theta = 90. * deg;
 
-	HPGe_Coaxial hpge4(hpge_Collection.HPGe_ANL_P075689, World_Logical, "HPGe4");
+	// It is not clear from the logbook which ANL detector was used between
+	// runs 229 and 279. Could also have been HPGe_ANL_41203, which is
+	// very similar.
+	HPGe_Coaxial hpge4(hpge_Collection.HPGe_ANL_31670, World_Logical, "HPGe4");
 	hpge4.Add_Filter("G4_Pb", 5.*1.2*mm, 45.*mm);
 	hpge4.Add_Wrap("G4_Pb", 2.*1.2*mm);
 	hpge4.Construct(global_coordinates + G4ThreeVector(0., hpge4_dy, hpge4_dz),

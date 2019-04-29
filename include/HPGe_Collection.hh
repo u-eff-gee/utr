@@ -40,7 +40,8 @@ struct HPGe_Collection{
 	HPGe_Coaxial_Properties HPGe_100_TUD_73760;
 	HPGe_Coaxial_Properties HPGe_100_Cologne_73954;
 	HPGe_Coaxial_Properties HPGe_86_Stuttgart_31120;
-	HPGe_Coaxial_Properties HPGe_ANL_P075689;
+	HPGe_Coaxial_Properties HPGe_ANL_31670;
+	HPGe_Coaxial_Properties HPGe_ANL_41203;
 	HPGe_Clover_Properties HPGe_Clover_Yale;
 
 	HPGe_Collection(){
@@ -586,49 +587,80 @@ struct HPGe_Collection{
 		HPGe_86_Stuttgart_31120.dewar_wall_thickness = 5.*mm; // Estimated
 		HPGe_86_Stuttgart_31120.dewar_material = "G4_Al"; // Estimated
 
-		// 100% (?) coaxial HPGe of R.V.F. Janssens group
-		// with serial number P075689, manufacturer unknown
-		// No datasheet available, all dimensions from Cologne 73954 detector,
-		// since this one was the most similar (however, it is still a very
-		// crude approximation!)
-		// Property of Argonne National Lab
-		HPGe_ANL_P075689.detector_radius = 0.5*74*mm; 
-		HPGe_ANL_P075689.detector_length = 70.*mm;
-		HPGe_ANL_P075689.detector_face_radius = 2.*mm;
-		HPGe_ANL_P075689.hole_radius = 5.8*mm;
-		HPGe_ANL_P075689.hole_depth = 52.*mm;
-		HPGe_ANL_P075689.hole_face_radius = HPGe_ANL_P075689.hole_radius;
-		HPGe_ANL_P075689.mount_cup_thickness = 1.*mm;
-		HPGe_ANL_P075689.mount_cup_base_thickness = 5.*mm;
-		HPGe_ANL_P075689.mount_cup_material = "G4_Al";
-		HPGe_ANL_P075689.end_cap_outer_radius = 0.5*80.*mm;
-		HPGe_ANL_P075689.end_cap_to_crystal_gap_front = 3.*mm;
-		HPGe_ANL_P075689.end_cap_to_crystal_gap_side = 3.*mm;
-		HPGe_ANL_P075689.end_cap_thickness = 1.*mm;
-		HPGe_ANL_P075689.end_cap_to_crystal_gap_side = 
-			HPGe_ANL_P075689.end_cap_outer_radius- 
-			HPGe_ANL_P075689.end_cap_thickness- 
-			HPGe_ANL_P075689.mount_cup_thickness-
-			HPGe_ANL_P075689.detector_radius; // Calculated from outer radius and other given dimensions
-		HPGe_ANL_P075689.end_cap_window_thickness = 1.*mm;
-		HPGe_ANL_P075689.end_cap_length = 10.5*inch;
-		HPGe_ANL_P075689.mount_cup_length = 
-			HPGe_ANL_P075689.end_cap_length-
-			HPGe_ANL_P075689.end_cap_window_thickness-
-			HPGe_ANL_P075689.end_cap_to_crystal_gap_front; // Calculated from end cap length
-		HPGe_ANL_P075689.end_cap_material = "G4_Al";
-		HPGe_ANL_P075689.end_cap_window_material = "G4_Al";
-		HPGe_ANL_P075689.cold_finger_radius = 0.5*4.*mm;
-		HPGe_ANL_P075689.cold_finger_penetration_depth = HPGe_ANL_P075689.hole_depth - 5.*mm;
-		HPGe_ANL_P075689.cold_finger_material = "G4_Cu";
-		HPGe_ANL_P075689.connection_length = 3.5*inch; 
-		HPGe_ANL_P075689.connection_radius = 0.75*inch;
-		HPGe_ANL_P075689.dewar_offset = 0.*inch;
-		HPGe_ANL_P075689.connection_material = "G4_Al";
-		HPGe_ANL_P075689.dewar_length = 10.5*inch;
-		HPGe_ANL_P075689.dewar_outer_radius = 5.*inch; 
-		HPGe_ANL_P075689.dewar_wall_thickness = 5.*mm; 
-		HPGe_ANL_P075689.dewar_material = "G4_Al";
+		// 100% (103.5% according to data sheet) coaxial HPGe 
+		// with ORTEC serial number 42-TP41203A
+		// Property of R.V.F. Janssens group, Argonne National Lab
+		HPGe_ANL_41203.detector_radius = 0.5*89.9*mm; // Data sheet
+		HPGe_ANL_41203.detector_length = 98.3*mm; // Data sheet
+		HPGe_ANL_41203.detector_face_radius = 2.*mm; // Estimated
+		HPGe_ANL_41203.hole_radius = 0.5*10.*mm; // Estimated from 60% ORTEC models
+		HPGe_ANL_41203.hole_depth = 0.8*HPGe_ANL_41203.detector_length; // Estimated
+		HPGe_ANL_41203.hole_face_radius = HPGe_ANL_41203.hole_radius; // Estimated
+		HPGe_ANL_41203.mount_cup_thickness = 0.8*mm; // Estimated
+		HPGe_ANL_41203.mount_cup_base_thickness = HPGe_ANL_41203.mount_cup_thickness; // Estimated
+		HPGe_ANL_41203.mount_cup_material = "G4_Al"; // Estimated
+		HPGe_ANL_41203.end_cap_outer_radius = 0.5*4.25*inch; // Data sheet
+		HPGe_ANL_41203.end_cap_to_crystal_gap_front = 6.5*mm; // Data sheet
+		HPGe_ANL_41203.end_cap_thickness = 3.5*mm; // 'Absorbing layer' in data sheet
+		HPGe_ANL_41203.end_cap_to_crystal_gap_side = 
+			HPGe_ANL_41203.end_cap_outer_radius- 
+			HPGe_ANL_41203.end_cap_thickness- 
+			HPGe_ANL_41203.mount_cup_thickness-
+			HPGe_ANL_41203.detector_radius; // Calculated from outer radius and other given dimensions
+		HPGe_ANL_41203.end_cap_window_thickness = 1.*mm; // 'Absorbing layer' in data sheet
+		HPGe_ANL_41203.end_cap_length = 8.*inch; // Data sheet
+		HPGe_ANL_41203.mount_cup_length = 
+			HPGe_ANL_41203.end_cap_length-
+			HPGe_ANL_41203.end_cap_window_thickness-
+			HPGe_ANL_41203.end_cap_to_crystal_gap_front; // Calculated from end cap length
+		HPGe_ANL_41203.end_cap_material = "G4_Al"; // Data sheet
+		HPGe_ANL_41203.end_cap_window_material = "G4_Al"; // Data sheet
+		HPGe_ANL_41203.cold_finger_radius = 0.5*4.*mm; // Estimated from 60% ORTEC models
+		HPGe_ANL_41203.cold_finger_penetration_depth = HPGe_ANL_41203.hole_depth - 5.*mm; // Estimated
+		HPGe_ANL_41203.cold_finger_material = "G4_Cu"; // Estimated
+		HPGe_ANL_41203.connection_length = 4.5*inch; // Data sheet
+		HPGe_ANL_41203.connection_radius = 0.5*4.5*inch; // Data sheet
+		HPGe_ANL_41203.dewar_offset = 0.*inch;
+		HPGe_ANL_41203.connection_material = "G4_Al"; // Estimated
+		HPGe_ANL_41203.dewar_length = 16.5*inch; // Data sheet
+		HPGe_ANL_41203.dewar_outer_radius = 0.5*9.*inch; // Data sheet
+		HPGe_ANL_41203.dewar_wall_thickness = 5.*mm; // Estimated
+		HPGe_ANL_41203.dewar_material = "G4_Al"; // Estimated
+		
+		// 100% (103.5% according to data sheet) coaxial HPGe 
+		// with ORTEC serial number 43-TP31670A
+		// Property of R.V.F. Janssens group, Argonne National Lab
+		// At the moment, this one has the same dimensions as the
+		// very similar ANL detector with the serial number 42-TP41203A
+		HPGe_ANL_31670.detector_radius = HPGe_ANL_41203.detector_radius;
+		HPGe_ANL_31670.detector_length = HPGe_ANL_41203.detector_length;
+		HPGe_ANL_31670.detector_face_radius = HPGe_ANL_41203.detector_face_radius;
+		HPGe_ANL_31670.hole_radius = HPGe_ANL_41203.hole_radius;
+		HPGe_ANL_31670.hole_depth = HPGe_ANL_41203.hole_depth;
+		HPGe_ANL_31670.hole_face_radius = HPGe_ANL_41203.hole_face_radius;
+		HPGe_ANL_31670.mount_cup_thickness = HPGe_ANL_41203.mount_cup_thickness;
+		HPGe_ANL_31670.mount_cup_base_thickness = HPGe_ANL_41203.mount_cup_base_thickness;
+		HPGe_ANL_31670.mount_cup_material = HPGe_ANL_41203.mount_cup_material;
+		HPGe_ANL_31670.end_cap_outer_radius = HPGe_ANL_41203.end_cap_outer_radius;
+		HPGe_ANL_31670.end_cap_to_crystal_gap_front = HPGe_ANL_41203.end_cap_to_crystal_gap_front;
+		HPGe_ANL_31670.end_cap_thickness = HPGe_ANL_41203.end_cap_thickness;
+		HPGe_ANL_31670.end_cap_to_crystal_gap_side = HPGe_ANL_41203.end_cap_to_crystal_gap_side;
+		HPGe_ANL_31670.end_cap_window_thickness = HPGe_ANL_41203.end_cap_window_thickness;
+		HPGe_ANL_31670.end_cap_length = HPGe_ANL_41203.end_cap_length;
+		HPGe_ANL_31670.mount_cup_length = HPGe_ANL_41203.mount_cup_length;
+		HPGe_ANL_31670.end_cap_material = HPGe_ANL_41203.end_cap_material;
+		HPGe_ANL_31670.end_cap_window_material = HPGe_ANL_41203.end_cap_window_material;
+		HPGe_ANL_31670.cold_finger_radius = HPGe_ANL_41203.cold_finger_radius;
+		HPGe_ANL_31670.cold_finger_penetration_depth = HPGe_ANL_41203.cold_finger_penetration_depth;
+		HPGe_ANL_31670.cold_finger_material = HPGe_ANL_41203.cold_finger_material;
+		HPGe_ANL_31670.connection_length = HPGe_ANL_41203.connection_length;
+		HPGe_ANL_31670.connection_radius = HPGe_ANL_41203.connection_radius;
+		HPGe_ANL_31670.dewar_offset = HPGe_ANL_41203.dewar_offset;
+		HPGe_ANL_31670.connection_material = HPGe_ANL_41203.connection_material;
+		HPGe_ANL_31670.dewar_length = HPGe_ANL_41203.dewar_length;
+		HPGe_ANL_31670.dewar_outer_radius = HPGe_ANL_41203.dewar_outer_radius;
+		HPGe_ANL_31670.dewar_wall_thickness = HPGe_ANL_41203.dewar_wall_thickness;
+		HPGe_ANL_31670.dewar_material = HPGe_ANL_41203.dewar_material;
 
 		// Clover detector, Eurisys Mesures serial number OC107395
 		// Property of Yale University. Also used in the CAGRA campaign.
