@@ -40,7 +40,8 @@ void ZeroDegree_Setup::Construct(G4ThreeVector global_coordinates){
 	zerodegree_rotation->rotateZ(-zerodegree_phi);
 	zerodegree_rotation->rotateY(-zerodegree_theta);
 
-	HPGe_Coaxial zerodegree(hpge_Collection.HPGe_120_TUNL_40383, World_Logical, "ZeroDegree");
+	HPGe_Coaxial zerodegree(World_Logical, "ZeroDegree");
+	zerodegree.setProperties(hpge_Collection.HPGe_120_TUNL_40383);
 	zerodegree.Construct(global_coordinates + G4ThreeVector(0., zerodegree_dy, 0.),
-			zerodegree_theta, zerodegree_phi, zerodegree_rt, false, false, false);
+			zerodegree_theta, zerodegree_phi, zerodegree_rt, 0.*deg);
 }

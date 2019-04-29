@@ -40,12 +40,15 @@ void Detectors_G3_146_228::Construct(G4ThreeVector global_coordinates){
 	G4double hpge1_phi = 0. * deg;
 	G4double hpge1_theta = 90. * deg;
 
-	HPGe_Coaxial hpge1(hpge_Collection.HPGe_60_TUNL_40663, World_Logical, "HPGe1");
+	HPGe_Coaxial hpge1(World_Logical, "HPGe1");
+	hpge1.setProperties(hpge_Collection.HPGe_60_TUNL_40663);
+	hpge1.useFilterCase();
+	hpge1.useDewar();
 	hpge1.Add_Filter("G4_Cu", 1.*1.15*mm, 45.*mm);
 	hpge1.Add_Filter("G4_Pb", 1.*1.2*mm, 45.*mm);
 	hpge1.Add_Wrap("G4_Pb", 1.*1.2*mm);
 	hpge1.Construct(global_coordinates + G4ThreeVector(0., hpge1_dy, hpge1_dz),
-			hpge1_theta, hpge1_phi, hpge1_rt, true, false, true, 220.*deg);
+			hpge1_theta, hpge1_phi, hpge1_rt, 220.*deg);
 
 	/**************** HPGE2 *******************/
 
@@ -55,12 +58,15 @@ void Detectors_G3_146_228::Construct(G4ThreeVector global_coordinates){
 	G4double hpge2_phi = 90. * deg;
 	G4double hpge2_theta = 90. * deg;
 
-	HPGe_Coaxial hpge2(hpge_Collection.HPGe_60_TUNL_30986, World_Logical, "HPGe2");
+	HPGe_Coaxial hpge2(World_Logical, "HPGe2");
+	hpge2.setProperties(hpge_Collection.HPGe_60_TUNL_30986);
+	hpge2.useFilterCase();
+	hpge2.useDewar();
 	hpge2.Add_Filter("G4_Cu", 1.*1.15*mm, 45.*mm);
 	hpge2.Add_Filter("G4_Pb", (1.*1.2 + 2.*2.)*mm, 45.*mm);
 	hpge2.Add_Wrap("G4_Pb", 1.*1.2*mm);
 	hpge2.Construct(global_coordinates + G4ThreeVector(0., hpge2_dy, hpge2_dz),
-			hpge2_theta, hpge2_phi, hpge2_rt, true, false, true);
+			hpge2_theta, hpge2_phi, hpge2_rt, 0.*deg);
 
 	/**************** HPGE3 *******************/
 
@@ -70,12 +76,15 @@ void Detectors_G3_146_228::Construct(G4ThreeVector global_coordinates){
 	G4double hpge3_phi = 45. * deg;
 	G4double hpge3_theta = 135. * deg;
 
-	HPGe_Coaxial hpge3(hpge_Collection.HPGe_60_TUNL_31061, World_Logical, "HPGe3");
+	HPGe_Coaxial hpge3(World_Logical, "HPGe3");
+	hpge3.setProperties(hpge_Collection.HPGe_60_TUNL_31061);
+	hpge3.useFilterCase();
+	hpge3.useDewar();
 	hpge3.Add_Filter("G4_Cu", 1.*1.15*mm, 45.*mm);
 	hpge3.Add_Filter("G4_Pb", 1.*1.2*mm, 45.*mm);
 	hpge3.Add_Wrap("G4_Pb", 2.*1.2*mm);
 	hpge3.Construct(global_coordinates + G4ThreeVector(0., hpge3_dy, hpge3_dz),
-			hpge3_theta, hpge3_phi, hpge3_rt, true, false, true);
+			hpge3_theta, hpge3_phi, hpge3_rt, 0.*deg);
 
 	/**************** HPGE4 *******************/
 
@@ -85,12 +94,15 @@ void Detectors_G3_146_228::Construct(G4ThreeVector global_coordinates){
 	G4double hpge4_phi = 315. * deg;
 	G4double hpge4_theta = 135. * deg;
 
-	HPGe_Coaxial hpge4(hpge_Collection.HPGe_60_TUNL_21033, World_Logical, "HPGe4");
+	HPGe_Coaxial hpge4(World_Logical, "HPGe4");
+	hpge4.setProperties(hpge_Collection.HPGe_60_TUNL_21033);
+	hpge4.useFilterCase();
+	hpge4.useDewar();
 	hpge4.Add_Filter("G4_Cu", 1.*1.15*mm, 45.*mm);
 	hpge4.Add_Filter("G4_Pb", 1.*1.2*mm, 45.*mm);
 	hpge4.Add_Wrap("G4_Pb", 2.*1.2*mm);
 	hpge4.Construct(global_coordinates + G4ThreeVector(0., hpge4_dy, hpge4_dz),
-			hpge4_theta, hpge4_phi, hpge4_rt, true, false, true);
+			hpge4_theta, hpge4_phi, hpge4_rt, 0.*deg);
 
 	/**************** LABR1 *******************/
 
