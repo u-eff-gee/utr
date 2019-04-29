@@ -298,3 +298,8 @@ void HPGe_Coaxial::Construct(G4ThreeVector global_coordinates, G4double theta, G
 		}
 	}
 }
+
+void HPGe_Coaxial::Construct(G4ThreeVector global_coordinates, G4double theta, G4double phi,
+			       G4double dist_from_center){
+	Construct(global_coordinates, theta, phi, dist_from_center, 0.);
+}

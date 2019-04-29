@@ -25,9 +25,9 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <vector>
 
-#include "Detector.hh"
 #include "G4LogicalVolume.hh"
 
+#include "Detector.hh"
 #include "HPGe_Coaxial_Properties.hh"
 
 using std::vector;
@@ -39,6 +39,9 @@ class HPGe_Coaxial : public Detector{
 
 		void Construct(G4ThreeVector global_coordinates, G4double theta, G4double phi,
 			       G4double dist_from_center, G4double intrinsic_rotation_angle);
+		// If no intrinsic rotation angle is given, it defaults to zero
+		void Construct(G4ThreeVector global_coordinates, G4double theta, G4double phi,
+			       G4double dist_from_center);
 		void setProperties(HPGe_Coaxial_Properties &prop){properties = prop;};
 		void useFilterCase(){use_filter_case = true;};
 		void useFilterCaseRing(){use_filter_case_ring = true;};

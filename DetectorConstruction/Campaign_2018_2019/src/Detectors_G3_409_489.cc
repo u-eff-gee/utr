@@ -111,11 +111,14 @@ void Detectors_G3_409_489::Construct(G4ThreeVector global_coordinates){
 	G4double labr1_theta = 90. * deg;
 
 	LaBr_3x3 labr1(World_Logical, "LaBr1");
+	labr1.useFilterCase();
+	labr1.useFilterCaseRing();
+	labr1.useHousing();
 	labr1.Add_Filter("G4_Cu", 1.*1.15*mm, 45.*mm);
 	labr1.Add_Filter("G4_Pb", 1.*1.2*mm, 45.*mm);
 	labr1.Add_Wrap("G4_Pb", 1.*1.2*mm);
 	labr1.Construct(global_coordinates + G4ThreeVector(0., labr1_dy, labr1_dz),
-			labr1_theta, labr1_phi, labr1_rt, true, true, true);
+			labr1_theta, labr1_phi, labr1_rt);
 
 	/**************** LABR2 *******************/
 
@@ -126,11 +129,13 @@ void Detectors_G3_409_489::Construct(G4ThreeVector global_coordinates){
 	G4double labr2_theta = 90. * deg;
 
 	LaBr_3x3 labr2(World_Logical, "LaBr2");
+	labr2.useFilterCase();
+	labr2.useHousing();
 	labr2.Add_Filter("G4_Cu", 1.*1.15*mm, 45.*mm);
 	labr2.Add_Filter("G4_Pb", 1.*1.2*mm, 45.*mm);
 	labr2.Add_Wrap("G4_Pb", 1.*1.2*mm);
 	labr2.Construct(global_coordinates + G4ThreeVector(0., labr2_dy, labr2_dz),
-			labr2_theta, labr2_phi, labr2_rt, true, false, true);
+			labr2_theta, labr2_phi, labr2_rt);
 
 	/**************** LABR3 *******************/
 
@@ -141,10 +146,11 @@ void Detectors_G3_409_489::Construct(G4ThreeVector global_coordinates){
 	G4double labr3_theta = 135. * deg;
 
 	LaBr_3x3 labr3(World_Logical, "LaBr3");
+	labr3.useHousing();
 	labr3.Add_Filter("G4_Cu", 1.*1.15*mm, 45.*mm);
 	labr3.Add_Wrap("G4_Pb", 2.*1.2*mm);
 	labr3.Construct(global_coordinates + G4ThreeVector(0., labr3_dy, labr3_dz),
-			labr3_theta, labr3_phi, labr3_rt, false, false, true);
+			labr3_theta, labr3_phi, labr3_rt);
 
 	/**************** LABR4 *******************/
 
@@ -155,8 +161,9 @@ void Detectors_G3_409_489::Construct(G4ThreeVector global_coordinates){
 	G4double labr4_theta = 135. * deg;
 
 	LaBr_3x3 labr4(World_Logical, "LaBr4");
+	labr4.useHousing();
 	labr4.Add_Filter("G4_Cu", 1.*1.15*mm, 45.*mm);
 	labr4.Add_Wrap("G4_Pb", 2.*1.2*mm);
 	labr4.Construct(global_coordinates + G4ThreeVector(0., labr4_dy, labr4_dz),
-			labr4_theta, labr4_phi, labr4_rt, false, false, true);
+			labr4_theta, labr4_phi, labr4_rt);
 }

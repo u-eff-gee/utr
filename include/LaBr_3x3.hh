@@ -29,35 +29,29 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "G4LogicalVolume.hh"
 
+#include "Detector.hh"
+
 using std::vector;
 
-class LaBr_3x3 {
+class LaBr_3x3 : public Detector{
   public:
-	LaBr_3x3(G4LogicalVolume *World_Logical, G4String name);
+	LaBr_3x3(G4LogicalVolume *World_Logical, G4String name) : Detector (World_Logical, name), use_filter_case(false), use_filter_case_ring(false), use_housing(false){};
 	~LaBr_3x3(){};
 
 	void Construct(G4ThreeVector global_coordinates, G4double theta, G4double phi,
-		       G4double dist_from_center, bool use_filter_case, bool use_filter_case_ring, bool use_housing);
-	// Possibility to add disks of solid material in front of the detector to shield low-energy
-	// radiation. The first filter will be placed onto the front part of the detector that faces
-	// the target, all others will be placed on top of the previous one in the direction of the
-	// target.
-	void Add_Filter(G4String filter_material, G4double filter_thickness, G4double filter_radius);
-	// Possibility to wrap the detector end cap in a sheet of solid material
-	// to shield low-energy radiation. Similar to the filters, additional wraps
-	// will be wrapped around previous ones.
-	void Add_Wrap(G4String wrap_material, G4double wrap_thickness);
+		       G4double dist_from_center);
+	// When an intrinsic rotation angle is given, it will simply be ignored and
+	// the Construct() method above is called
+	void Construct(G4ThreeVector global_coordinates, G4double theta, G4double phi,
+		       G4double dist_from_center, G4double intrinsic_rotation_angle);
+	void useFilterCase(){use_filter_case = true;};
+	void useFilterCaseRing(){use_filter_case_ring = true;};
+	void useHousing(){use_housing = true;};
 
   private:
-	G4LogicalVolume *world_Logical;	
-	G4String detector_name;
-
-	vector<G4String> filter_materials;
-	vector<G4double> filter_thicknesses;
-	vector<G4double> filter_radii;
-
-	vector<G4String> wrap_materials;
-	vector<G4double> wrap_thicknesses;
+	bool use_filter_case;
+	bool use_filter_case_ring;
+	bool use_housing;
 };
 
 #endif
