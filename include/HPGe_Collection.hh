@@ -667,11 +667,25 @@ struct HPGe_Collection{
 		HPGe_Clover_Yale.crystal_radius = 0.5*50.*mm;
 		HPGe_Clover_Yale.crystal_length = 80.*mm;
 		HPGe_Clover_Yale.crystal_face_radius = 2.*mm;
-		HPGe_Clover_Yale.end_cap_outer_side_length = 101.*mm;
-		HPGe_Clover_Yale.end_cap_radius = 15.5*mm;
-		HPGe_Clover_Yale.end_cap_thickness = 1.*mm;
+		HPGe_Clover_Yale.crystal_gap = 2.*mm;
+		HPGe_Clover_Yale.end_cap_to_crystal_gap_front = 10.*mm;
+		HPGe_Clover_Yale.vacuum_length = 125.*mm;
+		HPGe_Clover_Yale.end_cap_front_side_length = 101.*mm;
+		HPGe_Clover_Yale.end_cap_front_rounding_radius = 15.5*mm;
+		HPGe_Clover_Yale.end_cap_front_length = 260.*mm;
+		HPGe_Clover_Yale.end_cap_front_thickness = 1.*mm;
 		HPGe_Clover_Yale.end_cap_window_thickness = 0.5*mm;
+		HPGe_Clover_Yale.end_cap_back_length = 220.*mm;
+		HPGe_Clover_Yale.end_cap_back_side_length = 130.*mm;
+		HPGe_Clover_Yale.end_cap_back_rounding_radius = 30.*mm;
+		HPGe_Clover_Yale.end_cap_back_thickness = 0.5*29.*mm;
 		HPGe_Clover_Yale.end_cap_material = "G4_Al";
-		HPGe_Clover_Yale.end_cap_window_material = "G4_Al";
+		HPGe_Clover_Yale.connection_length = 50.*mm;
+		HPGe_Clover_Yale.connection_radius = 0.5*70.*mm; // Estimated
+		HPGe_Clover_Yale.connection_material = "G4_Al";
+		HPGe_Clover_Yale.dewar_length = 268.*mm;
+		HPGe_Clover_Yale.dewar_outer_radius = 111.*mm;
+		HPGe_Clover_Yale.dewar_wall_thickness = 5.*mm;
+		HPGe_Clover_Yale.dewar_material = "G4_Al";
 	}
 };
