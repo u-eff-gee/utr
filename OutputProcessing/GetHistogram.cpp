@@ -198,7 +198,9 @@ if(args.verbose){
 		}
 	}
 		
-	cout << "> Processed " << utr.GetEntries() << " entries" << endl;
+	if(args.verbose){
+		cout << "> Processed " << utr.GetEntries() << " entries" << endl;
+	}
 
 	if(args.bin != -1){
 		cout << "[ ";
