@@ -995,7 +995,7 @@ The ROOT file can have a TTree with an arbitrary name and an arbitrary number of
 Be aware that conversion into text files increases the file size.
 
 ### 5.2 getHistogram
-`getHistogram` sorts the data from multiple output files (for example, several threads of the same simulation) into a ROOT histogram and saves the histogram to a new file.
+`getHistogram` sorts the data from multiple output files (for example, several threads of the same simulation) into a ROOT histogram and saves the histogram to a new file. It is assumed that the output of the simulation has at least the branches `edep` and `volume`, and optionally also `event` (see also [2.6 Output File Format](#outputfileformat), and that the detector IDs (i.e. the possible values of `volume`), determined by the `G4SensitiveDetector::SetDetectorID()` method (see also [2.2 Sensitive Detectors](#sensitivedetectors)), are integer numbers between 0 and `ID_MAX`, where `ID_MAX` is the maximum detector ID.
 Executing
 
 ```bash
@@ -1005,12 +1005,18 @@ GetHistogram
 
   -a                         Add back energy depositions that occurred in a
                              single event to the first detector which was hit.
+                             Overrides the '-m MULTIPLICITY' option.
   -b BIN                     Number of energy bin whose value should be
                              displayed
-  -e EMAX                    Maximum energy displayed in histogram (default: 15
-                             MeV)
-  -m MULTIPLICITY            Particle multiplicity (default: 1)
-  -n NHISTOGRAMS             Number of detection volumes (default: 12)
+  -e EMAX                    Maximum energy displayed in histogram in MeV
+                             (default: 15 MeV)
+  -m MULTIPLICITY            Particle multiplicity (default: 1). Will be
+                             ignored if used simultaneously with the '-a'
+                             option.
+  -n NHISTOGRAMS             Number of detection volumes (default: 12).
+                             'getHistogram' assumes that the NHISTOGRAMS
+                             histograms are labeled with integer number from 0
+                             to NHISTOGRAMS-1.
   -o OUTPUTFILENAME          Output file name
   -p PATTERN1                File name pattern 1
   -q PATTERN2                File name pattern 2
@@ -1022,14 +1028,14 @@ GetHistogram
 
 shows how to use the script. The meaning of the arguments to the options is:
 
-* EMAX: All energy depositions are stored in a histogram. This parameter sets the maximum energy of the histogram, while keeping the hard-coded number of bins (default: 15000) and the minimum energy (default: 0.0005 MeV) in `OutputProcessing/GetHistogram.cc`. Using the default values means that a single bin is equal to an energy window of 1 keV, which is convenient sometimes.
+* EMAX: All energy depositions are stored in a histogram. This parameter sets the maximum energy of the histogram (default: 15 MeV), while keeping the hard-coded number of bins (default: 15000) and the minimum energy (default: 0.0005 MeV) in `OutputProcessing/GetHistogram.cc`. Using the default values means that a single bin is equal to an energy window of 1 keV, which is often convenient.
 * TREENAME: Name of the ROOT tree (Default: TREENAME=="utr") in all of the output files.
 * PATTERN1 and PATTERN2: Two strings that identify the set of files to be merged. See also the example below. (Default: PATTERN1=="utr", PATTERN2==".root")
 * OUTPUTFILE: Name of the output file that contains the histograms. (Default: OUTPUTFILENAME=="hist.root")
 * MULTIPLICITY: Determines how many events should be accumulated before adding information to the histogram. This can be used, for example, to simulate higher multiplicity events in a detector: Imagine two photons with energies of 511 keV hit a detector and deposit all their energy. However, the two events cannot be distinguished by the detector due to pileup, so a single event with an energy of 1022 keV will be added to the spectrum. Similarly, Geant4 simulates events by event. In order to simulate pileup of n events, set MULTIPLICITY==n. (Default: MULTIPLICITY==1)
 * BIN: Number of the histogram bin that should be printed to the screen while executing `getHistogram`. This option was introduced because often, one is only interested in the content of a special bin in the histograms (for example the full-energy peak). If the histograms are defined such that bin `3000` contains the events with an energy deposition between `2.9995 MeV` and `3.0005 MeV` and so on, so there is an easy correspondence between bin number and energy. (Default: BIN==-1)
 
-The options `-v` and `-a` do not have arguments. The former simply produces more verbose output when `getHistogram` is executed. The latter implements a simple add-back capability to sum up all energy depositions that happened during a single event. This is interesting, for example, when segmented detectors are used. In its current implementation, the add-back algorithm will accumulate all energy depositions in a single event, even if there was cross-talk between physically separated detectors. This may or may not be desired by the user. In order for the add-back to work, the parameter `EVENT_ID` must be written to the output files, of course (see also [2.6 Output File Format](#outputfileformat) and [3.3 Build configuration](#build)).
+The options `-v` and `-a` do not have arguments. The former simply produces more verbose output when `getHistogram` is executed. The latter implements a simple add-back capability to sum up all energy depositions that happened during a single event. This is interesting, for example, when segmented detectors are used. In its current implementation, the add-back algorithm will accumulate all energy depositions in a single event, even if there was cross-talk between physically separated detectors. This may or may not be desired by the user. In order for the add-back to work, the parameter `EVENT_ID` must be written to the output files, of course (see also [2.6 Output File Format](#outputfileformat) and [3.3 Build configuration](#build)). Be aware that the add-back and the multiplicity functionality do not work together.
 
 **A short example:**
 The typical output of two different simulations on 2 threads each are the files
@@ -1058,22 +1064,6 @@ Yet another possibility is that you would like to merge both threads of `utr0` i
 $ ./loopGetHistogram 0 1 utr utr
 ```
 would do just what is described above, creating the output files `utr0.root` and `utr1.root`.
-
-The user has to hard-code the desired histograms in `OutputProcessing/GetHistogram.cpp`, i.e. edit the lines from
-
-```bash
-//
-//      START OF USER-DEFINED OUTPUT
-//
-```
-and
-```bash
-//
-//      END OF USER-DEFINED OUTPUT
-//
-```
-
-The standard `getHistogram` script that is included in this repository creates histograms (0 to 10 MeV, 10^4 bins) for the energy deposition by photons in the volumes with numbers 1 to 9 (about setting the number of a sensitive volume, see [2.2 Sensitive Detectors](#sensitivedetectors)). Setting a higher multiplicity means that the energy deposition of several simulated events is summed up.
 
 ### 5.3 histogramToTxt (executable)
 A direct follow-up to `getHistogram`, `HistogramToTxt.cpp` takes a ROOT file that contains **only** 1D histograms (*TH1* objects) and converts each histogram to a single text file. The script is used as follows:
@@ -1183,6 +1173,10 @@ O. Papst (opapst@ikp.tu-darmstadt.de)
 J. Kleemann, M. Peck, M. Schilling
 
 This code is distributed under the terms of the GNU General Public License. See the COPYING file for more information.
+
+## 8 Acknowledgements <a name="acknowledgements"></a>
+
+We thank N. Michaelis for a detailed measurement of the DHIPS site and a preliminary implementation of the geometry.
 
 ## 9 References <a name="references"></a>
 

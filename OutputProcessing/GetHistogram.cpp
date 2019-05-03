@@ -36,10 +36,13 @@ static struct argp_option options[] = {
 { 0, 'q', "PATTERN2", 0, "File name pattern 2" },
 { 0, 'o', "OUTPUTFILENAME", 0, "Output file name" },
 { 0, 'b', "BIN", 0, "Number of energy bin whose value should be displayed" },
-{ 0, 'e', "EMAX", 0, "Maximum energy displayed in histogram (default: 15 MeV)" },
-{ 0, 'n', "NHISTOGRAMS", 0, "Number of detection volumes (default: 12)" },
-{ 0, 'm', "MULTIPLICITY", 0, "Particle multiplicity (default: 1)" },
-{ 0, 'a', 0, 0, "Add back energy depositions that occurred in a single event to the first detector which was hit." },
+{ 0, 'e', "EMAX", 0, "Maximum energy displayed in histogram in MeV (default: 15 MeV)" },
+{ 0, 'n', "NHISTOGRAMS", 0, "Number of detection volumes (default: 12). 'getHistogram' assumes \
+that the NHISTOGRAMS histograms are labeled with integer number from 0 to NHISTOGRAMS-1." },
+{ 0, 'm', "MULTIPLICITY", 0, "Particle multiplicity (default: 1). \
+Will be ignored if used simultaneously with the '-a' option." },
+{ 0, 'a', 0, 0, "Add back energy depositions that occurred in a single event to the first detector which was hit. \
+Overrides the '-m MULTIPLICITY' option." },
 { 0, 'v', 0, 0, "Verbose mode (does not silence -b option)" },
 { 0, 0, 0, 0, 0 }
 };
@@ -84,15 +87,21 @@ if(args.verbose){
 		cout << "> FILES        : " << "*" << args.p1 << "*" << args.p2 << "*" << endl;
 		cout << "> OUTPUTFILE   : " << args.outputfilename << endl;
 		cout << "> NHISTOGRAMS  : " << args.nhistograms << endl;
-		cout << "> EMAX         : " << args.emax << endl;
-		cout << "> MULTIPLICITY : " << args.multiplicity << endl;
+		cout << "> EMAX         : " << args.emax << " MeV" << endl;
+		cout << "> MULTIPLICITY : ";
+		if(args.addback){
+			cout << "IGNORED" << endl;
+		} else{
+			cout << args.multiplicity << endl;
+		}
 		if(args.bin != -1){
 			cout << "> BIN          : " << args.bin << endl;
 		}
+		cout << "> ADDBACK      : ";
 		if(args.addback){
-			cout << "> ADDBACK      : TRUE" << endl;
+			cout << "TRUE" << endl;
 		} else{
-			cout << "> ADDBACK      : FALSE" << endl;
+			cout << "FALSE" << endl;
 		}
 		cout << "#############################################" << endl;
 	}
@@ -125,18 +134,10 @@ if(args.verbose){
 		}
 	}
 
-	//
-	//	START OF USER-DEFINED OUTPUT
-	//
-
 	// Create histograms
 	
 	const int nbins = 15000; // Number of bins in the histograms
 	const double emin = 0.0005; // Minimum energy of histograms in MeV
-	
-	//
-	//	END OF USER-DEFINED OUTPUT
-	//
 
 	vector<TH1*> hist(args.nhistograms + 1);
 	stringstream histname, histtitle;
@@ -159,56 +160,49 @@ if(args.verbose){
 	Double_t Edep, Volume;
 	Double_t Edep_hist[args.nhistograms] = {0.};
 
-
 	utr.SetBranchAddress("edep", &Edep);
 	utr.SetBranchAddress("volume", &Volume);
 	if(args.addback)
 		utr.SetBranchAddress("event", &Event);
 
-	int addback_counter = 0;
-	int last_event = 0;
-	int current_volume = 0;
+	unsigned int addback_counter = 0;
 
-	utr.GetEntry(0);
-	current_volume = (int) Volume;
-	Edep_hist[current_volume] += Edep;
 	if(args.addback){
-		last_event = (int) Event;
+		long unsigned int addback_volume = 0;
+		unsigned int addback_event = 0;
+		for(int i = 0; i < utr.GetEntries(); ++i){
+			utr.GetEntry(i);
+			if(addback_event != Event){
+				hist[addback_volume]->Fill(Edep_hist[addback_volume]);
+				hist[args.nhistograms]->Fill(Edep_hist[addback_volume]);
+				Edep_hist[addback_volume] = 0.;
+				addback_volume = (long unsigned int) Volume;
+				addback_event = (unsigned int) Event;
+				Edep_hist[addback_volume] = Edep;
+				++addback_counter;
+			} else{
+				Edep_hist[addback_volume] += Edep;
+			}
+		}
 	} else{
-		Event = 0;
-		last_event = 0;
-	}
-
-	for(int i = 1; i < utr.GetEntries(); ++i){
-		utr.GetEntry(i);
-
-		if(!args.addback)
-			Event = i;
-
-		if(multiplicity_counter[current_volume] == args.multiplicity && Event != last_event){
-			hist[(long unsigned int) current_volume]->Fill(Edep_hist[current_volume]);
-			hist[args.nhistograms]->Fill(Edep_hist[current_volume]);
-			Edep_hist[current_volume] = 0.;
-			multiplicity_counter[current_volume] = 0;
-			current_volume = (int) Volume;
-		}
-
-		Edep_hist[current_volume] += Edep;
-		if(Event != last_event){
-			++multiplicity_counter[current_volume];
-			++addback_counter;
-		}
-
-		if(args.addback){
-			last_event = (int) Event;
-		} else{
-			last_event = i;
+		for(int i = 0; i < utr.GetEntries(); ++i){
+			utr.GetEntry(i);
+			++multiplicity_counter[(long unsigned int) Volume];
+			Edep_hist[(long unsigned int) Volume] += Edep;
+			if(multiplicity_counter[(long unsigned int) Volume]==args.multiplicity){
+				hist[(long unsigned int) Volume]->Fill(Edep_hist[(long unsigned int) Volume]);
+				hist[args.nhistograms]->Fill(Edep_hist[(long unsigned int) Volume]);
+				Edep_hist[(long unsigned int) Volume] = 0.;
+				multiplicity_counter[(long unsigned int) Volume] = 0;
+			}
 		}
 	}
+		
+	cout << "> Processed " << utr.GetEntries() << " entries" << endl;
 
 	if(args.bin != -1){
 		cout << "[ ";
-		for(UInt_t i = 0; i < args.nhistograms; ++i){
+		for(UInt_t i = 0; i <= args.nhistograms; ++i){
 			if(i != 0){
 				cout << ", ";
 			}
@@ -227,10 +221,10 @@ if(args.verbose){
 	of->Close();
 
 	if(args.verbose){
-		if(addback_counter+1 == utr.GetEntries())
+		if(addback_counter == 0)
 			cout << "> No events added back" << endl;
 		else
-			cout << "> Percentage of events added back: " << ((1.-(double) addback_counter/ (double) utr.GetEntries())*100.) << endl;
+			cout << "> Percentage of events added back: " << ((1.-((double) addback_counter) / (double) utr.GetEntries())*100.) << " %" << endl;
 		cout << "> Created output file " << args.outputfilename << endl;
 	}
 }	
