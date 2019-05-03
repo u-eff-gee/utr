@@ -39,7 +39,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 using std::stringstream;
 
 void LaBr_3x3::Construct(G4ThreeVector global_coordinates, G4double theta, G4double phi,
-		       G4double dist_from_center){
+		       G4double dist_from_center) const{
 
 	G4NistManager *nist = G4NistManager::Instance();
 
@@ -245,7 +245,7 @@ void LaBr_3x3::Construct(G4ThreeVector global_coordinates, G4double theta, G4dou
 }
 
 void LaBr_3x3::Construct(G4ThreeVector global_coordinates, G4double theta, G4double phi,
-		       G4double dist_from_center, G4double intrinsic_rotation_angle){
+		       G4double dist_from_center, G4double intrinsic_rotation_angle) const {
 	G4cout << "Warning: Parameter 'intrinsic_rotation_angle=" << intrinsic_rotation_angle << "' given to completely symmetric LaBr_3x3 class was ignored" << G4endl;
 	Construct(global_coordinates, theta, phi, dist_from_center);
 }

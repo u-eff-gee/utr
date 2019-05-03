@@ -34,10 +34,10 @@ using std::vector;
 class Detector{
 	public:
 		Detector(G4LogicalVolume *World_Logical, G4String name);
-		virtual void Construct(G4ThreeVector global_coordinates, G4double theta, G4double phi, G4double dist_from_center, G4double intrinsic_rotation_angle) = 0;
+		virtual void Construct(G4ThreeVector global_coordinates, G4double theta, G4double phi, G4double dist_from_center, G4double intrinsic_rotation_angle) const = 0;
 		// Another version of Construct() for detectors which have a perfect internal
 		// symmetry axis w.r.t. rotation. 
-		virtual void Construct(G4ThreeVector global_coordinates, G4double theta, G4double phi, G4double dist_from_center) = 0;
+		virtual void Construct(G4ThreeVector global_coordinates, G4double theta, G4double phi, G4double dist_from_center) const = 0;
 		// Possibility to add disks of solid material in front of the detector to shield low-energy
 		// radiation. The first filter will be placed onto the front part of the detector that faces
 		// the target, all others will be placed on top of the previous one in the direction of the

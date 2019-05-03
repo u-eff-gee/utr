@@ -38,10 +38,10 @@ class HPGe_Coaxial : public Detector{
 		~HPGe_Coaxial(){};
 
 		void Construct(G4ThreeVector global_coordinates, G4double theta, G4double phi,
-			       G4double dist_from_center, G4double intrinsic_rotation_angle);
+			       G4double dist_from_center, G4double intrinsic_rotation_angle) const override;
 		// If no intrinsic rotation angle is given, it defaults to zero
 		void Construct(G4ThreeVector global_coordinates, G4double theta, G4double phi,
-			       G4double dist_from_center);
+			       G4double dist_from_center) const override;
 		void setProperties(HPGe_Coaxial_Properties &prop){properties = prop;};
 		void useFilterCase(){use_filter_case = true;};
 		void useFilterCaseRing(){use_filter_case_ring = true;};

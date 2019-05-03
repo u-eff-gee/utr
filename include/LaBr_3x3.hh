@@ -39,11 +39,11 @@ class LaBr_3x3 : public Detector{
 	~LaBr_3x3(){};
 
 	void Construct(G4ThreeVector global_coordinates, G4double theta, G4double phi,
-		       G4double dist_from_center);
+		       G4double dist_from_center) const override;
 	// When an intrinsic rotation angle is given, it will simply be ignored and
 	// the Construct() method above is called
 	void Construct(G4ThreeVector global_coordinates, G4double theta, G4double phi,
-		       G4double dist_from_center, G4double intrinsic_rotation_angle);
+		       G4double dist_from_center, G4double intrinsic_rotation_angle) const override;
 	void useFilterCase(){use_filter_case = true;};
 	void useFilterCaseRing(){use_filter_case_ring = true;};
 	void useHousing(){use_housing = true;};

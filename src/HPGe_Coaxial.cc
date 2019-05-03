@@ -34,7 +34,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 using std::stringstream;
 
-void HPGe_Coaxial::Construct(G4ThreeVector global_coordinates, G4double theta, G4double phi, G4double dist_from_center, G4double intrinsic_rotation_angle){
+void HPGe_Coaxial::Construct(G4ThreeVector global_coordinates, G4double theta, G4double phi, G4double dist_from_center, G4double intrinsic_rotation_angle) const {
 
 	G4NistManager *nist = G4NistManager::Instance();
 	G4ThreeVector symmetry_axis(sin(theta)*cos(phi), sin(theta)*sin(phi), cos(theta)); // Symmetry axis along which the single elements of the detector are constructed
@@ -300,6 +300,6 @@ void HPGe_Coaxial::Construct(G4ThreeVector global_coordinates, G4double theta, G
 }
 
 void HPGe_Coaxial::Construct(G4ThreeVector global_coordinates, G4double theta, G4double phi,
-			       G4double dist_from_center){
+			       G4double dist_from_center) const {
 	Construct(global_coordinates, theta, phi, dist_from_center, 0.);
 }
