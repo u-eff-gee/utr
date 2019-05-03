@@ -607,7 +607,7 @@ struct HPGe_Collection{
 			HPGe_ANL_41203.end_cap_thickness- 
 			HPGe_ANL_41203.mount_cup_thickness-
 			HPGe_ANL_41203.detector_radius; // Calculated from outer radius and other given dimensions
-		HPGe_ANL_41203.end_cap_window_thickness = 1.*mm; // 'Absorbing layer' in data sheet
+		HPGe_ANL_41203.end_cap_window_thickness = 3.5*mm; // 'Absorbing layer' in data sheet
 		HPGe_ANL_41203.end_cap_length = 8.*inch; // Data sheet
 		HPGe_ANL_41203.mount_cup_length = 
 			HPGe_ANL_41203.end_cap_length-
@@ -627,13 +627,11 @@ struct HPGe_Collection{
 		HPGe_ANL_41203.dewar_wall_thickness = 5.*mm; // Estimated
 		HPGe_ANL_41203.dewar_material = "G4_Al"; // Estimated
 		
-		// 100% (103.5% according to data sheet) coaxial HPGe 
+		// 100% coaxial HPGe 
 		// with ORTEC serial number 43-TP31670A
 		// Property of R.V.F. Janssens group, Argonne National Lab
-		// At the moment, this one has the same dimensions as the
-		// very similar ANL detector with the serial number 42-TP41203A
-		HPGe_ANL_31670.detector_radius = HPGe_ANL_41203.detector_radius;
-		HPGe_ANL_31670.detector_length = HPGe_ANL_41203.detector_length;
+		HPGe_ANL_31670.detector_radius = 0.5*88.6*mm;
+		HPGe_ANL_31670.detector_length = 84.1*mm;
 		HPGe_ANL_31670.detector_face_radius = HPGe_ANL_41203.detector_face_radius;
 		HPGe_ANL_31670.hole_radius = HPGe_ANL_41203.hole_radius;
 		HPGe_ANL_31670.hole_depth = HPGe_ANL_41203.hole_depth;
