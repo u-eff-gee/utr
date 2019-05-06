@@ -20,7 +20,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 /*
 Setup for runs 465 - 482
-Mostly for with a 58Ni target in G3 setup and 60Ni target in the second setup.
+Mostly with a 60Ni target in G3 setup and 58Ni target in the second setup.
 Corresponds to 'Setup 10' in the ELOG
 */
 
@@ -51,8 +51,8 @@ Corresponds to 'Setup 10' in the ELOG
 #include "Table2_243_279.hh"
 #include "Detectors_2nd_Setup_10.hh"
 #include "ZeroDegree_Setup.hh"
-#include "Ni64_Target.hh"
-#include "Ni64_Sobotka_Target.hh"
+#include "Ni58_Target.hh"
+#include "Ni60_Target.hh"
 
 // Sensitive Detectors
 #include "G4SDManager.hh"
@@ -86,18 +86,6 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	 * SECOND_TARGET
 	 */
 
-	G4Colour white(1.0, 1.0, 1.0);
-	G4Colour grey(0.5, 0.5, 0.5);
-	G4Colour black(0.0, 0.0, 0.0);
-	G4Colour red(1.0, 0.0, 0.0);
-	G4Colour green(0.0, 1.0, 0.0);
-	G4Colour blue(0.0, 0.0, 1.0);
-	G4Colour cyan(0.0, 1.0, 1.0);
-	G4Colour magenta(1.0, 0.0, 1.0);
-	G4Colour yellow(1.0, 1.0, 0.0);
-	G4Colour orange(1.0, 0.5, 0.0);
-	G4Colour light_orange(1.0, 0.82, 0.36);
-
 	G4NistManager *nist = G4NistManager::Instance();
 	G4Material *air = nist->FindOrBuildMaterial("G4_AIR");
 
@@ -114,7 +102,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	    new G4LogicalVolume(World_dim, air, "World_Logical", 0, 0, 0);
 
 	//World_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());
-    	G4VisAttributes* world_vis = new G4VisAttributes(true, red);
+    	G4VisAttributes* world_vis = new G4VisAttributes(true, G4Color::Red());
     	world_vis->SetForceWireframe(true);
 
 	World_Logical->SetVisAttributes(world_vis);
@@ -148,8 +136,8 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	Beampipe_Downstream beampipe_Downstream(World_Logical);
 	Detectors_2nd_Setup_10 detectors_2nd(World_Logical);	
 	ZeroDegree_Setup zeroDegree_Setup(World_Logical);
-	Ni64_Target g3_Target;
-	Ni64_Sobotka_Target second_Target;
+	Ni60_Target g3_Target;
+	Ni58_Target second_Target;
 
 	/***************************************************/
 	/*****************  CONSTRUCTION  *****************/

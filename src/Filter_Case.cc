@@ -48,7 +48,7 @@ Filter_Case::Filter_Case(G4LogicalVolume *World_Logical, G4String name):
 	filter_case_name(name),
 	filter_case_ring_thickness(0.1*inch), // Estimated from thickness of filter case bottom
 	filter_case_bottom_thickness(0.1*inch)
-{};
+{}
 
 void Filter_Case::Construct_Ring(G4ThreeVector global_coordinates, G4double theta,
 		G4double phi, G4double dist_from_center){

@@ -18,20 +18,22 @@ You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Detector.hh"
+#ifndef NI60_TARGET_HH
+#define NI60_TARGET_HH 1
 
-Detector::Detector(G4LogicalVolume *World_Logical, G4String name):
-	world_Logical(World_Logical),
-	detector_name(name)
-{}
+#include "G4LogicalVolume.hh"
 
-void Detector::Add_Filter(G4String filter_material, G4double filter_thickness, G4double filter_radius){
-	filter_materials.push_back(filter_material);
-	filter_thicknesses.push_back(filter_thickness);
-	filter_radii.push_back(filter_radius);
-}
+class Ni60_Target{
+public:
+	Ni60_Target();
+	Ni60_Target(G4LogicalVolume *World_Log);
+	~Ni60_Target(){};
 
-void Detector::Add_Wrap(G4String wrap_material, G4double wrap_thickness){
-	wrap_materials.push_back(wrap_material);
-	wrap_thicknesses.push_back(wrap_thickness);
-}
+	void Construct(G4ThreeVector global_coordinates);
+	void Set_Containing_Volume(G4LogicalVolume *World_Log){ World_Logical = World_Log; };
+
+private:
+	G4LogicalVolume *World_Logical;
+};
+
+#endif
