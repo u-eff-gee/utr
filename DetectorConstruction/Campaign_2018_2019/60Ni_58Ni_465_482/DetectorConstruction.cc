@@ -21,7 +21,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 /*
 Setup for runs 465 - 482
 Mostly with a 60Ni target in G3 setup and 58Ni target in the second setup.
-Corresponds to 'Setup 10' in the ELOG
+Both the G3 and the 2nd setup correspond to 'Setup 10' in the ELOG
 */
 
 #include "DetectorConstruction.hh"

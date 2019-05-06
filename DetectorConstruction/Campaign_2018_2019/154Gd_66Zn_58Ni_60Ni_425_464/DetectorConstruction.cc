@@ -19,8 +19,12 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 /*
-Setup for runs 409 - 423
-Actually, the g3 setup is valid until run 489
+Setup for runs 425 - 464
+Starting with the targets 154Gd and 66Zn, there were
+several changes afterwards, until it ended up in the
+58Ni/60Ni runs.
+The detector setups for this run are from the "Setup 11" configuration in the ELOG
+(for G3, this is the same as the Setup 10 configuration)
 */
 
 #include "DetectorConstruction.hh"
@@ -48,10 +52,10 @@ Actually, the g3 setup is valid until run 489
 #include "Wheel.hh"
 #include "G3_Table.hh"
 #include "Table2_243_279.hh"
-#include "Detectors_2nd_271_279.hh"
+#include "Detectors_2nd_Setup_11.hh"
 #include "ZeroDegree_Setup.hh"
-#include "Ni64_Target.hh"
-#include "Ni64_Sobotka_Target.hh"
+#include "Ni58_Target.hh"
+#include "Ni60_Target.hh"
 
 // Sensitive Detectors
 #include "G4SDManager.hh"
@@ -85,18 +89,6 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	 * SECOND_TARGET
 	 */
 
-	G4Colour white(1.0, 1.0, 1.0);
-	G4Colour grey(0.5, 0.5, 0.5);
-	G4Colour black(0.0, 0.0, 0.0);
-	G4Colour red(1.0, 0.0, 0.0);
-	G4Colour green(0.0, 1.0, 0.0);
-	G4Colour blue(0.0, 0.0, 1.0);
-	G4Colour cyan(0.0, 1.0, 1.0);
-	G4Colour magenta(1.0, 0.0, 1.0);
-	G4Colour yellow(1.0, 1.0, 0.0);
-	G4Colour orange(1.0, 0.5, 0.0);
-	G4Colour light_orange(1.0, 0.82, 0.36);
-
 	G4NistManager *nist = G4NistManager::Instance();
 	G4Material *air = nist->FindOrBuildMaterial("G4_AIR");
 
@@ -113,7 +105,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	    new G4LogicalVolume(World_dim, air, "World_Logical", 0, 0, 0);
 
 	//World_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());
-    	G4VisAttributes* world_vis = new G4VisAttributes(true, red);
+    	G4VisAttributes* world_vis = new G4VisAttributes(true, G4Color::Red());
     	world_vis->SetForceWireframe(true);
 
 	World_Logical->SetVisAttributes(world_vis);
@@ -145,10 +137,10 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	G3_Table g3_Table(World_Logical);
 	Table2_243_279 table2(World_Logical);
 	Beampipe_Downstream beampipe_Downstream(World_Logical);
-	Detectors_2nd_271_279 detectors_2nd(World_Logical);	
+	Detectors_2nd_Setup_10 detectors_2nd(World_Logical);	
 	ZeroDegree_Setup zeroDegree_Setup(World_Logical);
-	Ni64_Target g3_Target;
-	Ni64_Sobotka_Target second_Target;
+	Ni60_Target g3_Target;
+	Ni58_Target second_Target;
 
 	/***************************************************/
 	/*****************  CONSTRUCTION  *****************/
@@ -203,9 +195,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	/***************** DETECTORS_2ND *****************/
 
-	// Detectors in second setup are simply copied from the 64Ni_271_279 geometry
-	// Comment their placement to avoid wrong simulations
-	//detectors_2nd.Construct(G4ThreeVector(0., 0., G3_Target_To_2nd_Target));
+	detectors_2nd.Construct(G4ThreeVector(0., 0., G3_Target_To_2nd_Target));
 
 	/***************** ZERODEGREE_SETUP *****************/
 
@@ -281,25 +271,25 @@ void DetectorConstruction::ConstructSDandField() {
 
 	/*************** Second setup **************/
 
-	//EnergyDepositionSD *HPGe9SD = new EnergyDepositionSD("HPGe9", "HPGe9");
-	//G4SDManager::GetSDMpointer()->AddNewDetector(HPGe9SD);
-	//HPGe9SD->SetDetectorID(9);
-	//SetSensitiveDetector("HPGe9", HPGe9SD, true);
+	EnergyDepositionSD *HPGe9SD = new EnergyDepositionSD("HPGe9", "HPGe9");
+	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe9SD);
+	HPGe9SD->SetDetectorID(9);
+	SetSensitiveDetector("HPGe9", HPGe9SD, true);
 
-//	EnergyDepositionSD *HPGe10SD = new EnergyDepositionSD("HPGe10", "HPGe10");
-//	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe10SD);
-//	HPGe10SD->SetDetectorID(10);
-//	SetSensitiveDetector("HPGe_Cologne", HPGe10SD, true);
-//
-//	EnergyDepositionSD *HPGe11SD = new EnergyDepositionSD("HPGe11", "HPGe11");
-//	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe11SD);
-//	HPGe11SD->SetDetectorID(11);
-//	SetSensitiveDetector("HPGe_Stuttgart", HPGe11SD, true);
-//
-//	EnergyDepositionSD *HPGe12SD = new EnergyDepositionSD("HPGe12", "HPGe12");
-//	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe12SD);
-//	HPGe12SD->SetDetectorID(12);
-//	SetSensitiveDetector("HPGe12", HPGe12SD, true);
+	EnergyDepositionSD *HPGe10SD = new EnergyDepositionSD("HPGe10", "HPGe10");
+	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe10SD);
+	HPGe10SD->SetDetectorID(10);
+	SetSensitiveDetector("HPGe10", HPGe10SD, true);
+
+	EnergyDepositionSD *HPGe11SD = new EnergyDepositionSD("HPGe11", "HPGe11");
+	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe11SD);
+	HPGe11SD->SetDetectorID(11);
+	SetSensitiveDetector("HPGe11", HPGe11SD, true);
+
+	EnergyDepositionSD *HPGe12SD = new EnergyDepositionSD("HPGe12", "HPGe12");
+	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe12SD);
+	HPGe12SD->SetDetectorID(12);
+	SetSensitiveDetector("HPGe12", HPGe12SD, true);
 }
 
 void DetectorConstruction::print_info() const {

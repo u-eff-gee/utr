@@ -44,14 +44,14 @@ Actually, the g3 setup is valid until run 489
 #include "First_UTR_Wall.hh"
 #include "First_Setup.hh"
 #include "G3_Wall_243_279.hh"
-#include "Detectors_G3_Setup_10.hh"
+#include "Detectors_G3_Setup_4.hh"
 #include "Wheel.hh"
 #include "G3_Table.hh"
 #include "Table2_243_279.hh"
-#include "Detectors_2nd_271_279.hh"
+#include "Detectors_2nd_Setup_4.hh"
 #include "ZeroDegree_Setup.hh"
-#include "Ni64_Target.hh"
-#include "Ni64_Sobotka_Target.hh"
+#include "Nd150_Target.hh"
+#include "Mo100_Target.hh"
 
 // Sensitive Detectors
 #include "G4SDManager.hh"
@@ -140,15 +140,15 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	First_UTR_Wall first_UTR_Wall(World_Logical);
 	First_Setup first_Setup(World_Logical);
 	G3_Wall_243_279 g3_Wall(World_Logical); // Was not there in these runs. However, it still defines the floor height, so it is needed here
-	Detectors_G3_Setup_10 detectors_G3(World_Logical);
+	Detectors_G3_Setup_4 detectors_G3(World_Logical);
 	Wheel wheel(World_Logical);
 	G3_Table g3_Table(World_Logical);
 	Table2_243_279 table2(World_Logical);
 	Beampipe_Downstream beampipe_Downstream(World_Logical);
-	Detectors_2nd_271_279 detectors_2nd(World_Logical);	
+	Detectors_2nd_Setup_4 detectors_2nd(World_Logical);	
 	ZeroDegree_Setup zeroDegree_Setup(World_Logical);
-	Ni64_Target g3_Target;
-	Ni64_Sobotka_Target second_Target;
+	Nd150_Target g3_Target;
+	Mo100_Target second_Target;
 
 	/***************************************************/
 	/*****************  CONSTRUCTION  *****************/
@@ -203,9 +203,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	/***************** DETECTORS_2ND *****************/
 
-	// Detectors in second setup are simply copied from the 64Ni_271_279 geometry
-	// Comment their placement to avoid wrong simulations
-	//detectors_2nd.Construct(G4ThreeVector(0., 0., G3_Target_To_2nd_Target));
+	detectors_2nd.Construct(G4ThreeVector(0., 0., G3_Target_To_2nd_Target));
 
 	/***************** ZERODEGREE_SETUP *****************/
 
@@ -281,25 +279,25 @@ void DetectorConstruction::ConstructSDandField() {
 
 	/*************** Second setup **************/
 
-	//EnergyDepositionSD *HPGe9SD = new EnergyDepositionSD("HPGe9", "HPGe9");
-	//G4SDManager::GetSDMpointer()->AddNewDetector(HPGe9SD);
-	//HPGe9SD->SetDetectorID(9);
-	//SetSensitiveDetector("HPGe9", HPGe9SD, true);
+	EnergyDepositionSD *HPGe9SD = new EnergyDepositionSD("HPGe9", "HPGe9");
+	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe9SD);
+	HPGe9SD->SetDetectorID(9);
+	SetSensitiveDetector("HPGe9", HPGe9SD, true);
 
-//	EnergyDepositionSD *HPGe10SD = new EnergyDepositionSD("HPGe10", "HPGe10");
-//	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe10SD);
-//	HPGe10SD->SetDetectorID(10);
-//	SetSensitiveDetector("HPGe_Cologne", HPGe10SD, true);
-//
-//	EnergyDepositionSD *HPGe11SD = new EnergyDepositionSD("HPGe11", "HPGe11");
-//	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe11SD);
-//	HPGe11SD->SetDetectorID(11);
-//	SetSensitiveDetector("HPGe_Stuttgart", HPGe11SD, true);
-//
-//	EnergyDepositionSD *HPGe12SD = new EnergyDepositionSD("HPGe12", "HPGe12");
-//	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe12SD);
-//	HPGe12SD->SetDetectorID(12);
-//	SetSensitiveDetector("HPGe12", HPGe12SD, true);
+	EnergyDepositionSD *HPGe10SD = new EnergyDepositionSD("HPGe10", "HPGe10");
+	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe10SD);
+	HPGe10SD->SetDetectorID(10);
+	SetSensitiveDetector("HPGe10", HPGe10SD, true);
+
+	EnergyDepositionSD *HPGe11SD = new EnergyDepositionSD("HPGe11", "HPGe11");
+	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe11SD);
+	HPGe11SD->SetDetectorID(11);
+	SetSensitiveDetector("HPGe11", HPGe11SD, true);
+
+	EnergyDepositionSD *HPGe12SD = new EnergyDepositionSD("HPGe12", "HPGe12");
+	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe12SD);
+	HPGe12SD->SetDetectorID(12);
+	SetSensitiveDetector("HPGe12", HPGe12SD, true);
 }
 
 void DetectorConstruction::print_info() const {

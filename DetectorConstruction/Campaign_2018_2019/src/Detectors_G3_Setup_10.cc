@@ -139,7 +139,7 @@ void Detectors_G3_Setup_10::Construct(G4ThreeVector global_coordinates){
 	/**************** LABR3 *******************/
 
 	G4double labr3_rt = 112. * mm; 
-	G4double labr3_dy = 7. * mm; 
+	G4double labr3_dy = -7. * mm; 
 	G4double labr3_dz = 0. * mm; 
 	G4double labr3_phi = 225. * deg;
 	G4double labr3_theta = 135. * deg;
@@ -154,7 +154,7 @@ void Detectors_G3_Setup_10::Construct(G4ThreeVector global_coordinates){
 	/**************** LABR4 *******************/
 
 	G4double labr4_rt = 112. * mm;
-	G4double labr4_dy = 7. * mm;
+	G4double labr4_dy = -7. * mm;
 	G4double labr4_dz = 0. * mm;
 	G4double labr4_phi = 135. * deg;
 	G4double labr4_theta = 135. * deg;
