@@ -18,6 +18,11 @@ You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/*
+ * Setup 11 for the 2nd setup was used for runs 425 to 464.
+ * After that, Setup 10 was restored.
+ */
+
 #ifndef DETECTORS_2ND_SETUP_11_HH
 #define DETECTORS_2ND_SETUP_11_HH 1
 

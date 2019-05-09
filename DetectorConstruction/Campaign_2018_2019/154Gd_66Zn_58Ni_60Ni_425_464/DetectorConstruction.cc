@@ -137,7 +137,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	G3_Table g3_Table(World_Logical);
 	Table2_243_279 table2(World_Logical);
 	Beampipe_Downstream beampipe_Downstream(World_Logical);
-	Detectors_2nd_Setup_10 detectors_2nd(World_Logical);	
+	Detectors_2nd_Setup_11 detectors_2nd(World_Logical);	
 	ZeroDegree_Setup zeroDegree_Setup(World_Logical);
 	Ni60_Target g3_Target;
 	Ni58_Target second_Target;

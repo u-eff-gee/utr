@@ -18,6 +18,10 @@ You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/*
+ * Setup 4 for G3 was used between runs 314 and 334
+ */
+
 #ifndef DETECTORS_G3_SETUP_4_HH
 #define DETECTORS_G3_SETUP_4_HH 1
 

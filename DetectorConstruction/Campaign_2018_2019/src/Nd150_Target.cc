@@ -145,4 +145,4 @@ void Nd150_Target::Construct(G4ThreeVector global_coordinates){
 
 	new G4PVPlacement(
 	    0, global_coordinates + G4ThreeVector(), Nd150_Logical, "Nd150_Target", World_Logical, false, 0);
-};
+}

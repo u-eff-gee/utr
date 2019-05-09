@@ -112,4 +112,4 @@ void Mo100_Target::Construct(G4ThreeVector global_coordinates){
 	G4LogicalVolume *Mo100_logical = new G4LogicalVolume(Mo100_solid, target_Mo100, "Mo100_container_bottom_logical");
 	Mo100_logical->SetVisAttributes(G4Color::Yellow());
 	new G4PVPlacement(0, global_coordinates+G4ThreeVector(), Mo100_logical, "Mo100_container_bottom", World_Logical, false, 0);
-};
+}
