@@ -978,7 +978,7 @@ It is also possible to create 3D visualization files that can be viewed by an ex
 
 ## 5 Output Processing <a name="outputprocessing"></a>
 
-The directory `OutputProcessing` contains some **sample** ROOT and shell scripts that can be adapted by the user to process their simulation output. For example, a complete toolchain exists to extract full-energy peak efficiencies from a series of simulations (see also [5.5 fep_efficieny](#fep_efficiency)). Executing
+The directory `OutputProcessing` contains some **sample** ROOT and shell scripts that can be adapted by the user to process their simulation output. For example, a complete toolchain exists to extract full-energy peak efficiencies from a series of simulations (see also [5.5 fep_efficieny](#fepefficiency)). Executing
 
 ```bash
 $ cd OutputProcessing/
@@ -1007,7 +1007,7 @@ $ ./rootToTxt ROOTFILE
 The ROOT file can have a TTree with an arbitrary name and an arbitrary number of TBranch objects. The output text file has the same name as the ROOT file but with a ".txt" suffix.
 Be aware that conversion into text files increases the file size.
 
-### 5.2 getHistogram
+### 5.2 getHistogram <a name="getHistogram"></a>
 `getHistogram` sorts the data from multiple output files (for example, several threads of the same simulation) into a ROOT histogram and saves the histogram to a new file. It is assumed that the output of the simulation has at least the branches `edep` and `volume`, and optionally also `event` (see also [2.6 Output File Format](#outputfileformat), and that the detector IDs (i.e. the possible values of `volume`), determined by the `G4SensitiveDetector::SetDetectorID()` method (see also [2.2 Sensitive Detectors](#sensitivedetectors)), are integer numbers between 0 and `ID_MAX`, where `ID_MAX` is the maximum detector ID.
 Executing
 
@@ -1114,7 +1114,7 @@ MergeFiles
 For the meaning of the arguments, refer to the documentation of the `GetHistogram` script.
 The `TChain` file can also be post-processed with the aforementioned scripts, in particular `RootToTxt` which cannot merge data on its own.
 
-### 5.5 fep_efficiency <a name="fep_efficieny"></a>
+### 5.5 fep_efficiency <a name="fepefficieny"></a>
 A follow-up to [histogramToTxt](#histogramToTxt), `fep_efficiency` can loop over two-column histogram files and extract the full-energy peak (FEP) efficiency, assuming that this is the content of the bin with the highest energy which has a nonzero content. Note that this may not always be what a user interpretes as the 'efficiency' of a detector. A call of `fep_efficiency` without command-line arguments describes the usage in detail:
 
 ```
@@ -1140,6 +1140,13 @@ Two output files will be created, where the energies and the corresponding FEP c
 [1] A text histogram is a two-column file which contains the energy in the first column and the number of counts in the second column. Such a file is returned by the histogramToTXT script of utr, for example.
 [2] The full-energy peak in the histogram file is defined as the bin with the highest energy with a nonzero content.
 ```
+
+Including `fepefficiency`, a complete toolchain exists for the simulation and extraction of FEP efficiencies. The typical workflow would be:
+
+ 1. Simulate the detection efficiency by looping over different source energies. It will be assumed that the simulated geometry contains detection volumes which are defined to be `EnergyDepositionSD` (see also [2.2 Sensitive Detectors](#sensitivedetectors)). If multiple volumes are used, the output of the volume identifier must be activated, of course (see also [2.6 Output File Format](#outputfileformat)). This will create output files `utr<i>_t<t>.root` files, which contain the energy deposition in the corresponding volumes per event. The number `<i>` will correspond to a certain source energy.
+ 2. Sort the energy deposition into histograms by using the [getHistogram](#getHistogram) script, probably with the help of the `loopGetHistogram.sh` script. Executing `loopGetHistogram.sh` will sum the single threads and create a set of files called `utr<i>.root` which contain `TH1` ROOT histograms.
+ 3. Convert the ROOT files to text histograms by using the [histogramToTxt](#histogramToTxt) script, probably with the help of the `loopHistogramToTxt.sh` script. This will create a set of files called `det<j>_utr<i>.txt`, where `<j>` corresponds to the ID of a detector. These files contain a two-column representation of the histograms.
+ 4. Extract the FEP efficiency using the script described in this section.
 
 ## 6 Unit Tests <a name="unittests"></a>
 

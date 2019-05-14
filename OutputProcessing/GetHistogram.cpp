@@ -27,7 +27,7 @@ struct arguments{
 	bool addback;
 	bool verbose;
 	
-	arguments() : tree("utr"), p1("utr"), p2(".root"), outputfilename("hist.root"), bin(-1), emax(15.), nhistograms(12), multiplicity(1), addback(false), verbose(false) {};
+	arguments() : tree("utr"), p1("utr"), p2(".root"), outputfilename("hist.root"), bin(-1), emax(15.), nhistograms(13), multiplicity(1), addback(false), verbose(false) {};
 };
 
 static struct argp_option options[] = {
