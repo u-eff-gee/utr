@@ -85,7 +85,7 @@ Consider creating a macro like `loop.mac` to loop over variables in your macro f
 
 ### 1.10 Analyze the output
 
-See section [5 Output Processing](#output). For some tasks, for example the extraction of full-energy peak efficiencies, complete toolchains already exist which probably need only minimal adaptions.
+See section [5 Output Processing](#outputprocessing). For some tasks, for example the extraction of full-energy peak efficiencies, complete toolchains already exist which probably need only minimal adaptions.
 
 ## 2 Features <a name="features"></a>
 
@@ -1093,7 +1093,7 @@ HISTNAME_FILENAME.txt
 
 where HISTNAME is the name of the TH1 object and FILENAME the same as above.
 The shell script `loopHistogramToTxt.sh` shows how to loop the script over a large number of files.
-Refer to the next-to next section [5.5 fep_efficiency](#fep_efficiency) to see how to process these files even further.
+Refer to the next-to next section [5.5 fep_efficiency](#fepefficiency) to see how to process these files even further.
 
 ### 5.4 MergeFiles.cpp
 `MergeFiles` creates a ROOT file which contains a `TChain` of multiple simulation output files. This makes it possible to access the data in all files as if they were in a single ROOT tree. `MergeFiles` recognizes similar arguments as `GetHistogram` (in fact, `MergeFiles` was created by 'cannibalizing' `GetHistogram`):
@@ -1114,7 +1114,7 @@ MergeFiles
 For the meaning of the arguments, refer to the documentation of the `GetHistogram` script.
 The `TChain` file can also be post-processed with the aforementioned scripts, in particular `RootToTxt` which cannot merge data on its own.
 
-### 5.5 fep_efficiency <a name="fepefficieny"></a>
+### 5.5 fep_efficiency <a name="fepefficiency"></a>
 A follow-up to [histogramToTxt](#histogramToTxt), `fep_efficiency` can loop over two-column histogram files and extract the full-energy peak (FEP) efficiency, assuming that this is the content of the bin with the highest energy which has a nonzero content. Note that this may not always be what a user interpretes as the 'efficiency' of a detector. A call of `fep_efficiency` without command-line arguments describes the usage in detail:
 
 ```
