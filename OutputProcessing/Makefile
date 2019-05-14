@@ -4,10 +4,11 @@ ROOTFLAGS=-isystem$(shell root-config --incdir) -L$(shell root-config --libdir) 
 
 all: getHistogram histogramToTxt rootToTxt mergeFiles fep_efficiency
 
-getHistogram: GetHistogram.cpp
+getHistogram: GetHistogram.cpp getHistogramRDF.cpp
 	$(CPP) -o $@ $< $(CFLAGS) $(ROOTFLAGS)
 	cp $@ ..
 	cp loopGetHistogram.sh ..
+	cp getHistogramRDF.cpp ..
 
 histogramToTxt: HistogramToTxt.cpp
 	$(CPP) -o $@ $< $(CFLAGS) $(ROOTFLAGS)
@@ -30,6 +31,7 @@ fep_efficiency: fep_efficiency.sh
 clean:
 	rm getHistogram
 	rm ../getHistogram
+	rm ../getHistogramRDF.cpp
 	rm ../loopGetHistogram.sh
 	rm histogramToTxt
 	rm ../histogramToTxt

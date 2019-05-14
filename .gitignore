@@ -9,7 +9,9 @@ include/utrConfig.h
 
 # Compiled binaries
 utr
+fep_efficiency.sh
 getHistogram
+getHistogramRDF.cpp
 histogramToTxt
 rootToTxt
 angdisttest
