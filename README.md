@@ -85,7 +85,7 @@ Consider creating a macro like `loop.mac` to loop over variables in your macro f
 
 ### 1.10 Analyze the output
 
-See section [5 Output Processing](#output)
+See section [5 Output Processing](#output). For some tasks, for example the extraction of full-energy peak efficiencies, complete toolchains already exist which probably need only minimal adaptions.
 
 ## 2 Features <a name="features"></a>
 
@@ -978,7 +978,7 @@ It is also possible to create 3D visualization files that can be viewed by an ex
 
 ## 5 Output Processing <a name="outputprocessing"></a>
 
-The directory `OutputProcessing` contains some **sample** ROOT scripts that can be adapted by the user to process their simulation output. Executing
+The directory `OutputProcessing` contains some **sample** ROOT and shell scripts that can be adapted by the user to process their simulation output. For example, a complete toolchain exists to extract full-energy peak efficiencies from a series of simulations (see also [5.5 fep_efficieny](#fep_efficiency)). Executing
 
 ```bash
 $ cd OutputProcessing/
@@ -1078,7 +1078,7 @@ $ ./loopGetHistogram 0 1 utr utr
 ```
 would do just what is described above, creating the output files `utr0.root` and `utr1.root`.
 
-### 5.3 histogramToTxt (executable)
+### 5.3 histogramToTxt (executable) <a name="histogramToTxt"></a>
 A direct follow-up to `getHistogram`, `HistogramToTxt.cpp` takes a ROOT file that contains **only** 1D histograms (*TH1* objects) and converts each histogram to a single text file. The script is used as follows:
 
 ```bash
@@ -1093,6 +1093,7 @@ HISTNAME_FILENAME.txt
 
 where HISTNAME is the name of the TH1 object and FILENAME the same as above.
 The shell script `loopHistogramToTxt.sh` shows how to loop the script over a large number of files.
+Refer to the next-to next section [5.5 fep_efficiency](#fep_efficiency) to see how to process these files even further.
 
 ### 5.4 MergeFiles.cpp
 `MergeFiles` creates a ROOT file which contains a `TChain` of multiple simulation output files. This makes it possible to access the data in all files as if they were in a single ROOT tree. `MergeFiles` recognizes similar arguments as `GetHistogram` (in fact, `MergeFiles` was created by 'cannibalizing' `GetHistogram`):
@@ -1112,6 +1113,33 @@ MergeFiles
 
 For the meaning of the arguments, refer to the documentation of the `GetHistogram` script.
 The `TChain` file can also be post-processed with the aforementioned scripts, in particular `RootToTxt` which cannot merge data on its own.
+
+### 5.5 fep_efficiency <a name="fep_efficieny"></a>
+A follow-up to [histogramToTxt](#histogramToTxt), `fep_efficiency` can loop over two-column histogram files and extract the full-energy peak (FEP) efficiency, assuming that this is the content of the bin with the highest energy which has a nonzero content. Note that this may not always be what a user interpretes as the 'efficiency' of a detector. A call of `fep_efficiency` without command-line arguments describes the usage in detail:
+
+```
+$ ./fep_efficiency
+he script loops over text histograms [1] with names PREFIX<i>SUFFIX (where <i> denotes all integer numbers from START to STOP, including these limits), reads out the full-energy peak (FEP) content [2] and determines the FEP efficiency.
+
+  For example, the command
+    $ ./fep_efficiency.sh det0_utr 1 3 .txt 1000000
+  will loop over the following files:
+    det0_utr1.txt
+    det0_utr2.txt
+    det0_utr3.txt
+
+The last argument denotes the number of simulated primary particles, which is needed to calculate the efficiency. If you do not know NSIM, simply enter an arbitrary value.
+Two output files will be created, where the energies and the corresponding FEP counts/efficiencies are given in the first and second column. The number of simulated primary particles will be printed in the header.
+
+    PREFIX       File name prefix
+    SUFFIX       File name suffix
+    START        Begin of file numbers
+    STOP         End of file numbers
+    NSIM         Number of simulated primary particles
+
+[1] A text histogram is a two-column file which contains the energy in the first column and the number of counts in the second column. Such a file is returned by the histogramToTXT script of utr, for example.
+[2] The full-energy peak in the histogram file is defined as the bin with the highest energy with a nonzero content.
+```
 
 ## 6 Unit Tests <a name="unittests"></a>
 
