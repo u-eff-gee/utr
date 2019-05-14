@@ -38,6 +38,7 @@ void getHistogramRDF(
 		"det11",
 		"det12",
 	},
+	string general_condition="true",
 	double xlow = 0.0005,
 	double xup = 10.0005,
 	unsigned int nbins = 10000,
@@ -97,14 +98,16 @@ void getHistogramRDF(
 
 	vector<ROOT::RDF::RResultPtr<::TH1D>> hist;
 	ROOT::RDataFrame df(chain);
+	df.Filter("edep==4.");
 
 	stringstream histname, histtitle, volume_condition;
 
 	cout << endl << "> Filling the following histograms:" << endl;
+	cout << "\tGENERAL CONDITION : " << general_condition << endl;
 	cout << "\tNAME : CONDITION" << endl;
 	for(unsigned int i = 0; i < conditions.size(); ++i){
 		cout << "\t" << histogramnames[i] << " : '" << conditions[i] << "'" << endl;
-		hist.push_back(df.Filter(conditions[i].c_str()).Histo1D({histogramnames[i].c_str(), conditions[i].c_str(), (int) nbins, xlow, xup}, "edep"));
+		hist.push_back(df.Filter(general_condition.c_str()).Filter(conditions[i].c_str()).Histo1D({histogramnames[i].c_str(), conditions[i].c_str(), (int) nbins, xlow, xup}, "edep"));
 
 		histname.str("");
 		histtitle.str("");
