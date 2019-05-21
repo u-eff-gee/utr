@@ -18,32 +18,23 @@ You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef DETECTORCONSTRUCTION_HH
-#define DETECTORCONSTRUCTION_HH 1
+#ifndef G3_TABLE_HH
+#define G3_TABLE_HH 1
 
-#include "G4SystemOfUnits.hh"
-#include "G4UnitsTable.hh"
-#include "G4VUserDetectorConstruction.hh"
+#include "G4LogicalVolume.hh"
 
-#include "utrConfig.h"
+class G3_Table{
+public:
+	G3_Table(G4LogicalVolume *World_Log);
+	~G3_Table(){};
 
-class DetectorConstruction : public G4VUserDetectorConstruction {
-  public:
-	DetectorConstruction();
-	~DetectorConstruction();
+	void Construct(G4ThreeVector global_coordinates);
 
-	virtual G4VPhysicalVolume *Construct();
-	virtual void ConstructSDandField();
-
-	void print_info() const;
+	G4double Get_Length(){ return G3_Table_Length; };
 
 private:
-	G4double World_x;
-	G4double World_y;
-	G4double World_z;
-
-	G4double G3_Target_To_2nd_Target;
-	G4double Collimator_Entrance_To_G3_Target;
+	G4LogicalVolume *World_Logical;
+	G4double G3_Table_Length;
 };
 
 #endif

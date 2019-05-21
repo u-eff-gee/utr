@@ -30,28 +30,28 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4ExtrudedSolid.hh"
 
 #include "Units.hh"
-#include "Table2_229_242.hh"
+#include "Table2.hh"
 
-Table2_229_242::Table2_229_242(G4LogicalVolume *World_Log):
+#include "Bricks.hh"
+
+Table2::Table2(G4LogicalVolume *World_Log):
 World_Logical(World_Log),
 Table2_Length(38.*inch),
 Z_Axis_Offset_Z(-2.25*inch) // This is how far the beam tube holder extends into the G3 table 
 {}
 
-void Table2_229_242::Construct(G4ThreeVector global_coordinates){
+void Table2::Construct(G4ThreeVector global_coordinates){
 	
 	G4Colour green(0., 0.5, 0.);
+	G4Colour yellow(1., 1., 0.);
 	G4Colour grey(0.5, 0.5, 0.5);
 	G4Colour white(1.0, 1.0, 1.0);
 	G4Colour light_orange(1.0, 0.82, 0.36);
 
 	G4NistManager *nist = G4NistManager::Instance();
 
-	G4Material *Pb = nist->FindOrBuildMaterial("G4_Pb");
 	G4Material *Al = nist->FindOrBuildMaterial("G4_Al");
-	G4Material *Fe = nist->FindOrBuildMaterial("G4_Fe");
 	G4Material *Plexiglass = nist->FindOrBuildMaterial("G4_PLEXIGLASS");
-	G4Material *one_third_density_brass = nist->FindOrBuildMaterial("one_third_density_brass");
 
 	G4double Table_Plate_Radius = 17.*inch;
 	G4double Table_Plate_Hole_Radius = 9.*inch;
@@ -85,43 +85,15 @@ void Table2_229_242::Construct(G4ThreeVector global_coordinates){
 
 	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., -Table2_Length*0.5 + Upstream_Holder_Ring_Length*0.5), Upstream_Holder_Ring_Logical, "Upstream_Holder_Ring", World_Logical, false, 0, false);
 
-	// Vaccum valve inside upstream beam pipe holder
-	
-	G4double Valve_Outer_Radius = 2.5*inch; // Estimated
-	G4double Valve_Thickness = 1.5*inch; // Estimated
-	G4double Valve_Window_Thickness = 2.*mm; // Estimated
+	G4double Plexi_Ring_Radius = 2.5*inch; // Estimated
+	G4double Plexi_Ring_Thickness = 4.*mm; // Estimated
 
-	G4Tubs* Valve_Solid = new G4Tubs("Valve_Solid", 1.*inch, Valve_Outer_Radius, Valve_Thickness*0.5, 0., twopi);
+	G4Tubs *Upstream_Plexi_Ring_Solid = new G4Tubs("Upstream_Plexi_Ring_Solid", 1.*inch, Plexi_Ring_Radius, Plexi_Ring_Thickness*0.5, 0., twopi);
 
-	G4LogicalVolume *Valve_Logical = new G4LogicalVolume(Valve_Solid, Plexiglass, "Valve_Logical");
-	Valve_Logical->SetVisAttributes(white);
+	G4LogicalVolume *Upstream_Plexi_Ring_Logical = new G4LogicalVolume(Upstream_Plexi_Ring_Solid, Plexiglass, "Upstream_Plexi_Ring_Logical");
+	Upstream_Plexi_Ring_Logical->SetVisAttributes(white);
 
-	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., -Table2_Length*0.5 + Upstream_Holder_Ring_Length*0.5), Valve_Logical, "Valve", World_Logical, false, 0, false); // Position estimated
-
-	G4Tubs *Valve_Window_Solid = new G4Tubs("Valve_Window_Solid", 0., 1.*inch, Valve_Window_Thickness*0.5, 0., twopi);
-
-	G4LogicalVolume *Valve_Window_Logical = new G4LogicalVolume(Valve_Window_Solid, Plexiglass, "Valve_Window_Logical");
-	Valve_Window_Logical->SetVisAttributes(white);
-
-	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., -Table2_Length*0.5 + Upstream_Holder_Ring_Length*0.5 - Valve_Thickness*0.5 + Valve_Window_Thickness*0.5), Valve_Window_Logical, "Valve_Window", World_Logical, false, 0, false); // Position estimated
-	
-	// Lead shielding inside of upstream beam pipe holder
-	
-	G4double Lead_Brick_X = 4.*inch;
-	G4double Lead_Brick_Y = 4.*inch;
-	G4double Lead_Brick_Z = 2.*inch;
-	G4double Lead_Brick_Hole_Radius = 1.*inch;
-
-	G4Box *Lead_Brick_Solid_Solid = new G4Box("Lead_Brick_Solid_Solid", Lead_Brick_X*0.5, Lead_Brick_Y*0.5, Lead_Brick_Z*0.5);
-	G4Tubs *Lead_Brick_Hole_Solid = new G4Tubs("Lead_Brick_Hole_Solid", 0., Lead_Brick_Hole_Radius, Lead_Brick_Z, 0., twopi);
-	
-	G4SubtractionSolid *Lead_Brick_Solid = new G4SubtractionSolid("Lead_Brick_Solid", Lead_Brick_Solid_Solid, Lead_Brick_Hole_Solid);
-
-	G4LogicalVolume *Lead_Brick_Logical = new G4LogicalVolume(Lead_Brick_Solid, Pb, "Lead_Brick_Logical");
-	Lead_Brick_Logical->SetVisAttributes(green);
-
-	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., -Table2_Length*0.5 + Lead_Brick_Z*0.5), Lead_Brick_Logical, "Lead_Brick_1", World_Logical, false, 0, false);
-	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., -Table2_Length*0.5 + Upstream_Holder_Ring_Length - Lead_Brick_Z*0.5), Lead_Brick_Logical, "Lead_Brick_2", World_Logical, false, 0, false);
+	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., -Table2_Length*0.5 + Upstream_Holder_Ring_Length*0.5), Upstream_Plexi_Ring_Logical, "Upstream_Holder_Ring", World_Logical, false, 0, false);
 
 	// Downstream beam pipe holder
 	
@@ -150,10 +122,7 @@ void Table2_229_242::Construct(G4ThreeVector global_coordinates){
 
 	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., Table_Plate_Hole_Radius + Downstream_Holder_Ring_Length*0.5), Downstream_Holder_Ring_Logical, "Downstream_Holder_Ring", World_Logical, false, 0, false);
 
-	G4double Downstream_Plexi_Ring_Radius = 2.5*inch; // Estimated
-	G4double Downstream_Plexi_Ring_Thickness = 4.*mm; // Estimated
-
-	G4Tubs *Downstream_Plexi_Ring_Solid = new G4Tubs("Downstream_Plexi_Ring_Solid", 1.*inch, Downstream_Plexi_Ring_Radius, Downstream_Plexi_Ring_Thickness*0.5, 0., twopi);
+	G4Tubs *Downstream_Plexi_Ring_Solid = new G4Tubs("Downstream_Plexi_Ring_Solid", 1.*inch, Plexi_Ring_Radius, Plexi_Ring_Thickness*0.5, 0., twopi);
 
 	G4LogicalVolume *Downstream_Plexi_Ring_Logical = new G4LogicalVolume(Downstream_Plexi_Ring_Solid, Plexiglass, "Downstream_Plexi_Ring_Logical");
 	Downstream_Plexi_Ring_Logical->SetVisAttributes(white);
@@ -234,7 +203,26 @@ void Table2_229_242::Construct(G4ThreeVector global_coordinates){
     new G4PVPlacement(0, global_coordinates + G4ThreeVector(-30.*mm, -40.*mm, 430.*mm), Downstream_Holder_Fixture_Logical, "Downstream_Holder_Fixture", World_Logical, false, 0, false);
 
 	// Holding structure for vertical detectors
+
+	/***********************************
+	 *      Brass (CuZn30) 
+	 ***********************************/
 	
+	G4Element *nat_Cu = nist->FindOrBuildElement("Cu");
+	G4Element *nat_Zn = nist->FindOrBuildElement("Zn");
+
+	G4double brass_density = 8.75 * g / cm3; // Estimated from densities given in Wikipedia
+
+	G4Material *brass = new G4Material("brass", brass_density, 2);
+
+	brass->AddElement(nat_Cu, 70.*perCent);
+	brass->AddElement(nat_Zn, 30.*perCent);
+
+	G4Material *one_third_density_brass = new G4Material("one_third_density_brass", brass_density/3., 2);
+
+	one_third_density_brass->AddElement(nat_Cu, 70.*perCent);
+	one_third_density_brass->AddElement(nat_Zn, 30.*perCent);    
+
 	G4double Brass_Column_Height = 24.*inch;
 	G4double Brass_Column_Base = 1.5*inch;
 
@@ -271,7 +259,7 @@ void Table2_229_242::Construct(G4ThreeVector global_coordinates){
 	G4LogicalVolume *Table_Thin_Plate_Logical = new G4LogicalVolume(Table_Thin_Plate_Solid, Al, "Table_Plate_Logical");
 	Table_Thin_Plate_Logical->SetVisAttributes(grey);
 
-	new G4PVPlacement(rot_Table, global_coordinates + G4ThreeVector(0., -Upstream_Holder_Ring_Outer_Radius + Upstream_Holder_Hole_Depth - Upstream_Holder_Base_Y - Holder_Base_To_Table -Table_Plate_Thickness*0.5 + Table_Thin_Plate_Thickness*0.5, 0.), Table_Thin_Plate_Logical, "Table_Plate", World_Logical, false, 0, false);
+	new G4PVPlacement(rot_Table, global_coordinates + G4ThreeVector(0., -Upstream_Holder_Ring_Outer_Radius + Upstream_Holder_Hole_Depth - Upstream_Holder_Base_Y - Holder_Base_To_Table -Table_Plate_Thickness*0.5 - Table_Thin_Plate_Thickness*0.5, 0.), Table_Thin_Plate_Logical, "Table_Plate", World_Logical, false, 0, false);
 
 	// Construct holding structure on top of the table
 
@@ -292,74 +280,126 @@ void Table2_229_242::Construct(G4ThreeVector global_coordinates){
 
 	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., -Upstream_Holder_Ring_Outer_Radius + Upstream_Holder_Hole_Depth - Upstream_Holder_Base_Y - Holder_Base_To_Table -Table_Plate_Thickness - 18.*inch,  -3.75*inch - Brass_Column_Base - Al_Bar_Thickness*0.5), Al_Bar_Logical, "Al_Bar_2", World_Logical, false, 0, false); // Estimated vertical position
 
-	// Lead shielding after first beam pipe holder
+	// Lead and concrete shielding on the upstream side on top of the table
 	
-	G4Box *Lead_On_Table_1_Solid_Solid = new G4Box("Lead_On_Table_1_Solid_Solid", 12.*inch*0.5, 8.*inch*0.5, 2.*inch*0.5);
-	G4Tubs *Lead_On_Table_1_Hole_Solid = new G4Tubs("Lead_On_Table_1_Hole_Solid", 0., 1.*inch, 2.*inch, 0., twopi);
+	BridgeBrick *bb = new BridgeBrick(World_Logical);
+	ConcreteBrick *cb = new ConcreteBrick(World_Logical);
+	NormBrick *nb = new NormBrick(World_Logical);
+	ShortNormBrick *snb = new ShortNormBrick(World_Logical);
 
-	G4SubtractionSolid *Lead_On_Table_1_Solid = new G4SubtractionSolid("Lead_On_Table_1_Solid", Lead_On_Table_1_Solid_Solid, Lead_On_Table_1_Hole_Solid, 0, G4ThreeVector(0., 2.*inch, 0.));
+	cb->Put(global_coordinates.x() + Upstream_Holder_Ring_Outer_Radius + cb->M * 0.5,
+		global_coordinates.y() + Table_Plate_Thickness-cb->M * 0.5,
+	        global_coordinates.z() - Table2_Length*0.5 + cb->L * 0.5);
+	cb->Put(global_coordinates.x()-Upstream_Holder_Ring_Outer_Radius - cb->M * 0.5, 
+		global_coordinates.y() + Table_Plate_Thickness-cb->M * 0.5,
+	        global_coordinates.z() - Table2_Length*0.5 + cb->L * 0.5);
 
-	G4LogicalVolume* Lead_On_Table_1_Logical = new G4LogicalVolume(Lead_On_Table_1_Solid, Pb, "Lead_On_Table_1_Logical");
-	Lead_On_Table_1_Logical->SetVisAttributes(green);
+	// First layer
+	nb->Put(global_coordinates.x()+Upstream_Holder_Ring_Outer_Radius + nb->L * 0.5,
+		global_coordinates.y() + Table_Plate_Thickness+nb->S * 0.5,
+	        global_coordinates.z() - Table2_Length*0.5 + nb->S, 0., 90. * deg, 0.);
+	nb->Put(global_coordinates.x()-Upstream_Holder_Ring_Outer_Radius - nb->L * 0.5,
+		global_coordinates.y() + Table_Plate_Thickness+nb->S * 0.5,
+	        global_coordinates.z() - Table2_Length*0.5 + nb->S, 0., 90. * deg, 0.);
 
-	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., -2.*inch, -Table2_Length*0.5 + Upstream_Holder_Ring_Length + 1.*inch), Lead_On_Table_1_Logical, "Lead_On_Table_1", World_Logical, false, 0, false);
+	nb->Put(global_coordinates.x()+Upstream_Holder_Ring_Outer_Radius + nb->L * 0.5 - 35. * mm,
+		global_coordinates.y() + Table_Plate_Thickness+nb->S * 1.5,
+	        global_coordinates.z() - Table2_Length*0.5+nb->S, 0., 90. * deg, 0.);
+	nb->Put(global_coordinates.x()-Upstream_Holder_Ring_Outer_Radius - nb->L * 0.5 + 35. * mm,
+		global_coordinates.y() + Table_Plate_Thickness+nb->S * 1.5,
+	        global_coordinates.z() - Table2_Length*0.5+nb->S, 0., 90. * deg, 0.);
 
-	G4Box *Lead_On_Table_2_Solid = new G4Box("Lead_On_Table_1_Solid_Solid", 8.*inch*0.5, 4.*inch*0.5, 2.*inch*0.5);
+	nb->Put(global_coordinates.x()+nb->L * 0.5, global_coordinates.y() + Table_Plate_Thickness+nb->S * 2.5,
+		global_coordinates.z() - Table2_Length*0.5 + nb->S, 0., 90. * deg, 0.);
+	nb->Put(global_coordinates.x()-nb->L * 0.5, global_coordinates.y() + Table_Plate_Thickness+nb->S * 2.5,
+		global_coordinates.z() - Table2_Length*0.5 + nb->S, 0., 90. * deg, 0.);
 
-	G4LogicalVolume* Lead_On_Table_2_Logical = new G4LogicalVolume(Lead_On_Table_2_Solid, Pb, "Lead_On_Table_2_Logical");
-	Lead_On_Table_2_Logical->SetVisAttributes(green);
+	// Second layer
+	nb->Put(global_coordinates.x()+ bb->L*0.5 + nb->L * 0.5,
+		global_coordinates.y() + Table_Plate_Thickness+nb->S * 0.5,
+	        global_coordinates.z() - Table2_Length*0.5 +nb->S * 3., 0., 90. * deg, 0.);
+	nb->Put(global_coordinates.x()- bb->L*0.5 - nb->L * 0.5,
+		global_coordinates.y() + Table_Plate_Thickness+nb->S * 0.5,
+	        global_coordinates.z() - Table2_Length*0.5 +nb->S * 3., 0., 90. * deg, 0.);
 
-	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 4.*inch, -Table2_Length*0.5 + Upstream_Holder_Ring_Length + 1.*inch), Lead_On_Table_2_Logical, "Lead_On_Table_2", World_Logical, false, 0, false);
+	nb->Put(global_coordinates.x()+ bb->L*0.5 + nb->L * 0.5,
+		global_coordinates.y() + Table_Plate_Thickness+nb->S * 1.5,
+	        global_coordinates.z() - Table2_Length*0.5 +nb->S * 3., 0., 90. * deg, 0.);
+	nb->Put(global_coordinates.x()- bb->L*0.5 - nb->L * 0.5,
+		global_coordinates.y() + Table_Plate_Thickness+nb->S * 1.5,
+	        global_coordinates.z() - Table2_Length*0.5 +nb->S * 3., 0., 90. * deg, 0.);
 
-	G4Box *Al_Bar_On_Table_Solid = new G4Box("Al_Bar_On_Table_Solid", 10.*inch*0.5, 1.*inch*0.5, 2.*inch*0.5);
+	// Third layer
+	bb->Put(global_coordinates.x(), global_coordinates.y() + Table_Plate_Thickness+bb->M * 0.5,
+		global_coordinates.z() - Table2_Length*0.5 + 0.5*bb->S + Upstream_Holder_Ring_Length,
+	        -90. * deg, 90. * deg, 0.);
+	bb->Put(global_coordinates.x(), global_coordinates.y() + Table_Plate_Thickness+bb->M * 0.5,
+		global_coordinates.z() - Table2_Length*0.5 + 1.5*bb->S + Upstream_Holder_Ring_Length,
+	        -90. * deg, 90. * deg, 0.);
+	bb->Put(global_coordinates.x(), global_coordinates.y() + Table_Plate_Thickness+bb->M * 0.5, 
+		global_coordinates.z() - Table2_Length*0.5 + 2.5*bb->S + Upstream_Holder_Ring_Length,
+	        -90. * deg, 90. * deg, 0.);
 
-	G4LogicalVolume* Al_Bar_On_Table_Logical = new G4LogicalVolume(Al_Bar_On_Table_Solid, Al, "Al_Bar_On_Table_Logical");
+	snb->Put(global_coordinates.x(), global_coordinates.y() + Table_Plate_Thickness+bb->M + nb->M * 0.5,
+	         global_coordinates.z() - Table2_Length*0.5 + Upstream_Holder_Ring_Length + bb->S * 1.5,
+	         90. * deg, 0., 0.);
 
-	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., -6.5*inch, -Table2_Length*0.5 + Upstream_Holder_Ring_Length + 1.*inch), Al_Bar_On_Table_Logical, "Al_Bar_On_Table", World_Logical, false, 0, false);
-
+	nb->Put(global_coordinates.x()+bb->L * 0.5 + nb->M * 0.5, global_coordinates.y() + Table_Plate_Thickness+nb->S * 0.5,
+	        global_coordinates.z() - Table2_Length*0.5 + nb->M * 2. + nb->L * 0.5);
+	nb->Put(global_coordinates.x()-bb->L * 0.5 - nb->M * 0.5, global_coordinates.y() + Table_Plate_Thickness+nb->S * 0.5,
+	        global_coordinates.z() - Table2_Length*0.5 + nb->M * 2. + nb->L * 0.5);
+	nb->Put(global_coordinates.x()+bb->L * 0.5 + nb->M * 0.5, global_coordinates.y() + Table_Plate_Thickness+nb->S * 1.5,
+	        global_coordinates.z() - Table2_Length*0.5 + nb->M * 2. + nb->L * 0.5);
+	nb->Put(global_coordinates.x()-bb->L * 0.5 - nb->M * 0.5, global_coordinates.y() + Table_Plate_Thickness+nb->S * 1.5,
+	        global_coordinates.z() - Table2_Length*0.5 + nb->M * 2. + nb->L * 0.5);
 	
-
-	// Additional lead shielding on table, inside a U-shaped iron bar
+	// Lead and concrete shielding on the upstream side below the table
 	
-	G4double Iron_Bar_X = 22.*inch; // Estimated (I think I measured 56 cm)
-	G4double Iron_Bar_Y = 2.*inch; // Estimated
-	G4double Iron_Bar_Z = 4.*inch; // Estimated
-	G4double Iron_Bar_Wall_Thickness = 0.2*inch; // Estimated
+	ThinNormBrick *tb = new ThinNormBrick(World_Logical);
+	ShortThinNormBrick *stb = new ShortThinNormBrick(World_Logical);
 
-	G4Box *Iron_Bar_Solid_Solid = new G4Box("Iron_Bar_Solid_Solid", Iron_Bar_X*0.5, Iron_Bar_Y*0.5, Iron_Bar_Z*0.5);
-	G4Box *Iron_Bar_Hole_Solid = new G4Box("Iron_Bar_Hole_Solid", Iron_Bar_X, Iron_Bar_Y*0.5, (Iron_Bar_Z - 2.*Iron_Bar_Wall_Thickness)*0.5);
+	G4double Table2_Y = -Upstream_Holder_Ring_Outer_Radius - Holder_Base_To_Table 
+		            - 2.*Table_Plate_Thickness;
+	G4double Wall7_Width = 2. * nb->L + nb->M;
+	G4double WallBelowTable_Distance = 110. * mm; // Distance of this lead wall
+	                                              // to the G3 table, estimated
 
-	G4SubtractionSolid *Iron_Bar_Solid = new G4SubtractionSolid("Iron_Bar_Solid", Iron_Bar_Solid_Solid, Iron_Bar_Hole_Solid, 0, G4ThreeVector(0., Iron_Bar_Wall_Thickness, 0.));
+	for (int i = 0; i < 4; i++) {
+		nb->Put(global_coordinates.x()+nb->L - Wall7_Width * 0.5 - nb->L * 0.5,
+		        global_coordinates.y()+Table2_Y - Table_Plate_Thickness - nb->S * (0.5 + i),
+		        global_coordinates.z() - Table2_Length*0.5 + 1.5*nb->S + WallBelowTable_Distance,
+		        0., 90. * deg, 0.);
+		tb->Put(global_coordinates.x()+nb->L - Wall7_Width * 0.5 - nb->L * 0.5,
+		        global_coordinates.y()+Table2_Y - Table_Plate_Thickness - nb->S * (0.5 + i),
+		        global_coordinates.z() - Table2_Length*0.5 + 1.5*nb->M + WallBelowTable_Distance,
+		        0., 90. * deg, 0.);
+		nb->Put(global_coordinates.x()-nb->L + Wall7_Width * 0.5 + nb->L * 0.5,
+		        global_coordinates.y()+Table2_Y - Table_Plate_Thickness - nb->S * (0.5 + i),
+		        global_coordinates.z() - Table2_Length*0.5 + 1.5*nb->S + WallBelowTable_Distance,
+		        0., 90. * deg, 0.);
+		tb->Put(global_coordinates.x()-nb->L + Wall7_Width * 0.5 + nb->L * 0.5,
+		        global_coordinates.y()+Table2_Y - Table_Plate_Thickness - nb->S * (0.5 + i),
+		        global_coordinates.z() - Table2_Length*0.5 + 1.5*nb->M + WallBelowTable_Distance,
+		        0., 90. * deg, 0.);
+		snb->Put(global_coordinates.x(), global_coordinates.y()+Table2_Y - Table_Plate_Thickness - nb->S * (0.5 + i),
+		         global_coordinates.z() - Table2_Length*0.5 + 1.5*nb->S + WallBelowTable_Distance);
+		stb->Put(global_coordinates.x(), global_coordinates.y()+Table2_Y - Table_Plate_Thickness - nb->S * (0.5 + i),
+		         global_coordinates.z() - Table2_Length*0.5 + 1.5*nb->M + WallBelowTable_Distance,
+		         0., 90. * deg, 0.);
+	}
 
-	G4LogicalVolume *Iron_Bar_Logical = new G4LogicalVolume(Iron_Bar_Solid, Fe, "Iron_Bar_Logical");
+	// Concrete blocks below the table
 
-	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., -Upstream_Holder_Ring_Outer_Radius + Upstream_Holder_Hole_Depth - Upstream_Holder_Base_Y - Holder_Base_To_Table + Iron_Bar_Y*0.5, -4.5*inch - Iron_Bar_Z*0.5), Iron_Bar_Logical, "Iron_Bar", World_Logical, false, 0, false);
-
-	// Lead shielding inside iron bar
-	G4double Table_Plate_Offset_Y = -Upstream_Holder_Ring_Outer_Radius + Upstream_Holder_Hole_Depth - Upstream_Holder_Base_Y - Holder_Base_To_Table;
-
-	G4Box *Lead_On_Bar_Solid = new G4Box("Lead_On_Bar_Solid", 16.*inch*0.5, 5.*inch*0.5, 3.*inch*0.5);
-
-	G4LogicalVolume *Lead_On_Bar_Logical = new G4LogicalVolume(Lead_On_Bar_Solid, Pb, "Lead_On_Bar_Logical");
-	Lead_On_Bar_Logical->SetVisAttributes(green);
-
-	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., Table_Plate_Offset_Y + Iron_Bar_Wall_Thickness + 5.*inch*0.5, -4.5*inch - Iron_Bar_Z*0.5), Lead_On_Bar_Logical, "Lead_On_Bar", World_Logical, false, 0, false);
-
-	G4Box *Lead_On_Bar_2_Solid_Solid = new G4Box("Lead_On_Bar_2_Solid_Solid", 10.*inch*0.5, fabs(Table_Plate_Offset_Y) - Iron_Bar_Wall_Thickness - 5.*inch, 2.*inch*0.5);
-	G4Tubs *Lead_On_Bar_2_Hole_Solid = new G4Tubs("Lead_On_Bar_2_Hole_Solid", 0., 1.*inch, 2.*inch, 0., twopi);
-
-	G4SubtractionSolid *Lead_On_Bar_2_Solid = new G4SubtractionSolid("Lead_On_Bar_2_Solid", Lead_On_Bar_2_Solid_Solid, Lead_On_Bar_2_Hole_Solid, 0, G4ThreeVector(-2.*inch, 0., 0.));
-
-	G4LogicalVolume* Lead_On_Bar_2_Logical = new G4LogicalVolume(Lead_On_Bar_2_Solid, Pb, "Lead_On_Bar_2_Logical");
-	Lead_On_Bar_2_Logical->SetVisAttributes(green);
-
-	new G4PVPlacement(0, global_coordinates + G4ThreeVector(2.*inch, 0., -4.5*inch - Iron_Bar_Z*0.5), Lead_On_Bar_2_Logical, "Lead_On_Bar_2", World_Logical, false, 0, false);
-
-	G4Box *Lead_On_Bar_3_Solid = new G4Box("Lead_On_Bar_3_Solid", 4.*inch*0.5, 4.*inch*0.5, 2.*inch*0.5);
-
-	G4LogicalVolume *Lead_On_Bar_3_Logical = new G4LogicalVolume(Lead_On_Bar_3_Solid, Pb, "Lead_On_Bar_3_Logical");
-	Lead_On_Bar_3_Logical->SetVisAttributes(green);
-
-	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0.,fabs(Table_Plate_Offset_Y) - Iron_Bar_Wall_Thickness - 5.*inch + 4.*inch*0.5, -4.5*inch - Iron_Bar_Z*0.5), Lead_On_Bar_3_Logical, "Lead_On_Bar_3", World_Logical, false, 0, false);
-	
+	FlatConcreteBrick *fcb = new FlatConcreteBrick(World_Logical);
+	cb->Put(global_coordinates.x(), global_coordinates.y()+Table2_Y - Table_Plate_Thickness - nb->S * 4. - cb->M * 0.5,
+	        global_coordinates.z() - Table2_Length*0.5 + WallBelowTable_Distance + 1.5*nb->S,
+	        0., 90. * deg, 0.);
+	fcb->Put(
+	    global_coordinates.x(), global_coordinates.y()+Table2_Y - Table_Plate_Thickness - nb->S * 4. - cb->M - fcb->S * 0.5,
+	    global_coordinates.z() - Table2_Length*0.5 + WallBelowTable_Distance + nb->S * 1.5,
+	    0., 90. * deg, 0.);
+	fcb->Put(
+	    global_coordinates.x(), global_coordinates.y()+Table2_Y - Table_Plate_Thickness - nb->S * 4. - cb->M - fcb->S * 1.5,
+	    global_coordinates.z() - Table2_Length*0.5 + WallBelowTable_Distance + nb->S * 1.5,
+	    0., 90. * deg, 0.);
 }

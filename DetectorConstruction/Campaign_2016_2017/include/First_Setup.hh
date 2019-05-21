@@ -1,5 +1,4 @@
-/*
-utr - Geant4 simulation of the UTR at HIGS
+/* utr - Geant4 simulation of the UTR at HIGS
 Copyright (C) 2017 the developing team (see README.md)
 
 This file is part of utr.
@@ -18,32 +17,27 @@ You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef DETECTORCONSTRUCTION_HH
-#define DETECTORCONSTRUCTION_HH 1
+#ifndef FIRST_SETUP_HH
+#define FIRST_SETUP_HH 1
 
-#include "G4SystemOfUnits.hh"
-#include "G4UnitsTable.hh"
-#include "G4VUserDetectorConstruction.hh"
+#include "G4LogicalVolume.hh"
 
-#include "utrConfig.h"
+class First_Setup{
+public:
+	First_Setup(G4LogicalVolume *World_Log);
+	~First_Setup(){};
 
-class DetectorConstruction : public G4VUserDetectorConstruction {
-  public:
-	DetectorConstruction();
-	~DetectorConstruction();
+	void Construct(G4ThreeVector global_coordinates);
 
-	virtual G4VPhysicalVolume *Construct();
-	virtual void ConstructSDandField();
-
-	void print_info() const;
+	G4double Get_Length(){ return First_Setup_Length; };
+	G4double Get_X(){ return First_Setup_X; };
+	G4double Get_Y(){ return First_Setup_Y; };
 
 private:
-	G4double World_x;
-	G4double World_y;
-	G4double World_z;
-
-	G4double G3_Target_To_2nd_Target;
-	G4double Collimator_Entrance_To_G3_Target;
+	G4LogicalVolume *World_Logical;
+	G4double First_Setup_Length;
+	G4double First_Setup_X;
+	G4double First_Setup_Y;
 };
 
 #endif
