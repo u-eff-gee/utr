@@ -397,13 +397,6 @@ void Materials::ConstructMaterials() {
 	LaBr3->AddElement(nat_La, 1);
 	LaBr3->AddElement(nat_Br, 3);
 
-	// Brillance 380 from Enrique Nacher (Santiago)
-	LaBr3Ce = new G4Material("Brillance380", density = 5.08 * g / cm3,
-	                         ncomponents = 3);
-	LaBr3Ce->AddElement(nat_La, fractionmass = 34.855 * perCent);
-	LaBr3Ce->AddElement(nat_Br, fractionmass = 60.145 * perCent);
-	LaBr3Ce->AddElement(nat_Ce, fractionmass = 5.0 * perCent);
-
 	// Brillance350 from Enrique Nacher (Santiago)
 	LaCl3Ce = new G4Material("Brillance350", density = 3.85 * g / cm3,
 	                         ncomponents = 3);

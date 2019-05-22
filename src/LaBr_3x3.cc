@@ -117,9 +117,20 @@ void LaBr_3x3::Construct(G4ThreeVector global_coordinates, G4double theta, G4dou
 
 	/************** Detector crystal *************/
 
+	G4Element *nat_La = nist->FindOrBuildElement("La");
+	G4Element *nat_Br = nist->FindOrBuildElement("Br");
+	G4Element *nat_Ce = nist->FindOrBuildElement("Ce");
+	G4double labr_density = 5.06 * g / cm3;
+
+	// Brillance 380 from Enrique Nacher (Santiago)
+	G4Material *LaBr3Ce = new G4Material("LaBr3Ce", labr_density, 3);
+	LaBr3Ce->AddElement(nat_La, 34.855 * perCent);
+	LaBr3Ce->AddElement(nat_Br, 60.145 * perCent);
+	LaBr3Ce->AddElement(nat_Ce, 5.0 * perCent);
+
 	G4Tubs *crystal_solid = new G4Tubs(detector_name + "_crystal_solid",
 			0., crystal_radius, crystal_length*0.5, 0., twopi);
-	G4LogicalVolume *crystal_logical = new G4LogicalVolume(crystal_solid, nist->FindOrBuildMaterial("Brillance380"), detector_name);
+	G4LogicalVolume *crystal_logical = new G4LogicalVolume(crystal_solid, LaBr3Ce, detector_name);
 	crystal_logical->SetVisAttributes(new G4VisAttributes(G4Color::Green()));
 
 	new G4PVPlacement(0, G4ThreeVector(0., 0., vacuum_thickness_front + 0.5*(crystal_length -crystal_housing_case_length)), crystal_logical, detector_name + "_crystal", vacuum_logical, 0, 0, false);
