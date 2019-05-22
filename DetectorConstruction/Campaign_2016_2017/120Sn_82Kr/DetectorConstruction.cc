@@ -48,6 +48,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "Table2.hh"
 #include "Detectors_2nd.hh"
 #include "ZeroDegree_Setup.hh"
+#include "Kr82_Target.hh"
 
 // Sensitive Detectors
 #include "G4SDManager.hh"
@@ -141,6 +142,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	Table2 table2(World_Logical);
 	Detectors_2nd detectors_2nd(World_Logical);	
 	ZeroDegree_Setup zeroDegree_Setup(World_Logical);
+	Kr82_Target second_Target(World_Logical);
 
 	/***************************************************/
 	/*****************  CONSTRUCTION  *****************/
@@ -205,8 +207,8 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	/***************** SECOND_TARGET *****************/
 
-	//second_Target.Set_Containing_Volume(beampipe_Downstream.Get_Beampipe_Vacuum());
-	//second_Target.Construct(G4ThreeVector(0., 0., -beampipe_Downstream.Get_Z_Axis_Offset_Z()));
+	second_Target.Set_Containing_Volume(beampipe.Get_Beampipe_Vacuum());
+	second_Target.Construct(G4ThreeVector(0., 0., -beampipe.Get_Z_Axis_Offset_Z() + G3_Target_To_2nd_Target), 20.*deg, 270.*deg);
 #endif
 
 	print_info();

@@ -31,6 +31,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 Beampipe::Beampipe(G4LogicalVolume *World_Log):
 World_Logical(World_Log),
+BeampipeVacuum_Logical(nullptr),
 Beampipe_Downstream_Length(85.*inch), // Estimated
 Beampipe_Length(110.*inch + 85.*inch) // Estimated
 {
@@ -118,7 +119,7 @@ void Beampipe::Construct(G4ThreeVector global_coordinates, G4double relative_den
 	    new G4Tubs("BeampipeVacuum_Solid", 0. * mm,
 	               Beampipe_Outer_Radius - Beampipe_Thickness,
 	               Beampipe_Length *0.5, 0. * deg, 360. * deg);
-	G4LogicalVolume *BeampipeVacuum_Logical = new G4LogicalVolume(
+	BeampipeVacuum_Logical = new G4LogicalVolume(
 	    BeampipeVacuum_Solid, vacuum_material, "BeampipeVacuum_Logical", 0, 0, 0);
 
 	BeampipeVacuum_Logical->SetVisAttributes(G4Colour::Cyan());

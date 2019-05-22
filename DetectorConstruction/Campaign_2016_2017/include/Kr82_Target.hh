@@ -1,4 +1,5 @@
-/* utr - Geant4 simulation of the UTR at HIGS
+/*
+utr - Geant4 simulation of the UTR at HIGS
 Copyright (C) 2017 the developing team (see README.md)
 
 This file is part of utr.
@@ -17,28 +18,22 @@ You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef BEAMPIPE_UPSTREAM_HH 
-#define BEAMPIPE_UPSTREAM_HH 1
+#ifndef KR82_TARGET_HH
+#define KR82_TARGET_HH 1
 
 #include "G4LogicalVolume.hh"
 
-class Beampipe{
+class Kr82_Target{
 public:
-	Beampipe(G4LogicalVolume *World_Log);
-	~Beampipe(){};
+	Kr82_Target();
+	Kr82_Target(G4LogicalVolume *World_Log);
+	~Kr82_Target(){};
 
-	void Construct(G4ThreeVector global_coordinates, G4double relative_density);
-
-	G4double Get_Length(){ return Beampipe_Length; };
-	G4double Get_Z_Axis_Offset_Z(){ return Z_Axis_Offset_Z; };
-	G4LogicalVolume* Get_Beampipe_Vacuum(){ return BeampipeVacuum_Logical; };
+	void Construct(G4ThreeVector global_coordinates, G4double theta, G4double phi);
+	void Set_Containing_Volume(G4LogicalVolume *World_Log){ World_Logical = World_Log; };
 
 private:
 	G4LogicalVolume *World_Logical;
-	G4LogicalVolume *BeampipeVacuum_Logical;
-	G4double Beampipe_Downstream_Length;
-	G4double Beampipe_Length;
-	G4double Z_Axis_Offset_Z;
 };
 
 #endif
