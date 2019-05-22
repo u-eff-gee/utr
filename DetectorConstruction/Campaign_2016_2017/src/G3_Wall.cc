@@ -153,13 +153,13 @@ void G3_Wall::Construct(G4ThreeVector global_coordinates){
 
 	G4LogicalVolume *lead_wrap_upstream_logical = new G4LogicalVolume(lead_wrap_single_solid, nist->FindOrBuildMaterial("G4_Pb"), "lead_wrap_upstream_logical");
 	lead_wrap_upstream_logical->SetVisAttributes(G4Colour::Green());
-	new G4PVPlacement(0, G4ThreeVector(global_coordinates.x(), global_coordinates.y(), global_coordinates.z() - nb->M*3.  -nb->S - lead_wrap_length*0.5), lead_wrap_upstream_logical, "lead_wrap_upstream", World_Logical, false, 0, false);
+	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., - nb->M*3.  -nb->S - lead_wrap_length*0.5), lead_wrap_upstream_logical, "lead_wrap_upstream", World_Logical, false, 0, false);
 
 	G4LogicalVolume *lead_wrap_downstream_double_logical = new G4LogicalVolume(lead_wrap_double_solid, nist->FindOrBuildMaterial("G4_Pb"), "lead_wrap_downstream_double_logical");
 	lead_wrap_downstream_double_logical->SetVisAttributes(G4Colour::Green());
-	new G4PVPlacement(0, G4ThreeVector(global_coordinates.x(), global_coordinates.y(), global_coordinates.z() + lead_wrap_length*0.5), lead_wrap_downstream_double_logical, "lead_wrap_downstream_double", World_Logical, false, 0, false);
+	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., lead_wrap_length*0.5), lead_wrap_downstream_double_logical, "lead_wrap_downstream_double", World_Logical, false, 0, false);
 
 	G4LogicalVolume *lead_wrap_downstream_single_logical = new G4LogicalVolume(lead_wrap_single_solid, nist->FindOrBuildMaterial("G4_Pb"), "lead_wrap_downstream_single_logical");
 	lead_wrap_downstream_single_logical->SetVisAttributes(G4Colour::Green());
-	new G4PVPlacement(0, G4ThreeVector(global_coordinates.x(), global_coordinates.y(), global_coordinates.z() + lead_wrap_length*1.5), lead_wrap_downstream_single_logical, "lead_wrap_downstream_single", World_Logical, false, 0, false);
+	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., lead_wrap_length*1.5), lead_wrap_downstream_single_logical, "lead_wrap_downstream_single", World_Logical, false, 0, false);
 }

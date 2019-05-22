@@ -402,4 +402,22 @@ void Table2::Construct(G4ThreeVector global_coordinates){
 	    global_coordinates.x(), global_coordinates.y()+Table2_Y - Table_Plate_Thickness - nb->S * 4. - cb->M - fcb->S * 1.5,
 	    global_coordinates.z() - Table2_Length*0.5 + WallBelowTable_Distance + nb->S * 1.5,
 	    0., 90. * deg, 0.);
+
+	// Lead wraps around the beam pipe
+
+	G4double beam_tube_outer_radius = 1.*inch;
+
+	G4double lead_wrap_thickness = 1.8*mm; // Measured
+	G4double lead_wrap_length = 140*mm; // Measured
+
+	G4Tubs *lead_wrap_single_solid = new G4Tubs("lead_wrap_single_solid", beam_tube_outer_radius,
+			beam_tube_outer_radius + lead_wrap_thickness, lead_wrap_length*0.5, 0., twopi);
+	
+	G4LogicalVolume *lead_wrap_upstream_logical = new G4LogicalVolume(lead_wrap_single_solid, nist->FindOrBuildMaterial("G4_Pb"), "lead_wrap_upstream_logical");
+	lead_wrap_upstream_logical->SetVisAttributes(G4Colour::Green());
+	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., - 70.*mm - lead_wrap_length*0.5), lead_wrap_upstream_logical, "lead_wrap_upstream", World_Logical, false, 0, false);
+	
+	G4LogicalVolume *lead_wrap_downstream_logical = new G4LogicalVolume(lead_wrap_single_solid, nist->FindOrBuildMaterial("G4_Pb"), "lead_wrap_downstream_logical");
+	lead_wrap_downstream_logical->SetVisAttributes(G4Colour::Green());
+	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., 70.*mm + lead_wrap_length*0.5), lead_wrap_downstream_logical, "lead_wrap_downstream", World_Logical, false, 0, false);
 }
