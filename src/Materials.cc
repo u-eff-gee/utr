@@ -153,49 +153,6 @@ void Materials::ConstructMaterials() {
 	target_TiO2->AddElement(nat_O, natoms = 2);
 
 	/*************************************************/
-	// Enriched Kr gas from 2016/2017 NRF experiments
-	/*************************************************/
-
-	/*G4Isotope *Kr78 = new G4Isotope(name = "78Kr", z = 36, n = 42,
-	                                a = 77.920364783 * g / mole);
-	G4Isotope *Kr80 = new G4Isotope(name = "80Kr", z = 36, n = 44,
-	                                a = 79.916378965 * g / mole);
-	G4Isotope *Kr82 =
-	    new G4Isotope(name = "82Kr", z = 36, n = 46, a = 81.9134836 * g / mole);
-	G4Isotope *Kr83 = new G4Isotope(name = "83Kr", z = 36, n = 47,
-	                                a = 82.914136099 * g / mole);
-	G4Isotope *Kr84 = new G4Isotope(name = "84Kr", z = 36, n = 48,
-	                                a = 83.811506687 * g / mole);
-	G4Isotope *Kr86 = new G4Isotope(name = "86Kr", z = 36, n = 50,
-	                                a = 85.910610729 * g / mole);*/
-
-	G4Isotope *Kr78 = new G4Isotope(name = "78Kr", z = 36, a = 78);
-	G4Isotope *Kr80 = new G4Isotope(name = "80Kr", z = 36, a = 80);
-	G4Isotope *Kr82 = new G4Isotope(name = "82Kr", z = 36, a = 82);
-	G4Isotope *Kr83 = new G4Isotope(name = "83Kr", z = 36, a = 83);
-	G4Isotope *Kr84 = new G4Isotope(name = "84Kr", z = 36, a = 84);
-	G4Isotope *Kr86 = new G4Isotope(name = "86Kr", z = 36, a = 86);
-
-	G4Element *enriched_Kr =
-	    new G4Element(name = "enriched Kr", symbol = "Kr", ncomponents = 6);
-
-	enriched_Kr->AddIsotope(Kr78, abundance = 0.003 * perCent);
-	enriched_Kr->AddIsotope(Kr80, abundance = 0.005 * perCent);
-	enriched_Kr->AddIsotope(Kr82, abundance = 99.945 * perCent);
-	enriched_Kr->AddIsotope(Kr83, abundance = 0.041 * perCent);
-	enriched_Kr->AddIsotope(Kr84, abundance = 0.003 * perCent);
-	enriched_Kr->AddIsotope(Kr86, abundance = 0.003 * perCent);
-
-	G4double Kr_Mass = 1.50218 * g;
-	G4double GasSphere_Inner_Radius = 9. * mm; // Estimated
-
-	G4double Kr_Density =
-	    Kr_Mass / (4. / 3. * PI * pow(GasSphere_Inner_Radius, 3));
-
-	target_Kr = new G4Material(name = "target_Kr", Kr_Density, ncomponents = 1);
-	target_Kr->AddElement(enriched_Kr, natoms = 1);
-
-	/*************************************************/
 	//             "low-density Aluminium"
 	// Since it tedious to construct metal beams of
 	// holding structures, simply construct a solid
@@ -216,33 +173,6 @@ void Materials::ConstructMaterials() {
 	                                Al_Density/3., ncomponents = 1);
 
 	one_third_density_Al->AddElement(nat_Al, natoms = 1);
-
-	/*************************************************/
-	//             "Stainless steel"
-	// Approximate alloy: 85% Fe
-	//                    15% Cr
-	// Density is the weighted mean of pure Fe and Cr
-	/*************************************************/
-
-	G4Element *nat_Fe = new G4Element(name = "natural Fe", symbol = "nat_Fe",
-	                                  z = 26, a = 55.845 * g / mole);
-	G4Element *nat_Cr = new G4Element(name = "natural Cr", symbol = "nat_Cr",
-	                                  z = 24, a = 51.9961 * g / mole);
-
-	G4double Fe_Density = 7.874 * g / cm3;
-	G4double Cr_Density = 7.19 * g / cm3;
-
-	G4double Fe_Percent = 0.85;
-	G4double Cr_Percent = 0.15;
-
-	G4double StainlessSteel_Density =
-	    Fe_Percent * Fe_Density + Cr_Percent * Cr_Density;
-
-	stainlessSteel = new G4Material(name = "Stainless_Steel",
-	                                StainlessSteel_Density, ncomponents = 2);
-
-	stainlessSteel->AddElement(nat_Fe, natoms = 1);
-	stainlessSteel->AddElement(nat_Cr, natoms = 1);
 
 	/*************************************************/
 	// Enriched Se target from 2016 NRF experiment

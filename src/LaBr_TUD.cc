@@ -60,7 +60,6 @@ LaBr_TUD::LaBr_TUD(G4String Detector_Name){
 	G4Material *vacuum = nist->FindOrBuildMaterial("G4_Galactic");
 	G4Material *air= nist->FindOrBuildMaterial("G4_AIR");
 	G4Material *Al = nist->FindOrBuildMaterial("G4_Al");
-	G4Material *LaBr3Ce = nist->FindOrBuildMaterial("Brillance380");//mat->Get_LaBr3Ce();
 
 	// Dimensions from previous implementation by B. Loeher and J. Isaak (especially the inner parts) or measured in 2018
 
@@ -129,6 +128,17 @@ LaBr_TUD::LaBr_TUD(G4String Detector_Name){
 	new G4PVPlacement(0, G4ThreeVector(0., 0., Length*0.5 - Crystal_Housing_Thickness - Vacuum_Thickness_Front - Crystal_Length - Vacuum_Thickness_Back*0.5), Vacuum_Back_Logical, "Vacuum_Back", LaBr_TUD_Logical, false, 0, false);
 
 	/************************LaBr Crystal*************************/
+
+	G4Element *nat_La = nist->FindOrBuildElement("La");
+	G4Element *nat_Br = nist->FindOrBuildElement("Br");
+	G4Element *nat_Ce = nist->FindOrBuildElement("Ce");
+	G4double labr_density = 5.06 * g / cm3;
+
+	// Brillance 380 from Enrique Nacher (Santiago)
+	G4Material *LaBr3Ce = new G4Material("LaBr3Ce", labr_density, 3);
+	LaBr3Ce->AddElement(nat_La, 34.855 * perCent);
+	LaBr3Ce->AddElement(nat_Br, 60.145 * perCent);
+	LaBr3Ce->AddElement(nat_Ce, 5.0 * perCent);
 
 	G4Tubs *Crystal_Solid =
 	    new G4Tubs("Crystal_Solid", 0., Crystal_Radius,

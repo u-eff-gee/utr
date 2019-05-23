@@ -75,6 +75,7 @@ Materials *materials = Materials::Instance();
 
 // Targets
 #include "Targets.hh"
+#include "Kr82_Target.hh"
 
 #define PI 3.141592
 
@@ -950,24 +951,10 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	/**************** Second Target/Source ***************/
 
-	Kr82_Target *kr82_Target = new Kr82_Target();
-
-	G4LogicalVolume *Kr82_Target_Logical = kr82_Target->Get_Logical();
-
-	G4RotationMatrix *rotateSecondTarget = new G4RotationMatrix();
-	G4double SecondTarget_AngleX = -22. * deg; // Rotation angle to have the
-	                                           // valve rest on the inside of
-	                                           // the TargetTube
-	rotateSecondTarget->rotateX(SecondTarget_AngleX);
-
-	new G4PVPlacement(
-	    rotateSecondTarget,
-	    G4ThreeVector(0., 20. * mm * sin(SecondTarget_AngleX),
-	                  -BeamTube_Length_Downstream + BeamTube_Length * 0.5 +
-	                      Target2_To_Target - kr82_Target->Get_Target_Center() -
-	                      20. * mm * (1 - cos(SecondTarget_AngleX))),
-	    Kr82_Target_Logical, "Kr82_Target_Physical", BeamTubeVacuum_Logical,
-	    false, 0);
+	Kr82_Target kr82_Target(world_log);
+	kr82_Target.Set_Containing_Volume(BeamTubeVacuum_Logical);
+	kr82_Target.Construct(G4ThreeVector(0., 0., -BeamTube_Length_Downstream + BeamTube_Length * 0.5 +
+	                      Target2_To_Target), 22.*deg, 270.*deg);
 
 	// Box around the target/source. Inside this box, random coordinates for the
 	// AngularDistributionGenerator are sampled in order to find random points
