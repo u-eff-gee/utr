@@ -34,7 +34,7 @@
 #
 #########################################################################
 
-/ang/particle geantino 
+/ang/particle geantino
 /ang/energy 3. MeV
 
 /ang/nstates 3
@@ -53,12 +53,23 @@
 /ang/delta12 0.
 /ang/delta23 0.
 
+# The following six commands give the position and dimensions of an envelope box, which
+# should contain the desired source volume. Using rejection sampling, random positions
+# inside this box will be generated and, if they are inside the arbitrarily shaped source
+# volume, a particle will be emitted.
+# The more closely the envelope box wraps the source volume, the more efficient the sampling
+# algorithm will be.
+
+# Determine the position of the source.
 /ang/sourceX 0. mm
 /ang/sourceY 0. mm
 /ang/sourceZ 0. mm
 #/ang/sourceZ 1574.80 mm # Ideal position of 2nd target in generation '18 geometries
 #/ang/sourceZ 1612.10 mm # Ideal position of 2nd target in generation '16/17 geometries
 
+# Determine the dimensions of the envelope box. Random numbers will be sampled in the 
+# intervals [-0.5*sourceDX, 0.5*sourceDX], [-0.5*sourceDY, 0.5*sourceDY], and
+# [-0.5*sourceDZ, 0.5*sourceDZ].
 /ang/sourceDX 20. mm
 /ang/sourceDY 20. mm
 /ang/sourceDZ 10. mm

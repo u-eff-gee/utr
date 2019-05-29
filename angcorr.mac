@@ -91,13 +91,25 @@
 ##################################
 # Define the source volume
 ##################################
+# The following six commands give the position and dimensions of an envelope box, which
+# should contain the desired source volume. Using rejection sampling, random positions
+# inside this box will be generated and, if they are inside the arbitrarily shaped source
+# volume, a particle will be emitted.
+# The more closely the envelope box wraps the source volume, the more efficient the sampling
+# algorithm will be.
+#
 # The information about the source volumes is the same for all steps
 # in the cascade, i.e. it is assumed that all particles are emitted
 # from a common origin.
+
+# Determine the position of the source.
 /angcorr/sourceX 0. mm
 /angcorr/sourceY 0. mm
 /angcorr/sourceZ 0. mm
 
+# Determine the dimensions of the envelope box. Random numbers will be sampled in the 
+# intervals [-0.5*sourceDX, 0.5*sourceDX], [-0.5*sourceDY, 0.5*sourceDY], and
+# [-0.5*sourceDZ, 0.5*sourceDZ].
 /angcorr/sourceDX 2. mm
 /angcorr/sourceDY 2. mm
 /angcorr/sourceDZ 2. mm
