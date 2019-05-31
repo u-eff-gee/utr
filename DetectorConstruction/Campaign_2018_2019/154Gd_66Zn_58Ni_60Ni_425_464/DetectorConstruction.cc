@@ -55,7 +55,7 @@ The detector setups for this run are from the "Setup 11" configuration in the EL
 #include "Detectors_2nd_Setup_11.hh"
 #include "ZeroDegree_Setup.hh"
 #include "Ni58_Target.hh"
-#include "Ni60_Target.hh"
+#include "Gd154_Target.hh"
 
 // Sensitive Detectors
 #include "G4SDManager.hh"
@@ -139,7 +139,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	Beampipe_Downstream beampipe_Downstream(World_Logical);
 	Detectors_2nd_Setup_11 detectors_2nd(World_Logical);	
 	ZeroDegree_Setup zeroDegree_Setup(World_Logical);
-	Ni60_Target g3_Target;
+	Gd154_Target g3_Target;
 	Ni58_Target second_Target;
 
 	/***************************************************/
