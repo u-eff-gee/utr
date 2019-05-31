@@ -14,6 +14,7 @@
 #cmakedefine GENERATOR_ANGCORR
 
 #cmakedefine USE_TARGETS
+#cmakedefine DEUTERON_BREAK_UP
 
 #cmakedefine EM_FAST 
 #cmakedefine EM_STANDARD 
@@ -42,6 +43,7 @@
 #cmakedefine EVENT_MOMX
 #cmakedefine EVENT_MOMY
 #cmakedefine EVENT_MOMZ
+
 
 const int print_progress = ${PRINT_PROGRESS};
 

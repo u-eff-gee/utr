@@ -52,6 +52,7 @@ set(PRINT_PROGRESS 100000 CACHE STRING "Set the frequency of printed updates abo
 option(GENERATOR_ANGDIST "Use AngularDistributionGenerator as primary generator instead of G4GeneralParticleSource (has a higher priority than USE_ANGCORR if both are checked)" OFF)
 option(GENERATOR_ANGCORR "Use AngularCorrelationGenerator as primary generator instead of G4GeneralParticleSource" OFF)
 option(USE_TARGETS "Use Targets in the geometry" ON)
+option(DEUTERON_BREAK_UP "Use vacuum chamber and deuterium target in geometry" OFF)
 
 option(EM_FAST "Use G4EmStandardPhysics_option1" OFF)
 option(EM_STANDARD "Use G4EmStandardPhysics_option4" OFF)

@@ -17,7 +17,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
-
 #include "G4Event.hh"
 #include "G4ParticleGun.hh"
 #include "G4ParticleTable.hh"
@@ -65,10 +64,10 @@ void AngularDistributionGenerator::GeneratePrimaries(G4Event *anEvent) {
 	alt_states[1] = -states[1];
 
 #ifdef CHECK_POSITION_GENERATOR
-	check_position_generator();
+	if(G4Threading::G4GetThreadId()==0)check_position_generator();
 #endif
 #ifdef CHECK_MOMENTUM_GENERATOR
-	check_momentum_generator();
+	if(G4Threading::G4GetThreadId()==0)check_momentum_generator();
 #endif
 	position_found = false;
 	momentum_found = false;
@@ -122,14 +121,18 @@ void AngularDistributionGenerator::GeneratePrimaries(G4Event *anEvent) {
 		}
 	}
 
-	if (!position_found)
+	if (!position_found && G4Threading::G4GetThreadId()==0){
 		G4cout << "Warning: AngularDistributionGenerator: Monte-Carlo method "
 		          "could not determine a starting point after "
 		       << MAX_TRIES_POSITION << " iterations" << G4endl;
-	if (!momentum_found)
+		       exit(0);
+	}
+	if (!momentum_found && G4Threading::G4GetThreadId()==0){
 		G4cout << "Warning: AngularDistributionGenerator: Monte-Carlo method "
 		          "could not determine a starting velocity vector after "
 		       << MAX_TRIES_MOMENTUM << " iterations" << G4endl;
+		       exit(0);
+	}
 
 	particleGun->GeneratePrimaryVertex(anEvent);
 }

@@ -41,6 +41,12 @@ private:
 	G4double World_x;
 	G4double World_y;
 	G4double World_z;
+	G4int HPGe1ID=1;
+	G4int HPGe2ID=2;
+	G4int HPGePolID=3;
+	G4int Si1ID=4;
+	G4int Si2ID=5;
+
 
 };
 
