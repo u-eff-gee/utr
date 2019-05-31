@@ -44,14 +44,14 @@ void Gd154_Target::Construct(G4ThreeVector global_coordinates){
 
 	G4Colour yellow(1.0, 1.0, 0.0);
 
-	// g/mole https://www.degruyter.com/view/j/pac.2016.88.issue-3/pac-2015-0305/pac-2015-0305.xml
-	G4Isotope *Gd152 = new G4Isotope("152Gd", 64, 152-64, 157.25*g/mole);
-	G4Isotope *Gd154 = new G4Isotope("154Gd", 64, 154-64, 157.25*g/mole);
-	G4Isotope *Gd155 = new G4Isotope("155Gd", 64, 155-64, 157.25*g/mole);
-	G4Isotope *Gd156 = new G4Isotope("156Gd", 64, 156-64, 157.25*g/mole);
-	G4Isotope *Gd157 = new G4Isotope("157Gd", 64, 157-64, 157.25*g/mole);
-	G4Isotope *Gd158 = new G4Isotope("158Gd", 64, 158-64, 157.25*g/mole);
-	G4Isotope *Gd160 = new G4Isotope("160Gd", 64, 160-64, 157.25*g/mole);
+	// g/mole https://en.wikipedia.org/wiki/Isotopes_of_gadolinium
+	G4Isotope *Gd152 = new G4Isotope("152Gd", 64, 152, 151.9197910 *g/mole);
+	G4Isotope *Gd154 = new G4Isotope("154Gd", 64, 154, 153.9208656 *g/mole);
+	G4Isotope *Gd155 = new G4Isotope("155Gd", 64, 155, 154.9226220 *g/mole);
+	G4Isotope *Gd156 = new G4Isotope("156Gd", 64, 156, 155.9221227 *g/mole);
+	G4Isotope *Gd157 = new G4Isotope("157Gd", 64, 157, 156.9239601 *g/mole);
+	G4Isotope *Gd158 = new G4Isotope("158Gd", 64, 158, 157.9241039 *g/mole);
+	G4Isotope *Gd160 = new G4Isotope("160Gd", 64, 160, 159.9270541 *g/mole);
 
 	G4Element *Target_Element = new G4Element("154Gd_Element", "Gd", 7);
 
