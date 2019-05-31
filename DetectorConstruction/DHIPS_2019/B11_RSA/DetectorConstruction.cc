@@ -184,20 +184,16 @@ void DetectorConstruction::ConstructSDandField() {
 	HPGePolSD->SetDetectorID(3);
 	SetSensitiveDetector("HPGePol", HPGePolSD, true);
 
-	EnergyDepositionSD *Si_Detector1SD = new EnergyDepositionSD("Si_Detector1", "Si_Detector1");
-	G4SDManager::GetSDMpointer()->AddNewDetector(Si_Detector1SD);
-	Si_Detector1SD->SetDetectorID(4);
-	SetSensitiveDetector("Si_Detector1", Si_Detector1SD, true);
+	EnergyDepositionSD *Si_DetectorSD = new EnergyDepositionSD("Si_Detector", "Si_Detector");
+	G4SDManager::GetSDMpointer()->AddNewDetector(Si_DetectorSD);
+	Si_DetectorSD->SetDetectorID(4);
+	SetSensitiveDetector("Si_Detector_Logical", Si_DetectorSD, true);
 
-	EnergyDepositionSD *Si_Detector2SD = new EnergyDepositionSD("Si_Detector2", "Si_Detector2");
-	G4SDManager::GetSDMpointer()->AddNewDetector(Si_Detector2SD);
-	Si_Detector2SD->SetDetectorID(5);
-	SetSensitiveDetector("Si_Detector2", Si_Detector2SD, true);
 
 	EnergyDepositionSD *D_TargetSD = new EnergyDepositionSD("D_Target", "D_Target");
 	G4SDManager::GetSDMpointer()->AddNewDetector(HPGePolSD);
-	HPGePolSD->SetDetectorID(6);
-	SetSensitiveDetector("D_Target", D_TargetSD, true);
+	D_TargetSD->SetDetectorID(6);
+	SetSensitiveDetector("D_Target_Logical", D_TargetSD, true);
 
 }
 
