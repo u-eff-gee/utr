@@ -25,10 +25,10 @@ struct arguments{
 };
 
 static struct argp_option options[] = {
-{ 0, 't', "TREENAME", 0, "Name of tree" },
-{ 0, 'p', "PATTERN1", 0, "File name pattern 1" },
-{ 0, 'q', "PATTERN2", 0, "File name pattern 2" },
-{ 0, 'o', "OUTPUTFILENAME", 0, "Output file name" },
+{ 0, 't', "TREENAME", 0, "Name of tree (default: 'utr')" },
+{ 0, 'p', "PATTERN1", 0, "File name pattern 1 (default: 'utr')" },
+{ 0, 'q', "PATTERN2", 0, "File name pattern 2 (default: '.root')" },
+{ 0, 'o', "OUTPUTFILENAME", 0, "Output file name (default: 'merged.root')" },
 { 0, 0, 0, 0, 0 }
 };
 
