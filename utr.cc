@@ -18,6 +18,7 @@ You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "G4FileUtilities.hh"
 #include "G4MTRunManager.hh"
 #include "G4RunManager.hh"
 #include "G4UImanager.hh"
@@ -27,7 +28,6 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "ActionInitialization.hh"
 #include "DetectorConstruction.hh"
 #include "Physics.hh"
-#include "RunAction.hh"
 
 #include "G4UIExecutive.hh"
 #include "G4UImanager.hh"
@@ -53,7 +53,7 @@ static struct argp_option options[] = {
 struct arguments {
 	int nthreads = 1;
 	char *macrofile = 0;
-	char *outputdir = 0;
+	string outputdir = ".";
 };
 
 static error_t parse_opt(int key, char *arg, struct argp_state *state) {
@@ -85,8 +85,32 @@ int main(int argc, char *argv[]) {
 	// 'Real' random results
 	time_t timer;
 	G4Random::setTheSeed(time(&timer));
-// Deterministic results
-// G4Random::setTheSeed(1);
+	// Deterministic results
+	// G4Random::setTheSeed(1);
+
+	// Determine file name by searching for files with the name
+	// 'utrN.root' or 'utrN_t0.root' in the requested directory,
+	// If they exist, this would mean that a simulation with 
+	// this prefix has already been run.
+	G4FileUtilities fu;
+	std::stringstream filename_single;
+	std::stringstream filename_multi;
+	unsigned int fid = 0;
+	for(fid = 0; fid < INT_MAX; ++fid){
+		filename_single << arguments.outputdir << "/utr" << fid << ".root";
+		filename_multi << arguments.outputdir << "/utr" << fid << "_t0.root";
+
+		G4cout << "Checking whether file '" << filename_single.str() << "' or '" << filename_multi.str() << "' already exists in file system ..." << G4endl;
+
+		if (fu.FileExists(filename_single.str()) || fu.FileExists(filename_multi.str())){
+			filename_single.str("");
+			filename_multi.str("");
+			continue;
+		}
+		break;
+	}
+	G4cout << "Using file name prefix 'utr" << fid << "' ..." << G4endl;
+	
 
 #ifdef G4MULTITHREADED
 	G4MTRunManager *runManager = new G4MTRunManager;
@@ -105,13 +129,12 @@ int main(int argc, char *argv[]) {
 	G4cout << "ActionInitialization..." << G4endl;
 	ActionInitialization *actionInitialization = new ActionInitialization();
 	actionInitialization->setNThreads(arguments.nthreads);
-	// Pass output directory to RunAction via ActionInitialization
-	if (arguments.outputdir) {
-		actionInitialization->setOutputDir(arguments.outputdir);
-		if (!opendir(arguments.outputdir)) {
+	// Pass output directory and file name id to RunAction via ActionInitialization
+	if(arguments.outputdir != "."){
+		if (!opendir(arguments.outputdir.c_str())) {
 			stringstream command;
-			const int dir_err = mkdir(arguments.outputdir,
-			                          S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+			const int dir_err = mkdir(arguments.outputdir.c_str(),
+						  S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 			if (dir_err == -1) {
 				G4cout << "Error creating output directory" << G4endl;
 				abort();
@@ -120,9 +143,9 @@ int main(int argc, char *argv[]) {
 			G4cout << __FILE__ << ": main(): Warning: Output directory '"
 			       << arguments.outputdir << "' already exists" << G4endl;
 		}
-	} else {
-		actionInitialization->setOutputDir(".");
 	}
+	actionInitialization->setOutputDir(arguments.outputdir);
+	actionInitialization->setFilenameID(fid);
 	runManager->SetUserInitialization(actionInitialization);
 
 	if (!arguments.macrofile) {

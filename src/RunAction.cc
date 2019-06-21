@@ -33,7 +33,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "utrConfig.h"
 
-RunAction::RunAction() : G4UserRunAction() {}
+RunAction::RunAction() : G4UserRunAction(), filenameid(0) {}
 
 RunAction::~RunAction() { delete G4AnalysisManager::Instance(); }
 
@@ -85,39 +85,17 @@ void RunAction::BeginOfRunAction(const G4Run *) {
 	// where the filename is given by the user in analysisManager->OpenFile()
 
 	std::stringstream directory;
-	directory.str("");
 
 	if (outputdir != ".") {
 		directory << outputdir << "/";
 	}
 
-	G4FileUtilities *fu = new G4FileUtilities();
-	std::stringstream sstr;
-	std::stringstream sstr2;
-	G4String fileNamePrefix = "utr";
-
 	G4int threadId = G4Threading::G4GetThreadId();
+	std::stringstream filename;
+	filename << directory.str() << "utr" << filenameid << ".root";
 
-	if (threadId !=
-	    -1) { // threadId == -1 is the master thread which contains no data
-		for (int i = 0; i <= INT_MAX; i++) {
-			sstr.str("");
-			sstr << directory.str() << fileNamePrefix << i << ".root";
-			sstr2 << directory.str() << fileNamePrefix << i << "_t" << threadId
-			      << ".root";
-
-			if (fu->FileExists(sstr2.str())) {
-				sstr.str("");
-				sstr2.str("");
-				continue;
-			}
-
-			break;
-		}
-
-		analysisManager->OpenFile(sstr.str());
-		sstr.str("");
-		sstr2.str("");
+	if (threadId != -1) { 
+		analysisManager->OpenFile(filename.str());
 
 	} else {
 		analysisManager->OpenFile("master.root");

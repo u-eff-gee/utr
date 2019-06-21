@@ -38,11 +38,13 @@ class ActionInitialization : public G4VUserActionInitialization {
 	virtual void BuildForMaster() const;
 	virtual void Build() const;
 
-	void setOutputDir(string output) { outputdir = output; };
+	void setFilenameID(unsigned int fid) {filenameid = fid; };
 	void setNThreads(const int nt) { n_threads = nt; };
+	void setOutputDir(string output) { outputdir = output; };
 
   private:
 	string outputdir;
+	unsigned int filenameid;
 	G4int n_threads;
 };
 

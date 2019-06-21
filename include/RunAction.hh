@@ -54,8 +54,10 @@ class RunAction : public G4UserRunAction {
 	G4String GetOutputFlagName(unsigned int n);
 
 	void setOutputDir(string output) { outputdir = output; };
+	void setFilenameID(unsigned int fid) {filenameid = fid; };
 
   private:
+	unsigned int filenameid;
 	string outputdir;
 };
 
