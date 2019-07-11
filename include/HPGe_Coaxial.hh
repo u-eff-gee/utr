@@ -20,8 +20,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 // Class for a generic coaxial High-purity Germanium (HPGe) detector
 
-#ifndef HPGE_COAXIAL_h
-#define HPGE_COAXIAL_h 1
+#pragma once
 
 #include <vector>
 
@@ -53,5 +52,3 @@ class HPGe_Coaxial : public Detector{
 		bool use_filter_case_ring;
 		bool use_dewar;
 };
-
-#endif

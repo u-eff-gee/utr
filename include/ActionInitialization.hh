@@ -17,9 +17,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-#ifndef ActionInitialization_h
-#define ActionInitialization_h 1
+#pragma once
 
 #include <string>
 
@@ -47,5 +45,3 @@ class ActionInitialization : public G4VUserActionInitialization {
 	unsigned int filenameid;
 	G4int n_threads;
 };
-
-#endif

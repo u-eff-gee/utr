@@ -21,9 +21,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 //**************************************************************//
 //	120%  Zero Degree detector @ HIGS Serial No. 33-P40383A
 //**************************************************************//
-
-#ifndef ZeroDegree_h
-#define ZeroDegree_h 1
+#pragma once
 
 #include "G4LogicalVolume.hh"
 
@@ -43,5 +41,3 @@ class ZeroDegree {
 
 	G4LogicalVolume *ZeroDegree_Logical;
 };
-
-#endif

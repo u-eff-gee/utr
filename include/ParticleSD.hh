@@ -17,9 +17,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-#ifndef ParticleSD_h
-#define ParticleSD_h 1
+#pragma once
 
 #include "G4VSensitiveDetector.hh"
 
@@ -46,5 +44,3 @@ class ParticleSD : public G4VSensitiveDetector {
 	G4int currentTrackID;
 	G4int detectorID;
 };
-
-#endif

@@ -19,6 +19,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 // Properties of available HPGe detectors
+#pragma once
 
 #include "G4SystemOfUnits.hh"
 

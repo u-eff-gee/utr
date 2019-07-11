@@ -17,10 +17,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-#ifndef Analysis_h
-#define Analysis_h 1
+#pragma once
 
 #include "g4root.hh"
-
-#endif

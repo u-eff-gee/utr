@@ -21,11 +21,9 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 //**************************************************************//
 //	LaBr Crystal (Saint Gobain BrilLanCe 380) 3x3" (TUD)
 //**************************************************************//
+#pragma once
 
 #include <vector>
-
-#ifndef LABR_3X3_HH
-#define LABR_3X3_HH 1
 
 #include "G4LogicalVolume.hh"
 
@@ -53,5 +51,3 @@ class LaBr_3x3 : public Detector{
 	bool use_filter_case_ring;
 	bool use_housing;
 };
-
-#endif

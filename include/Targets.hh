@@ -17,6 +17,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
+#pragma once
 
 #include "G4Box.hh"
 #include "G4LogicalVolume.hh"

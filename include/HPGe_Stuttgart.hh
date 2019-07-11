@@ -24,9 +24,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 //	Reconstructed from crystal dimensions in data sheet and
 //	CT scan by C. Fransen, Universitaet zu Koeln (2017)
 //**************************************************************//
-
-#ifndef HPGe_Stuttgart_h
-#define HPGe_Stuttgart_h 1
+#pragma once
 
 #include "G4LogicalVolume.hh"
 
@@ -48,5 +46,3 @@ class HPGe_Stuttgart {
 
 	G4LogicalVolume *HPGe_Stuttgart_Logical;
 };
-
-#endif

@@ -25,9 +25,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 //	HORUS setup in Cologne (https://gitlab.ikp.uni-koeln.de/jmayer/g4horus/)
 //	Published under the MIT license (see below)
 //**************************************************************//
-
-#ifndef HPGe_Cologne_h
-#define HPGe_Cologne_h 1
+#pragma once
 
 #include "G4LogicalVolume.hh"
 
@@ -77,4 +75,3 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 */
-#endif

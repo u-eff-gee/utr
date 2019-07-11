@@ -17,9 +17,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-#ifndef ANGULARCORRELATIONGENERATOR_HH
-#define ANGULARCORRELATIONGENERATOR_HH 1
+#pragma once
 
 #include "G4Navigator.hh"
 #include "G4ParticleDefinition.hh"
@@ -202,5 +200,3 @@ class AngularCorrelationGenerator : public G4VUserPrimaryGeneratorAction {
 	G4bool checked_momentum_generator;
 	G4bool checked_position_generator;
 };
-
-#endif

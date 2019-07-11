@@ -17,9 +17,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-#ifndef GENERALPARTICLESOURCE_HH
-#define GENERALPARTICLESOURCE_HH
+#pragma once
 
 #include "G4GeneralParticleSource.hh"
 #include "G4VUserPrimaryGeneratorAction.hh"
@@ -34,5 +32,3 @@ class GeneralParticleSource : public G4VUserPrimaryGeneratorAction {
   private:
 	G4GeneralParticleSource *particleGun;
 };
-
-#endif

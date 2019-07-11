@@ -17,9 +17,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-#ifndef TargetHit_h
-#define TargetHit_h 1
+#pragma once
 
 #include "G4Allocator.hh"
 #include "G4THitsCollection.hh"
@@ -81,5 +79,3 @@ inline void *TargetHit::operator new(size_t) {
 inline void TargetHit::operator delete(void *hit) {
 	TargetHitAllocator->FreeSingle((TargetHit *)hit);
 }
-
-#endif

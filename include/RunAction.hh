@@ -17,9 +17,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-#ifndef RunAction_h
-#define RunAction_h 1
+#pragma once
 
 #include "G4UserRunAction.hh"
 #include "globals.hh"
@@ -60,5 +58,3 @@ class RunAction : public G4UserRunAction {
 	unsigned int filenameid;
 	string outputdir;
 };
-
-#endif

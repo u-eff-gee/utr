@@ -17,9 +17,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-#ifndef POLARIMETER_HH
-#define POLARIMETER_HH
+#pragma once
 
 #include "G4VUserDetectorConstruction.hh"
 
@@ -37,5 +35,3 @@ class Polarimeter_TUD {
 	G4double Radius;
 	G4LogicalVolume *Polarimeter_TUD_Logical;
 };
-
-#endif

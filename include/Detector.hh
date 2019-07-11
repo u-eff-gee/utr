@@ -21,9 +21,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 // Abstract class for a detector that can be placed in a spherical coordinate
 // system, shielded with filter plates at the detector face and wrapped in
 // shielding material.
-
-#ifndef DETECTOR_H
-#define DETECTOR_H 1
+#pragma once
 
 #include <vector>
 
@@ -59,5 +57,3 @@ class Detector{
 		vector<G4String> wrap_materials;
 		vector<G4double> wrap_thicknesses;
 };
-
-#endif
