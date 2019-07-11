@@ -28,7 +28,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4FileUtilities.hh"
 
 #include "RunAction.hh"
-#include "Analysis.hh"
+#include "g4root.hh"
 #include <limits.h>
 
 #include "utrConfig.h"

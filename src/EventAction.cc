@@ -18,7 +18,7 @@ You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Timing.hh"
+#include <time.h>
 #include "EventAction.hh"
 #include "DetectorConstruction.hh"
 #include "G4Event.hh"
@@ -30,6 +30,9 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 using std::setw;
 using std::flush;
+
+static const clock_t StartRunTime = clock();
+static clock_t CurrentRunTime;
 
 EventAction::EventAction(): n_threads(1) {}
 
