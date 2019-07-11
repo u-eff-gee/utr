@@ -46,8 +46,12 @@
 # For gamma-ray transitions, several multipole orders may contributed
 # to a transition. This effect is quantified by the multipole mixing
 # ratio. The multipole mixing ratios of a transition can be set via
-# /ang/delta(N)(N+1)
-# where N is the number of the first state in the transition.
+# /ang/delta{N}{N+1} DELTA
+# where {N} is the number of the initial state in the transition,
+# {N+1} the number of the final state in the transition and DELTA
+# the multipole mixing ratios of the transition.
+# The state numbers {N} and {N+1} used here refer to the states' 
+# positions in the overall casecade of transitions.
 # At the moment, only the mixing ratio between the two dominant
 # multipole orders can be given. 
 /ang/delta12 0.
@@ -64,6 +68,7 @@
 /ang/sourceX 0. mm
 /ang/sourceY 0. mm
 /ang/sourceZ 0. mm
+#/ang/sourceZ 0. mm # Ideal position of gamma3 target in all geometries
 #/ang/sourceZ 1574.80 mm # Ideal position of 2nd target in generation '18 geometries
 #/ang/sourceZ 1612.10 mm # Ideal position of 2nd target in generation '16/17 geometries
 
@@ -74,8 +79,13 @@
 /ang/sourceDY 20. mm
 /ang/sourceDZ 10. mm
 
+# Set the name of a physical volume that should act as a source.
+# To add more physical volumes, call /ang/sourcePV multiple times with different arguments 
+# (about using multiple sources, see also the caveat in the README.md).
 /ang/sourcePV source
 
+# Never simulate more than 2^32= 4294967296 particles using /run/beamOn, since this causes an overflow in the random number seed, giving you in principle the same results over and over again.
+# In such cases execute the same simulation multiple times instead.
 /run/beamOn 10
 
 # Below follows a list of all implemented angular distributions.

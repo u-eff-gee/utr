@@ -3,6 +3,7 @@
 /gps/particle gamma
 /gps/pos/type Point
 /gps/pos/centre 0. 0. 0. mm
+#/gps/pos/centre 0. 0. 0. mm # Ideal position of gamma3 target in all geometries
 #/gps/pos/centre 0. 0. 1574.80 mm # Ideal position of 2nd target in generation '18 geometries
 #/gps/pos/centre 0. 0. 1612.10 mm # Ideal position of 2nd target in generation '16/17 geometries
 /gps/ang/type iso
@@ -10,4 +11,6 @@
 /gps/ene/type Mono
 /gps/ene/mono {E} MeV
 
+# Never simulate more than 2^32= 4294967296 particles using /run/beamOn, since this causes an overflow in the random number seed, giving you in principle the same results over and over again.
+# In such cases execute the same simulation multiple times instead.
 /run/beamOn 100000000

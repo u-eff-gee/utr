@@ -53,7 +53,7 @@ static struct argp_option options[] = {
 struct arguments {
 	int nthreads = 1;
 	char *macrofile = 0;
-	string outputdir = ".";
+	string outputdir = "output";
 };
 
 static error_t parse_opt(int key, char *arg, struct argp_state *state) {
@@ -170,7 +170,7 @@ int main(int argc, char *argv[]) {
 		ui = new G4UIExecutive(argc, argv);
 #endif
 
-		UImanager->ApplyCommand("/control/execute init_vis.mac");
+		UImanager->ApplyCommand("/control/execute scripts/init_vis.mac");
 
 		ui->SessionStart();
 		delete ui;

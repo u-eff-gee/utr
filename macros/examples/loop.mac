@@ -1,0 +1,3 @@
+# Syntax: /control/loop Macro Variable Start End Increment Unit
+# To use the variable in the macro to be looped refer to it wrapped in {} as {Variable} in the macro
+/control/loop macros/examples/source.mac E 0.35 2. 0.05 MeV 

@@ -1,9 +1,11 @@
 /*
  *
- * This file was created automatically by cmake.
+ * utrConfig.h is created automatically by cmake.
  * To change settings of utrConfig.h, edit
- * the utrConfig.h.in file in the top-level
- * directory.
+ * the utrConfig.h.in file in the include
+ * directory and execute cmake again.
+ * Note that this notice is copied from 
+ * utrConfig.h.in to utrConfig.h.
  *
  */
 

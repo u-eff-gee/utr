@@ -1,4 +1,0 @@
-/vis/open VRML2FILE
-/run/initialize
-/vis/drawVolume
-/vis/viewer/flush

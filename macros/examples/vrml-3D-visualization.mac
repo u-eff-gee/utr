@@ -1,0 +1,5 @@
+# Create a 3D visualization .wrl file that can be viewed by an external viewer like Blender
+/vis/open VRML2FILE
+/run/initialize
+/vis/drawVolume
+/vis/viewer/flush

@@ -70,7 +70,7 @@ Using cmake build variables, activate or deactivate physics modules, or implemen
 
 ### 1.7 Choose random number seed
 
-In `utr.cc`, set the random number seed explicitly to get deterministic results. It is not clear whether this works in multithreaded mode. See section [2.5 Random Number Engine](#random)
+In `src/utr.cc`, set the random number seed explicitly to get deterministic results. It is not clear whether this works in multithreaded mode. See section [2.5 Random Number Engine](#random)
 
 ### 1.8 Set up a macro file
 
@@ -80,7 +80,7 @@ Do not simulate more than 2^32 ~ 2 billion particles using `/run/beamOn`, since 
 
 ### 1.9 Run the simulation
 
-Consider creating a macro like `loop.mac` to loop over variables in your macro file.
+Consider creating a macro like the example `loop.mac` in `macros/examples` to loop over variables in your macro file.
 (See section [4 Usage and Visualization](#usage))
 
 ### 1.10 Analyze the output
@@ -96,9 +96,9 @@ Since the 2018 campaign, we encourage to stick to the following directory struct
 
 ```
 utr/
-    utr.cc      # main()
-    include/    # user actions and auxiliary permanent geometry
-    src/        # user actions and auxiliary permanent geometry
+    include/utr.cc      # main()
+    include/            # user actions and auxiliary permanent geometry
+    src/                # user actions and auxiliary permanent geometry
     DetectorConstruction/
         Campaign_YEAR/
             include/    # auxiliary campaign- and run-specific geometry
@@ -424,7 +424,7 @@ By default, `utr` uses the Geant4 standard [`G4GeneralParticleSource`](#generalp
 $ cmake -DGENERATOR_ANGDIST=ON -DGENERATOR_ANGCORR=OFF .
 ```
 
-All of the event generators have macro commands defined that simplify their control. Sample macro files can be found in the home directory. As a rule of thumb, a user should use ...
+All of the event generators have macro commands defined that simplify their control. Sample macro files can be found in the `macros/examples` directory. As a rule of thumb, a user should use ...
 
  * ... `G4GeneralParticleSource` if the source is sufficiently simple to be controlled via the macro commands of Geant4. For an overview, see the webpage given below. An typical application would be the simulation of a point-like radioactive source or a beam with an intensity distribution that depends on the energy of the particles and the spatial coordinates.
  * ... `AngularDistributionGenerator`, if monoenergetic particles should be emitted from a set of user-defined volumes with a user-defined angular distribution, that has an arbitrary dependence on the solid angle. A typical application would be the simulation of gamma-rays that are emitted by a target that was excited with a (polarized) beam of particles.
@@ -438,7 +438,7 @@ This event generator uses the G4GeneralParticleSource (GPS) whose parameters can
 
 ##### 2.3.1.1 Usage
 
-The macros `source.mac` and `beam.mac` in the `utr/` directory model an isotropic point-source and a circular beam using the `G4GeneralParticleSource`. Many more examples can be found in the manual of Geant4.
+The macros `source.mac` and `beam.mac` in the `macros/examples` directory model an isotropic point-source and a circular beam using the `G4GeneralParticleSource`. Many more examples can be found in the manual of Geant4.
 
 #### 2.3.2 AngularDistributionGenerator<a name="angulardistributiongenerator"></a>
 
@@ -566,9 +566,9 @@ Due to parity symmetry, an inversion of all the parities in a cascade will resul
 
 It was chosen to represent the parity of a state as the sign of the spin quantum number. Unfortunately, this makes it impossible to represent 0- states, because the number "-0" is the same as "+0". Therefore, the value "-0.1" represents a 0- state.
 
-A list of all implemented angular distributions can be found at the bottom of the `angdist.mac` sample macro for `AngularDistributionGenerator`.
+A list of all implemented angular distributions can be found at the bottom of the `angdist.mac` sample macro in `macros/examples` for `AngularDistributionGenerator`.
 
-The macro file `angdist.mac` in the `utr/` directory shows a commented example of the usage of `AngularDistributionGenerator`.
+The macro file `angdist.mac` in the `macros/examples` directory shows a commented example of the usage of `AngularDistributionGenerator`.
 
 ##### 2.3.2.3 Caveat: Multiple sources <a name="multiplesources"></a>
 
@@ -655,7 +655,7 @@ G4WT0 > ========================================================================
 
 ```
 
-For a commented example, see the `angcorr.mac` macro file in the `utr/` directory, which implements a three-step cascade that uses all the features of `AngularCorrelationGenerator`.
+For a commented example, see the `angcorr.mac` macro file in the `macros/examples` directory, which implements a three-step cascade that uses all the features of `AngularCorrelationGenerator`.
 
 ### 2.4 Physics <a name="physics"></a>
 `utr` makes use of the `G4VModularPhysicsList`, which allows to integrate physics modules in a straightforward way by calling the `G4ModularPhysicsList::RegisterPhysics(G4VPhysicsConstructor*)` method. The registered `G4VPhysicsConstructor` class takes care of the introduction of particles and physics processes.
@@ -718,7 +718,7 @@ may appear.
 In order to include new physics modules, include them in the `src/Physics.cc` file.
 
 ### 2.5 Random Number Engine <a name="random"></a>
-In `utr.cc`, the random number engine's seed is set by using the current CPU time, making it a "real" random generator.
+In `src/utr.cc`, the random number engine's seed is set by using the current CPU time, making it a "real" random generator.
 
 ```
 G4Random::setTheEngine(new CLHEP::RanecuEngine);
@@ -947,7 +947,7 @@ That means there is no need to use the `/run/printProgress` macro of Geant4 any 
 $ cmake -DPRINT_PROGRESS=NEVENTS .
 ```
 
-Running `utr` without any argument will launch a UI session where macro commands can be entered. It should also automatically execute the macro file `init_vis.mac`, which visualizes the geometry.
+Running `utr` without any argument will launch a UI session where macro commands can be entered. It should also automatically execute the macro file `init_vis.mac` in the `scripts` directory, which visualizes the geometry.
 
 If this does not work, or to execute any other macro file MACROFILE, type 
 ```bash
@@ -971,9 +971,9 @@ and
 ```
 respectively.
 
-It is also possible to create 3D visualization files that can be viewed by an external viewer like [Blender](https://www.blender.org/) (the title picture was made in Blender, for example). The macro `vrml.mac` shows how to create a `.wrl` file. Run it in UI mode with
+It is also possible to create 3D visualization files that can be viewed by an external viewer like [Blender](https://www.blender.org/) (the title picture was made in Blender, for example). The macro `vrml.mac` in `macros/examples` shows how to create a `.wrl` file. Run it in UI mode with
 ```bash
-/control/execute vrml.mac
+/control/execute macros/examples/vrml.mac
 ```
 
 ## 5 Output Processing <a name="outputprocessing"></a>
@@ -1208,7 +1208,7 @@ At the moment, the unit test for the `AngularCorrelationGenerator` is almost the
 
 To test the physics processes of Geant4 and sensitive detector functionality of `utr`, a simple test geometry has been implemented. Almost all parts of the geometry are spherically symmetric to make it easy to study angular distributions of particles emitted by some process. At the origin, a cylindrical reaction target is placed. It is surrounded by three concentric spherical shells, representing each of the available detector types of `utr` (see [2.2 Sensitive Detectors](#sensitivedetectors)). Beginning from the center, the order is `ParticleSD`, `SecondarySD` and `EnergyDepositionSD`. The first two detector types are nondestructive, therefore they are made of vacuum. The `EnergyDepositionSD` will only work if made of matter with which the particles can react.
 
-The unit test can be activated by selecting the geometry in `DetectorConstruction/unit_tests/Physics/` via CMake build variables (see [3.3 Build configuration](#build)). For a beam-on-target experiment, usage of a modified `beam.mac` macro is recommended. Feel free to play with different physics lists and materials.
+The unit test can be activated by selecting the geometry in `DetectorConstruction/unit_tests/Physics/` via CMake build variables (see [3.3 Build configuration](#build)). For a beam-on-target experiment, usage of a modified `macros/examples/beam.mac` macro is recommended. Feel free to play with different physics lists and materials.
 
 ## 7 License <a name="license"></a>
 
