@@ -129,21 +129,20 @@ int main(int argc, char *argv[]) {
 	G4cout << "ActionInitialization..." << G4endl;
 	ActionInitialization *actionInitialization = new ActionInitialization();
 	actionInitialization->setNThreads(arguments.nthreads);
-	// Pass output directory and file name id to RunAction via ActionInitialization
-	if(arguments.outputdir != "."){
-		if (!opendir(arguments.outputdir.c_str())) {
-			stringstream command;
-			const int dir_err = mkdir(arguments.outputdir.c_str(),
-						  S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-			if (dir_err == -1) {
-				G4cout << "Error creating output directory" << G4endl;
-				abort();
-			}
+	// If output directory does not exists try to create it
+	if (!opendir(arguments.outputdir.c_str())) {
+		const int dir_err = mkdir(arguments.outputdir.c_str(),
+					  S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+		if (dir_err == -1) {
+			G4cout << "Error creating output directory '"
+			       << arguments.outputdir << "'" << G4endl;
+			abort();
 		} else {
-			G4cout << __FILE__ << ": main(): Warning: Output directory '"
-			       << arguments.outputdir << "' already exists" << G4endl;
-		}
+            G4cout << "Created output directory '"
+			       << arguments.outputdir << "'" << G4endl;
+        }
 	}
+    // Pass output directory to RunAction via ActionInitialization
 	actionInitialization->setOutputDir(arguments.outputdir);
 	actionInitialization->setFilenameID(fid);
 	runManager->SetUserInitialization(actionInitialization);

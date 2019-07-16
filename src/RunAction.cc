@@ -84,16 +84,9 @@ void RunAction::BeginOfRunAction(const G4Run *) {
 	//
 	// where the filename is given by the user in analysisManager->OpenFile()
 
-	std::stringstream directory;
-
-	if (outputdir != ".") {
-		directory << outputdir << "/";
-	}
-
 	G4int threadId = G4Threading::G4GetThreadId();
 	std::stringstream filename;
-	filename << directory.str() << "utr" << filenameid << ".root";
-
+    filename << outputdir << "/utr" << filenameid << ".root";
 	if (threadId != -1) { 
 		analysisManager->OpenFile(filename.str());
 
