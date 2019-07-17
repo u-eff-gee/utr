@@ -45,6 +45,12 @@ void ActionInitialization::BuildForMaster() const {
 	SetUserAction(new RunAction);
 }
 
+// Need to define (initialize) static members of ActionInitialization somewhere not in the header, so here
+// Values choosen here should be irrelevant anyway as also set in utr.cc
+std::string ActionInitialization::outputDir=".";
+std::string ActionInitialization::filenamePrefix="utr";
+unsigned int ActionInitialization::filenameID=0;
+
 void ActionInitialization::Build() const {
 #ifdef GENERATOR_ANGDIST
 	SetUserAction(new AngularDistributionGenerator);
@@ -61,8 +67,6 @@ void ActionInitialization::Build() const {
 	SetUserAction(eventAction);
 
 	RunAction *runAction = new RunAction();
-	runAction->setOutputDir(outputdir);
-	runAction->setFilenameID(filenameid);
 
 	vector<bool> record_quantity(NFLAGS);
 	for(short i = 0; i < NFLAGS; ++i)

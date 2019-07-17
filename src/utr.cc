@@ -48,12 +48,14 @@ static struct argp_option options[] = {
     {"macrofile", 'm', "MACRO", 0, "Macro file", 0},
     {"nthreads", 't', "THREAD", 0, "Number of threads", 0},
     {"outputdir", 'o', "OUTPUTDIR", 0, "Output directory", 0},
+    {"filename", 'f', "PREFIX", 0, "Output files' name prefix", 0},
     {0, 0, 0, 0, 0, 0}};
 
 struct arguments {
 	int nthreads = 1;
 	char *macrofile = 0;
 	string outputdir = "output";
+	string filenameprefix = "utr";
 };
 
 static error_t parse_opt(int key, char *arg, struct argp_state *state) {
@@ -67,6 +69,9 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state) {
 		break;
 	case 'o':
 		arguments->outputdir = arg;
+		break;
+	case 'f':
+		arguments->filenameprefix = arg;
 		break;
 	default:
 		return ARGP_ERR_UNKNOWN;
@@ -88,19 +93,28 @@ int main(int argc, char *argv[]) {
 	// Deterministic results
 	// G4Random::setTheSeed(1);
 
-	// Determine file name by searching for files with the name
-	// 'utrN.root' or 'utrN_t0.root' in the requested directory,
-	// If they exist, this would mean that a simulation with 
-	// this prefix has already been run.
+	// If output directory does not exists try to create it
+	if (!opendir(arguments.outputdir.c_str())) {
+		const int dir_err = mkdir(arguments.outputdir.c_str(),
+					  S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+		if (dir_err == -1) {
+			G4cout << "Error creating output directory '"
+			       << arguments.outputdir << "'" << G4endl;
+			abort();
+		} else {
+            G4cout << "Created output directory '"
+			       << arguments.outputdir << "'" << G4endl;
+        }
+	}
+	// Determine the next free filename (with ID) by searching for files with the name
+	// '{arguments.filenameprefix}N.root' or '{arguments.filenameprefix}N_t0.root' in the requested directory
 	G4FileUtilities fu;
 	std::stringstream filename_single;
 	std::stringstream filename_multi;
 	unsigned int fid = 0;
 	for(fid = 0; fid < INT_MAX; ++fid){
-		filename_single << arguments.outputdir << "/utr" << fid << ".root";
-		filename_multi << arguments.outputdir << "/utr" << fid << "_t0.root";
-
-		G4cout << "Checking whether file '" << filename_single.str() << "' or '" << filename_multi.str() << "' already exists in file system ..." << G4endl;
+		filename_single << arguments.outputdir << "/" << arguments.filenameprefix << fid << ".root";
+		filename_multi  << arguments.outputdir << "/" << arguments.filenameprefix << fid << "_t0.root";
 
 		if (fu.FileExists(filename_single.str()) || fu.FileExists(filename_multi.str())){
 			filename_single.str("");
@@ -109,7 +123,7 @@ int main(int argc, char *argv[]) {
 		}
 		break;
 	}
-	G4cout << "Using file name prefix 'utr" << fid << "' ..." << G4endl;
+	G4cout << "Using file name prefix '" << arguments.filenameprefix << fid << "' ..." << G4endl;
 	
 
 #ifdef G4MULTITHREADED
@@ -129,22 +143,10 @@ int main(int argc, char *argv[]) {
 	G4cout << "ActionInitialization..." << G4endl;
 	ActionInitialization *actionInitialization = new ActionInitialization();
 	actionInitialization->setNThreads(arguments.nthreads);
-	// If output directory does not exists try to create it
-	if (!opendir(arguments.outputdir.c_str())) {
-		const int dir_err = mkdir(arguments.outputdir.c_str(),
-					  S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-		if (dir_err == -1) {
-			G4cout << "Error creating output directory '"
-			       << arguments.outputdir << "'" << G4endl;
-			abort();
-		} else {
-            G4cout << "Created output directory '"
-			       << arguments.outputdir << "'" << G4endl;
-        }
-	}
     // Pass output directory to RunAction via ActionInitialization
 	actionInitialization->setOutputDir(arguments.outputdir);
-	actionInitialization->setFilenameID(fid);
+	actionInitialization->setFilenamePrefix(arguments.filenameprefix);
+	actionInitialization->setFilenameID(fid-1);
 	runManager->SetUserInitialization(actionInitialization);
 
 	if (!arguments.macrofile) {
@@ -169,7 +171,9 @@ int main(int argc, char *argv[]) {
 		ui = new G4UIExecutive(argc, argv);
 #endif
 
-		UImanager->ApplyCommand("/control/execute scripts/init_vis.mac");
+
+		UImanager->ApplyCommand("/run/initialize");
+		UImanager->ApplyCommand("/control/execute scripts/vis.mac");
 
 		ui->SessionStart();
 		delete ui;

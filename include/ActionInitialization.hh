@@ -36,12 +36,20 @@ class ActionInitialization : public G4VUserActionInitialization {
 	virtual void BuildForMaster() const;
 	virtual void Build() const;
 
-	void setFilenameID(unsigned int fid) {filenameid = fid; };
+	static void setOutputDir(string odir) { outputDir = odir; };
+	static string getOutputDir() { return outputDir; };
+	static void setFilenamePrefix(string fpre) { filenamePrefix = fpre; };
+	static string getFilenamePrefix() { return filenamePrefix; };
+	static void setFilenameID(unsigned int fid) { filenameID = fid; };
+    static unsigned int getFileNameID() { return filenameID; };
+	static unsigned int incrementFilenameID() { return ++filenameID; };
 	void setNThreads(const int nt) { n_threads = nt; };
-	void setOutputDir(string output) { outputdir = output; };
 
   private:
-	string outputdir;
-	unsigned int filenameid;
+    // statics are set as statics here so they are shared and available to all threads
+	// they got introduced because the master thread did/does not run through ActionInitialization::Build() and hence had no acess to these variables needed in RunAction::BeginOfRunAction
+	static string outputDir;
+	static string filenamePrefix;
+	static unsigned int filenameID;
 	G4int n_threads;
 };

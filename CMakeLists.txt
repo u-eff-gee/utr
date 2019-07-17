@@ -120,7 +120,6 @@ target_link_libraries(utr ${Geant4_LIBRARIES})
 # relies on these scripts being in the current working directory.
 #
 set(UTR_SCRIPTS
-  init_vis.mac
   vis.mac
   )
 

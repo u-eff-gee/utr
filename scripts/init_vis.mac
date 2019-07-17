@@ -1,3 +1,0 @@
-/run/initialize
-
-/control/execute scripts/vis.mac

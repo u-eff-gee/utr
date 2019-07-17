@@ -28,12 +28,13 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4FileUtilities.hh"
 
 #include "RunAction.hh"
+#include "ActionInitialization.hh"
 #include "g4root.hh"
 #include <limits.h>
 
 #include "utrConfig.h"
 
-RunAction::RunAction() : G4UserRunAction(), filenameid(0) {}
+RunAction::RunAction() : G4UserRunAction() {}
 
 RunAction::~RunAction() { delete G4AnalysisManager::Instance(); }
 
@@ -42,39 +43,39 @@ void RunAction::BeginOfRunAction(const G4Run *) {
 	G4AnalysisManager *analysisManager = G4AnalysisManager::Instance();
 
 	analysisManager->CreateNtuple("utr", "Particle information");
-#ifdef EVENT_ID
-	analysisManager->CreateNtupleDColumn("event");
-#endif
-#ifdef EVENT_EDEP
-	analysisManager->CreateNtupleDColumn("edep");
-#endif
-#ifdef EVENT_EKIN
-	analysisManager->CreateNtupleDColumn("ekin");
-#endif
-#ifdef EVENT_PARTICLE
-	analysisManager->CreateNtupleDColumn("particle");
-#endif
-#ifdef EVENT_VOLUME
-	analysisManager->CreateNtupleDColumn("volume");
-#endif
-#ifdef EVENT_POSX
+	#ifdef EVENT_ID
+		analysisManager->CreateNtupleDColumn("event");
+	#endif
+	#ifdef EVENT_EDEP
+		analysisManager->CreateNtupleDColumn("edep");
+	#endif
+	#ifdef EVENT_EKIN
+		analysisManager->CreateNtupleDColumn("ekin");
+	#endif
+	#ifdef EVENT_PARTICLE
+		analysisManager->CreateNtupleDColumn("particle");
+	#endif
+	#ifdef EVENT_VOLUME
+		analysisManager->CreateNtupleDColumn("volume");
+	#endif
+	#ifdef EVENT_POSX
 		analysisManager->CreateNtupleDColumn("x");
-#endif
-#ifdef EVENT_POSY
+	#endif
+	#ifdef EVENT_POSY
 		analysisManager->CreateNtupleDColumn("y");
-#endif
-#ifdef EVENT_POSZ
+	#endif
+	#ifdef EVENT_POSZ
 		analysisManager->CreateNtupleDColumn("z");
-#endif
-#ifdef EVENT_MOMX
+	#endif
+	#ifdef EVENT_MOMX
 		analysisManager->CreateNtupleDColumn("vx");
-#endif
-#ifdef EVENT_MOMY
+	#endif
+	#ifdef EVENT_MOMY
 		analysisManager->CreateNtupleDColumn("vy");
-#endif
-#ifdef EVENT_MOMZ
+	#endif
+	#ifdef EVENT_MOMZ
 		analysisManager->CreateNtupleDColumn("vz");
-#endif
+	#endif
 	analysisManager->FinishNtuple();
 
 	// Open an output file
@@ -84,14 +85,23 @@ void RunAction::BeginOfRunAction(const G4Run *) {
 	//
 	// where the filename is given by the user in analysisManager->OpenFile()
 
-	G4int threadId = G4Threading::G4GetThreadId();
-	std::stringstream filename;
-    filename << outputdir << "/utr" << filenameid << ".root";
-	if (threadId != -1) { 
+    if (IsMaster()) { // Should be aquivalent to G4Threading::G4GetThreadId() == -1
+		// Master thread (runinng this function before all other threads) increments the file ID to use
+        ActionInitialization::incrementFilenameID();
+        analysisManager->OpenFile("master.root");
+    } else {
+		// Worker threads check whether their designated output file already exists and if so abort
+        G4FileUtilities fu;
+        std::stringstream filename;
+		filename << ActionInitialization::getOutputDir() << "/" << ActionInitialization::getFilenamePrefix() << ActionInitialization::getFileNameID();
+		std::stringstream filenameWithThreadID;
+		filenameWithThreadID << filename.str() << "_t" << G4Threading::G4GetThreadId() << ".root";
+        if (fu.FileExists(filenameWithThreadID.str())) {
+            G4cerr << "ERROR: Designated outputfile '" << filenameWithThreadID.str() << "' already exists! Aborting..." << G4endl;
+            throw std::exception();
+        } else {
 		analysisManager->OpenFile(filename.str());
-
-	} else {
-		analysisManager->OpenFile("master.root");
+        }
 	}
 }
 
