@@ -1006,6 +1006,8 @@ $ ./rootToTxt ROOTFILE
 ```
 The ROOT file can have a TTree with an arbitrary name and an arbitrary number of TBranch objects. The output text file has the same name as the ROOT file but with a ".txt" suffix.
 Be aware that conversion into text files increases the file size.
+Note that in the case of an utr output file this will just produce a list of all recorded events with their recorded properties and not a spectrum.
+For a text spectrum use getHistogram in combination with histogramToTxt.
 
 ### 5.2 getHistogram <a name="getHistogram"></a>
 `getHistogram` sorts the data from multiple output files (for example, several threads of the same simulation) into a ROOT histogram and saves the histogram to a new file. It is assumed that the output of the simulation has at least the branches `edep` and `volume`, and optionally also `event` (see also [2.6 Output File Format](#outputfileformat), and that the detector IDs (i.e. the possible values of `volume`), determined by the `G4SensitiveDetector::SetDetectorID()` method (see also [2.2 Sensitive Detectors](#sensitivedetectors)), are integer numbers between 0 and `ID_MAX`, where `ID_MAX` is the maximum detector ID.

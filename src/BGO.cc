@@ -1,6 +1,5 @@
 #include "BGO.hh"
 
-#include "BGO.hh"
 #include "G4Material.hh"
 #include "G4Box.hh"
 #include "G4Tubs.hh"
@@ -12,10 +11,11 @@
 #include "G4VisAttributes.hh"
 #include "G4SubtractionSolid.hh"
 
-#include "G4Color.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4NistManager.hh"
 #include "G4VisAttributes.hh"
+
+#include "NamedColors.hh"
 
 #include <sstream>
 
@@ -24,18 +24,6 @@ using std::stringstream;
 BGO::BGO(G4String name){
 
 	bgo_Name = name;
-
-	G4Colour  white   (1.0, 1.0, 1.0) ;
-	G4Colour  grey    (0.5, 0.5, 0.5) ;
-	G4Colour  black   (0.0, 0.0, 0.0) ;
-	G4Colour  red     (1.0, 0.0, 0.0) ;
-	G4Colour  green   (0.0, 1.0, 0.0) ;
-	G4Colour  blue    (0.0, 0.0, 1.0) ;
-	G4Colour  cyan    (0.0, 1.0, 1.0) ;
-	G4Colour  magenta (1.0, 0.0, 1.0) ;
-	G4Colour  yellow  (1.0, 1.0, 0.0) ;
-	G4Colour  orange (1.0, 0.5, 0.0) ;
-	G4Colour  light_blue  (1.0, 0.82, 0.36) ;
 
 	G4NistManager* man = G4NistManager::Instance();
 
