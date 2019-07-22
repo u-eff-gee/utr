@@ -19,7 +19,17 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 /*
-Setup of the Sn112 NRF experiment from the 2015 DHIPS campaign
+ * Setup of the Sn112 NRF experiment from the 2015 DHIPS campaign
+ * The purpose of this experiment was to measure the excitation strength
+ * of the 2^+_1 state of 112Sn in NRF relative to the known strengths
+ * of excited states in 27Al and 59Co. This was supposed to clarify the
+ * experimental situation of the systematics of B(E2; 0^+_1 -> 2^+_1)
+ * strengths in the tin isotopic chain.
+ * 
+ * An alternative would have been to determine two B(E2) strengths
+ * of the tin isotopes 112Sn and 116Sn simultaneously. A sandwich
+ * target which would be necessary for this alternative experiment
+ * has also been implemented.
 */
 
 #include "DetectorConstruction.hh"
@@ -55,6 +65,7 @@ Materials *materials = Materials::Instance();
 #include "LeadCastle.hh"
 #include "Detectors.hh"
 #include "Sn112_Target.hh"
+#include "Sn112116_Target.hh"
 
 // Geometry
 #include "G4Box.hh"
@@ -98,7 +109,6 @@ G4VPhysicalVolume *DetectorConstruction::Construct()
 	G4LogicalVolume *World_Logical =
 	    new G4LogicalVolume(World_dim, air, "World_Logical", 0, 0, 0);
 
-	//World_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());
     	G4VisAttributes* world_vis = new G4VisAttributes(true, G4Color::Red());
     	world_vis->SetForceWireframe(true);
 
@@ -133,6 +143,8 @@ G4VPhysicalVolume *DetectorConstruction::Construct()
 #ifdef USE_TARGETS
 	Sn112_Target Sn112_Target(World_Logical);
 	Sn112_Target.Construct(G4ThreeVector(0., 0., 0.));
+	//Sn112116_Target Sn112116_Target(World_Logical);
+	//Sn112116_Target.Construct(G4ThreeVector(0., 0., 0.));
 
 #endif
 	
@@ -166,5 +178,3 @@ void DetectorConstruction::print_info() const {
 	printf("> World dimensions             : ( %5.2f, %5.2f, %5.2f )\n", World_x, World_y, World_z);
 	printf("==============================================================\n");
 }
-
-
