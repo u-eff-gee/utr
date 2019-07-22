@@ -19,7 +19,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 /*
-Setup for runs DHIPS Beamtime2019
+Setup of the Sn112 NRF experiment from the 2015 DHIPS campaign
 */
 
 #include "DetectorConstruction.hh"
@@ -54,7 +54,7 @@ Materials *materials = Materials::Instance();
 #include "BeamPipe_Downstream.hh"
 #include "LeadCastle.hh"
 #include "Detectors.hh"
-#include "C12_Target.hh"
+#include "Sn112_Target.hh"
 
 // Geometry
 #include "G4Box.hh"
@@ -68,20 +68,12 @@ Materials *materials = Materials::Instance();
 #include "G4UnionSolid.hh"
 #include "G4VisAttributes.hh"
 #include "globals.hh"
-#include "G4Sphere.hh"
 
 // Units
 #include "G4PhysicalConstants.hh"
 #include "G4SystemOfUnits.hh"
 
-#include <sstream>
-#include <vector>
 #include <iostream>
-
-using std::stringstream;
-using std::vector;
-using std::cout;
-using std::endl;
 
 DetectorConstruction::DetectorConstruction() {}
 
@@ -89,19 +81,6 @@ DetectorConstruction::~DetectorConstruction() {}
 
 G4VPhysicalVolume *DetectorConstruction::Construct()
 {
-
-	G4Colour white(1.0, 1.0, 1.0);
-	G4Colour grey(0.5, 0.5, 0.5);
-	G4Colour black(0.0, 0.0, 0.0);
-	G4Colour red(1.0, 0.0, 0.0);
-	G4Colour green(0.0, 1.0, 0.0);
-	G4Colour blue(0.0, 0.0, 1.0);
-	G4Colour cyan(0.0, 1.0, 1.0);
-	G4Colour magenta(1.0, 0.0, 1.0);
-	G4Colour yellow(1.0, 1.0, 0.0);
-	G4Colour orange(1.0, 0.5, 0.0);
-	G4Colour light_orange(1.0, 0.82, 0.36);
-
 	G4NistManager *nist = G4NistManager::Instance();
 	G4Material *air = nist->FindOrBuildMaterial("G4_AIR");
 
@@ -120,7 +99,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct()
 	    new G4LogicalVolume(World_dim, air, "World_Logical", 0, 0, 0);
 
 	//World_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());
-    	G4VisAttributes* world_vis = new G4VisAttributes(true, red);
+    	G4VisAttributes* world_vis = new G4VisAttributes(true, G4Color::Red());
     	world_vis->SetForceWireframe(true);
 
 	World_Logical->SetVisAttributes(world_vis);
@@ -134,7 +113,6 @@ G4VPhysicalVolume *DetectorConstruction::Construct()
 
 	BeamPipe_Upstream BeamPipe_Upstream(World_Logical);
 	RadiatorTarget RadiatorTarget(World_Logical);
-	BeamPipe_Downstream BeamPipe_Downstream(World_Logical);
 	LeadCastle LeadCastle(World_Logical);
 	Detectors Detectors(World_Logical);
 
@@ -143,19 +121,18 @@ G4VPhysicalVolume *DetectorConstruction::Construct()
 	/*****************  CONSTRUCTION  *****************/
 	/***************************************************/
 
-	BeamPipe_Upstream.Construct(G4ThreeVector(0,0,-2500*mm),0.1);
-	RadiatorTarget.Construct(G4ThreeVector(0,0,-2000*mm),"Radiator1","Au",3*mm,"Al",0.); 
-	RadiatorTarget.Construct(G4ThreeVector(0,0,-1800*mm),"Radiator2","Au",3*mm,"Al",0.);
-	// BeamPipe_Downstream.Construct(G4ThreeVector(0,0,285*mm),0.1);//285*mm measured
+	BeamPipe_Upstream.Construct(G4ThreeVector(0,0,-2500*mm),0.1); // Position estimated
+	RadiatorTarget.Construct(G4ThreeVector(0,0,-2000*mm),"Radiator1","Au",0.5*mm,"Au",0.); // Position estimated
+	RadiatorTarget.Construct(G4ThreeVector(0,0,-1800*mm),"Radiator2","Au",2.*mm,"Au",0.); // Position estimated
 	LeadCastle.Construct(G4ThreeVector());
 	Detectors.Construct(G4ThreeVector());
-	Detectors.ConstructDetectorFilter(G4ThreeVector(),"HPGe1",10*mm,10*mm);//Cu Filter Length, Pb Filter Length
-	Detectors.ConstructDetectorFilter(G4ThreeVector(),"HPGe2",10*mm,10*mm);//Cu Filter Length, Pb Filter Length
-	Detectors.ConstructDetectorFilter(G4ThreeVector(),"HPGePol",10*mm,10*mm);//Cu Filter Length, Pb Filter Length
+	Detectors.ConstructDetectorFilter(G4ThreeVector(),"HPGe1",10.*mm, 10.*mm);
+	Detectors.ConstructDetectorFilter(G4ThreeVector(),"HPGe2",10.*mm,5.*mm);
+	Detectors.ConstructDetectorFilter(G4ThreeVector(),"HPGePol",10.*mm,10.*mm);
 
 #ifdef USE_TARGETS
-	C12_Target C12_Target(World_Logical);
-	C12_Target.Construct(G4ThreeVector(0., 0., 0.));
+	Sn112_Target Sn112_Target(World_Logical);
+	Sn112_Target.Construct(G4ThreeVector(0., 0., 0.));
 
 #endif
 	
@@ -189,3 +166,5 @@ void DetectorConstruction::print_info() const {
 	printf("> World dimensions             : ( %5.2f, %5.2f, %5.2f )\n", World_x, World_y, World_z);
 	printf("==============================================================\n");
 }
+
+

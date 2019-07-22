@@ -24,18 +24,6 @@ Detectors::Detectors(G4LogicalVolume *World_Log):World_Logical(World_Log){}
 
 void Detectors::Construct(G4ThreeVector global_coordinates)
 {
-	G4Colour  white   (1.0, 1.0, 1.0) ;
-	G4Colour  grey    (0.5, 0.5, 0.5) ;
-	G4Colour  black   (0.0, 0.0, 0.0) ;
-	G4Colour  red     (1.0, 0.0, 0.0) ;
-	G4Colour  green   (0.0, 1.0, 0.0) ;
-	G4Colour  blue    (0.0, 0.0, 1.0) ;
-	G4Colour  cyan    (0.0, 1.0, 1.0) ;
-	G4Colour  magenta (1.0, 0.0, 1.0) ;
-	G4Colour  yellow  (1.0, 1.0, 0.0) ;
-	G4Colour  orange (1.0, 0.5, 0.0) ;
-	G4Colour  light_blue  (1.0, 0.82, 0.36) ;
-
 	Germanium1_TUD* HPGe1 = new Germanium1_TUD("HPGe1");
 	Germanium2_TUD* HPGe2 = new Germanium2_TUD("HPGe2") ;
 	Polarimeter_TUD* HPGePol = new Polarimeter_TUD("HPGePol") ;
@@ -111,15 +99,13 @@ void Detectors::ConstructDetectorFilter(G4ThreeVector global_coordinates,std::st
 				else
 				{
 					printf("\n");
-					printf("No Proper detector name used. Please use: Det1, Det2 or DetPol in function ConstructDetectorFilter\n");
+					printf("No Proper detector name used. Please use: HPGe1, HPGe2 or HPGePol in function ConstructDetectorFilter\n");
 					printf("No filters were used in ConstructDetectorFilter(%s,%f,%f)",det.c_str(),CuLength,PbLength);
 					printf("\n");
 					abort();
 				}
 	if(detcheck)
 	{
-		G4Colour  orange (1.0, 0.5, 0.0) ;
-		G4Colour  grey   (0.5, 0.5, 0.5) ;
 		G4RotationMatrix* RotDet= new G4RotationMatrix();
 		RotDet->rotateY(det_phi-90*deg);
 		G4NistManager *nist = G4NistManager::Instance();
@@ -131,8 +117,8 @@ void Detectors::ConstructDetectorFilter(G4ThreeVector global_coordinates,std::st
 		G4LogicalVolume* Cu_Filter_Logical = new G4LogicalVolume(Cu_Filter_Solid, Cu, "Cu_Filter_Logical", 0, 0, 0);
 		G4LogicalVolume* Pb_Filter_Logical = new G4LogicalVolume(Pb_Filter_Solid, Pb, "Pb_Filter_Logical", 0, 0, 0);
 
-		Cu_Filter_Logical->SetVisAttributes(orange);
-		Pb_Filter_Logical->SetVisAttributes(grey);
+		Cu_Filter_Logical->SetVisAttributes(G4Color::Brown());
+		Pb_Filter_Logical->SetVisAttributes(G4Color::Grey());
 
 		G4double Cu_dist=-det_dist+0.5*CuLength;
 		G4double Pb_dist=-det_dist+0.5*PbLength+CuLength;
