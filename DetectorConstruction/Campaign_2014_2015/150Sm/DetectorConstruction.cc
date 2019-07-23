@@ -19,10 +19,15 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 /*
-Setup for runs 271 - 279
+Setup for the 150Sm Runs (Runs 563 (?) to 615) belonging to the 2014 campaign although conducted in February 2015.
+Setup is based on the values given in section 3.3 of the B.Sc. thesis "Zerfallsverhalten der Scherenmode in der 0νββ-Tochter ¹⁵⁰Sm"  
+(Decay Characteristics of the Scissors Mode in the 0νββ-Daughter ¹⁵⁰Sm )" of J. Kleemann at TU Darmstadt (2016) (and his private paper logbook),
+as the ELOG hosted by the Goethe University Frankfurt apparently lost some entries on the setup at some point...
 */
 
 #include "DetectorConstruction.hh"
+
+#include "NamedColors.hh"
 
 // Materials
 #include "G4NistManager.hh"
@@ -31,6 +36,7 @@ Setup for runs 271 - 279
 
 // Geometry
 #include "G4Box.hh"
+#include "G4Tubs.hh"
 #include "G4LogicalVolume.hh"
 #include "G4PVPlacement.hh"
 #include "G4VisAttributes.hh"
@@ -39,18 +45,14 @@ Setup for runs 271 - 279
 #include "Collimator_Room.hh"
 #include "Room.hh"
 #include "Beampipe_Upstream.hh"
-#include "Beampipe_Downstream.hh"
 #include "First_UTR_Wall.hh"
 #include "First_Setup.hh"
-#include "G3_Wall_243_279.hh"
-#include "Detectors_G3_271_279.hh"
+#include "Detectors_G3_150Sm.hh"
 #include "Wheel.hh"
 #include "G3_Table.hh"
-#include "Table2_243_279.hh"
-#include "Detectors_2nd_271_279.hh"
+#include "Table2.hh"
 #include "ZeroDegree_Setup.hh"
-#include "Ni64_Target.hh"
-#include "Ni64_Sobotka_Target.hh"
+#include "Sm150_Target.hh"
 
 // Sensitive Detectors
 #include "G4SDManager.hh"
@@ -70,32 +72,20 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	 * ROOM (UTR walls and floor)
 	 * WORLD (world volume)
 	 * BEAMPIPE_UPSTREAM 
-	 * BEAMPIPE_DOWNSTREAM
 	 * FIRST_UTR_WALL
 	 * FIRST_SETUP (first setup upstream of g3)
-	 * G3_WALL (wall immediately in front of g3)
+	 * G3_WALL (wall immediately in front of g3, not used here)
 	 * DETECTORS_G3 (detectors in g3)
 	 * WHEEL (g3 wheel)
 	 * G3_TABLE
 	 * TABLE_2 (the table on which the second setup is mounted)
-	 * DETECTORS_2ND (detectors in second setup)
+	 * DETECTORS_2ND (detectors in second setup) - No information about the 2nd setup's geometry available for this experiment, so don't implement it at all
 	 * ZERODEGREE_SETUP (zero-degree detector)
 	 * G3_TARGET
-	 * SECOND_TARGET
+	 * SECOND_TARGET (no second target used here!)
 	 */
 
-	G4Colour white(1.0, 1.0, 1.0);
-	G4Colour grey(0.5, 0.5, 0.5);
-	G4Colour black(0.0, 0.0, 0.0);
-	G4Colour red(1.0, 0.0, 0.0);
-	G4Colour green(0.0, 1.0, 0.0);
-	G4Colour blue(0.0, 0.0, 1.0);
-	G4Colour cyan(0.0, 1.0, 1.0);
-	G4Colour magenta(1.0, 0.0, 1.0);
-	G4Colour yellow(1.0, 1.0, 0.0);
-	G4Colour orange(1.0, 0.5, 0.0);
-	G4Colour light_orange(1.0, 0.82, 0.36);
-
+	
 	G4NistManager *nist = G4NistManager::Instance();
 	G4Material *air = nist->FindOrBuildMaterial("G4_AIR");
 
@@ -125,7 +115,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	G4double Wheel_To_Target = 3.*inch;
 	G4double First_Setup_To_Wheel = 34.*inch;
 	G4double First_UTR_Wall_To_First_Setup = 4.2*inch;
-	G4double First_Setup_To_G3_Wall = 3.5*inch;
+	G4double Floor_Level=-8.*inch*0.5 - 6.*inch - 41.*inch; //From G3_Wall_*.cc of 2018_2019 geometries
 	G3_Target_To_2nd_Target = 62.*inch; // Estimated
 	G4double ZeroDegree_To_2nd_Target = 980.*mm;
 
@@ -133,21 +123,17 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	/***************** INITIALIZATIONS *****************/
 	/***************************************************/
 
-	Collimator_Room collimator_Room(World_Logical, 0.5*0.75*inch);
+	Collimator_Room collimator_Room(World_Logical, 0.5*1.*inch); // 1 inch collimator used
 	Room room(World_Logical);
 	Beampipe_Upstream beampipe_Upstream(World_Logical);
 	First_UTR_Wall first_UTR_Wall(World_Logical);
 	First_Setup first_Setup(World_Logical);
-	G3_Wall_243_279 g3_Wall(World_Logical); // Was not there in these runs. However, it still defines the floor height, so it is needed here
-	Detectors_G3_271_279 detectors_G3(World_Logical);
+	Detectors_G3_150Sm detectors_G3(World_Logical);
 	Wheel wheel(World_Logical);
 	G3_Table g3_Table(World_Logical);
-	Table2_243_279 table2(World_Logical);
-	Beampipe_Downstream beampipe_Downstream(World_Logical);
-	Detectors_2nd_271_279 detectors_2nd(World_Logical);	
+	Table2 table2(World_Logical);
 	ZeroDegree_Setup zeroDegree_Setup(World_Logical);
-	Ni64_Target g3_Target;
-	Ni64_Sobotka_Target second_Target;
+	Sm150_Target g3_Target;
 
 	/***************************************************/
 	/*****************  CONSTRUCTION  *****************/
@@ -161,12 +147,34 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	/***************** ROOM *****************/
 
 	room.Construct(G4ThreeVector(), World_x, World_y, World_z,
-            Wheel_To_Target - First_Setup_To_Wheel - first_Setup.Get_Length() - First_UTR_Wall_To_First_Setup - first_UTR_Wall.Get_Length(),
-	g3_Wall.Get_Floor_Level());
+		Wheel_To_Target - First_Setup_To_Wheel - first_Setup.Get_Length() - First_UTR_Wall_To_First_Setup - first_UTR_Wall.Get_Length(),
+		Floor_Level);
 
 	/***************** BEAMPIPE_UPSTREAM *****************/
 
 	beampipe_Upstream.Construct(G4ThreeVector(0., 0., beampipe_Upstream.Get_Z_Axis_Offset_Z()), 1e-2);
+
+	// Lead wrapping of beam pipe at g3 target position
+
+	G4double Beampipe_Outer_Radius = 1.*inch;
+	G4double Beampipe_G3_Pb_Wrap_Thickness = 3./32. * inch;
+	G4double Beampipe_G3_Pb_Wrap_Width = 140. * mm; // Actually unknown
+
+	G4Material *Pb = nist->FindOrBuildMaterial("G4_Pb");
+
+	G4Tubs *Beampipe_G3_Pb_Wrap_Solid =
+	    new G4Tubs("Beampipe_G3_Pb_Wrap_Solid", Beampipe_Outer_Radius,
+	               Beampipe_Outer_Radius + Beampipe_G3_Pb_Wrap_Thickness,
+	               Beampipe_G3_Pb_Wrap_Width * 0.5, 0. * deg, 360. * deg);
+
+	G4LogicalVolume *Beampipe_G3_Pb_Wrap_Logical =
+	    new G4LogicalVolume(Beampipe_G3_Pb_Wrap_Solid, Pb, "Beampipe_G3_Pb_Wrap_Logical", 0, 0, 0);
+
+	Beampipe_G3_Pb_Wrap_Logical->SetVisAttributes(new G4VisAttributes(green));
+
+	new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), Beampipe_G3_Pb_Wrap_Logical,
+	                  "Beampipe_G3_Pb_Wrap", World_Logical, false, 0);
+
 
 	/***************** FIRST_UTR_WALL *****************/
 
@@ -178,7 +186,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	/***************** G3_WALL *****************/
 
-	g3_Wall.Construct(G4ThreeVector(0., 0., Wheel_To_Target - First_Setup_To_Wheel + First_Setup_To_G3_Wall + g3_Wall.Get_Length()*0.5));
+	// Very likely that no G3_WALL (a wall just infront of the g3 setup) was used in this experiment
 
 	/***************** DETECTORS_G3 *****************/
 
@@ -196,29 +204,19 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	table2.Construct(G4ThreeVector(0., 0.,  Wheel_To_Target + wheel.Get_Length() + g3_Table.Get_Length() + table2.Get_Length()*0.5 + table2.Get_Z_Axis_Offset_Z()));
 
-	/***************** BEAMPIPE_DOWNSTREAM *****************/
-
-	beampipe_Downstream.Construct(G4ThreeVector(0., 0., G3_Target_To_2nd_Target + beampipe_Downstream.Get_Z_Axis_Offset_Z()), 1e-2);
-
 	/***************** DETECTORS_2ND *****************/
 
-	detectors_2nd.Construct(G4ThreeVector(0., 0., G3_Target_To_2nd_Target));
+	//detectors_2nd.Construct(G4ThreeVector(0., 0., G3_Target_To_2nd_Target)); // No information about the 2nd setup's geometry available for this experiment, so don't implement it at all
 
 	/***************** ZERODEGREE_SETUP *****************/
 
 	zeroDegree_Setup.Construct(G4ThreeVector(0., 0., G3_Target_To_2nd_Target + ZeroDegree_To_2nd_Target));
 
-#ifdef USE_TARGETS	
 	/***************** G3_TARGET *****************/
-
-	g3_Target.Set_Containing_Volume(beampipe_Upstream.Get_Beampipe_Vacuum());
-	g3_Target.Construct(G4ThreeVector(0., 0., -beampipe_Upstream.Get_Z_Axis_Offset_Z()));
-
-	/***************** SECOND_TARGET *****************/
-
-	second_Target.Set_Containing_Volume(beampipe_Downstream.Get_Beampipe_Vacuum());
-	second_Target.Construct(G4ThreeVector(0., 0., -beampipe_Downstream.Get_Z_Axis_Offset_Z()));
-#endif
+	#ifdef USE_TARGETS
+		g3_Target.Set_Containing_Volume(beampipe_Upstream.Get_Beampipe_Vacuum());
+		g3_Target.Construct(G4ThreeVector(0., 0., -beampipe_Upstream.Get_Z_Axis_Offset_Z()));
+	#endif
 
 	print_info();
 
@@ -256,6 +254,7 @@ void DetectorConstruction::ConstructSDandField() {
 	HPGe4SD->SetDetectorID(4);
 	SetSensitiveDetector("HPGe4", HPGe4SD, true);
 
+	/* // Distances of LaBrs unknown, so not really useable
 	EnergyDepositionSD *LaBr1SD = new EnergyDepositionSD("LaBr1", "LaBr1");
 	G4SDManager::GetSDMpointer()->AddNewDetector(LaBr1SD);
 	LaBr1SD->SetDetectorID(5);
@@ -275,9 +274,11 @@ void DetectorConstruction::ConstructSDandField() {
 	G4SDManager::GetSDMpointer()->AddNewDetector(LaBr4SD);
 	LaBr4SD->SetDetectorID(8);
 	SetSensitiveDetector("LaBr4", LaBr4SD, true);
+	 */
 
 	/*************** Second setup **************/
 
+	/* // No information about the 2nd setup's geometry available for this experiment, so don't implement it at all
 	EnergyDepositionSD *HPGe10SD = new EnergyDepositionSD("HPGe10", "HPGe10");
 	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe10SD);
 	HPGe10SD->SetDetectorID(10);
@@ -292,6 +293,7 @@ void DetectorConstruction::ConstructSDandField() {
 	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe12SD);
 	HPGe12SD->SetDetectorID(12);
 	SetSensitiveDetector("HPGe12", HPGe12SD, true);
+	*/
 }
 
 void DetectorConstruction::print_info() const {

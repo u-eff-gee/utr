@@ -27,8 +27,9 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4PhysicalConstants.hh"
 #include "G4SystemOfUnits.hh"
 
-#include "Units.hh"
 #include "G3_Table.hh"
+#include "Units.hh"
+#include "NamedColors.hh"
 
 G3_Table::G3_Table(G4LogicalVolume *World_Log):
 World_Logical(World_Log),
@@ -37,11 +38,6 @@ G3_Table_Length(36.25*inch)
 
 
 void G3_Table::Construct(G4ThreeVector global_coordinates){
-	
-	G4Colour green(0., 0.5, 0.);
-	G4Colour yellow(1.0, 1.0, 0.0);
-	G4Colour grey(0.5, 0.5, 0.5);
-	G4Colour white(1.0, 1.0, 1.0);
 
 	G4NistManager *nist = G4NistManager::Instance();
 
@@ -134,6 +130,7 @@ void G3_Table::Construct(G4ThreeVector global_coordinates){
 	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., -Upstream_Holder_Y*0.5, -G3_Table_Length*0.5 + 0.5*inch + Upstream_Holder_Z*0.5), Upstream_Holder_Logical, "Upstream_Holder", World_Logical, false, 0, false);
 
 	// Downstream beam pipe holder
+	/* There was no second setup beam pipe in 2014/2015 so no beam pipe holder
 	G4double Downstream_Holder_X = 6.*inch;
 	G4double Downstream_Holder_Y = -(1.*inch - Lead_Wall_Y*0.5 - Concrete_Base_Y - Plastic_Base_Y);
 	G4double Downstream_Holder_Z = 0.5*inch;
@@ -147,4 +144,5 @@ void G3_Table::Construct(G4ThreeVector global_coordinates){
 	G4LogicalVolume *Downstream_Holder_Logical = new G4LogicalVolume(Downstream_Holder_Solid, Al, "Downstream_Holder_Logical");
 
 	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., -Downstream_Holder_Y*0.5, G3_Table_Length*0.5 - 1.75*inch - Downstream_Holder_Z*0.5), Downstream_Holder_Logical, "Downstream_Holder", World_Logical, false, 0, false);
+	*/
 }

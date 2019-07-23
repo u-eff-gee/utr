@@ -29,18 +29,18 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4Tubs.hh"
 #include "G4VisAttributes.hh"
 
-#include "Nd150_Target.hh"
+#include "Sm150_Target.hh"
 #include "Units.hh"
 
-Nd150_Target::Nd150_Target():
+Sm150_Target::Sm150_Target():
 World_Logical(nullptr)
 {}
 
-Nd150_Target::Nd150_Target(G4LogicalVolume *World_Log):
+Sm150_Target::Sm150_Target(G4LogicalVolume *World_Log):
 World_Logical(World_Log)
 {}
 
-void Nd150_Target::Construct(G4ThreeVector global_coordinates){
+void Sm150_Target::Construct(G4ThreeVector global_coordinates){
 
 	G4NistManager *nist = G4NistManager::Instance();
 
@@ -50,99 +50,93 @@ void Nd150_Target::Construct(G4ThreeVector global_coordinates){
 	// All information from the data sheet if not indicated otherwise
 	/*************************************************/
 
-	// Target material
-	G4Isotope *Nd142 = new G4Isotope("142Nd", 60, 142);
-	G4Isotope *Nd143 = new G4Isotope("143Nd", 60, 143);
-	G4Isotope *Nd144 = new G4Isotope("144Nd", 60, 144);
-	G4Isotope *Nd145 = new G4Isotope("145Nd", 60, 145);
-	G4Isotope *Nd146 = new G4Isotope("146Nd", 60, 146);
-	G4Isotope *Nd148 = new G4Isotope("148Nd", 60, 148);
-	G4Isotope *Nd150 = new G4Isotope("150Nd", 60, 150);
+	// Target material Sm isotopic composition
+	// There is currently no data sheet for the target, only the enrichment of the material in the isotope of interest (150Sm) is known
+    // Hence, the remaining target material percentage is modeled to be the remaining natural occuring isotopes of Sm with their respective 
+	// natural abbundance taken from https://physics.nist.gov/cgi-bin/Compositions/stand_alone.pl
+	G4Isotope *Sm144 = new G4Isotope("144Sm", 62, 144);
+	G4Isotope *Sm147 = new G4Isotope("147Sm", 62, 147);
+	G4Isotope *Sm148 = new G4Isotope("148Sm", 62, 148);
+	G4Isotope *Sm149 = new G4Isotope("149Sm", 62, 149);
+	G4Isotope *Sm150 = new G4Isotope("150Sm", 62, 150);
+    G4Isotope *Sm152 = new G4Isotope("152Sm", 62, 152);
+    G4Isotope *Sm154 = new G4Isotope("154Sm", 62, 154);
 
-	G4Element *enriched_Nd150 =
-	    new G4Element("enriched Nd150", "Nd-150e", 7);
+	G4Element *enriched_Sm150 =
+	    new G4Element("enriched Sm150", "Sm-150e", 7);
 
-	enriched_Nd150->AddIsotope(Nd142, 1.26 * perCent);
-	enriched_Nd150->AddIsotope(Nd143, 0.82 * perCent);
-	enriched_Nd150->AddIsotope(Nd144, 1.34 * perCent);
-	enriched_Nd150->AddIsotope(Nd145, 0.74 * perCent);
-	enriched_Nd150->AddIsotope(Nd146, 1.31 * perCent);
-	enriched_Nd150->AddIsotope(Nd148, 0.94 * perCent);
-	enriched_Nd150->AddIsotope(Nd150, 93.59 * perCent);
+	enriched_Sm150->AddIsotope(Sm144, 05.00 *  3.07 / (3.07+14.99+11.24+13.82+26.75+22.75) * perCent); 
+	enriched_Sm150->AddIsotope(Sm147, 05.00 * 14.99 / (3.07+14.99+11.24+13.82+26.75+22.75) * perCent);
+	enriched_Sm150->AddIsotope(Sm148, 05.00 * 11.24 / (3.07+14.99+11.24+13.82+26.75+22.75) * perCent);
+	enriched_Sm150->AddIsotope(Sm149, 05.00 * 13.82 / (3.07+14.99+11.24+13.82+26.75+22.75) * perCent);
+	enriched_Sm150->AddIsotope(Sm150, 95.00                                                * perCent);
+    enriched_Sm150->AddIsotope(Sm152, 05.00 * 26.75 / (3.07+14.99+11.24+13.82+26.75+22.75) * perCent);        
+    enriched_Sm150->AddIsotope(Sm154, 05.00 * 22.75 / (3.07+14.99+11.24+13.82+26.75+22.75) * perCent);
 
-	G4double Nd150_Mass = 11582.8 * mg;
+	// Target dimensions and weight
+	G4double Sm150_Mass = 2279.10 * mg;
 
-	G4double Nd150_Container_OuterHeight = 7.5 * mm; // According to Oak Ridge
-	G4double Nd150_Container_InnerHeight = Nd150_Container_OuterHeight - 1. * mm; // Estimated
-	G4double Nd150_Container_OuterRadius = 0.5 * inch; // According to Oak Ridge
-	G4double Nd150_Container_InnerRadius = Nd150_Container_OuterRadius - 1. * mm; // Estimated
+	G4double Sm150_Container_OuterRadius  = 11.0 * mm; // Estimated
+	G4double Sm150_Container_InnerRadius  = 10.0 * mm; // Estimated
+	G4double Sm150_Container_InnerHeight  =  2.0 * mm; // Estimated from a Sm(2)O(3) powder density of ≈ 5,08g/cm^3 and the target material weight
+	G4double Sm150_Container_CapThickness =  1.0 * mm; // Estimated
+	G4double Sm150_Container_OuterHeight  = Sm150_Container_InnerHeight + 2 * Sm150_Container_CapThickness; // Estimated
+	// Target Material
+	G4double Sm150_Density = Sm150_Mass / (pi * pow(Sm150_Container_InnerRadius,2) * Sm150_Container_InnerHeight);
 
-	G4double Nd150_Density = Nd150_Mass / (pi * pow(Nd150_Container_InnerRadius,2) *
-	                                 Nd150_Container_InnerHeight);
-
-	G4Material* target_Nd150 = new G4Material("target_Nd150", Nd150_Density, 2);
-	target_Nd150->AddElement(enriched_Nd150, 2); //Nd(2)O(3) according to Oak Ridge
+	G4Material* target_Sm150 = new G4Material("target_Sm150", Sm150_Density, 2);
+	target_Sm150->AddElement(enriched_Sm150, 2); //Sm(2)O(3) according to ELOG
 	G4Element *nat_O = nist->FindOrBuildElement("O");
-	target_Nd150->AddElement(nat_O, 3);
-
-	// Target dimensions
-
-	Nd150_Container_OuterHeight = 7.5 * mm; // According to Oak Ridge
-	Nd150_Container_InnerHeight = Nd150_Container_OuterHeight - 1. * mm; // Estimated
-	Nd150_Container_OuterRadius = 0.5 * inch; // According to Oak Ridge
-	Nd150_Container_InnerRadius = Nd150_Container_OuterRadius - 1. * mm; // Estimated
-        G4double Nd150_Container_CapThickness = ( Nd150_Container_OuterHeight - Nd150_Container_InnerHeight )/2;
+	target_Sm150->AddElement(nat_O, 3);
 
 	// Target Container Barrel
+	G4Tubs *Sm150_Container_Barrel_Solid =
+	    new G4Tubs("Sm150_Container_Barrel_Solid", Sm150_Container_InnerRadius,
+		       Sm150_Container_OuterRadius,
+		       Sm150_Container_OuterHeight * 0.5, 0. * deg, 360. * deg);
 
-	G4Tubs *Nd150_Container_Solid =
-	    new G4Tubs("Nd150_Container_Solid", Nd150_Container_InnerRadius,
-		       Nd150_Container_OuterRadius,
-		       Nd150_Container_OuterHeight * 0.5, 0. * deg, 360. * deg);
+	G4LogicalVolume *Sm150_Container_Barrel_Logical = new G4LogicalVolume(
+	    Sm150_Container_Barrel_Solid, nist->FindOrBuildMaterial("G4_POLYETHYLENE"), "Sm150_Container_Barrel_Logical");
+	Sm150_Container_Barrel_Logical->SetVisAttributes(G4Color::Grey());
 
-	//HDPE (High-density polyethylene) used for container according to Oak Ridge, G4_POLYETHYLENE matches the definition of HDPE in density
-	G4LogicalVolume *Nd150_Container_Logical = new G4LogicalVolume(
-	    Nd150_Container_Solid, nist->FindOrBuildMaterial("G4_POLYETHYLENE"), "Nd150_Container_Logical");
-	Nd150_Container_Logical->SetVisAttributes(G4Color::Grey());
-
-	new G4PVPlacement(0, global_coordinates + G4ThreeVector(), Nd150_Container_Logical,
-			  "Nd150_Container", World_Logical, false, 0);
+	new G4PVPlacement(0, global_coordinates + G4ThreeVector(), Sm150_Container_Barrel_Logical,
+			  "Sm150_Container_Barrel", World_Logical, false, 0);
 
 	// Target Container Caps
-	G4Tubs *Nd150_ContainerCap_Solid = new G4Tubs(
-	    "Nd150_ContainerCap_Solid", 0. * mm, Nd150_Container_InnerRadius,
-	    Nd150_Container_CapThickness * 0.5, 0. * deg, 360. * deg);
+	G4Tubs *Sm150_Container_Cap_Solid = new G4Tubs(
+	    "Sm150_Container_Cap_Solid", 0. * mm, Sm150_Container_InnerRadius,
+	    Sm150_Container_CapThickness * 0.5, 0. * deg, 360. * deg);
 
-	G4LogicalVolume *Nd150_ContainerCap_Logical = new G4LogicalVolume(
-	    Nd150_ContainerCap_Solid, nist->FindOrBuildMaterial("G4_POLYETHYLENE"), "Nd150_ContainerCap_Logical");
-	Nd150_ContainerCap_Logical->SetVisAttributes(G4Color::Grey());
+	G4LogicalVolume *Sm150_Container_Cap_Logical = new G4LogicalVolume(
+	    Sm150_Container_Cap_Solid, nist->FindOrBuildMaterial("G4_POLYETHYLENE"), "Sm150_Container_Cap_Logical");
+	Sm150_Container_Cap_Logical->SetVisAttributes(G4Color::Grey());
 
 
         //Target Container Bottom
         new G4PVPlacement(
 		    0, global_coordinates + G4ThreeVector(0., 0.,
-		                     (Nd150_Container_OuterHeight -
-		                         Nd150_Container_CapThickness) * 0.5),
-		    Nd150_ContainerCap_Logical, "Nd150_ContainerBottom",
+		                     (Sm150_Container_OuterHeight -
+		                         Sm150_Container_CapThickness) * 0.5),
+		    Sm150_Container_Cap_Logical, "Sm150_Container_Bottom",
 		    World_Logical, false, 0);
 
         // Target Container Top
         new G4PVPlacement(
 		    0, global_coordinates + G4ThreeVector(0., 0.,
-		                     -(Nd150_Container_OuterHeight -
-		                         Nd150_Container_CapThickness) * 0.5),
-		    Nd150_ContainerCap_Logical, "Nd150_ContainerTop",
-		    World_Logical, false, 0);
+		                     -(Sm150_Container_OuterHeight -
+		                         Sm150_Container_CapThickness) * 0.5),
+		    Sm150_Container_Cap_Logical, "Sm150_Container_Top",
+		    World_Logical, false, 1);
 
-	// Nd150 Target Material
-	G4Tubs *Nd150_Solid =
-	    new G4Tubs("Nd150_Solid", 0. * mm, Nd150_Container_InnerRadius,
-		       Nd150_Container_InnerHeight * 0.5, 0. * deg, 360. * deg);
+	// Sm150 Target Material
+	G4Tubs *Sm150_Target_Solid =
+	    new G4Tubs("Sm150_Target_Solid", 0. * mm, Sm150_Container_InnerRadius,
+		       Sm150_Container_InnerHeight * 0.5, 0. * deg, 360. * deg);
 
-	G4LogicalVolume *Nd150_Logical = new G4LogicalVolume(
-	    Nd150_Solid, target_Nd150, "Nd150_Logical");
-	Nd150_Logical->SetVisAttributes(G4Color::Yellow());
+	G4LogicalVolume *Sm150_Target_Logical = new G4LogicalVolume(
+	    Sm150_Target_Solid, target_Sm150, "Sm150_Target_Logical");
+	Sm150_Target_Logical->SetVisAttributes(G4Color::Yellow());
 
 	new G4PVPlacement(
-	    0, global_coordinates + G4ThreeVector(), Nd150_Logical, "Nd150_Target", World_Logical, false, 0);
+	    0, global_coordinates + G4ThreeVector(), Sm150_Target_Logical, "Sm150_Target", World_Logical, false, 0);
 }

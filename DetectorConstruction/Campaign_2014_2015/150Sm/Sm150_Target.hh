@@ -18,16 +18,15 @@ You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ND150_TARGET_HH
-#define ND150_TARGET_HH 1
+#pragma once
 
 #include "G4LogicalVolume.hh"
 
-class Nd150_Target{
+class Sm150_Target{
 public:
-	Nd150_Target();
-	Nd150_Target(G4LogicalVolume *World_Log);
-	~Nd150_Target(){};
+	Sm150_Target();
+	Sm150_Target(G4LogicalVolume *World_Log);
+	~Sm150_Target(){};
 
 	void Construct(G4ThreeVector global_coordinates);
 	void Set_Containing_Volume(G4LogicalVolume *World_Log){ World_Logical = World_Log; };
@@ -35,5 +34,3 @@ public:
 private:
 	G4LogicalVolume *World_Logical;
 };
-
-#endif

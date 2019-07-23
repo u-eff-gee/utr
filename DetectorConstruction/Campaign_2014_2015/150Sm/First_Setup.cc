@@ -26,6 +26,8 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4Tubs.hh"
 #include "G4PhysicalConstants.hh"
 #include "G4SystemOfUnits.hh"
+#include "Materials.hh"
+#include "NamedColors.hh"
 
 #include "Units.hh"
 #include "First_Setup.hh"
@@ -39,15 +41,13 @@ First_Setup_Y(50.*inch) // Arbitrary
 
 void First_Setup::Construct(G4ThreeVector global_coordinates){
 
-	G4Colour grey(0.5, 0.5, 0.5);
-	G4Colour green(0., 0.5, 0.);
-	G4Colour white(1.0, 1.0, 1.0);
+	Materials *materials = new Materials();
 
 	G4NistManager *nist = G4NistManager::Instance();
 	G4Material *Al = nist->FindOrBuildMaterial("G4_Al");
 	G4Material *Pb = nist->FindOrBuildMaterial("G4_Pb");
 	G4Material *concrete = nist->FindOrBuildMaterial("G4_CONCRETE");
-	G4Material *one_third_density_Al = nist->FindOrBuildMaterial("one_third_density_Al");
+	G4Material *one_third_density_Al = materials->Get_One_Third_Density_Al();
 
 	// Lead and concrete wall
 	
