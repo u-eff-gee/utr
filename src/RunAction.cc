@@ -28,7 +28,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4FileUtilities.hh"
 
 #include "RunAction.hh"
-#include "ActionInitialization.hh"
+#include "utrFilenameTools.hh"
 #include "g4root.hh"
 #include <limits.h>
 
@@ -85,22 +85,28 @@ void RunAction::BeginOfRunAction(const G4Run *) {
 	//
 	// where the filename is given by the user in analysisManager->OpenFile()
 
-    if (IsMaster()) { // Should be aquivalent to G4Threading::G4GetThreadId() == -1
-		// Master thread (runinng this function before all other threads) increments the file ID to use
-        ActionInitialization::incrementFilenameID();
-        analysisManager->OpenFile("master.root");
+    if (IsMaster()) { // G4UserRunAction::IsMaster should be aquivalent to G4Threading::G4GetThreadId() == -1
+		// Master thread (runinng this function before all other threads) increments the file ID to use, if used
+        if (utrFilenameTools::getUseFilenameID()) {
+			utrFilenameTools::incrementFilenameID();
+		}
+		analysisManager->OpenFile("master.root");
     } else {
 		// Worker threads check whether their designated output file already exists and if so abort
         G4FileUtilities fu;
         std::stringstream filename;
-		filename << ActionInitialization::getOutputDir() << "/" << ActionInitialization::getFilenamePrefix() << ActionInitialization::getFileNameID();
+		filename << utrFilenameTools::getOutputDir() << "/" << utrFilenameTools::getFilenamePrefix();
+		if (utrFilenameTools::getUseFilenameID()) {
+		  filename << utrFilenameTools::getFilenameID();
+		}
 		std::stringstream filenameWithThreadID;
 		filenameWithThreadID << filename.str() << "_t" << G4Threading::G4GetThreadId() << ".root";
+		filename << ".root";
         if (fu.FileExists(filenameWithThreadID.str())) {
             G4cerr << "ERROR: Designated outputfile '" << filenameWithThreadID.str() << "' already exists! Aborting..." << G4endl;
             throw std::exception();
         } else {
-		analysisManager->OpenFile(filename.str());
+			analysisManager->OpenFile(filename.str());
         }
 	}
 }

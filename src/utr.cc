@@ -28,6 +28,8 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "ActionInitialization.hh"
 #include "DetectorConstruction.hh"
 #include "Physics.hh"
+#include "utrMessenger.hh"
+#include "utrFilenameTools.hh"
 
 #include "G4UIExecutive.hh"
 #include "G4UImanager.hh"
@@ -93,39 +95,11 @@ int main(int argc, char *argv[]) {
 	// Deterministic results
 	// G4Random::setTheSeed(1);
 
-	// If output directory does not exists try to create it
-	if (!opendir(arguments.outputdir.c_str())) {
-		const int dir_err = mkdir(arguments.outputdir.c_str(),
-					  S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-		if (dir_err == -1) {
-			G4cout << "Error creating output directory '"
-			       << arguments.outputdir << "'" << G4endl;
-			abort();
-		} else {
-            G4cout << "Created output directory '"
-			       << arguments.outputdir << "'" << G4endl;
-        }
-	}
-	// Determine the next free filename (with ID) by searching for files with the name
-	// '{arguments.filenameprefix}N.root' or '{arguments.filenameprefix}N_t0.root' in the requested directory
-	G4FileUtilities fu;
-	std::stringstream filename_single;
-	std::stringstream filename_multi;
-	unsigned int fid = 0;
-	for(fid = 0; fid < INT_MAX; ++fid){
-		filename_single << arguments.outputdir << "/" << arguments.filenameprefix << fid << ".root";
-		filename_multi  << arguments.outputdir << "/" << arguments.filenameprefix << fid << "_t0.root";
-
-		if (fu.FileExists(filename_single.str()) || fu.FileExists(filename_multi.str())){
-			filename_single.str("");
-			filename_multi.str("");
-			continue;
-		}
-		break;
-	}
-	G4cout << "Using file name prefix '" << arguments.filenameprefix << fid << "' ..." << G4endl;
+    // Pass output directory and filenamePrefix to RunAction via utrFilenameTools, also find next free filename ID
+	utrFilenameTools::setOutputDir(arguments.outputdir);
+	utrFilenameTools::setFilenamePrefix(arguments.filenameprefix);
+	utrFilenameTools::findNextFreeFilenameID();
 	
-
 #ifdef G4MULTITHREADED
 	G4MTRunManager *runManager = new G4MTRunManager;
 	runManager->SetNumberOfThreads(arguments.nthreads);
@@ -143,10 +117,6 @@ int main(int argc, char *argv[]) {
 	G4cout << "ActionInitialization..." << G4endl;
 	ActionInitialization *actionInitialization = new ActionInitialization();
 	actionInitialization->setNThreads(arguments.nthreads);
-    // Pass output directory to RunAction via ActionInitialization
-	actionInitialization->setOutputDir(arguments.outputdir);
-	actionInitialization->setFilenamePrefix(arguments.filenameprefix);
-	actionInitialization->setFilenameID(fid-1);
 	runManager->SetUserInitialization(actionInitialization);
 
 	if (!arguments.macrofile) {
@@ -157,6 +127,7 @@ int main(int argc, char *argv[]) {
 
 	G4UImanager *UImanager = G4UImanager::GetUIpointer();
 
+	new utrMessenger();
 	if (arguments.macrofile) {
 		G4cout << "Executing macro file " << arguments.macrofile << G4endl;
 		G4String command = "/control/execute ";

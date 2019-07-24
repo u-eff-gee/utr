@@ -19,23 +19,26 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 #pragma once
 
-#include "G4VUserActionInitialization.hh"
-#include "utrConfig.h"
+#include "G4UIcommand.hh"
+#include "G4UIcmdWithAString.hh"
+#include "G4UIcmdWithABool.hh"
+#include "G4UIdirectory.hh"
+#include "G4UImessenger.hh"
 #include "globals.hh"
 
-using std::string;
+class AngularDistributionGenerator;
 
-// Custom class definition
-class ActionInitialization : public G4VUserActionInitialization {
+class utrMessenger : public G4UImessenger {
   public:
-	ActionInitialization();
-	virtual ~ActionInitialization();
+	utrMessenger();
+	~utrMessenger();
 
-	virtual void BuildForMaster() const;
-	virtual void Build() const;
-
-	void setNThreads(const int nt) { n_threads = nt; };
+	void SetNewValue(G4UIcommand *command, G4String newValues);
+	G4String GetCurrentValue(G4UIcommand *command);
 
   private:
-	G4int n_threads;
+	G4UIdirectory *utrDirectory;
+
+	G4UIcmdWithAString *setFilenameCmd;
+	G4UIcmdWithABool *setUseFilenameIDCmd;
 };
