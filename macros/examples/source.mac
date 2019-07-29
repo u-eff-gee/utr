@@ -11,6 +11,11 @@
 /gps/ene/type Mono
 /gps/ene/mono {E} MeV
 
+# Set the output filename to contain the simulated energy in an uniform number format and disable appendage of additional file IDs
+/utr/setUseFilenameID False
+/utr/appendZerosToVar E {E} 2
+/utr/setFilename Efficiency_{E}_MeV
+
 # Never simulate more than 2^32= 4294967296 particles using /run/beamOn, since this causes an overflow in the random number seed, giving you in principle the same results over and over again.
 # In such cases execute the same simulation multiple times instead.
 /run/beamOn 100000000

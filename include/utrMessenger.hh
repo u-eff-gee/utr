@@ -41,4 +41,5 @@ class utrMessenger : public G4UImessenger {
 
 	G4UIcmdWithAString *setFilenameCmd;
 	G4UIcmdWithABool *setUseFilenameIDCmd;
+	G4UIcmdWithAString *appendZerosToVarCmd;
 };
