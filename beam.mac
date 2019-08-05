@@ -10,10 +10,10 @@
 
 /gps/ene/type Mono
 /gps/ene/mono 7. MeV
-# Using an energy distribution from a file
-#/gps/ene/type Arb
+# Using an arbitrary energy distribution
+#/gps/ene/type User
 #/gps/hist/type energy
-#/gps/hist/file HISTOGRAMFILE
-#/gps/hist/inter Lin
+#/gps/hist/point ENERGY INTENSITY
+# ... add more energy-intensity pairs by repeated use of /gps/hist/point
 
 /run/beamOn 10
