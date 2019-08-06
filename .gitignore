@@ -4,26 +4,23 @@ CMakeCache.txt
 CMakeFiles/*
 cmake_install.cmake
 include/utrConfig.h
-#DetectorConstruction/Campaign_2018/CMakeCache.txt
-#DetectorConstruction/Campaign_2018/CMakeFiles/*
 
 # Compiled binaries
 utr
-fep_efficiency.sh
 getHistogram
-getHistogramRDF.cpp
+getHistogramRDF
 histogramToTxt
 rootToTxt
+mergeFiles
 angdisttest
 angcorrtest
-mergeFiles
 
 # C++ objects
 unit_test/AngularDistributionGenerator/AngularDistribution.o
 unit_test/AngularCorrelationGenerator/AngularDistribution.o
 
 # Scripts for output processing
-loop*.sh
+#loop*.sh
 
 # Script output
 brems.dat
@@ -33,6 +30,9 @@ __pycache__
 
 # Root files
 *.root
+
+# Output folder contents
+output/*
 
 # ViM temporary files
 *~

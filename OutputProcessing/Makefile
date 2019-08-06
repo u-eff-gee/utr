@@ -2,9 +2,9 @@ CPP=g++
 CFLAGS=-Wall -Wconversion -Wsign-conversion -O3
 ROOTFLAGS=-isystem$(shell root-config --incdir) -L$(shell root-config --libdir) -lCore -lRIO -lHist -lTree
 
-all: getHistogram histogramToTxt rootToTxt mergeFiles fep_efficiency
+all: getHistogram histogramToTxt rootToTxt mergeFiles
 
-getHistogram: GetHistogram.cpp getHistogramRDF.cpp
+getHistogram: GetHistogram.cpp
 	$(CPP) -o $@ $< $(CFLAGS) $(ROOTFLAGS)
 
 histogramToTxt: HistogramToTxt.cpp
@@ -15,8 +15,6 @@ mergeFiles: MergeFiles.cpp
 
 rootToTxt: RootToTxt.cpp
 	$(CPP) -o $@ $< $(CFLAGS) $(ROOTFLAGS)
-
-fep_efficiency: fep_efficiency.sh
 
 .PHONY: all clean
 
