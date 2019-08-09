@@ -15,6 +15,6 @@ fi
 
 for i in `seq $1 $2`
 do
-    echo ./histogramToTxt $3"$i".root
-    ./histogramToTxt $3"$i".root
+    printf "./histogramToTxt -f $3"$i".root\n"
+    ./histogramToTxt -f $3"$i".root
 done

@@ -9,7 +9,10 @@
 #include <stdlib.h>
 #include <sstream>
 
+#include<getopt.h>
+
 using std::cout;
+using std::cerr;
 using std::endl;
 using std::string;
 using std::stringstream;
@@ -20,10 +23,64 @@ using std::ofstream;
 
 int main(int argc, char* argv[]){
 //void RootToTxt(string filename){
+  int c           = 0;
+  string filename;
+  while (c > -1)
+  {
+      static struct option long_options[] =
+      {
+          {"-f",                  required_argument,          0, 'f'},
+          {"help",                no_argument,                0, 'h'},
+          {"help",                no_argument,                0, '?'}
+      };
+      /* getopt_long stores the option index here. */
+      int option_index = 0;
+
+      c = getopt_long (argc, argv, "f:h?",long_options, &option_index);
+
+      switch (c)
+      {
+        case 0:
+        
+        break;
+
+        case 'f':
+        filename=optarg;
+        break;
+        
+       
+
+        case 'h':
+        case '?':
+        cout << "Usage: ./rootToTxt -f ROOTFILE" << endl;
+	cout << endl;
+        cout << "RootToTxt converts a ROOT output file (TFile) containing an n-tuple of data (a TTree with TBranch objects) to a simple text file with the same content. If you want to convert a ROOT file ROOTFILE, type"<<endl;
+	cout << endl;
+	cout << "\t  ./rootToTxt -f ROOTFILE" << endl;
+	cout << endl;
+	cout << "The ROOT file can have a TTree with an arbitrary name and an arbitrary number of TBranch objects." << endl;
+	cout << "The output text file has the same name as the ROOT file but with a '.txt' suffix."<<endl;
+	cout << "Be aware that conversion into text files increases the file size." <<endl;
+	cout << "For further information: https://github.com/uga-uga/utr" <<endl;
+        return 0;
+
+
+        default:
+        cerr << "Usage: ./rootToTxt -f ROOTFILE" << endl;
+	cerr << endl;
+        cerr << "RootToTxt converts a ROOT output file (TFile) containing an n-tuple of data (a TTree with TBranch objects) to a simple text file with the same content. If you want to convert a ROOT file ROOTFILE, type"<<endl;
+	cerr << endl;
+	cerr << "\t  ./rootToTxt -f ROOTFILE" << endl;
+	cerr << endl;
+	cerr << "The ROOT file can have a TTree with an arbitrary name and an arbitrary number of TBranch objects." << endl;
+	cerr << "The output text file has the same name as the ROOT file but with a '.txt' suffix."<<endl;
+	cerr << "Be aware that conversion into text files increases the file size." <<endl;
+	cerr << "For further information: https://github.com/uga-uga/utr" <<endl;
+	return -1;
+    }
+}
 
 	// Open ROOT file
-	string filename = argv[1];
-
 	TFile *f = new TFile(argv[1]);
 	cout << "Opened ROOT file " << filename << endl;
 
