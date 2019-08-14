@@ -21,12 +21,10 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef RunAction_h
 #define RunAction_h 1
 
-#include <cstdio>
-#include <sstream>
-#include <string>
-
 #include "G4UserRunAction.hh"
 #include "globals.hh"
+
+#include <string>
 
 using std::string;
 
@@ -59,9 +57,7 @@ class RunAction : public G4UserRunAction {
 	void setFilenameID(unsigned int fid) {filenameid = fid; };
 
   private:
-	std::stringstream masterfilename;
 	unsigned int filenameid;
-	int threadId;
 	string outputdir;
 };
 

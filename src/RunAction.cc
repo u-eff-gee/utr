@@ -18,13 +18,12 @@ You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <time.h>
-
 #include "G4Run.hh"
 #include "G4RunManager.hh"
 #include "G4SDManager.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4UnitsTable.hh"
+#include <time.h>
 
 #include "G4FileUtilities.hh"
 
@@ -34,7 +33,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "utrConfig.h"
 
-RunAction::RunAction() : G4UserRunAction(), filenameid(0), threadId(G4Threading::G4GetThreadId()) {}
+RunAction::RunAction() : G4UserRunAction(), filenameid(0) {}
 
 RunAction::~RunAction() { delete G4AnalysisManager::Instance(); }
 
@@ -91,6 +90,7 @@ void RunAction::BeginOfRunAction(const G4Run *) {
 		directory << outputdir << "/";
 	}
 
+	G4int threadId = G4Threading::G4GetThreadId();
 	std::stringstream filename;
 	filename << directory.str() << "utr" << filenameid << ".root";
 
@@ -98,10 +98,7 @@ void RunAction::BeginOfRunAction(const G4Run *) {
 		analysisManager->OpenFile(filename.str());
 
 	} else {
-		char tmpfilename[L_tmpnam];
-		std::tmpnam(tmpfilename);
-		masterfilename << tmpfilename << ".root";
-		analysisManager->OpenFile(masterfilename.str());
+		analysisManager->OpenFile("master.root");
 	}
 }
 
@@ -110,10 +107,6 @@ void RunAction::EndOfRunAction(const G4Run *) {
 
 	analysisManager->Write();
 	analysisManager->CloseFile();
-
-	if(threadId == -1){
-		std::remove(masterfilename.str().c_str());
-	}
 
 	delete G4AnalysisManager::Instance();
 }

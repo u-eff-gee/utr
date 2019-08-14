@@ -26,8 +26,10 @@ unit_test/AngularCorrelationGenerator/AngularDistribution.o
 loop*.sh
 
 # Script output
-DetectorConstruction/DHIPS_2019/brems.dat
-DetectorConstruction/DHIPS_2019/__pycache__
+brems.dat
+
+# Python cache
+__pycache__
 
 # Root files
 *.root
