@@ -20,9 +20,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 // Struct that contains the properties of a specific 
 // coaxial High-purity Germanium (HPGe) detector
-
-#ifndef HPGE_COAXIAL_PROPERTIES_h
-#define HPGE_COAXIAL_PROPERTIES_h 1
+#pragma once
 
 #include "G4String.hh"
 #include "G4Types.hh"
@@ -110,5 +108,3 @@ struct HPGe_Coaxial_Properties{
 	G4String dewar_material;
 
 };
-
-#endif

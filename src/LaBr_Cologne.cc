@@ -35,23 +35,14 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4UnitsTable.hh"
 #include "G4VisAttributes.hh"
 
+#include "NamedColors.hh"
+
 LaBr_Cologne::LaBr_Cologne(G4String Detector_Name)
     : lengthCrystal(38.1 * mm), radiusCrystal(38.1 / 2. * mm),
       thicknessHousing(1 * mm), radiusHousing(20.75 * mm),
       lengthHousing(45. * mm), lengthEndcap(55. * mm), radiusEndcap(24.75 * mm),
       innerRadiusEndcap(18.75 * mm), thicknessEndcap(1. * mm),
       thicknessFoam(2. * mm), thicknessVacuumFront(0. * mm) {
-	G4Colour white(1.0, 1.0, 1.0);
-	G4Colour grey(0.5, 0.5, 0.5);
-	G4Colour black(0.0, 0.0, 0.0);
-	G4Colour red(1.0, 0.0, 0.0);
-	G4Colour green(0.0, 1.0, 0.0);
-	G4Colour blue(0.0, 0.0, 1.0);
-	G4Colour cyan(0.0, 1.0, 1.0);
-	G4Colour magenta(1.0, 0.0, 1.0);
-	G4Colour yellow(1.0, 1.0, 0.0);
-	G4Colour orange(1.0, 0.5, 0.0);
-	G4Colour light_orange(1.0, 0.82, 0.36);
 
 	G4NistManager *nist = G4NistManager::Instance();
 

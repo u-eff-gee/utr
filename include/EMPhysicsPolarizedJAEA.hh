@@ -35,9 +35,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 // JAEA Technical Report 2018-007, 2018.
 // https://doi.org/10.11484/jaea-data-code-2018-007
 // ------------------------------------------------------------------------------------------
-
-#ifndef EMPhysicsPolarizedJAEA_h
-#define EMPhysicsPolarizedJAEA_h 1
+#pragma once
 
 #include "G4VPhysicsConstructor.hh"
 #include "G4EmParticleList.hh"
@@ -62,6 +60,3 @@ private:
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-#endif
-

@@ -17,9 +17,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-#ifndef AngularCorrelationMessenger_h
-#define AngularCorrelationMessenger_h 1
+#pragma once
 
 #include "G4UIcmdWithABool.hh"
 #include "G4UIcmdWithADouble.hh"
@@ -88,5 +86,3 @@ class AngularCorrelationMessenger : public G4UImessenger {
 
 	G4UIcmdWith3Vector *polarizationCmd;
 };
-
-#endif

@@ -1,43 +1,26 @@
 CPP=g++
-CFLAGS=-Wall -Wconversion -Wsign-conversion -O3
+CFLAGS=-Wall -Wconversion -Wsign-conversion -O3 -std=c++11
 ROOTFLAGS=-isystem$(shell root-config --incdir) -L$(shell root-config --libdir) -lCore -lRIO -lHist -lTree
 
-all: getHistogram histogramToTxt rootToTxt mergeFiles fep_efficiency
+all: getHistogram histogramToTxt rootToTxt mergeFiles
 
-getHistogram: GetHistogram.cpp getHistogramRDF.cpp
+getHistogram: GetHistogram.cpp
 	$(CPP) -o $@ $< $(CFLAGS) $(ROOTFLAGS)
-	cp $@ ..
-	cp loopGetHistogram.sh ..
-	cp getHistogramRDF.cpp ..
 
 histogramToTxt: HistogramToTxt.cpp
 	$(CPP) -o $@ $< $(CFLAGS) $(ROOTFLAGS)
-	cp $@ ..
-	cp loopHistogramToTxt.sh ..
 
 mergeFiles: MergeFiles.cpp
 	$(CPP) -o $@ $< $(CFLAGS) $(ROOTFLAGS)
-	cp $@ ..
 
 rootToTxt: RootToTxt.cpp
 	$(CPP) -o $@ $< $(CFLAGS) $(ROOTFLAGS)
-	cp $@ ..
-
-fep_efficiency: fep_efficiency.sh
-	cp $< ..
 
 .PHONY: all clean
 
 clean:
-	rm getHistogram
-	rm ../getHistogram
-	rm ../getHistogramRDF.cpp
-	rm ../loopGetHistogram.sh
-	rm histogramToTxt
-	rm ../histogramToTxt
-	rm ../loopHistogramToTxt.sh
-	rm mergeFiles
-	rm ../mergeFiles
-	rm rootToTxt
-	rm ../rootToTxt
-	rm ../fep_efficiency.sh
+	for f in getHistogram getHistogramRDF histogramToTxt mergeFiles rootToTxt ; do \
+	  if [ -e "$$f" ] ; then \
+	    rm "$$f" ; \
+	  fi ; \
+	done

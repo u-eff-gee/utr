@@ -17,9 +17,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-#ifndef SecondarySD_h
-#define SecondarySD_h 1
+#pragma once
 
 #include "G4VSensitiveDetector.hh"
 
@@ -48,5 +46,3 @@ class SecondarySD : public G4VSensitiveDetector {
 	G4int currentEventID;
 	G4int detectorID;
 };
-
-#endif

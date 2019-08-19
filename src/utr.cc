@@ -28,6 +28,8 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "ActionInitialization.hh"
 #include "DetectorConstruction.hh"
 #include "Physics.hh"
+#include "utrMessenger.hh"
+#include "utrFilenameTools.hh"
 
 #include "G4UIExecutive.hh"
 #include "G4UImanager.hh"
@@ -43,17 +45,19 @@ using namespace std;
 const char *argp_program_version = "1.0.0";
 const char *argp_program_bug_address = "<ugayer@ikp.tu-darmstadt.de>";
 static char doc[] = "GEANT4 simulation of the UTR at HIGS";
-static char args_doc[] = "MACROFILE";
+static char args_doc[] = "";
 static struct argp_option options[] = {
     {"macrofile", 'm', "MACRO", 0, "Macro file", 0},
     {"nthreads", 't', "THREAD", 0, "Number of threads", 0},
     {"outputdir", 'o', "OUTPUTDIR", 0, "Output directory", 0},
+    {"filename", 'f', "PREFIX", 0, "Output files' name prefix", 0},
     {0, 0, 0, 0, 0, 0}};
 
 struct arguments {
 	int nthreads = 1;
 	char *macrofile = 0;
-	string outputdir = ".";
+	string outputdir = "output";
+	string filenameprefix = "utr";
 };
 
 static error_t parse_opt(int key, char *arg, struct argp_state *state) {
@@ -67,6 +71,9 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state) {
 		break;
 	case 'o':
 		arguments->outputdir = arg;
+		break;
+	case 'f':
+		arguments->filenameprefix = arg;
 		break;
 	default:
 		return ARGP_ERR_UNKNOWN;
@@ -88,30 +95,11 @@ int main(int argc, char *argv[]) {
 	// Deterministic results
 	// G4Random::setTheSeed(1);
 
-	// Determine file name by searching for files with the name
-	// 'utrN.root' or 'utrN_t0.root' in the requested directory,
-	// If they exist, this would mean that a simulation with 
-	// this prefix has already been run.
-	G4FileUtilities fu;
-	std::stringstream filename_single;
-	std::stringstream filename_multi;
-	unsigned int fid = 0;
-	for(fid = 0; fid < INT_MAX; ++fid){
-		filename_single << arguments.outputdir << "/utr" << fid << ".root";
-		filename_multi << arguments.outputdir << "/utr" << fid << "_t0.root";
-
-		G4cout << "Checking whether file '" << filename_single.str() << "' or '" << filename_multi.str() << "' already exists in file system ..." << G4endl;
-
-		if (fu.FileExists(filename_single.str()) || fu.FileExists(filename_multi.str())){
-			filename_single.str("");
-			filename_multi.str("");
-			continue;
-		}
-		break;
-	}
-	G4cout << "Using file name prefix 'utr" << fid << "' ..." << G4endl;
+    // Pass output directory and filenamePrefix to RunAction via utrFilenameTools, also find next free filename ID
+	utrFilenameTools::setOutputDir(arguments.outputdir);
+	utrFilenameTools::setFilenamePrefix(arguments.filenameprefix);
+	utrFilenameTools::findNextFreeFilenameID();
 	
-
 #ifdef G4MULTITHREADED
 	G4MTRunManager *runManager = new G4MTRunManager;
 	runManager->SetNumberOfThreads(arguments.nthreads);
@@ -129,23 +117,6 @@ int main(int argc, char *argv[]) {
 	G4cout << "ActionInitialization..." << G4endl;
 	ActionInitialization *actionInitialization = new ActionInitialization();
 	actionInitialization->setNThreads(arguments.nthreads);
-	// Pass output directory and file name id to RunAction via ActionInitialization
-	if(arguments.outputdir != "."){
-		if (!opendir(arguments.outputdir.c_str())) {
-			stringstream command;
-			const int dir_err = mkdir(arguments.outputdir.c_str(),
-						  S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-			if (dir_err == -1) {
-				G4cout << "Error creating output directory" << G4endl;
-				abort();
-			}
-		} else {
-			G4cout << __FILE__ << ": main(): Warning: Output directory '"
-			       << arguments.outputdir << "' already exists" << G4endl;
-		}
-	}
-	actionInitialization->setOutputDir(arguments.outputdir);
-	actionInitialization->setFilenameID(fid);
 	runManager->SetUserInitialization(actionInitialization);
 
 	if (!arguments.macrofile) {
@@ -156,6 +127,7 @@ int main(int argc, char *argv[]) {
 
 	G4UImanager *UImanager = G4UImanager::GetUIpointer();
 
+	new utrMessenger();
 	if (arguments.macrofile) {
 		G4cout << "Executing macro file " << arguments.macrofile << G4endl;
 		G4String command = "/control/execute ";
@@ -170,7 +142,9 @@ int main(int argc, char *argv[]) {
 		ui = new G4UIExecutive(argc, argv);
 #endif
 
-		UImanager->ApplyCommand("/control/execute init_vis.mac");
+
+		UImanager->ApplyCommand("/run/initialize");
+		UImanager->ApplyCommand("/control/execute scripts/vis.mac");
 
 		ui->SessionStart();
 		delete ui;
@@ -178,6 +152,8 @@ int main(int argc, char *argv[]) {
 
 	if (G4VisManager::GetConcreteInstance())
 		delete G4VisManager::GetConcreteInstance();
+
+	utrFilenameTools::deleteMasterFilename();
 
 	delete runManager;
 	return 0;

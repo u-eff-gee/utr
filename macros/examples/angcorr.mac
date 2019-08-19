@@ -106,6 +106,10 @@
 /angcorr/sourceX 0. mm
 /angcorr/sourceY 0. mm
 /angcorr/sourceZ 0. mm
+#/angcorr/sourceZ 0. mm # Ideal position of gamma3 target in all geometries
+#/angcorr/sourceZ 1574.80 mm # Ideal position of 2nd target in generation '18 geometries
+#/angcorr/sourceZ 1612.10 mm # Ideal position of 2nd target in generation '16/17 geometries
+
 
 # Determine the dimensions of the envelope box. Random numbers will be sampled in the 
 # intervals [-0.5*sourceDX, 0.5*sourceDX], [-0.5*sourceDY, 0.5*sourceDY], and
@@ -114,6 +118,11 @@
 /angcorr/sourceDY 2. mm
 /angcorr/sourceDZ 2. mm
 
+# Set the name of a physical volume that should act as a source.
+# To add more physical volumes, call /ang/sourcePV multiple times with different arguments 
+# (about using multiple sources, see also the caveat in the README.md).
 /angcorr/sourcePV source
 
+# Never simulate more than 2^32= 4294967296 particles using /run/beamOn, since this causes an overflow in the random number seed, giving you in principle the same results over and over again.
+# In such cases execute the same simulation multiple times instead.
 /run/beamOn 1000000

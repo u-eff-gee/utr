@@ -1,26 +1,27 @@
 if [ "$#" -lt 5 ]; then
-	echo "Usage:"
-	echo "./fep_efficiency.sh PREFIX START STOP SUFFIX NSIM"
-	echo "The script loops over text histograms [1] with names PREFIX<i>SUFFIX (where <i> denotes all integer numbers from START to STOP, including these limits), reads out the full-energy peak (FEP) content [2] and determines the FEP efficiency."
-	echo ""
-	echo "  For example, the command"
-	echo "    $ ./fep_efficiency.sh det0_utr 1 3 .txt 1000000"
-	echo "  will loop over the following files:"
-	echo "    det0_utr1.txt"
-	echo "    det0_utr2.txt"
-	echo "    det0_utr3.txt"
-	echo ""
-	echo "The last argument denotes the number of simulated primary particles, which is needed to calculate the efficiency. If you do not know NSIM, simply enter an arbitrary value."
-	echo "Two output files will be created, where the energies and the corresponding FEP counts/efficiencies are given in the first and second column. The number of simulated primary particles will be printed in the header."
-	echo ""
-	echo "    PREFIX       File name prefix"
-	echo "    SUFFIX       File name suffix"
-	echo "    START        Begin of file numbers"
-	echo "    STOP         End of file numbers"
-	echo "    NSIM         Number of simulated primary particles"
-	echo ""
-	echo "[1] A text histogram is a two-column file which contains the energy in the first column and the number of counts in the second column. Such a file is returned by the histogramToTXT script of utr, for example."
-	echo "[2] The full-energy peak in the histogram file is defined as the bin with the highest energy with a nonzero content."
+	echo "Usage:
+$(basename "$0") PREFIX START STOP SUFFIX NSIM
+The script loops over text histograms [1] with names PREFIX<i>SUFFIX (where <i> denotes all integer numbers from START to STOP, including these limits), reads out the full-energy peak (FEP) content [2] and determines the FEP efficiency.
+
+  For example, the command
+    $ ./fep_efficiency.sh det0_utr 1 3 .txt 1000000
+  will loop over the following files:
+    det0_utr1.txt
+    det0_utr2.txt
+    det0_utr3.txt
+
+The last argument denotes the number of simulated primary particles, which is needed to calculate the efficiency. If you do not know NSIM, simply enter an arbitrary value.
+Two output files will be created, where the energies and the corresponding FEP counts/efficiencies are given in the first and second column. The number of simulated primary particles will be printed in the header.
+
+    PREFIX       File name prefix
+    SUFFIX       File name suffix
+    START        Begin of file numbers
+    STOP         End of file numbers
+    NSIM         Number of simulated primary particles
+
+[1] A text histogram is a two-column file which contains the energy in the first column and the number of counts in the second column. Such a file is returned by the histogramToTXT script of utr, for example.
+[2] The full-energy peak in the histogram file is defined as the bin with the highest energy with a nonzero content.
+"
 fi
 
 FEPFILE="out_fep_"$1".txt"

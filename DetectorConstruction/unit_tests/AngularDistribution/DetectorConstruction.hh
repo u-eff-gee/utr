@@ -17,9 +17,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-#ifndef DETECTORCONSTRUCTION_HH
-#define DETECTORCONSTRUCTION_HH
+#pragma once
 
 #include "G4SystemOfUnits.hh"
 #include "G4UnitsTable.hh"
@@ -33,5 +31,3 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
 	virtual G4VPhysicalVolume *Construct();
 	virtual void ConstructSDandField();
 };
-
-#endif

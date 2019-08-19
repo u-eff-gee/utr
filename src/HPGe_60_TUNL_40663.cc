@@ -42,20 +42,9 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "OptimizePolycone.hh"
 #include "Units.hh"
 
-HPGe_60_TUNL_40663::HPGe_60_TUNL_40663(G4String Detector_Name) {
+#include "NamedColors.hh"
 
-	G4Colour white(1.0, 1.0, 1.0);
-	G4Colour grey(0.5, 0.5, 0.5);
-	G4Colour black(0.0, 0.0, 0.0);
-	G4Colour red(1.0, 0.0, 0.0);
-	G4Colour green(0.0, 1.0, 0.0);
-	G4Colour blue(0.0, 0.0, 1.0);
-	G4Colour brown(0.45, 0.25, 0.);
-	G4Colour cyan(0.0, 1.0, 1.0);
-	G4Colour magenta(1.0, 0.0, 1.0);
-	G4Colour yellow(1.0, 1.0, 0.0);
-	G4Colour orange(1.0, 0.5, 0.0);
-	G4Colour light_orange(1.0, 0.82, 0.36);
+HPGe_60_TUNL_40663::HPGe_60_TUNL_40663(G4String Detector_Name) {
 
 	G4NistManager *nist = G4NistManager::Instance();
 

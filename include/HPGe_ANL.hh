@@ -21,9 +21,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 //**************************************************************//
 // ANL detector (no datasheet available, all copied from HPGe_Cologne)
 //**************************************************************//
-
-#ifndef HPGe_ANL_h
-#define HPGe_ANL_h 1
+#pragma once
 
 #include "G4LogicalVolume.hh"
 
@@ -45,5 +43,3 @@ class HPGe_ANL {
 
 	G4LogicalVolume *HPGe_ANL_Logical;
 };
-
-#endif

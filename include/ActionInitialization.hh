@@ -17,11 +17,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-#ifndef ActionInitialization_h
-#define ActionInitialization_h 1
-
-#include <string>
+#pragma once
 
 #include "G4VUserActionInitialization.hh"
 #include "utrConfig.h"
@@ -38,14 +34,8 @@ class ActionInitialization : public G4VUserActionInitialization {
 	virtual void BuildForMaster() const;
 	virtual void Build() const;
 
-	void setFilenameID(unsigned int fid) {filenameid = fid; };
 	void setNThreads(const int nt) { n_threads = nt; };
-	void setOutputDir(string output) { outputdir = output; };
 
   private:
-	string outputdir;
-	unsigned int filenameid;
 	G4int n_threads;
 };
-
-#endif

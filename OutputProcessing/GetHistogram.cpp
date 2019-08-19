@@ -1,7 +1,30 @@
+/*
+utr - Geant4 simulation of the UTR at HIGS
+Copyright (C) 2017 the developing team (see README.md)
+
+This file is part of utr.
+
+utr is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+utr is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with utr.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include <iostream>
 #include <stdlib.h>
 #include <argp.h>
 #include <vector>
+#include <string>
+#include <sstream>
+#include <dirent.h>
 
 #include <TROOT.h>
 #include <TSystemDirectory.h>
@@ -9,224 +32,274 @@
 #include <TH1.h>
 #include <TFile.h>
 
+using std::cout;
+using std::cerr;
+using std::endl;
 using std::vector;
+using std::string;
+using std::stringstream;
 
-static char doc[] = "GetHistogram";
-static char args_doc[] = "Create histograms from a list of events";
+// Program documentation.
+static char doc[] = "Create histograms of energy depositions in detectors from a list of events stored among multiple ROOT files";
+// Description of the accepted/required arguments 
+static char args_doc[] = ""; // No arguments, only options!
 
-struct arguments{
-	const char* tree;
-	const char* p1;
-	const char* p2;
-	const char* outputfilename;
-
-	int bin;
-	double emax;
-	unsigned int nhistograms;
-	unsigned int multiplicity;
-	bool addback;
-	bool verbose;
-	
-	arguments() : tree("utr"), p1("utr"), p2(".root"), outputfilename("hist.root"), bin(-1), emax(15.), nhistograms(13), multiplicity(1), addback(false), verbose(false) {};
-};
-
+// The options argp understands
 static struct argp_option options[] = {
-{ 0, 't', "TREENAME", 0, "Name of tree" },
-{ 0, 'p', "PATTERN1", 0, "File name pattern 1" },
-{ 0, 'q', "PATTERN2", 0, "File name pattern 2" },
-{ 0, 'o', "OUTPUTFILENAME", 0, "Output file name" },
-{ 0, 'b', "BIN", 0, "Number of energy bin whose value should be displayed" },
-{ 0, 'e', "EMAX", 0, "Maximum energy displayed in histogram in MeV (default: 15 MeV)" },
-{ 0, 'n', "NHISTOGRAMS", 0, "Number of detection volumes (default: 12). 'getHistogram' assumes \
-that the NHISTOGRAMS histograms are labeled with integer number from 0 to NHISTOGRAMS-1." },
-{ 0, 'm', "MULTIPLICITY", 0, "Particle multiplicity (default: 1). \
-Will be ignored if used simultaneously with the '-a' option." },
-{ 0, 'a', 0, 0, "Add back energy depositions that occurred in a single event to the first detector which was hit. \
-Overrides the '-m MULTIPLICITY' option." },
-{ 0, 'v', 0, 0, "Verbose mode (does not silence -b option)" },
-{ 0, 0, 0, 0, 0 }
+	{ "tree", 't', "TREENAME", 0, "Name of tree composing the list of events to process (default: utr)" },
+	{ "pattern1", 'p', "PATTERN1", 0, "First string files must contain to be processed (default: utr)" },
+	{ "pattern2", 'q', "PATTERN2", 0, "Second string files must contain to be processed (default: .root)" },
+    { "inputdir", 'd', "INPUTDIR", 0, "Directory to search for input files matching the patterns (default: current working directory '.' )" },
+    { "filename", 'o', "OUTPUTFILENAME", 0, "Output file name, file will be overwritten! (default: {PATTERN1}_hist.root with a trailing '_t' in PATTERN1 dropped)" },
+    { "outputdir", 'O', "OUTPUTDIR", 0, "Directory in which the output files will be written (default: same as INPUTDIR)" },
+  //{ "begin",    'b', "START",  0,  "ID of first detector to extract" },
+  //{ "end",      'e', "END",    0,  "ID of last detector to extract" },
+	{ "binning", 'b', "BINNING", 0, "Size of bins in the histogram in keV (default: 1 keV)" },
+	{ "maxenergy", 'e', "EMAX", 0, "Maximum energy displayed in histogram in MeV (rounded up to match BINNING) (default: 10 MeV)" },
+	{ "showbin", 'B', "BIN", 0, "Number of energy bin whose value should be displayed, -1 to disable (default: -1)" },
+	{ "maxid", 'n', "MAXID", 0, "Highest detection volume ID (default: 12). 'getHistogram' expects to only encounter detectors labeled with integer numbers from 0 to MAXID." },
+	{ "multiplicity", 'm', "MULTIPLICITY", 0, "Particle multiplicity, sum energy depositions for each detector among MULTIPLICITY events (default: 1)" },
+	{ "addback", 'a', 0, 0, "Add back energy depositions that occurred in a single event to the detector first listed in the event (usually this is the first one hit) (default: Off)" },
+	{ "silent", 's', 0, 0, "Silent mode (does not silence -B option) (default: Off" },
+	{ 0, 0, 0, 0, 0 }
 };
 
+// Used by main to communicate with parse_opt
+struct arguments {
+	string tree="utr";
+	string p1="utr";
+	string p2=".root";
+	string inputDir=".";
+	string outputFilename="";
+	string outputDir="";
+	//int firstDetectorID=0;
+	//int lastDetectorID=12;
+	double binning=1./1000.;
+	double eMax=10.;
+	int binToPrint=-1;
+	unsigned int nhistograms=13;
+	unsigned int multiplicity=1;
+	bool addback=false;
+	bool verbose=true;
+};
+
+// Function to parse a single option
 static error_t parse_opt(int key, char *arg, struct argp_state *state) {
+  	// Get the input argument from argp_parse, which is a pointer to the arguments structure
+	struct arguments *arguments = (struct arguments *) state->input;
 
-	struct arguments *args = (struct arguments *) state->input;
-
-switch (key) {
-		case ARGP_KEY_ARG: break;
-		case 't': args->tree = arg; break;
-		case 'p': args->p1 = arg; break;
-		case 'q': args->p2 = arg; break;
-		case 'o': args->outputfilename = arg; break;
-		case 'b': args->bin = atoi(arg); break;
-		case 'e': args->emax = atof(arg); break;
-		case 'n': args->nhistograms = (unsigned int) atoi(arg); break;
-		case 'm': args->multiplicity = (unsigned int) atoi(arg); break;
-		case 'a': args->addback = true; break;
-		case 'v': args->verbose = true; break;
+	switch (key) {
+		case 't': arguments->tree = arg; break;
+		case 'p': arguments->p1 = arg; break;
+		case 'q': arguments->p2 = arg; break;
+		case 'd': arguments->inputDir = arg; break;
+		case 'o': arguments->outputFilename = arg; break;
+		case 'O': arguments->outputDir = arg; break;
+		case 'b': arguments->binning = atof(arg)/1000.; break;
+		case 'e': arguments->eMax = atof(arg); break;
+		case 'B': arguments->binToPrint = atoi(arg); break;
+		case 'n': arguments->nhistograms = (unsigned int) atoi(arg)+1; break;
+		case 'm': arguments->multiplicity = (unsigned int) atoi(arg); break;
+		case 'a': arguments->addback = true; break;
+		case 's': arguments->verbose = false; break;
+		case ARGP_KEY_ARG: 
+			cerr << "> Error: getHistogram takes only options and no arguments!" << endl;
+			argp_usage (state); 
+			break;
 		case ARGP_KEY_END: break;
 		default: return ARGP_ERR_UNKNOWN;
 	}
-
 	return 0;
 }
 
-static struct argp argp = { options, parse_opt, args_doc, doc, 0, 0, 0 };
-
-
-using namespace std;
+static struct argp argp = {options, parse_opt, args_doc, doc};
 
 int main(int argc, char* argv[]){
 	
-	struct arguments args;
-	argp_parse(&argp, argc, argv, 0, 0, &args);
+	struct arguments arguments;
+	argp_parse(&argp, argc, argv, 0, 0, &arguments);
 
-if(args.verbose){
-		cout << "#############################################" << endl;
-		cout << "> GetHistogram" << endl;
-		cout << "> TREENAME     : " << args.tree << endl;
-		cout << "> FILES        : " << "*" << args.p1 << "*" << args.p2 << "*" << endl;
-		cout << "> OUTPUTFILE   : " << args.outputfilename << endl;
-		cout << "> NHISTOGRAMS  : " << args.nhistograms << endl;
-		cout << "> EMAX         : " << args.emax << " MeV" << endl;
-		cout << "> MULTIPLICITY : ";
-		if(args.addback){
-			cout << "IGNORED" << endl;
-		} else{
-			cout << args.multiplicity << endl;
+	// If no outputDir was given, use the same as inputDir
+	if (arguments.outputDir == "") {
+		arguments.outputDir = arguments.inputDir;
+	}
+
+	// If no outputFilename was given, create an outputFilename based on pattern1 with "_hist.root" appended
+	if (arguments.outputFilename == "") {
+		// If pattern1 ends on "_t", additionally remove this in the outputFilename
+		if (arguments.p1.size() >= 2 && arguments.p1.compare(arguments.p1.size() - 2, 2, "_t") == 0) {
+			arguments.outputFilename=arguments.p1.substr(0, arguments.p1.size() - 2) + "_hist.root";
+		} else {
+			arguments.outputFilename=arguments.p1 + "_hist.root";
 		}
-		if(args.bin != -1){
-			cout << "> BIN          : " << args.bin << endl;
+	}
+
+	if(arguments.verbose){
+		cout << "#############################################" << endl;
+		cout << "> getHistogram" << endl;
+		cout << "> TREENAME     : " << arguments.tree << endl;
+		cout << "> FILES        : " << "*" << arguments.p1 << "*" << arguments.p2 << "*" << endl;
+		cout << "> INPUTDIR     : " << arguments.inputDir << endl;
+		cout << "> OUTPUTFILE   : " << arguments.outputFilename << endl;
+		cout << "> OUTPUTDIR    : " << arguments.outputDir << endl;
+		cout << "> BINNING      : " << arguments.binning * 1000 << " keV" << endl;
+		cout << "> EMAX         : " << arguments.eMax << " MeV" << endl;
+		cout << "> MAXID        : " << arguments.nhistograms - 1 << endl;
+		cout << "> MULTIPLICITY : " << arguments.multiplicity << endl;
+		if(arguments.binToPrint != -1){
+			cout << "> BIN          : " << arguments.binToPrint << endl;
 		}
 		cout << "> ADDBACK      : ";
-		if(args.addback){
+		if(arguments.addback){
 			cout << "TRUE" << endl;
-		} else{
+		} else {
 			cout << "FALSE" << endl;
 		}
 		cout << "#############################################" << endl;
 	}
 
 	// Find all files in the current directory that contain pattern1 and pattern1 and connect them to a TChain
-	TSystemDirectory dir(".",".");
-
-	TList *files = dir.GetListOfFiles();
-	TChain utr("utr");
-
-	if(args.verbose){
-		cout << "> Joining all files that contain '" << args.p1 << "' and '" << args.p2 << "':" << endl;
+	if (!opendir(arguments.inputDir.c_str())) {
+		cerr << "> ERROR: Supplied INPUTDIR is not a valid directory! Aborting..." << endl;
+		exit(1);
 	}
+	if (!opendir(arguments.outputDir.c_str())) {
+		cerr << "> ERROR: Supplied OUTPUTDIR is not a valid directory! Aborting..." << endl;
+		exit(1);
+	}
+	if(arguments.verbose){
+		cout << "> Joining all files in '" << arguments.inputDir << "' that contain '" << arguments.p1 << "' and '" << arguments.p2 << "':" << endl;
+	}
+	TSystemDirectory dir("INPUTDIRECTORY", arguments.inputDir.c_str());
+	TChain fileChain(arguments.tree.c_str());
+	TString fname;
+	TIter next(dir.GetListOfFiles());
+	TSystemFile* file = (TSystemFile*) next();
 	
-	if(files){
-		TSystemFile *file;
-		TString fname;
-
-		TIter next(files);
-		file = (TSystemFile*) next();
-		while (file){
-			fname = file->GetName();
-			if(!file->IsDirectory() && fname.Contains(args.p1) && fname.Contains(args.p2)){
-				if(args.verbose){
-					cout << fname << endl;
-				}
-				utr.Add(fname);
+	while (file){
+		fname = arguments.inputDir + "/" + file->GetName();
+		if(!file->IsDirectory() && fname.Contains(arguments.p1) && fname.Contains(arguments.p2)){
+			if(arguments.verbose){
+				cout << fname << endl;
 			}
-			file = (TSystemFile*) next();
+			fileChain.Add(fname);
 		}
+		file = (TSystemFile*) next();
 	}
 
-	// Create histograms
-	
-	const int nbins = 15000; // Number of bins in the histograms
-	const double emin = 0.0005; // Minimum energy of histograms in MeV
 
-	vector<TH1*> hist(args.nhistograms + 1);
+	// Prepare empty histograms
+
+	// Minimum energy of histograms in MeV: bin centered around 0
+	const double emin  = 0             -arguments.binning/2; 
+	// Number of bins in the histograms: Choosen so that the end of the last bin using the given binning is greater or equal to the given maximum energy
+	const int    nbins = (int) ceil((arguments.eMax-emin)/arguments.binning);
+	// Maximum energy of histograms in MeV: Choosen so that it matches the given binning
+	const double eMax  = emin+nbins*arguments.binning;
+
+	if(arguments.verbose && eMax != arguments.eMax) {
+		cout << "> Rounded up EMAX from " << arguments.eMax << " MeV to " << eMax << " MeV in order to match the requested BINNING of " << arguments.binning << " MeV"<< endl;
+	}	
+
+	vector<TH1*> hist(arguments.nhistograms + 1); // +1 For sum histogram
 	stringstream histname, histtitle;
 
-	for(long unsigned int i = 0; i < (long unsigned int) args.nhistograms; ++i){
+	for(unsigned int i = 0; i < arguments.nhistograms; ++i){
 		histname << "det" << i;
 		histtitle << "Energy deposition in Detector " << i;
-
-		hist[i] = new TH1F(histname.str().c_str(), histtitle.str().c_str(), nbins, emin, args.emax+0.0005);
+		hist[i] = new TH1F(histname.str().c_str(), histtitle.str().c_str(), nbins, emin, eMax);
 		histname.str("");
 		histtitle.str("");
 	}
-	hist[args.nhistograms] = new TH1F("all", "Sum spectrum of all detectors", nbins, emin, args.emax+0.0005);
+	hist[arguments.nhistograms] = new TH1F("sum", "Sum spectrum of all detectors", nbins, emin, eMax);
 
-	UInt_t multiplicity_counter[args.nhistograms] = {0};
+	vector<unsigned int> multiplicity_counter(arguments.nhistograms, 0);
 
 	// Fill histogram from TBranch in TChain with user-defined conditions
-	// Define variables and read their values from the tree using the GetEntry() method
-	Double_t Event = 0;
-	Double_t Edep, Volume;
-	Double_t Edep_hist[args.nhistograms] = {0.};
+	// Define variables and automatically update their values from the ROOT tree using the GetEntry method after registering them with the SetBranchAddress method
+	double Event, lastEvent;
+	double Volume; // Needs to be double to correctly work with GetEntry and SetBranchAddress methods
+	unsigned int lastVolume; // Needs to be unsigned int to correctly work with array indices
+	double Edep;
+	vector<double> EdepBuffer(arguments.nhistograms, 0.);
 
-	utr.SetBranchAddress("edep", &Edep);
-	utr.SetBranchAddress("volume", &Volume);
-	if(args.addback)
-		utr.SetBranchAddress("event", &Event);
+	fileChain.SetBranchAddress("edep", &Edep);
+	fileChain.SetBranchAddress("volume", &Volume);
+	if (arguments.addback) {
+		fileChain.SetBranchAddress("event", &Event);
+	} else {
+		Event=-1; // If addback is disabled, Event will not be relevant in the code below, and the ROOT tree is not required to contain it
+	}
 
 	unsigned int addback_counter = 0;
+	
+	// (Pre)Process first event manually (so it is considered the last event)
+	fileChain.GetEntry(0);
+	lastEvent=Event;
+	lastVolume=(unsigned int) Volume; 
+	EdepBuffer[lastVolume] = Edep;
 
-	if(args.addback){
-		long unsigned int addback_volume = 0;
-		unsigned int addback_event = 0;
-		for(int i = 0; i < utr.GetEntries(); ++i){
-			utr.GetEntry(i);
-			if(addback_event != Event){
-				hist[addback_volume]->Fill(Edep_hist[addback_volume]);
-				hist[args.nhistograms]->Fill(Edep_hist[addback_volume]);
-				Edep_hist[addback_volume] = 0.;
-				addback_volume = (long unsigned int) Volume;
-				addback_event = (unsigned int) Event;
-				Edep_hist[addback_volume] = Edep;
-				++addback_counter;
-			} else{
-				Edep_hist[addback_volume] += Edep;
+	//Process next events in loops
+	for(long i = 1; i < fileChain.GetEntries(); ++i) {
+		// Get the entry, this sets the values for the Edep, Volume and Event variables
+		fileChain.GetEntry(i);
+		// If addback is disabled or the event number has changed:
+		if (!arguments.addback || lastEvent != Event) {
+			// First process the *last* event still in the buffer:
+			// Increase the volumes multiplicity counter
+			multiplicity_counter[lastVolume]++;
+			// If multiplicity counter is high enough write the buffered energy value to the histogram
+			if(multiplicity_counter[lastVolume]==arguments.multiplicity) {
+				hist[lastVolume]->Fill(EdepBuffer[lastVolume]); // Fill own histogram 
+				hist[arguments.nhistograms]->Fill(EdepBuffer[lastVolume]); // Fill sum histogram
+				EdepBuffer[lastVolume] = 0.; // Reset energy buffer to zero
+				multiplicity_counter[lastVolume] = 0; // Reset multiplicity counter to zero
 			}
+			// Now update history variables to *this* event and increase addback_counter
+			addback_counter++;
+			lastEvent=Event;
+			lastVolume=(unsigned int) Volume;
 		}
-	} else{
-		for(int i = 0; i < utr.GetEntries(); ++i){
-			utr.GetEntry(i);
-			++multiplicity_counter[(long unsigned int) Volume];
-			Edep_hist[(long unsigned int) Volume] += Edep;
-			if(multiplicity_counter[(long unsigned int) Volume]==args.multiplicity){
-				hist[(long unsigned int) Volume]->Fill(Edep_hist[(long unsigned int) Volume]);
-				hist[args.nhistograms]->Fill(Edep_hist[(long unsigned int) Volume]);
-				Edep_hist[(long unsigned int) Volume] = 0.;
-				multiplicity_counter[(long unsigned int) Volume] = 0;
-			}
-		}
-	}
-		
-	if(args.verbose){
-		cout << "> Processed " << utr.GetEntries() << " entries" << endl;
+		// Add Edep value to buffer (necessary for addback and multiplicity), note that the *last* Volume can now already be *this* event's volume
+		EdepBuffer[lastVolume] += Edep;
 	}
 
-	if(args.bin != -1){
-		cout << "[ ";
-		for(UInt_t i = 0; i <= args.nhistograms; ++i){
+	// (Post)Process last event manually 
+	multiplicity_counter[lastVolume]++;
+	if(multiplicity_counter[lastVolume]==arguments.multiplicity) {
+		hist[lastVolume]->Fill(EdepBuffer[lastVolume]); // Fill own histogram 
+		hist[arguments.nhistograms]->Fill(EdepBuffer[lastVolume]); // Fill sum histogram
+	}
+	addback_counter++;
+
+	if(arguments.verbose) {
+		cout << "> Processed " << fileChain.GetEntries() << " entries" << endl;
+	}
+
+	// Display counts of a specific bin in each histogram, if requested
+	if(arguments.binToPrint != -1){
+		cout << "Counts in bin " << arguments.binToPrint << " (centered around " << hist[0]->GetBinCenter(arguments.binToPrint) << " MeV ) for each histogram : [ ";
+		for(unsigned int i = 0; i <= arguments.nhistograms; ++i){
 			if(i != 0){
 				cout << ", ";
 			}
-			cout << hist[i]->GetBinContent(args.bin);
+			cout << hist[i]->GetBinContent(arguments.binToPrint);
 		}
 		cout << "]" << endl;
 	}
 
 	// Write histogram to a new TFile
-	TFile *of = new TFile(args.outputfilename, "RECREATE");
+	TFile *outFile = new TFile((arguments.outputDir + "/" + arguments.outputFilename).c_str(), "RECREATE");
+	for(auto h: hist){
+		h->Write();
+	}
+	outFile->Close();
 
-		for(auto h: hist){
-			h->Write();
-		}
-
-	of->Close();
-
-	if(args.verbose){
-		if(addback_counter == 0)
+	if(arguments.verbose && arguments.addback) {
+		if(addback_counter == fileChain.GetEntries())
 			cout << "> No events added back" << endl;
 		else
-			cout << "> Percentage of events added back: " << ((1.-((double) addback_counter) / (double) utr.GetEntries())*100.) << " %" << endl;
-		cout << "> Created output file " << args.outputfilename << endl;
+			cout << "> Percentage of events added back: " << ((1.-((double) addback_counter) / (double) fileChain.GetEntries())*100.) << " %" << endl;
+		cout << "> Created output file " << arguments.outputFilename << endl;
 	}
 }	

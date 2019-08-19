@@ -20,8 +20,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 // Class for a generic High-purity Germanium (HPGe) clover detector
 
-#ifndef HPGE_CLOVER_h
-#define HPGE_CLOVER_h 1
+#pragma once
 
 #include "G4ExtrudedSolid.hh"
 #include "G4LogicalVolume.hh"
@@ -45,5 +44,3 @@ class HPGe_Clover : public Detector{
 		bool use_dewar;
 		G4VSolid* rounded_box(const G4String name, const G4double side_length, const G4double length, const G4double rounding_radius, const G4int n_points_per_corner) const;
 };
-
-#endif

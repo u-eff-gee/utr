@@ -86,7 +86,7 @@ option(EVENT_MOMZ "For each event, record the momentum in Z direction of the fir
 #----------------------------------------------------------------------------
 # Enable configuration of the source code by cmake
 configure_file(
-	"${PROJECT_SOURCE_DIR}/utrConfig.h.in"
+	"${PROJECT_SOURCE_DIR}/include/utrConfig.h.in"
 	"${PROJECT_SOURCE_DIR}/include/utrConfig.h"
 )
 #----------------------------------------------------------------------------
@@ -111,7 +111,7 @@ endif(BACKWARD_COMPATIBLE_BUILD)
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
 
-add_executable(utr utr.cc ${sources} ${headers})
+add_executable(utr ${PROJECT_SOURCE_DIR}/src/utr.cc ${sources} ${headers})
 target_link_libraries(utr ${Geant4_LIBRARIES})
 
 #----------------------------------------------------------------------------
@@ -120,17 +120,13 @@ target_link_libraries(utr ${Geant4_LIBRARIES})
 # relies on these scripts being in the current working directory.
 #
 set(UTR_SCRIPTS
-  beam.mac
-  source.mac
-  angdist.mac
-  init_vis.mac
   vis.mac
   )
 
 foreach(_script ${UTR_SCRIPTS})
   configure_file(
-    ${PROJECT_SOURCE_DIR}/${_script}
-    ${PROJECT_BINARY_DIR}/${_script}
+    ${PROJECT_SOURCE_DIR}/scripts/${_script}
+    ${PROJECT_BINARY_DIR}/scripts/${_script}
     COPYONLY
     )
 endforeach()

@@ -17,16 +17,12 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-#ifndef RunAction_h
-#define RunAction_h 1
-
-#include <cstdio>
-#include <sstream>
-#include <string>
+#pragma once
 
 #include "G4UserRunAction.hh"
 #include "globals.hh"
+
+#include <string>
 
 using std::string;
 
@@ -54,15 +50,4 @@ class RunAction : public G4UserRunAction {
 	virtual void EndOfRunAction(const G4Run *);
 
 	G4String GetOutputFlagName(unsigned int n);
-
-	void setOutputDir(string output) { outputdir = output; };
-	void setFilenameID(unsigned int fid) {filenameid = fid; };
-
-  private:
-	std::stringstream masterfilename;
-	unsigned int filenameid;
-	int threadId;
-	string outputdir;
 };
-
-#endif

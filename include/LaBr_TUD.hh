@@ -17,9 +17,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-#ifndef LABR1_HH
-#define LABR1_HH
+#pragma once
 
 #include "G4LogicalVolume.hh"
 
@@ -40,5 +38,3 @@ class LaBr_TUD {
 
 	G4LogicalVolume *LaBr_TUD_Logical;
 };
-
-#endif

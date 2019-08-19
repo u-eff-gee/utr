@@ -17,9 +17,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-#ifndef GERMANIUM1_HH
-#define GERMANIUM1_HH
+#pragma once
 
 #include "G4LogicalVolume.hh"
 #include "G4SystemOfUnits.hh"
@@ -39,5 +37,3 @@ class Germanium1_TUD {
 
 	G4LogicalVolume *germanium1_Logical;
 };
-
-#endif

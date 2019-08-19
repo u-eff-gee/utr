@@ -21,9 +21,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 //**************************************************************//
 //	55%  HPGe Detector @ HIGS Serial No. 41-TN31524A
 //**************************************************************//
-
-#ifndef HPGe_55_TUNL_31524_h
-#define HPGe_55_TUNL_31524_h 1
+#pragma once
 
 #include "G4LogicalVolume.hh"
 
@@ -45,5 +43,3 @@ class HPGe_55_TUNL_31524 {
 
 	G4LogicalVolume *HPGe_55_TUNL_31524_Logical;
 };
-
-#endif

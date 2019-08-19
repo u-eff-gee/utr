@@ -61,8 +61,6 @@ void ActionInitialization::Build() const {
 	SetUserAction(eventAction);
 
 	RunAction *runAction = new RunAction();
-	runAction->setOutputDir(outputdir);
-	runAction->setFilenameID(filenameid);
 
 	vector<bool> record_quantity(NFLAGS);
 	for(short i = 0; i < NFLAGS; ++i)

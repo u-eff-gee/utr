@@ -16,9 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-#ifndef FILTER_CASE_H
-#define FILTER_CASE_H 1
+#pragma once
 
 #include "G4LogicalVolume.hh"
 #include "G4SystemOfUnits.hh"
@@ -43,5 +41,3 @@ class Filter_Case {
 	G4double filter_case_ring_thickness;
 	G4double filter_case_bottom_thickness;
 };
-
-#endif

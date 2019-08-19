@@ -29,13 +29,14 @@ This is a [Geant4](https://geant4.web.cern.ch/) [[1]](#ref-g4_1) [[2]](#ref-g4_2
     
  4. [Usage and Visualization](#usage)
  5. [Output Processing](#outputprocessing)
- 6. [Unit Tests](#unittests)
+ 6. [The utr Wrapper](#utrwrapper)
+ 7. [Unit Tests](#unittests)
  
-    6.1 [AngularDistributionGenerator](#angulardistributiongenerator)
+    7.1 [AngularDistributionGenerator](#angulardistributiongenerator)
     
- 7. [License](#license)
- 8. [Acknowledgements](#acknowledgements)
- 9. [References](#references)
+ 8. [License](#license)
+ 9. [Acknowledgements](#acknowledgements)
+ 10. [References](#references)
 
 ## 1 Quick Start <a name="quickstart"></a>
 
@@ -70,7 +71,7 @@ Using cmake build variables, activate or deactivate physics modules, or implemen
 
 ### 1.7 Choose random number seed
 
-In `utr.cc`, set the random number seed explicitly to get deterministic results. It is not clear whether this works in multithreaded mode. See section [2.5 Random Number Engine](#random)
+In `src/utr.cc`, set the random number seed explicitly to get deterministic results. It is not clear whether this works in multithreaded mode. See section [2.5 Random Number Engine](#random)
 
 ### 1.8 Set up a macro file
 
@@ -80,12 +81,17 @@ Do not simulate more than 2^32 ~ 2 billion particles using `/run/beamOn`, since 
 
 ### 1.9 Run the simulation
 
-Consider creating a macro like `loop.mac` to loop over variables in your macro file.
+Consider creating a macro like the example `loop.mac` in `macros/examples` to loop over variables in your macro file.
 (See section [4 Usage and Visualization](#usage))
 
 ### 1.10 Analyze the output
 
 See section [5 Output Processing](#outputprocessing). For some tasks, for example the extraction of full-energy peak efficiencies, complete toolchains already exist which probably need only minimal adaptions.
+
+### 1.11 Consider using the utr wrapper
+
+See section [6. The utr Wrapper](#utrwrapper). The utr wrapper `utrwrapper.py` was introduced to simplify, automate and systematize the workflow of conducting simulations with utr once the detector construction is implemented and uses extended macro files to achieve this goal.
+Using `utrwrapper.py` with an extended macro file ideally allows to combine steps 1.8 (Set up a macro file) to 1.10 (Analyze the output) into creating one file and executing one simple command.
 
 ## 2 Features <a name="features"></a>
 
@@ -96,9 +102,9 @@ Since the 2018 campaign, we encourage to stick to the following directory struct
 
 ```
 utr/
-    utr.cc      # main()
-    include/    # user actions and auxiliary permanent geometry
-    src/        # user actions and auxiliary permanent geometry
+    include/utr.cc      # main()
+    include/            # user actions and auxiliary permanent geometry
+    src/                # user actions and auxiliary permanent geometry
     DetectorConstruction/
         Campaign_YEAR/
             include/    # auxiliary campaign- and run-specific geometry
@@ -244,7 +250,7 @@ In addition, most of the implemented detectors have a method to automatize the p
 
 The `utr` code includes implementations of several different detectors. Most of the detectors are implemented by reading off the dimensions from some data sheet. Usually, these data sheets, for example the ones from the [ORTEC](https://www.ortec-online.com/) company, only include the front part of the detector around the crystal. However, all detectors have an additional case for the electronics/photomultipliers/preamplifiers, and most HPGe detectors, in particular, have a dewar vessel for liquid nitrogen cooling. To get a better feeling for the dimensions of the setup and for aesthetic reasons, the dimensions of these parts have been measured or estimated by the the authors. Usually, the dimensions that can be measured without taking a detector apart are known well (for example the length of the dewar vessel), while the inner structure is poorly known (for example the wall thickness of the cases, or the composition of the electronics). Therefore, they have mostly been constructed as empty shells (mostly made of aluminium). The hope is that they represent a zero-order approximation to the actual composition of the detector parts. If desired, only the parts that are actually taken from data sheets can be constructed by setting the corresponding flags. For example, only by calling the `HPGe_Coaxial::useDewar()` method before invoking `HPGe_Coaxial::Construct()` the dewar vessels of the coaxial HPGe detectors will be constructed.
 
-Depending on the topology of the detector, general classes exist in some cases to avoid copying and pasting. For example, all coaxial HPGe detectors contain essentially the same components, but with different dimensions. Therefore, a general `HPGe_Coaxial` class, structures to associate meaningful names with the dimensions `HPGe_Coaxial_Properties` and a dictionary of dimensions, called `HPGe_Collection`, have been implemented to avoid very repetitive class definitions for each detector. In between the creation of an object of a general class and the actual construction, the particular properties have to be intialized using the `setProperties()` method. Without this, the detector construction will fail or produce nonsense values. Below is a list of real detectors that can be built with the existing code, ordered by the style of implementation. If not mentioned otherwise, the detectors are derived from the `Detector` class.
+Depending on the topology of the detector, general classes exist in some cases to avoid copying and pasting. For example, all coaxial HPGe detectors contain essentially the same components, but with different dimensions. Therefore, a general `HPGe_Coaxial` class, structures to associate meaningful names with the dimensions `HPGe_Coaxial_Properties` and a dictionary of dimensions, called `HPGe_Collection`, have been implemented to avoid very repetitive class definitions for each detector. In between the creation of an object of a general class and the actual construction, the particular properties have to be initialized using the `setProperties()` method. Without this, the detector construction will fail or produce nonsense values. Below is a list of real detectors that can be built with the existing code, ordered by the style of implementation. If not mentioned otherwise, the detectors are derived from the `Detector` class.
 
 **Coaxial HPGe detectors**: An abstract class `HPGe_Coaxial` exists, which implements the main parts of a coaxial detector (crystal, mount cup, end cap, cold finger, dewar). The particular dimensions of the parts for each detector are stored in a data structure called `HPGe_Coaxial_Properties`. The dimensions of each of the following detectors and a short description can be found in an additional header file, `src/HPGe_Collection.hh`:
 
@@ -264,7 +270,7 @@ Depending on the topology of the detector, general classes exist in some cases t
  * ANL 100% HPGe (Ortec serial number 42-TP41203A)
  * ANL 100% HPGe (Ortec serial number 43-TP31670A)
 
-**Clover HPGe detectors**: An abstract class `HPGe_Clover` exists, which implements a standard Eurisys/Canberra clover detector (four germanium crystals, aluminium cases and a dewar). The particular dimensions of the parts for each detector are stored in a data structure called `HPGe_Clover_Properties`. A suffix `_crystalI`, where `I` is either 1,2,3, or four will be appended to the argument `detector_name` of the constructor to be able to unambiguosly identify the four crystals when defining them as sensitive detectors (see also [2.2 Sensitive Detectors](#sensitivedetectors)). The dimensions of each of the following detectors and a short description can be found in an additional header file, `src/HPGe_Collection.hh`:
+**Clover HPGe detectors**: An abstract class `HPGe_Clover` exists, which implements a standard Eurisys/Canberra clover detector (four germanium crystals, aluminium cases and a dewar). The particular dimensions of the parts for each detector are stored in a data structure called `HPGe_Clover_Properties`. A suffix `_crystalI`, where `I` is either 1,2,3, or four will be appended to the argument `detector_name` of the constructor to be able to unambiguously identify the four crystals when defining them as sensitive detectors (see also [2.2 Sensitive Detectors](#sensitivedetectors)). The dimensions of each of the following detectors and a short description can be found in an additional header file, `src/HPGe_Collection.hh`:
 
 * Yale Clover HPGe (Eurisys serial number OC107395)
 
@@ -424,13 +430,13 @@ By default, `utr` uses the Geant4 standard [`G4GeneralParticleSource`](#generalp
 $ cmake -DGENERATOR_ANGDIST=ON -DGENERATOR_ANGCORR=OFF .
 ```
 
-All of the event generators have macro commands defined that simplify their control. Sample macro files can be found in the home directory. As a rule of thumb, a user should use ...
+All of the event generators have macro commands defined that simplify their control. Sample macro files can be found in the `macros/examples` directory. As a rule of thumb, a user should use ...
 
  * ... `G4GeneralParticleSource` if the source is sufficiently simple to be controlled via the macro commands of Geant4. For an overview, see the webpage given below. An typical application would be the simulation of a point-like radioactive source or a beam with an intensity distribution that depends on the energy of the particles and the spatial coordinates.
  * ... `AngularDistributionGenerator`, if monoenergetic particles should be emitted from a set of user-defined volumes with a user-defined angular distribution, that has an arbitrary dependence on the solid angle. A typical application would be the simulation of gamma-rays that are emitted by a target that was excited with a (polarized) beam of particles.
  * ... `AngularCorrelationGenerator`, if user-defined volumes and angular distributions are used, and, in addition, several monoenergetic particles should be correlated. This means that the emission angles and the polarization plane of the n-th particle depend on the emission angles and polarization of the (n-1)-th particle. Typical applications would be the simulation of beta-plus decay where ultimately two correlated photons from the annihilation of the positron are emitted, simulations of particle cascades from an excited nucleus that has been excited via a beam or decays via exotic double-gamma or double-beta decays.
 
-The event generators are listed by complexity above. If in doubt which event generator to use, it is strongly recommended to take the most simple one that can do a given task, because espacially the distribution- and correlation generators create a lot of overhead due to their Monte-Carlo sampling and heavy usage of trigonometric functions.
+The event generators are listed by complexity above. If in doubt which event generator to use, it is strongly recommended to take the most simple one that can do a given task, because especially the distribution- and correlation generators create a lot of overhead due to their Monte-Carlo sampling and heavy usage of trigonometric functions.
 
 #### 2.3.1 GeneralParticleSource<a name="generalparticlesource"></a>
 
@@ -438,7 +444,7 @@ This event generator uses the G4GeneralParticleSource (GPS) whose parameters can
 
 ##### 2.3.1.1 Usage
 
-The macros `source.mac` and `beam.mac` in the `utr/` directory model an isotropic point-source and a circular beam using the `G4GeneralParticleSource`. Many more examples can be found in the manual of Geant4.
+The macros `source.mac` and `beam.mac` in the `macros/examples` directory model an isotropic point-source and a circular beam using the `G4GeneralParticleSource`. Many more examples can be found in the manual of Geant4.
 
 #### 2.3.2 AngularDistributionGenerator<a name="angulardistributiongenerator"></a>
 
@@ -471,7 +477,7 @@ The process of finding a starting point is depicted in 2 dimensions in the figur
 
 Finding the correct dimensions of the container box might need visualization. Try placing a `G4Box` with the desired dimensions at the desired position in the geometry and see whether it encloses the source volume completely and as close as possible.
 
-The process of finding a starting vector is shown in one dimension (`W` is only dependent on `θ`) in in the figure below. First, a random value `random_θ` for `θ` with a uniform random distribution **on a sphere** is sampled. Note that this is not the same as a uniform distribution of values between 0 and π for θ. Then, a unform random number between 0 and an upper limit `MAX_W` is drawn. If the value `MAX_W` is lower than `W(random_θ)` (black points), then a particle will be emitted at that angle.
+The process of finding a starting vector is shown in one dimension (`W` is only dependent on `θ`) in in the figure below. First, a random value `random_θ` for `θ` with a uniform random distribution **on a sphere** is sampled. Note that this is not the same as a uniform distribution of values between 0 and π for θ. Then, a uniform random number between 0 and an upper limit `MAX_W` is drawn. If the value `MAX_W` is lower than `W(random_θ)` (black points), then a particle will be emitted at that angle.
 
 ![MC momentum generator](.media/MC_Momentum_Generator.png)
 
@@ -566,9 +572,9 @@ Due to parity symmetry, an inversion of all the parities in a cascade will resul
 
 It was chosen to represent the parity of a state as the sign of the spin quantum number. Unfortunately, this makes it impossible to represent 0- states, because the number "-0" is the same as "+0". Therefore, the value "-0.1" represents a 0- state.
 
-A list of all implemented angular distributions can be found at the bottom of the `angdist.mac` sample macro for `AngularDistributionGenerator`.
+A list of all implemented angular distributions can be found at the bottom of the `angdist.mac` sample macro in `macros/examples` for `AngularDistributionGenerator`.
 
-The macro file `angdist.mac` in the `utr/` directory shows a commented example of the usage of `AngularDistributionGenerator`.
+The macro file `angdist.mac` in the `macros/examples` directory shows a commented example of the usage of `AngularDistributionGenerator`.
 
 ##### 2.3.2.3 Caveat: Multiple sources <a name="multiplesources"></a>
 
@@ -597,7 +603,7 @@ v1 = M_z(α) M_x(β) M_z(γ) (0, 0, 1) = M_z(α) M_x(β) (0, 0, 1)
 
 The second equation can be simplified, because a rotation about the z-axis leaves the vector (0, 0, 1) unchanged.
 For the known normalized vectors `v1` and `p1`, this results in a set of equations for the Euler angles α, β and γ.
-At the moment, in the case of of polarization, the ultrarelativistic approximation that `p1 . v1 == 0` (scalar product) is taken. This means that the polarization can only be perpendicular to the propagation direction. This approximation is valid for highly-energetic or massless particles. It allows for an easy determination of the angle γ: M_z(γ) only acts on the polarization, and the product of M_z(α) M_x(β) acts on both. Therefore, it can be used to described the difference of emission and polarization direction with respect to the reference frame. It the first particle is assumed to be unpolarized, the angle γ is sampled from a uniform random distribution to mimick an arbitrary behavior of the polarization.
+At the moment, in the case of of polarization, the ultrarelativistic approximation that `p1 . v1 == 0` (scalar product) is taken. This means that the polarization can only be perpendicular to the propagation direction. This approximation is valid for highly-energetic or massless particles. It allows for an easy determination of the angle γ: M_z(γ) only acts on the polarization, and the product of M_z(α) M_x(β) acts on both. Therefore, it can be used to described the difference of emission and polarization direction with respect to the reference frame. It the first particle is assumed to be unpolarized, the angle γ is sampled from a uniform random distribution to mimic an arbitrary behavior of the polarization.
 
 After the determination of the Euler angles, a random emission direction of the second particle `v2'` is sampled from `W2(θ, φ)` in the laboratory frame as described in [2.3.2 AngularDistributionGenerator](#angulardistributiongenerator) (using the same algorithm). By applying the three rotation matrices as shown above using the determined angles, it is rotated into the reference frame of the first particle:
 
@@ -655,7 +661,7 @@ G4WT0 > ========================================================================
 
 ```
 
-For a commented example, see the `angcorr.mac` macro file in the `utr/` directory, which implements a three-step cascade that uses all the features of `AngularCorrelationGenerator`.
+For a commented example, see the `angcorr.mac` macro file in the `macros/examples` directory, which implements a three-step cascade that uses all the features of `AngularCorrelationGenerator`.
 
 ### 2.4 Physics <a name="physics"></a>
 `utr` makes use of the `G4VModularPhysicsList`, which allows to integrate physics modules in a straightforward way by calling the `G4ModularPhysicsList::RegisterPhysics(G4VPhysicsConstructor*)` method. The registered `G4VPhysicsConstructor` class takes care of the introduction of particles and physics processes.
@@ -718,7 +724,7 @@ may appear.
 In order to include new physics modules, include them in the `src/Physics.cc` file.
 
 ### 2.5 Random Number Engine <a name="random"></a>
-In `utr.cc`, the random number engine's seed is set by using the current CPU time, making it a "real" random generator.
+In `src/utr.cc`, the random number engine's seed is set by using the current CPU time, making it a "real" random generator.
 
 ```
 G4Random::setTheEngine(new CLHEP::RanecuEngine);
@@ -838,7 +844,7 @@ $ cmake -DGENERATOR_XY=ON .
 
 Switching both generator options to `ON` works, but leads to unexpected behavior.
 
-#### 3.3.4 Cofiguration of the targets
+#### 3.3.4 Configuration of the targets
 
 In real NRF experiments, one often removes the NRF target and puts a radioactive source in the same place. For convenience, `utr` provides a cmake build flag to switch off the targets in the geometry, i.e. to do a calibration measurement in the simulation.
 
@@ -899,7 +905,7 @@ The compiled `utr` binary can be run with different arguments. To get an overvie
 ```bash
 $ ./utr --help
 ```
-Any execuation of `utr` will print (amongst the output of Geant4 itself) information about the output quantities and (since the 2018 campaign) about the position of important parts in the geometry:
+Any execution of `utr` will print (amongst the output of Geant4 itself) information about the output quantities and (since the 2018 campaign) about the position of important parts in the geometry:
 
 ```bash
 ==============================================================
@@ -938,7 +944,7 @@ Sets the output directory of `utr` where the ROOT files will be placed.
 While running a simulation, `utr` will automatically print information about the progress in the following format, using the `G4VUserEventAction` class:
 
 ```bash
-Progresss: [          160000/100000000]  0.16 %  Running time:   0d  0h   0mn   4s
+Progress: [          160000/100000000]  0.16 %  Running time:   0d  0h   0mn   4s
 ```
 
 That means there is no need to use the `/run/printProgress` macro of Geant4 any more. The number of events `NEVENTS` after which a new progress update is printed can be set using the `PRINT_PROGRESS` preprocessor variable at compile-time (see also [3.3 Build configuration](#build)):
@@ -947,7 +953,7 @@ That means there is no need to use the `/run/printProgress` macro of Geant4 any 
 $ cmake -DPRINT_PROGRESS=NEVENTS .
 ```
 
-Running `utr` without any argument will launch a UI session where macro commands can be entered. It should also automatically execute the macro file `init_vis.mac`, which visualizes the geometry.
+Running `utr` without any argument will launch a UI session where macro commands can be entered. It should also automatically execute the macro file `init_vis.mac` in the `scripts` directory, which visualizes the geometry.
 
 If this does not work, or to execute any other macro file MACROFILE, type 
 ```bash
@@ -971,9 +977,9 @@ and
 ```
 respectively.
 
-It is also possible to create 3D visualization files that can be viewed by an external viewer like [Blender](https://www.blender.org/) (the title picture was made in Blender, for example). The macro `vrml.mac` shows how to create a `.wrl` file. Run it in UI mode with
+It is also possible to create 3D visualization files that can be viewed by an external viewer like [Blender](https://www.blender.org/) (the title picture was made in Blender, for example). The macro `vrml.mac` in `macros/examples` shows how to create a `.wrl` file. Run it in UI mode with
 ```bash
-/control/execute vrml.mac
+/control/execute macros/examples/vrml.mac
 ```
 
 ## 5 Output Processing <a name="outputprocessing"></a>
@@ -984,114 +990,154 @@ The directory `OutputProcessing` contains some **sample** ROOT and shell scripts
 $ cd OutputProcessing/
 $ make
 ```
-in this directory should compile all the scripts and move the executables to the `utr/` directory.
+in this directory should compile all the scripts, generating executables in this directory.
 The compilation may fail if the `ROOTSYS` environment variable is not set on your system.
 
 Executables can be run like
 
 ```bash
-$ ./EXECUTABLENAME {ARGUMENTS}
+$ ./OutputProcessing/EXECUTABLENAME {ARGUMENTS}
 ```
-The executables can be removed using the command
+from the utr directory. The executables can be removed using the command
 
 ```bash
 $ make clean
 ```
-in `OutputProcessing`
+in `OutputProcessing`.
 
 ### 5.1 RootToTxt.cpp
 `RootToTxt` converts a ROOT output file (*TFile*) containing an n-tuple of data (a *TTree* with *TBranch* objects) to a simple text file with the same content. If you want to convert a ROOT file ROOTFILE, type
 ```bash
-$ ./rootToTxt ROOTFILE
+$ ./OutputProcessing/rootToTxt ROOTFILE
 ```
 The ROOT file can have a TTree with an arbitrary name and an arbitrary number of TBranch objects. The output text file has the same name as the ROOT file but with a ".txt" suffix.
 Be aware that conversion into text files increases the file size.
+Note that in the case of an utr output file this will just produce a list of all recorded events with their recorded properties and not a spectrum.
+For a text spectrum use getHistogram in combination with histogramToTxt.
 
 ### 5.2 getHistogram <a name="getHistogram"></a>
-`getHistogram` sorts the data from multiple output files (for example, several threads of the same simulation) into a ROOT histogram and saves the histogram to a new file. It is assumed that the output of the simulation has at least the branches `edep` and `volume`, and optionally also `event` (see also [2.6 Output File Format](#outputfileformat), and that the detector IDs (i.e. the possible values of `volume`), determined by the `G4SensitiveDetector::SetDetectorID()` method (see also [2.2 Sensitive Detectors](#sensitivedetectors)), are integer numbers between 0 and `ID_MAX`, where `ID_MAX` is the maximum detector ID.
+`getHistogram` sorts the data from multiple output files (for example, those of several threads of the same simulation) into a ROOT histogram and saves the histogram to a new file. It is assumed that the output of the simulation has at least the branches `edep` and `volume`, and optionally also `event` (see also [2.6 Output File Format](#outputfileformat), and that the detector IDs (i.e. the possible values of `volume`), determined by the `G4SensitiveDetector::SetDetectorID()` method in utr (see also [2.2 Sensitive Detectors](#sensitivedetectors)), are integer numbers between 0 and `MAXID`, where `MAXID` is the maximum detector ID.
 Executing
 
 ```bash
-$ ./getHistogram --help
-Usage: getHistogram [OPTION...] Create histograms from a list of events
-GetHistogram
+$ ./OutputProcessing/getHistogram --help
+Usage: getHistogram [OPTION...] 
+Create histograms of energy depositions in detectors from a list of events
+stored among multiple ROOT files
 
-  -a                         Add back energy depositions that occurred in a
-                             single event to the first detector which was hit.
-                             Overrides the '-m MULTIPLICITY' option.
-  -b BIN                     Number of energy bin whose value should be
-                             displayed
-  -e EMAX                    Maximum energy displayed in histogram in MeV
-                             (default: 15 MeV)
-  -m MULTIPLICITY            Particle multiplicity (default: 1). Will be
-                             ignored if used simultaneously with the '-a'
-                             option.
-  -n NHISTOGRAMS             Number of detection volumes (default: 12).
-                             'getHistogram' assumes that the NHISTOGRAMS
-                             histograms are labeled with integer number from 0
-                             to NHISTOGRAMS-1.
-  -o OUTPUTFILENAME          Output file name
-  -p PATTERN1                File name pattern 1
-  -q PATTERN2                File name pattern 2
-  -t TREENAME                Name of tree
-  -v                         Verbose mode (does not silence -b option)
+  -a, --addback              Add back energy depositions that occurred in a
+                             single event to the detector first listed in the
+                             event (usually this is the first one hit)
+                             (default: Off)
+  -b, --binning=BINNING      Size of bins in the histogram in keV (default: 1
+                             keV)
+  -B, --showbin=BIN          Number of energy bin whose value should be
+                             displayed, -1 to disable (default: -1)
+  -d, --inputdir=INPUTDIR    Directory to search for input files matching the
+                             patterns (default: current working directory '.' )
+                            
+  -e, --maxenergy=EMAX       Maximum energy displayed in histogram in MeV
+                             (rounded up to match BINNING) (default: 10 MeV)
+  -m, --multiplicity=MULTIPLICITY
+                             Particle multiplicity, sum energy depositions for
+                             each detector among MULTIPLICITY events (default:
+                             1)
+  -n, --maxid=MAXID          Highest detection volume ID (default: 12).
+                             'getHistogram' expects to only encounter detectors
+                             labeled with integer numbers from 0 to MAXID.
+  -o, --filename=OUTPUTFILENAME   Output file name, file will be overwritten!
+                             (default: {PATTERN1}_hist.root with a trailing
+                             '_t' in PATTERN1 dropped)
+  -O, --outputdir=OUTPUTDIR  Directory in which the output files will be
+                             written (default: same as INPUTDIR)
+  -p, --pattern1=PATTERN1    First string files must contain to be processed
+                             (default: utr)
+  -q, --pattern2=PATTERN2    Second string files must contain to be processed
+                             (default: .root)
+  -s, --silent               Silent mode (does not silence -B option) (default:
+                             Off
+  -t, --tree=TREENAME        Name of tree composing the list of events to
+                             process (default: utr)
   -?, --help                 Give this help list
       --usage                Give a short usage message
+
+Mandatory or optional arguments to long options are also mandatory or optional
+for any corresponding short options.
 ```
 
-shows how to use the script. The meaning of the arguments to the options is:
+shows how to use the script. The meaning of the arguments to the most important options are:
 
-* EMAX: All energy depositions are stored in a histogram. This parameter sets the maximum energy of the histogram (default: 15 MeV), while keeping the hard-coded number of bins (default: 15000) and the minimum energy (default: 0.0005 MeV) in `OutputProcessing/GetHistogram.cc`. Using the default values means that a single bin is equal to an energy window of 1 keV, which is often convenient.
-* TREENAME: Name of the ROOT tree (Default: TREENAME=="utr") in all of the output files.
+* EMAX: All energy depositions of a detector are stored in a histogram. This parameter sets the maximum energy of the histogram in MeV (default: 10 MeV). Note that this number will automatically be rounded up to match the required bin width given through the -binning BINNING option, if necessary.
+* BINNING: This option argument sets the bin width of the histograms in keV with the first bin always being centered around 0.
+* TREENAME: Name of the ROOT tree (Default: TREENAME=="utr") to be processed in all of the input files (which usually are utr output files).
 * PATTERN1 and PATTERN2: Two strings that identify the set of files to be merged. See also the example below. (Default: PATTERN1=="utr", PATTERN2==".root")
-* OUTPUTFILE: Name of the output file that contains the histograms. (Default: OUTPUTFILENAME=="hist.root")
-* MULTIPLICITY: Determines how many events should be accumulated before adding information to the histogram. This can be used, for example, to simulate higher multiplicity events in a detector: Imagine two photons with energies of 511 keV hit a detector and deposit all their energy. However, the two events cannot be distinguished by the detector due to pileup, so a single event with an energy of 1022 keV will be added to the spectrum. Similarly, Geant4 simulates events by event. In order to simulate pileup of n events, set MULTIPLICITY==n. (Default: MULTIPLICITY==1)
-* BIN: Number of the histogram bin that should be printed to the screen while executing `getHistogram`. This option was introduced because often, one is only interested in the content of a special bin in the histograms (for example the full-energy peak). If the histograms are defined such that bin `3000` contains the events with an energy deposition between `2.9995 MeV` and `3.0005 MeV` and so on, so there is an easy correspondence between bin number and energy. (Default: BIN==-1)
+* INPUTDIR: This option argument sets the directory in which getHistogram searches for files to be processed (files containing the patterns) (Default: search in current working directory ".")
+* OUTPUTFILENAME: Name of the output file to be created that will contain the histograms. Note that an exisiting file will be overwritten! The default behaviour is to use the PATTERN1 value with a possibly trailing _t removed and _hist.root appended. 
+* OUTPUTDIR: This option argument sets the directory in which getHistogram writes its output histogram file (Default: Use the input directory INPUTDIR)
+* MAXID: With this option argument the highest volume ID occurring in the input files is disclosed to getHistogram, causing getHistogram to prepare MAXID + 2 energy deposition histograms (for detectors 0 to MAXID and a sum histogram over all detectors). Should a detector ID higher than MAXID occur in the inputfiles getHistogram will crash! (Default: MAXID is 12)
+* MULTIPLICITY: Determines how many events per detector should be accumulated before adding the energy deposition to the histogram. This can be used, for example, to simulate higher multiplicity events in a detector: Imagine two photons with energies of 511 keV hit a detector and deposit all their energy. However, the two events cannot be distinguished by the detector due to pileup, so a single event with an energy of 1022 keV will be added to the spectrum in the experiment. Similarly, Geant4 simulates event by event. In order to simulate pileup of n events, set MULTIPLICITY to n. (Default: MULTIPLICITY is 1)
+* BIN: Number of the histogram bin that should be printed to the screen while executing `getHistogram`. This option was introduced because often, one is only interested in the content of a special bin in the histograms (for example the full-energy peak). If the histograms are defined such that bin `3001` contains the events with an energy deposition between `2.9995 MeV` and `3.0005 MeV` and so on, so there is an easy correspondence between bin number and energy. (The default for BIN is -1, disabling the output)
 
-The options `-v` and `-a` do not have arguments. The former simply produces more verbose output when `getHistogram` is executed. The latter implements a simple add-back capability to sum up all energy depositions that happened during a single event. This is interesting, for example, when segmented detectors are used. In its current implementation, the add-back algorithm will accumulate all energy depositions in a single event, even if there was cross-talk between physically separated detectors. This may or may not be desired by the user. In order for the add-back to work, the parameter `EVENT_ID` must be written to the output files, of course (see also [2.6 Output File Format](#outputfileformat) and [3.3 Build configuration](#build)). Be aware that the add-back and the multiplicity functionality do not work together.
+The options `--silent` and `--addback` do not have arguments. The former simply produces less verbose output when `getHistogram` is executed. The latter implements a simple add-back capability to sum up all energy depositions that happened during a single event. This is interesting, for example, when segmented detectors are used. In its current implementation, the add-back algorithm will accumulate all energy depositions in a single event, even if there was cross-talk between physically separated detectors. This may or may not be desired by the user. In order for the add-back to work, the parameter `EVENT_ID` must be written to the output files, of course (see also [2.6 Output File Format](#outputfileformat) and [3.3 Build configuration](#build)).
 
 **A short example:**
 The typical output of two different simulations on 2 threads each are the files
 ```
-$ ls
-master.root
+$ ls output
 utr0_t0.root
 utr0_t1.root
 utr1_t0.root
 utr1_t1.root
 ```
-(The `master.root` file may be there but it contains no data. It is just an artifact of the multithreaded mode.) 
 Assuming you would like to merge both threads of `utr0` and write the accumulated histogram to `hist.root`, you execute
 ```bash
-$ ./getHistogram -t utr -p utr0 -q .root -o hist.root
+$ ./OutputProcessing/getHistogram -d output -t utr -p utr0 -q .root -o hist.root
 ```
 This will create an output file called `hist.root` with the desired histogram.
 If, instead, you wanted to merge *all* ROOT files, do
 ```bash
-$ ./getHistogram -t utr -p utr -q .root -o hist.root
+$ ./OutputProcessing/getHistogram -d output -t utr -p utr -q .root -o hist.root
 ```
 In this simple example, already the first pattern uniquely identifies the files you want to merge. However, imagine there was a file `utr0.txt` in the same directory, then the second pattern could be used to exclude this.
 
 Yet another possibility is that you would like to merge both threads of `utr0` into one histogram, and both threads of `utr1` into another one. The shell script `loopGetHistogram.sh` can be used for this task. Executing
 ```bash
-$ ./loopGetHistogram 0 1 utr utr
+$ cd output
+$ ../OutputProcessing/loopGetHistogram 0 1 utr utr
 ```
 would do just what is described above, creating the output files `utr0.root` and `utr1.root`.
 
 ### 5.3 histogramToTxt (executable) <a name="histogramToTxt"></a>
-A direct follow-up to `getHistogram`, `HistogramToTxt.cpp` takes a ROOT file that contains **only** 1D histograms (*TH1* objects) and converts each histogram to a single text file. The script is used as follows:
+A direct follow-up to `getHistogram`, `HistogramToTxt.cpp` takes a ROOT file that contains **only** 1D histograms (*TH1* objects) and converts each histogram to a single text file. Executing
 
 ```bash
-$ ./histogramToTxt FILENAME.root
+$ ./OutputProcessing/histogramToTxt --help
+Usage: histogramToTxt [OPTION...] ROOT_FILE
+Extract TH1 histograms from a ROOT file as separate txt histograms
+
+  -b, --begin=START          Index of first histogram to extract (default: 0)
+  -c, --countsonly           Only write bin contents (without energies)
+                             (default: Off)
+  -e, --end=END              Index of last histogram to extract, -1 to extract
+                             to the last one (default: -1)
+  -f, --filename=PREFIX      Output files' name prefix (default: ROOT_FILE's
+                             filename without its extension)
+  -s, --skipempty            Skip empty histograms (default: Off)
+  -?, --help                 Give this help list
+      --usage                Give a short usage message
+
+Mandatory or optional arguments to long options are also mandatory or optional
+for any corresponding short options.
 ```
 
-Where FILENAME is the name of the ROOT file that contains TH1 objects. `histogramToTxt` outputs text files with the naming pattern
+shows how to use the script. For example 
 
 ```bash
-HISTNAME_FILENAME.txt
+$ ./OutputProcessing/histogramToTxt utr0_hist.root
 ```
+would extract all TH1 histograms from the utr0_hist.root file created by getHistogram as utr0_hist_detN.txt files.
+Using the -c option allows for example to directly view those files in TV or HDTV as uncalibrated spectra.
 
-where HISTNAME is the name of the TH1 object and FILENAME the same as above.
 The shell script `loopHistogramToTxt.sh` shows how to loop the script over a large number of files.
 Refer to the next-to next section [5.5 fep_efficiency](#fepefficiency) to see how to process these files even further.
 
@@ -1099,7 +1145,7 @@ Refer to the next-to next section [5.5 fep_efficiency](#fepefficiency) to see ho
 `MergeFiles` creates a ROOT file which contains a `TChain` of multiple simulation output files. This makes it possible to access the data in all files as if they were in a single ROOT tree. `MergeFiles` recognizes similar arguments as `GetHistogram` (in fact, `MergeFiles` was created by 'cannibalizing' `GetHistogram`):
 
 ```bash
-$ ./mergeFiles --help
+$ ./OutputProcessing/mergeFiles --help
 Usage: mergeFiles [OPTION...] Merge ROOT output files
 MergeFiles
 
@@ -1115,14 +1161,14 @@ For the meaning of the arguments, refer to the documentation of the `GetHistogra
 The `TChain` file can also be post-processed with the aforementioned scripts, in particular `RootToTxt` which cannot merge data on its own.
 
 ### 5.5 fep_efficiency <a name="fepefficiency"></a>
-A follow-up to [histogramToTxt](#histogramToTxt), `fep_efficiency` can loop over two-column histogram files and extract the full-energy peak (FEP) efficiency, assuming that this is the content of the bin with the highest energy which has a nonzero content. Note that this may not always be what a user interpretes as the 'efficiency' of a detector. A call of `fep_efficiency` without command-line arguments describes the usage in detail:
+A follow-up to [histogramToTxt](#histogramToTxt), `fep_efficiency` can loop over two-column histogram files and extract the full-energy peak (FEP) efficiency, assuming that this is the content of the bin with the highest energy which has a nonzero content. Note that this may not always be what a user interprets as the 'efficiency' of a detector. A call of `fep_efficiency` without command-line arguments describes the usage in detail:
 
 ```
-$ ./fep_efficiency
-he script loops over text histograms [1] with names PREFIX<i>SUFFIX (where <i> denotes all integer numbers from START to STOP, including these limits), reads out the full-energy peak (FEP) content [2] and determines the FEP efficiency.
+$ ./OutputProcessing/fep_efficiency
+The script loops over text histograms [1] with names PREFIX<i>SUFFIX (where <i> denotes all integer numbers from START to STOP, including these limits), reads out the full-energy peak (FEP) content [2] and determines the FEP efficiency.
 
   For example, the command
-    $ ./fep_efficiency.sh det0_utr 1 3 .txt 1000000
+    $ ./OutputProcessing/fep_efficiency.sh det0_utr 1 3 .txt 1000000
   will loop over the following files:
     det0_utr1.txt
     det0_utr2.txt
@@ -1148,9 +1194,131 @@ Including `fepefficiency`, a complete toolchain exists for the simulation and ex
  3. Convert the ROOT files to text histograms by using the [histogramToTxt](#histogramToTxt) script, probably with the help of the `loopHistogramToTxt.sh` script. This will create a set of files called `det<j>_utr<i>.txt`, where `<j>` corresponds to the ID of a detector. These files contain a two-column representation of the histograms.
  4. Extract the FEP efficiency using the script described in this section.
 
-## 6 Unit Tests <a name="unittests"></a>
+## 6 The utr Wrapper <a name="utrwrapper"></a>
 
-### 6.1 AngularDistributionGenerator <a name="angulardistributiongeneratortest"></a>
+To somewhat automate and systematize the workflow of conducting simulations with utr once the detector construction is implemented, a wrapper python script called `utrwrapper.py` was created, which uses extended macro files to achieve this goal.
+
+An extended macro file is a regular utr/GEANT4 macro file with a configuration header embedded as comment lines in the macro (lines proceeded by a '#').
+`utrwrapper.py` reads this header and based on it prepares the simulation (e.g. creating directories, aborting on already existing output files, configuring utr with required build options and making it), conducts the simulation defined by the macro file (with required niceness, threads and output directory), and optionally does subsequent output processing, while also optionally documenting all steps in a logfile.
+Using `utrwrapper.py` with a proper extended macro file, therefore, allows to conduct (and log) the full simulation procedure in an easily reproducible way with a single command.
+
+Executing
+
+```bash
+$ ./OutputProcessing/utrwrapper.py --help
+usage: utrwrapper.py [-h] EXTENDEDMACROFILE
+
+Run utr simulations controlled by extended macro files combining a utr macro
+file with a configuration header
+
+An extended macro file is a regular utr/GEANT4 macro file with a configuration
+header embedded as comment lines in the macro (lines proceeded by a '#').
+utrwrapper.py reads this header and based on it prepares the simulation
+(e.g. creating directories, aborting on already existing output files, configuring
+utr with required build options and making it), conducts the simulation defined
+by the macro file (with required niceness, threads and output directory), and
+optionally does subsequent output processing, while also optionally documenting
+all steps in a logfile.
+
+positional arguments:
+  EXTENDEDMACROFILE  the extended macro file to process
+
+optional arguments:
+  -h, --help         show this help message and exit
+
+Below is an example configuration header, illustrating its structure and
+listing all available options with their effect and default values
+#!/usr/bin/env utrwrapper.py
+#[generalConfig]                      # Required section with general configuration
+#                                     # (all options are optional however)
+#logging=True                         # Whether to create a logfile in the
+#                                     # output directory (Default: True)
+#niceness=18                          # Niceness to run utr with (Default: 18)
+#threads=20                           # Number of threads to run utr and make
+#                                     # with (Default: System's CPU count)
+#utrPath=/path/to/utr                 # Path of utr's code (Default: Parent
+#                                     # directory of utrwrapper.py's directory)
+#checkForExistingOutput=True          # Whether to check for already existing
+#                                     # output files in the output directory
+#                                     # and potentially abort (Default: True)
+#processOutput=True                   # Whether to process the output with
+#                                     # getHistogram and histogramToTxt after
+#                                     # the simulation ended (Default: True)
+#outputDir=/path/to/utr/output        # The output directory
+#separateRawOutputAndHistograms=True  # Whether to separate utr's output from
+#                                     # the processed output by two subfolders
+#                                     # (Raw_Events and Event_Histograms) in
+#                                     # the output directory (Default: True)
+#cdToUtrPath=True                     # Whether to change the working directory
+#                                     # to utr's code directory and using all
+#                                     # other supplied paths relative to it
+#                                     # (Default: True)
+#cmakeArgs=--debug-output             # Pure string of additional arguments to
+#                                     # cmake on utr, see also [utrBuildOptions]
+#                                     # section (Default: None)
+#getHistogramArgs=-s                  # Pure string of additional arguments to
+#                                     # getHistogram, see also [getHistogramArgs]
+#                                     # section (Default: None)
+#histogramToTxtArgs=--skipempty       # Pure string of additional arguments to
+#                                     # histogramToTxt, see also [histogramToTxtArgs]
+#                                     # section (Default: None)
+
+## Use multiple '#' for comments in the header (first '#' must not be indented!)
+
+#[environmentVariables]               # Semi-optional section of environment
+#                                     # variables to be supplied to the call
+#                                     # to utr (can be accessed in the
+#                                     # utr/GEANT4 macro by the /control/getEnv
+#                                     # command)
+#filenamePrefix=Efficiency_           # Filename prefix of utr's output files,
+#                                     # required to identify output files when
+#                                     # processOutput or checkForExistingOutput
+#                                     # is True
+#filenameSuffix=                      # Filename suffix of utr's output files,
+#                                     # required to identify output files when
+#                                     # processOutput or checkForExistingOutput
+#                                     # is True (Here: Suffix is an empty string
+#                                     # (no suffix), in such cases watch out to
+#                                     # not use the {filenameSuffix} variable in
+#                                     # the utr/GEANT4 macro, as GEANT4 cannot
+#                                     # handle aliases with an empty value!)
+#myVar=Value                          # Example
+
+#[utrBuildOptions]                    # Optional section with cmake build options
+#                                     # for utr of the form BUILDOPTION=VALUE
+#CAMPAIGN=Campaign_2014_2015          # Example
+#DETECTOR_CONSTRUCTION=150Sm          # Example
+#USE_TARGETS=ON                       # Example
+#GENERATOR_ANGCORR=OFF                # Example
+#GENERATOR_ANGDIST=ON                 # Example
+
+#[getHistogramArgs]                   # Optional section with additional longform
+#                                     # options (--LONGOPTION=VALUE) to getHistogram
+#                                     # of the form LONGOPTION=ARGUMENT
+#maxenergy=10                         # Example
+#binning=2                            # Example
+
+#[histogramToTxtArgs]                 # Optional section with additional longform
+#                                     # options (--LONGOPTION=VALUE) to histogramToTxt
+#                                     # of the form LONGOPTION=ARGUMENT
+#begin=1                              # Example
+#end=4                                # Example
+#countsonly=                          # Example
+
+#START_OF_MACRO                       # Required magic string signaling the end of
+#                                     # the configuration header
+#Here the actual utr/GEANT4 macro would start
+```
+
+shows how to use the script. This usage message especially states the structure of the extended macro header along with all available options, their effects and default values.
+
+Example extended macro files can be found in the `macros/examples/` directory and be identified by their `.xmac` file extension.
+To try `utrwrapper.py` out, call it from a command line with one of the example extended macro files as its arguments, for example run `./OutputProcessing/utrwrapper.py macros/example/utrwrapper-efficiency-example.xmac`.
+As `utrwrapper.py` for safety refuses to work outside a `tmux` or `screen` session, you either have to run it in such or bypass this restriction by executing for example `export TMUX=DUMMY` in the shell session before executing `utrwrapper.py`.
+
+## 7 Unit Tests <a name="unittests"></a>
+
+### 7.1 AngularDistributionGenerator <a name="angulardistributiongeneratortest"></a>
 
 For testing the `AngularDistributionGenerator`, a dedicated geometry can be found in `/DetectorConstruction/unit_tests/AngularDistributionGenerator_Test/` and a macro file and output processing script are located in `/unit_tests/AngularDistributionGenerator_Test/`. The test geometry consists of a very small spherical particle source surrounded by a large hollow sphere which acts as a **ParticleSD**. Geantino particles emitted by this source and detected by the hollow sphere should have the desired angular distribution. This test was originally implemented to test the built-in angular distributions which are manually coded from the output of a computer algebra program, and to get a feeling of how large the value of `W_max` has to be.
 
@@ -1200,33 +1368,35 @@ and especially the fit residuals
 
 one can see clear systematic deviations from the input distribution which are a clear indication that `W_max == 1` is not a good choice for this distribution.
 
-### 6.2 AngularCorrelationGenerator <a name="angularcorrelationgeneratortest"></a>
+### 7.2 AngularCorrelationGenerator <a name="angularcorrelationgeneratortest"></a>
 
 At the moment, the unit test for the `AngularCorrelationGenerator` is almost the same as for the `AngularDistributionGenerator`, except for the sample macro file and the ROOT processing script. The script has the additional parameter `-n` which allows to set the number of steps of the cascade that was used in the simulation to be able to sort different particles into different theta-phi histograms.
 
-### 6.3 Physics <a name="physicstest"></a>
+### 7.3 Physics <a name="physicstest"></a>
 
 To test the physics processes of Geant4 and sensitive detector functionality of `utr`, a simple test geometry has been implemented. Almost all parts of the geometry are spherically symmetric to make it easy to study angular distributions of particles emitted by some process. At the origin, a cylindrical reaction target is placed. It is surrounded by three concentric spherical shells, representing each of the available detector types of `utr` (see [2.2 Sensitive Detectors](#sensitivedetectors)). Beginning from the center, the order is `ParticleSD`, `SecondarySD` and `EnergyDepositionSD`. The first two detector types are nondestructive, therefore they are made of vacuum. The `EnergyDepositionSD` will only work if made of matter with which the particles can react.
 
-The unit test can be activated by selecting the geometry in `DetectorConstruction/unit_tests/Physics/` via CMake build variables (see [3.3 Build configuration](#build)). For a beam-on-target experiment, usage of a modified `beam.mac` macro is recommended. Feel free to play with different physics lists and materials.
+The unit test can be activated by selecting the geometry in `DetectorConstruction/unit_tests/Physics/` via CMake build variables (see [3.3 Build configuration](#build)). For a beam-on-target experiment, usage of a modified `macros/examples/beam.mac` macro is recommended. Feel free to play with different physics lists and materials.
 
-## 7 License <a name="license"></a>
+## 8 License <a name="license"></a>
 
 Copyright (C) 2017-2019
 
 U. Gayer (ugayer@ikp.tu-darmstadt.de)
 
-O. Papst (opapst@ikp.tu-darmstadt.de)
+J. Kleemann (jkleemann@ikp.tu-darmstadt.de)
 
-J. Kleemann, M. Peck, M. Schilling
+O. Papst (opapst@ikp.tu-darmstadt.de)
 
 This code is distributed under the terms of the GNU General Public License. See the COPYING file for more information.
 
-## 8 Acknowledgements <a name="acknowledgements"></a>
+## 9 Acknowledgements <a name="acknowledgements"></a>
 
 We thank N. Michaelis for a detailed measurement of the DHIPS site and a preliminary implementation of the geometry.
 
-## 9 References <a name="references"></a>
+We thank M. Schilling for contributing suggestions for improvement and code snippets as well as poiting out bugs.
+
+## 10 References <a name="references"></a>
 
 <a name="ref-g4_1">[1]</a> S. Agostinelli *et al.*, “GEANT4 - a simulation toolkit”, Nucl. Inst. Meth. A **506.3**, 250 (2003). [`doi:10.1016/S0168-9002(03)01368-8`](https://doi.org/10.1016/S0168-9002(03)01368-8).  
 <a name="ref-g4_2">[2]</a> J. Allison *et al.*, “GEANT4 developments and applications”, IEEE Transactions on Nuclear Science, **53.1**, 270 (2006). [`doi:10.1109/TNS.2006.869826`](https://doi.org/10.1109/TNS.2006.869826).  

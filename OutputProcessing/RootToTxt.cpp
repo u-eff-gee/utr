@@ -1,3 +1,6 @@
+// RootToTxt converts a ROOT output file (TFile) containing an n-tuple of data (a TTree with TBranch objects) to a simple text file with the same content
+// Note that in the case of an utr output file this will just produce a list of all recorded events with their recorded properties and not a spectrum
+
 #include <TROOT.h>
 #include <TFile.h>
 #include <TTree.h>

@@ -17,9 +17,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-#ifndef EventAction_h
-#define EventAction_h 1
+#pragma once
 
 #include <time.h>
 
@@ -38,5 +36,3 @@ class EventAction : public G4UserEventAction {
   private:
 	G4int n_threads;
 };
-
-#endif

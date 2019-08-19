@@ -17,9 +17,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-#ifndef AngularDistributionMessenger_h
-#define AngularDistributionMessenger_h 1
+#pragma once
 
 #include "G4UIcmdWithABool.hh"
 #include "G4UIcmdWithADouble.hh"
@@ -73,5 +71,3 @@ class AngularDistributionMessenger : public G4UImessenger {
 
 	G4UIcmdWithABool *polarizationCmd;
 };
-
-#endif

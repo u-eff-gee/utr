@@ -18,7 +18,7 @@ You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Timing.hh"
+#include <time.h>
 #include "EventAction.hh"
 #include "DetectorConstruction.hh"
 #include "G4Event.hh"
@@ -30,28 +30,29 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 using std::setw;
 using std::flush;
+using std::to_string;
+using std::string;
+
+static const clock_t StartRunTime = clock();
+static clock_t CurrentRunTime;
 
 EventAction::EventAction(): n_threads(1) {}
 
 EventAction::~EventAction() {}
 
 void EventAction::EndOfEventAction(const G4Event *event) {
-
-#ifdef G4MULTITHREADED
-	G4RunManager* runManager = G4MTRunManager::GetRunManager();
-#else
-	G4RunManager* runManager = G4RunManager::GetRunManager();
-#endif
-	G4double thread_norm = 1./n_threads; 	// To normalize the given times to the
-						// number of threads.
-
 	int eID = event->GetEventID();
-	int NbEvents = runManager->GetNumberOfEventsToBeProcessed();
-	int threadID = G4Threading::G4GetThreadId();
-	int numberofpadchars=floor(log10(n_threads));
-	if(threadID!=0){numberofpadchars=floor(log10(n_threads-1))-floor(log10(threadID));}
-	std::string padchars(numberofpadchars,' ');
-        if((0 == (eID % print_progress))  ||  (eID == print_progress) ) {
+    if(0 == (eID % print_progress)) {
+        G4double thread_norm = 1./n_threads; 	// To normalize the given times to the number of threads.
+        #ifdef G4MULTITHREADED
+            G4RunManager* runManager = G4MTRunManager::GetRunManager();
+        #else
+            G4RunManager* runManager = G4RunManager::GetRunManager();
+        #endif
+	    int NbEvents = runManager->GetNumberOfEventsToBeProcessed();
+	    int threadID = G4Threading::G4GetThreadId();
+	    int numberofpadchars=to_string(n_threads-1).length()-to_string(threadID).length();
+	    string padchars(numberofpadchars,' ');
 		CurrentRunTime = clock();
 		int ElapsedTime = (CurrentRunTime-StartRunTime)/CLOCKS_PER_SEC*thread_norm;
 		int days 	= ElapsedTime/(24*3600);
@@ -64,6 +65,5 @@ void EventAction::EndOfEventAction(const G4Event *event) {
 		<<setw(4)<<std::setprecision(2)<<std::fixed<<percent<<" %"
 		<<"\tRunning time: "<< setw(3)<<days<<"d "<<setw(2)<<hours<<"h "<<setw(3)<<minutes<<"mn "<<setw(3)<<sec<<"s   "
 		<< G4endl;
-			
-        }
+    }
 }

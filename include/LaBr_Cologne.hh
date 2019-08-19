@@ -17,9 +17,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-#ifndef LABR2_HH
-#define LABR2_HH
+#pragma once
 
 #include "G4Material.hh"
 
@@ -54,5 +52,3 @@ class LaBr_Cologne {
 	G4double thicknessFoam;
 	G4double thicknessVacuumFront;
 };
-
-#endif

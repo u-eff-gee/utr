@@ -1,0 +1,35 @@
+# A very minimal and generic macro to be used with /control/loop or /control/foreach commands in other macros.
+# Using environment variables which can be easily set with the utrwrapper, this macro can be used for virtually
+# any type of simulation (efficiency and angular distribution), by packing the relevant commands and variables 
+# in a environment variable, whose alias values are resolved when /control/getEnv is used.
+# Without using environment variables one can still achieve most of the functionality but with each possibility
+# hard-coded in strdoif statements or by forgoing additional parameters, see below for three possible implementations
+
+# Execute a very generic setter command (stored in an environment variable e.g. $setterCmd=/gps/ene/mono {loopVar} MeV
+# This is however a bit buggy and requires a meaningless '/control/alias loopVar {loopVar}' to get rid of an "Alias <loopVar> not found -- command ignored" message
+/control/alias loopVar {loopVar}
+/control/getEnv setterCmd
+{setterCmd}
+
+## Execute a very generic setter command, but without the possibility of other parameters (like MeV unit)
+## (Note that /gps/ene/mono uses keV as the default unit when the unit is not specified)
+#{setterCmd} {loopVar}
+
+## Execute only known commands in a rather explicit way (does not warn about unknown commands however!)
+#/control/strdoif {setterCmd} == /ang/delta23 /ang/delta23 {loopVar}
+#/control/strdoif {setterCmd} == /gps/ene/mono /gps/ene/mono {loopVar} MeV
+
+
+# Set the output filename to contain the simulated energy in an uniform number format
+/utr/appendZerosToVar loopVar {loopVar} {appendZerosToVarPadding}
+/control/getEnv filenameTemplate
+/utr/setFilename {filenameTemplate}
+
+## Example of an alternative way to set the output filename not using environment variables:
+## For this to work, however, all GEANT4 aliases must still be defined (e.g. just set filenameSuffix=NOTUSED)
+#/control/strdoif {filenameStyle} == full /utr/setFilename {filenamePrefix}{loopVar}{filenameSuffix}
+#/control/strdoif {filenameStyle} == noSuffix /utr/setFilename {filenamePrefix}{loopVar}
+
+# Never simulate more than 2^32= 4294967296 particles using /run/beamOn, since this causes an overflow in the random number seed, giving you in principle the same results over and over again.
+# In such cases execute the same simulation multiple times instead.
+/run/beamOn {beamOnStatistics}
