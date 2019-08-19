@@ -65,6 +65,8 @@ class Materials {
 	G4Material *Get_P10() { return P10; }
 	G4Material *Get_CF4() { return CF4; }
 	G4Material *Get_PCB_coating() { return PCB_coating; }
+	G4Material *Get_PA2200() { return PA2200; }
+	G4Material *Get_PA2200_printed() { return PA2200_printed; }
 
 	G4Material *Get_Labr3() { return LaBr3; }
 	G4Material *Get_LaBr3Ce() { return LaBr3Ce; }
@@ -96,6 +98,8 @@ class Materials {
 	G4Material *P10;
 	G4Material *CF4;
 	G4Material *PCB_coating;
+	G4Material *PA2200;
+	G4Material *PA2200_printed;
 
 	G4Material *LaBr3;
 	G4Material *LaBr3Ce;
