@@ -9,6 +9,7 @@ include/utrConfig.h
 utr
 getHistogram
 getHistogramRDF
+getSolidAngleCoverage
 histogramToTxt
 rootToTxt
 mergeFiles
