@@ -40,6 +40,8 @@ class utrFilenameTools {
 	static void setUseFilenameID(unsigned int ufid) { useFilenameID = ufid; };
     static bool getUseFilenameID() { return useFilenameID; };
 	static unsigned int findNextFreeFilenameID();
+	static string getMasterFilename();
+	static void deleteMasterFilename();
 
   private:
     // statics are set as statics here so they are shared and available to all threads
@@ -48,4 +50,5 @@ class utrFilenameTools {
 	static string filenamePrefix;
 	static unsigned int filenameID;
 	static bool useFilenameID;
+	static string masterFilename;
 };

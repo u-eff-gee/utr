@@ -153,6 +153,8 @@ int main(int argc, char *argv[]) {
 	if (G4VisManager::GetConcreteInstance())
 		delete G4VisManager::GetConcreteInstance();
 
+	utrFilenameTools::deleteMasterFilename();
+
 	delete runManager;
 	return 0;
 }

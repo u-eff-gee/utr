@@ -23,7 +23,6 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4SDManager.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4UnitsTable.hh"
-#include <time.h>
 
 #include "G4FileUtilities.hh"
 
@@ -85,12 +84,12 @@ void RunAction::BeginOfRunAction(const G4Run *) {
 	//
 	// where the filename is given by the user in analysisManager->OpenFile()
 
-    if (IsMaster()) { // G4UserRunAction::IsMaster should be aquivalent to G4Threading::G4GetThreadId() == -1
-		// Master thread (runinng this function before all other threads) increments the file ID to use, if used
+    if (IsMaster()) { // G4UserRunAction::IsMaster should be equivalent to G4Threading::G4GetThreadId() == -1
+		// Master thread (running this function before all other threads) increments the file ID to use, if used
         if (utrFilenameTools::getUseFilenameID()) {
 			utrFilenameTools::incrementFilenameID();
 		}
-		analysisManager->OpenFile("master.root");
+		analysisManager->OpenFile(utrFilenameTools::getMasterFilename());
     } else {
 		// Worker threads check whether their designated output file already exists and if so abort
         G4FileUtilities fu;
