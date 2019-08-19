@@ -213,7 +213,7 @@ if checkForExistingOutput and glob.glob(
 if logging :
     logfilePath=os.path.join(outputDir, filenamePrefix + "X" + filenameSuffix + "_" + startTime.strftime("%Y-%m-%d_%H-%M-%S") + ".log")
     with open(logfilePath, "w") as logfile:
-        print(programName + ">", "Started processing extended macro file '" + macFile + "' at", startTime.isoformat(sep=" ", timespec="seconds"), file=logfile)
+        print(programName + ">", "Started processing extended macro file '" + macFile + "' at", startTime.strftime("%Y-%m-%d %H-%M-%S"), file=logfile)
         # Dump extended and also referred macro files to the logfile
         fileType="extended macro"
         fileQueue=[macFile]
@@ -249,7 +249,8 @@ def loggingPrint(*args, tag=programName + ">", **kwargs):
 
 # Define function to log and print errors and quit
 def error(*args, **kwargs) :
-    loggingPrint(*args, "Aborting...", tag="ERROR:", file=sys.stderr, **kwargs)
+    # '*(args + tuple(["Aborting..."]))' instead of '*args, append' for python < 3.5 compatibility
+    loggingPrint(*(args + tuple(["Aborting..."])), tag="ERROR:", file=sys.stderr, **kwargs)
     exit(1)
 
 # Define function to run processes, respecting logging and checking exit status
@@ -260,7 +261,7 @@ def runProcess(prog, *procArgs, announce=True, **kwargs) :
         if (subprocess.run(*procArgs, **kwargs).returncode != 0) :
             error(prog, "failed!")
     else :
-        with subprocess.Popen(*procArgs, **kwargs, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True) as proc :
+        with subprocess.Popen(*procArgs, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True, **kwargs) as proc :
             for line in proc.stdout:
                 loggingPrint(line, tag=prog+">", end="")
             if (proc.wait() != 0) :
@@ -330,4 +331,4 @@ if processOutput :
             os.path.join(outputDirHists, rootFilename) + "_hist.root"
             ] + histogramToTxtArgs, announce=False)
 
-loggingPrint("Finished processing extended macro file '" + macFile + "' at", datetime.datetime.now().isoformat(sep=" ", timespec="seconds"))
+loggingPrint("Finished processing extended macro file '" + macFile + "' at", datetime.datetime.now().strftime("%Y-%m-%d %H-%M-%S"))
