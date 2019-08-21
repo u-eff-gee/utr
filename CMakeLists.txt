@@ -16,6 +16,13 @@ else()
   find_package(Geant4 REQUIRED)
 endif()
 
+# CADMesh
+option(WITH_CADMESH "Build with CADMesh" OFF)
+if(WITH_CADMESH)
+  find_package(cadmesh)
+  include_directories(${CADMESH_INCLUDE_DIRS})
+endif()
+
 #----------------------------------------------------------------------------
 
 # Build options
@@ -113,6 +120,9 @@ endif(BACKWARD_COMPATIBLE_BUILD)
 
 add_executable(utr ${PROJECT_SOURCE_DIR}/src/utr.cc ${sources} ${headers})
 target_link_libraries(utr ${Geant4_LIBRARIES})
+if(WITH_CADMESH)
+  target_link_libraries(utr ${cadmesh_LIBRARIES})
+endif()
 
 #----------------------------------------------------------------------------
 # Copy all scripts to the build directory, i.e. the directory in which we

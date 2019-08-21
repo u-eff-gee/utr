@@ -426,6 +426,30 @@ void Materials::ConstructMaterials() {
 	PCB_coating->AddElement(nat_Ni, fractionmass = 12.25*perCent);
 	PCB_coating->AddElement(nat_Au, fractionmass = 0.25*perCent);
 
+	/***********************************/
+	//      PA2200 material used for 3D printing (variant of Polyamide 12)
+	// 	Densities of printed and loose material from
+	//      https://www.tobatec.net/pdf/Lasersintern_MaterialData_PA_2200.pdf (accessed on 08/21/2019)
+	/***********************************/
+	
+	density = 0.45 * g / cm3;
+	PA2200 = new G4Material(name = "PA2200", density, ncomponents = 4);
+
+	// C12H23NO
+	PA2200->AddElement(nat_H, fractionmass = 0.11748294772392213);
+	PA2200->AddElement(nat_C, fractionmass = 0.7304491137985716);
+	PA2200->AddElement(nat_N, fractionmass = 0.07098632321050559);
+	PA2200->AddElement(nat_O, fractionmass = 0.08108161526700071);
+	
+	density = 0.93 * g / cm3;
+	PA2200_printed = new G4Material(name = "PA2200_printed", density, ncomponents = 4);
+
+	// C12H23NO
+	PA2200_printed->AddElement(nat_H, fractionmass = 0.11748294772392213);
+	PA2200_printed->AddElement(nat_C, fractionmass = 0.7304491137985716);
+	PA2200_printed->AddElement(nat_N, fractionmass = 0.07098632321050559);
+	PA2200_printed->AddElement(nat_O, fractionmass = 0.08108161526700071);
+
 	/******************************************************/
 	// Photo-fission targets for 2019 HIgS experiments
 	/******************************************************/

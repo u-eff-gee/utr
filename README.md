@@ -375,7 +375,7 @@ xySD->SetDetectorID(volume); // volume is the detector ID which will be displaye
 SetSensitiveDetector("Logic_Name", xySD, true);
 ```
 
-The following examples illustrates how the different sensitive detectors work.
+The following example illustrates how the different sensitive detectors work.
 
 ![Interaction with sensitive detector](.media/grid.png)
 
@@ -430,7 +430,7 @@ By default, `utr` uses the Geant4 standard [`G4GeneralParticleSource`](#generalp
 $ cmake -DGENERATOR_ANGDIST=ON -DGENERATOR_ANGCORR=OFF .
 ```
 
-All of the event generators have macro commands defined that simplify their control. Sample macro files can be found in the `macros/examples` directory. As a rule of thumb, a user should use ...
+All the event generators have macro commands defined that simplify their control. Sample macro files can be found in the `macros/examples` directory. As a rule of thumb, a user should use ...
 
  * ... `G4GeneralParticleSource` if the source is sufficiently simple to be controlled via the macro commands of Geant4. For an overview, see the webpage given below. An typical application would be the simulation of a point-like radioactive source or a beam with an intensity distribution that depends on the energy of the particles and the spatial coordinates.
  * ... `AngularDistributionGenerator`, if monoenergetic particles should be emitted from a set of user-defined volumes with a user-defined angular distribution, that has an arbitrary dependence on the solid angle. A typical application would be the simulation of gamma-rays that are emitted by a target that was excited with a (polarized) beam of particles.
@@ -538,7 +538,7 @@ and
 G4WT0 > X range 0 +- 25 seems to be large enough.
 ```
 
-However, 'large enough' may still mean 'too large'. The user is encouraged to try to optimize the parameters `SOURCE_DI` and `MAX_W`, to meliorate the disadvantages of the rejection sampling algorithm. Be aware that the position and momentum sampling have to do expensive calls of trigonometric functions for each random position/momentum vector, i.e. number or tries should be kept as low as possible.
+However, 'large enough' may still mean 'too large'. The user is encouraged to try to optimize the parameters `SOURCE_DI` and `MAX_W`, to meliorate the disadvantages of the rejection sampling algorithm. Be aware that the position and momentum sampling have to do expensive calls of trigonometric functions for each random position/momentum vector, i.e. number of tries should be kept as low as possible.
 
 ##### 2.3.2.2 Usage
 
@@ -593,7 +593,7 @@ The reference emission direction is `(0, 0, 1)`, i.e. the z-axis, and the refere
 
 In the following, the rotation matrices around the x- and z-axis are called M_x(ω) and M_z(ω), where ω is the rotation angle around the corresponding axis. The first particle is assumed to be emitted in a direction `v1` with its polarization axis `p1`.
 
-It is now the task to find the emission direction `v2` and polarization `p2` of the second particle, whose emission is subject to the angular distribution `W2(θ, φ)` in the laboratory frame. To get the emission direction with respect to the first particle which defines the quantization axes, the three Euler angles are determine which yield `v1` and `p1` if applied to the reference vectors:
+It is now the task to find the emission direction `v2` and polarization `p2` of the second particle, whose emission is subject to the angular distribution `W2(θ, φ)` in the laboratory frame. To get the emission direction with respect to the first particle which defines the quantization axes, the three Euler angles are determined which yield `v1` and `p1` if applied to the reference vectors:
 
 ```
 p1 = M_z(α) M_x(β) M_z(γ) (1, 0, 0)
@@ -603,7 +603,7 @@ v1 = M_z(α) M_x(β) M_z(γ) (0, 0, 1) = M_z(α) M_x(β) (0, 0, 1)
 
 The second equation can be simplified, because a rotation about the z-axis leaves the vector (0, 0, 1) unchanged.
 For the known normalized vectors `v1` and `p1`, this results in a set of equations for the Euler angles α, β and γ.
-At the moment, in the case of of polarization, the ultrarelativistic approximation that `p1 . v1 == 0` (scalar product) is taken. This means that the polarization can only be perpendicular to the propagation direction. This approximation is valid for highly-energetic or massless particles. It allows for an easy determination of the angle γ: M_z(γ) only acts on the polarization, and the product of M_z(α) M_x(β) acts on both. Therefore, it can be used to described the difference of emission and polarization direction with respect to the reference frame. It the first particle is assumed to be unpolarized, the angle γ is sampled from a uniform random distribution to mimic an arbitrary behavior of the polarization.
+At the moment, in the case of polarization, the ultrarelativistic approximation that `p1 . v1 == 0` (scalar product) is taken. This means that the polarization can only be perpendicular to the propagation direction. This approximation is valid for highly-energetic or massless particles. It allows for an easy determination of the angle γ: M_z(γ) only acts on the polarization, and the product of M_z(α) M_x(β) acts on both. Therefore, it can be used to describe the difference of emission and polarization direction with respect to the reference frame. It the first particle is assumed to be unpolarized, the angle γ is sampled from a uniform random distribution to mimic an arbitrary behavior of the polarization.
 
 After the determination of the Euler angles, a random emission direction of the second particle `v2'` is sampled from `W2(θ, φ)` in the laboratory frame as described in [2.3.2 AngularDistributionGenerator](#angulardistributiongenerator) (using the same algorithm). By applying the three rotation matrices as shown above using the determined angles, it is rotated into the reference frame of the first particle:
 
@@ -699,11 +699,11 @@ $ cmake -DEM_LIVERMORE=ON -DHADRON_ELASTIC_HP=ON .
 An output like 
 
 ```
-================================================================================                                                                                                                                                                       
-Using the following physics lists:                                                                                                                                                                                                                     
-        G4EmLivermorePolarizedPhysics with JAEA elastic processes ...                                                                                                                                                                                  
-        G4HadronElasticPhysicsLEND ...                                                                                                                                                                                                                 
-        G4HadronPhysicsFTFP_BERT ...                                                                                                                                                                                                                   
+================================================================================
+Using the following physics lists:
+        G4EmLivermorePolarizedPhysics with JAEA elastic processes ...
+        G4HadronElasticPhysicsLEND ...
+        G4HadronPhysicsFTFP_BERT ...
 ================================================================================ 
 ```
 
@@ -773,6 +773,7 @@ Optional components:
 
 * [Qt](https://www.qt.io/) as a visualization driver. Compile Geant4 with the `GEANT4_USE_QT` option (tested with Qt4)
 * [ccmake](https://cmake.org/cmake/help/v3.0/manual/ccmake.1.html) UI for CMake which gives a quick overview of available build options
+* [CADMesh](https://github.com/christopherpoole/CADMesh) is required for DetectorConstructions that depend on the CADMesh library (option `WITH_CADMESH`). Thus, also the dependencies [TetGen](http://tetgen.org) and [ASSIMP](http://www.assimp.org/) are needed.
 
 ### 3.2 Compilation <a name="compilation"></a>
 
@@ -1388,7 +1389,7 @@ J. Kleemann (jkleemann@ikp.tu-darmstadt.de)
 
 O. Papst (opapst@ikp.tu-darmstadt.de)
 
-This code is distributed under the terms of the GNU General Public License. See the COPYING file for more information.
+This code is distributed under the terms of the GNU General Public License v3 or later. See the [COPYING](COPYING) file for more information.
 
 ## 9 Acknowledgements <a name="acknowledgements"></a>
 
