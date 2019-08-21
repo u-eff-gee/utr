@@ -428,6 +428,8 @@ void Materials::ConstructMaterials() {
 
 	/***********************************/
 	//      PA2200 material used for 3D printing (variant of Polyamide 12)
+	// 	Densities of printed and loose material from
+	//      https://www.tobatec.net/pdf/Lasersintern_MaterialData_PA_2200.pdf (accessed on 08/21/2019)
 	/***********************************/
 	
 	density = 0.45 * g / cm3;
