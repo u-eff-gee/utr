@@ -1395,7 +1395,9 @@ This code is distributed under the terms of the GNU General Public License v3 or
 
 We thank N. Michaelis for a detailed measurement of the DHIPS site and a preliminary implementation of the geometry.
 
-We thank M. Schilling for contributing suggestions for improvement and code snippets as well as poiting out bugs.
+We thank M. Schilling for implementing the DHIPS geometry and helpful suggestions.
+
+We thank M. Peck for contributing photofission setups.
 
 ## 10 References <a name="references"></a>
 
