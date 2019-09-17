@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/79936359.svg)](https://zenodo.org/badge/latestdoi/79936359)
+
 # Geant4 simulation of the UTR at HIγS
 
 ![Geometry of the UTR Geant4 simulation](.media/wallpaper_resize.png)
