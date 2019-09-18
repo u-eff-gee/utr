@@ -1,8 +1,10 @@
-[![DOI](https://zenodo.org/badge/79936359.svg)](https://zenodo.org/badge/latestdoi/79936359)
-
 # Geant4 simulation of the UTR at HIγS
 
 ![Geometry of the UTR Geant4 simulation](.media/wallpaper_resize.png)
+
+[![DOI](https://zenodo.org/badge/79936359.svg)](https://zenodo.org/badge/latestdoi/79936359)
+[![License](https://img.shields.io/badge/License-GPL%20v3+-blue.svg)](COPYING)
+
 
 This is a [Geant4](https://geant4.web.cern.ch/) [[1]](#ref-g4_1) [[2]](#ref-g4_2) [[3]](#ref-g4_3) simulation of the Upstream Target Room (UTR) at the High Intensity γ-ray Source (HIγS) facility [[4]](#ref-higs), located at the Duke Free Electron Laser Laboratory (DFELL) of the Triangle University Nuclear Laboratory (TUNL) at Duke University, Durham, NC, USA.
 
@@ -442,7 +444,7 @@ The event generators are listed by complexity above. If in doubt which event gen
 
 #### 2.3.1 GeneralParticleSource<a name="generalparticlesource"></a>
 
-This event generator uses the G4GeneralParticleSource (GPS) whose parameters can be controlled by a macro file. For further information, see the [GPS documentation](http://geant4.web.cern.ch/geant4/UserDocumentation/UsersGuides/ForApplicationDeveloper/html/ch02s07.html).
+This event generator uses the G4GeneralParticleSource (GPS) whose parameters can be controlled by a macro file. For further information, see the [GPS documentation](https://geant4-userdoc.web.cern.ch/geant4-userdoc/UsersGuides/ForApplicationDeveloper/html/GettingStarted/generalParticleSource.html).
 
 ##### 2.3.1.1 Usage
 
@@ -688,7 +690,7 @@ compt:   for  gamma    SubType= 13  BuildTable= 1
 
 This shows that the unpolarized model is used (otherwise, `LivermoreCompton` would be replaced by `LivermorePolarizedCompton`), which may not be what the user expected.
 
-A description of the physics lists and the implementation of the processes can be found in the [GEANT4 Physics Reference Manual](http://geant4.web.cern.ch/geant4/UserDocumentation/UsersGuides/PhysicsReferenceManual/fo/PhysicsReferenceManual.pdf)
+A description of the physics lists and the implementation of the processes can be found in the [GEANT4 Physics Reference Manual](https://geant4-userdoc.web.cern.ch/geant4-userdoc/UsersGuides/PhysicsReferenceManual/html/index.html)
 
 Of the available physics modules, only `EMPhysicsPolarizedJAEA` comes with `utr`, the others are included in the Geant4 code. `EMPhysicsPolarizedJAEA` is based on the `G4EmLivermorePolarizedPhysics` module, but the photon elastic scattering model has been changed to the one recently introduced by Omer and Hajima, which has a different implementation of Rayleigh scattering and introduces Delbrueck scattering in Geant4 [[7]](#ref-delbrueck), [[8]](#ref-jaea).
 
