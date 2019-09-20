@@ -61,7 +61,7 @@ double AngularDistribution::AngDist(
 			return 1./(56.*(1. + mix[1]*mix[1]))*(
 					49. - 20.4939*mix[1] + 65.*mix[1]*mix[1] + 
 						pow(cos(theta), 2)*(21. + 61.4817*mix[1] + 5.*mix[1]*mix[1]*(-7. + 8.*cos(2.*theta))) +
-						cos(2.*phi)*(21. + 61.4817*mix[1] - 5.*mix[1]*mix[1]*(-7. + 8.*cos(2.*theta)))*pow(sin(theta), 2)
+						cos(2.*phi)*(21. + 61.4817*mix[1] - 5.*mix[1]*mix[1]*(7. + 8.*cos(2.*theta)))*pow(sin(theta), 2)
 				);
 		}
 
@@ -82,6 +82,11 @@ double AngularDistribution::AngDist(
 					      (-1.0606601717798212*cos(2.*phi)*(-1. + pow(cos(theta),2)) + 0.35355339059327373*(-1. + 3.*pow(cos(theta),2))))/
 				    (1. + pow(mix[1],2));
 		}
+
+        // 0^+ -> 1^- -> 1^p or 0^- -> 1^+ -> 1^p
+        if (((st[0] == 0. && st[1] == -1.) || (st[0] == -0.1 && st[1] == 1.)) && std::abs(st[2]) == 1.) {
+            return (pow(mix[1], 2) - 1.0/8.0*(pow(mix[1], 2) + 6*mix[1] + 1)*(-3*pow(sin(theta), 2)*cos(2*phi) + 3*pow(cos(theta), 2) - 1) + 1)/(pow(mix[1], 2) + 1);
+        }
 
 		// 1.5^+ -> 2.5^- -> 1.5^+ or 1.5^- -> 2.5^+ -> 1.5^-
 		if ((st[0] == 1.5 && st[1] == -2.5 && st[2] == 1.5) ||
@@ -931,20 +936,7 @@ double AngularDistribution::AngDist(
              
             return ((pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1) - 1.0/241472.0*sqrt(77)*(pow(mix[1], 2) + 10)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(21*sqrt(77)*pow(mix[2], 2) + 56*sqrt(154)*mix[2] - 16*sqrt(77)) - 1.0/155387232.0*sqrt(2002)*(2*pow(mix[1], 2) - 1)*(203*sqrt(2002)*pow(mix[2], 2) + 1540*sqrt(1001)*mix[2] + 88*sqrt(2002))*(-5*(7*pow(cos(theta), 2) - 1)*pow(sin(theta), 2)*cos(2*phi) + 35*pow(cos(theta), 4) - 30*pow(cos(theta), 2) + 3))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
         }
-    } else if (nst >= 5) {
-		cout
-		    << "Warning: AngularDistributionGenerator:: Required spin sequence "
-		       "not found."
-		    << endl;
-		return 0.;
-
-	} else {
-		cout
-		    << "Warning: AngularDistributionGenerator:: Required spin sequence "
-		       "not found."
-		    << endl;
-		return 0.;
-	}
-
-	return 0.;
+    } 
+    cout << "Warning: AngularDistributionGenerator:: Required spin sequence not found." << endl;
+    return 0.;
 }
