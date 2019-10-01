@@ -112,10 +112,6 @@ listing all available options with their effect and default values
 argparser.add_argument('macFile', metavar='EXTENDEDMACROFILE', help='the extended macro file to process')
 args=argparser.parse_args()
 
-# Script can only be run in a TMUX or Screen session
-if 'TMUX' not in os.environ and 'STY' not in os.environ :
-    exit("ERROR: " + os.path.basename(sys.argv[0]) + " is not run within a tmux or screen session! Aborting...")
-
 # The given extended macro file must exist
 macFile=os.path.realpath(args.macFile)
 if not os.path.isfile(macFile) :

@@ -1199,11 +1199,11 @@ Including `fepefficiency`, a complete toolchain exists for the simulation and ex
 
 ## 6 The utr Wrapper <a name="utrwrapper"></a>
 
-To somewhat automate and systematize the workflow of conducting simulations with utr once the detector construction is implemented, a wrapper python script called `utrwrapper.py` was created, which uses extended macro files to achieve this goal.
+To automate and systemize the workflow of conducting simulations with `utr` once the detector construction is implemented, a wrapper python script called `utrwrapper.py` was created in the `OutputProcessing/` directory, which uses extended macro files to achieve this goal.
 
 An extended macro file is a regular utr/GEANT4 macro file with a configuration header embedded as comment lines in the macro (lines proceeded by a '#').
-`utrwrapper.py` reads this header and based on it prepares the simulation (e.g. creating directories, aborting on already existing output files, configuring utr with required build options and making it), conducts the simulation defined by the macro file (with required niceness, threads and output directory), and optionally does subsequent output processing, while also optionally documenting all steps in a logfile.
-Using `utrwrapper.py` with a proper extended macro file, therefore, allows to conduct (and log) the full simulation procedure in an easily reproducible way with a single command.
+`utrwrapper.py` reads this header and based on it prepares the simulation (e.g. creating directories, aborting on already existing output files, configuring `utr` with required build options and making it), conducts the simulation defined by the macro file (with required niceness, number of threads and output directory), and optionally does subsequent output processing (all steps are executed in the given order), while also optionally documenting all steps in a logfile.
+Using `utrwrapper.py` with a proper extended macro file therefore allows to conduct (and log) the full simulation procedure in an easily reproducible way with a single command.
 
 Executing
 
@@ -1316,8 +1316,7 @@ listing all available options with their effect and default values
 shows how to use the script. This usage message especially states the structure of the extended macro header along with all available options, their effects and default values.
 
 Example extended macro files can be found in the `macros/examples/` directory and be identified by their `.xmac` file extension.
-To try `utrwrapper.py` out, call it from a command line with one of the example extended macro files as its arguments, for example run `./OutputProcessing/utrwrapper.py macros/example/utrwrapper-efficiency-example.xmac`.
-As `utrwrapper.py` for safety refuses to work outside a `tmux` or `screen` session, you either have to run it in such or bypass this restriction by executing for example `export TMUX=DUMMY` in the shell session before executing `utrwrapper.py`.
+To try `utrwrapper.py`, call it from a command line with one of the example extended macro files as its arguments, for example run `./OutputProcessing/utrwrapper.py macros/example/utrwrapper-efficiency-example.xmac`.
 
 ## 7 Unit Tests <a name="unittests"></a>
 
