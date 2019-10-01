@@ -31,6 +31,8 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "ZeroDegree.hh"
 #include "Units.hh"
 
+#include "utrConfig.h"
+
 ZeroDegree_Setup::ZeroDegree_Setup(G4LogicalVolume *World_Log):
 World_Logical(World_Log)
 {}
@@ -42,7 +44,7 @@ void ZeroDegree_Setup::Construct(G4ThreeVector global_coordinates){
 	ZeroDegree zeroDegree("ZeroDegree");
 
 	G4double ZeroDegree_X = 0.*mm; // X = 0, if beam profile is measured, otherwise, X < 0
-	G4double ZeroDegree_Y = 30.*mm; // Seems to reproduce the beam spectra best
+	G4double ZeroDegree_Y = zerodegree_offset*mm; // Seems to reproduce the beam spectra best
 	G4double ZeroDegree_Z = zeroDegree.Get_Length()*0.5;
 
 	G4double ZeroDegree_AngleX = 0 * deg;

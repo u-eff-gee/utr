@@ -55,6 +55,7 @@ set_property(CACHE DETECTOR_CONSTRUCTION PROPERTY STRINGS ${DETECTOR_CONSTRUCTIO
 mark_as_advanced(CLEAR CAMPAIGN DETECTOR_CONSTRUCTION)
 
 set(PRINT_PROGRESS 100000 CACHE STRING "Set the frequency of printed updates about the progress of utr (unit: number of events processed)")
+set(ZERODEGREE_OFFSET 30 CACHE STRING "Set the offset of the zero-degree detector from the optical axis in mm. (Default: 30 mm, which reproduced experimental results well in the past.)")
 # Choose primary generator
 option(GENERATOR_ANGDIST "Use AngularDistributionGenerator as primary generator instead of G4GeneralParticleSource (has a higher priority than USE_ANGCORR if both are checked)" OFF)
 option(GENERATOR_ANGCORR "Use AngularCorrelationGenerator as primary generator instead of G4GeneralParticleSource" OFF)

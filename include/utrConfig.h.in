@@ -45,6 +45,9 @@
 #cmakedefine EVENT_MOMY
 #cmakedefine EVENT_MOMZ
 
+#cmakedefine ZERODEGREE_OFFSET 
+
 const int print_progress = ${PRINT_PROGRESS};
+const double zerodegree_offset = ${ZERODEGREE_OFFSET};
 
 #endif

@@ -22,6 +22,8 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "HPGe_Collection.hh"
 #include "ZeroDegree_Setup.hh"
 
+#include "utrConfig.h"
+
 ZeroDegree_Setup::ZeroDegree_Setup(G4LogicalVolume *World_Log):
 World_Logical(World_Log)
 {}
@@ -32,7 +34,7 @@ void ZeroDegree_Setup::Construct(G4ThreeVector global_coordinates){
 	
 	HPGe_Collection hpge_Collection;
 	G4double zerodegree_rt = 0. * mm;
-	G4double zerodegree_dy = 0. * mm;
+	G4double zerodegree_dy = zerodegree_offset * mm;
 	G4double zerodegree_phi = 180. * deg;
 	G4double zerodegree_theta = 0. * deg;
 

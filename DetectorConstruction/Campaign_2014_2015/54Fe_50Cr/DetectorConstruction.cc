@@ -91,6 +91,8 @@ Materials *materials = Materials::Instance();
 
 #define PI 3.141592
 
+#include "utrConfig.h"
+
 DetectorConstruction::DetectorConstruction() :
 world_x(4000.*mm),
 world_y(4000.*mm),
@@ -1206,7 +1208,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	G4double ZeroDegree_X =
 	    0. * mm; // X = 0, if beam profile is measured, otherwise, X < 0
-	G4double ZeroDegree_Y = 20. * mm;                       // Measured
+	G4double ZeroDegree_Y = zerodegree_offset * mm;
 	G4double ZeroDegree_Z = Target2_To_Target + 36. * inch; // Measured
 	G4double ZeroDegree_Theta = 0. * deg;
 	// G4double ZeroDegree_Phi = 0.*deg; // Should always be zero

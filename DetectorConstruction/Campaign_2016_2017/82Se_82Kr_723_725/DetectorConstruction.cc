@@ -80,6 +80,8 @@ Materials *materials = Materials::Instance();
 
 #define PI 3.141592
 
+#include "utrConfig.h"
+
 DetectorConstruction::DetectorConstruction() :
 world_x(4000.*mm),
 world_y(4000.*mm),
@@ -1174,7 +1176,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	G4double ZeroDegree_X =
 	    0. * mm; // X = 0, if beam profile is measured, otherwise, X < 0
-	G4double ZeroDegree_Y = 20. * mm;                       // Measured
+	G4double ZeroDegree_Y = zerodegree_offset * mm;
 	G4double ZeroDegree_Z = Target2_To_Target + 36. * inch; // Measured
 	G4double ZeroDegree_Theta = 0. * deg;
 	// G4double ZeroDegree_Phi = 0.*deg; // Should always be zero
@@ -2393,7 +2395,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	Polarimeter_TUD_rt -= cuthin50->Thickness * 0.5;
 	cuthin50->Put(Polarimeter_TUD_rt * sin(Polarimeter_TUD_theta) *
 	                  cos(Polarimeter_TUD_phi),
-	              Polarimeter_TUD_rt * sin(Polarimeter_TUD_theta) *
+	              olarimeter_TUD_rt * sin(Polarimeter_TUD_theta) *
 	                      sin(Polarimeter_TUD_phi) +
 	                  Polarimeter_TUD_dy,
 	              Target2_To_Target +
@@ -2425,7 +2427,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	                Target2_To_Target +
 	                    Polarimeter_TUD_rt * cos(Polarimeter_TUD_theta) +
 	                    Polarimeter_TUD_dz,
-	                Polarimeter_TUD_AngleX, Polarimeter_TUD_AngleY, 0.);
+	                olarimeter_TUD_AngleX, Polarimeter_TUD_AngleY, 0.);
 	Polarimeter_TUD_rt -= pbmedium50->Thickness * 0.5;
 
 	// pbmedium
