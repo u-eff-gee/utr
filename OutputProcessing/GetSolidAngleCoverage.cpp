@@ -9,6 +9,7 @@
 #include <TChain.h>
 #include <TFile.h>
 
+using std::size_t;
 using std::vector;
 
 static char doc[] = "GetSolidAngleCoverag";
@@ -63,7 +64,7 @@ int main(int argc, char* argv[]){
 
 	if(args.verbose){
 		cout << "#############################################" << "\n";
-		cout << "> GetHistogram" << "\n";
+		cout << "> GetSolidAngleCoverage" << "\n";
 		cout << "> TREENAME     : " << args.tree << "\n";
 		cout << "> FILES        : " << "*" << args.p1 << "*" << args.p2 << "*" << "\n";
 		cout << "> NUM_EVENTS   : " << args.num_events << "\n";
@@ -123,21 +124,20 @@ int main(int argc, char* argv[]){
 	}
 
 	cout << "> Results:\n";
-	for(auto [vol, count] : counters) {
+	for(auto it = counters.begin(); it != counters.end(); ++it){
 		if (args.num_events > 0)
-			printf("    Volume%3.0f: %12d (%0.8f).\n", vol, count,
-				((double)count/args.num_events));
+			printf("    Volume%3.0f: %12d (%0.8f).\n", it->first, it->second,
+				((double)it->second/args.num_events));
 		else
-			printf("    Volume%3.0f: %12d.\n", vol, count);
+			printf("    Volume%3.0f: %12d.\n", it->first, it->second);
 	}
 
 	cout << "> Results (only first hit per event):\n";
-	for(auto [vol, count] : counters_first) {
+	for(auto it = counters_first.begin(); it != counters_first.end(); ++it){
 		if (args.num_events > 0)
-			printf("    Volume%3.0f: %12d (%0.8f).\n", vol, count,
-				((double)count/args.num_events));
+			printf("    Volume%3.0f: %12d (%0.8f).\n", it->first, it->second,
+				((double)it->second/args.num_events));
 		else
-			printf("    Volume%3.0f: %12d.\n", vol, count);
+			printf("    Volume%3.0f: %12d.\n", it->first, it->second);
 	}
-
 }	

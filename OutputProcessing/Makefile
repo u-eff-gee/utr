@@ -1,5 +1,5 @@
 CPP=g++
-CFLAGS=-Wall -Wconversion -Wsign-conversion -O3 #-std=c++14
+CFLAGS=-Wall -Wconversion -Wsign-conversion -O3
 ROOTFLAGS=-isystem$(shell root-config --incdir) -L$(shell root-config --libdir) -lCore -lRIO -lHist -lTree
 
 all: getHistogram getSolidAngleCoverage histogramToTxt rootToTxt mergeFiles
@@ -22,7 +22,7 @@ rootToTxt: RootToTxt.cpp
 .PHONY: all clean
 
 clean:
-	for f in getHistogram getHistogramRDF histogramToTxt mergeFiles rootToTxt ; do \
+	for f in getHistogram getHistogramRDF getSolidAngleCoverage histogramToTxt mergeFiles rootToTxt ; do \
 	  if [ -e "$$f" ] ; then \
 	    rm "$$f" ; \
 	  fi ; \
