@@ -35,9 +35,10 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 using std::cout;
 using std::cerr;
 using std::endl;
-using std::vector;
+using std::min;
 using std::string;
 using std::stringstream;
+using std::vector;
 
 // Program documentation.
 static char doc[] = "Create histograms of energy depositions in detectors from a list of events stored among multiple ROOT files";
@@ -77,7 +78,7 @@ struct arguments {
 	double binning=1./1000.;
 	double eMax=10.;
 	int binToPrint=-1;
-	unsigned int nhistograms=13;
+	unsigned int nhistograms=12;
 	unsigned int multiplicity=1;
 	bool addback=false;
 	bool verbose=true;
@@ -192,7 +193,7 @@ int main(int argc, char* argv[]){
 
 	// Minimum energy of histograms in MeV: bin centered around 0
 	const double emin  = 0             -arguments.binning/2; 
-	// Number of bins in the histograms: Choosen so that the end of the last bin using the given binning is greater or equal to the given maximum energy
+	// Number of bins in the histograms: Chosen so that the end of the last bin using the given binning is greater or equal to the given maximum energy
 	const int    nbins = (int) ceil((arguments.eMax-emin)/arguments.binning);
 	// Maximum energy of histograms in MeV: Choosen so that it matches the given binning
 	const double eMax  = emin+nbins*arguments.binning;
@@ -236,32 +237,36 @@ int main(int argc, char* argv[]){
 	// (Pre)Process first event manually (so it is considered the last event)
 	fileChain.GetEntry(0);
 	lastEvent=Event;
-	lastVolume=(unsigned int) Volume; 
+	lastVolume=min(arguments.nhistograms-1, (unsigned int) Volume); // The min() ensures that a valid volume is given as the last volume
 	EdepBuffer[lastVolume] = Edep;
 
 	//Process next events in loops
 	for(long i = 1; i < fileChain.GetEntries(); ++i) {
 		// Get the entry, this sets the values for the Edep, Volume and Event variables
 		fileChain.GetEntry(i);
-		// If addback is disabled or the event number has changed:
-		if (!arguments.addback || lastEvent != Event) {
-			// First process the *last* event still in the buffer:
-			// Increase the volumes multiplicity counter
-			multiplicity_counter[lastVolume]++;
-			// If multiplicity counter is high enough write the buffered energy value to the histogram
-			if(multiplicity_counter[lastVolume]==arguments.multiplicity) {
-				hist[lastVolume]->Fill(EdepBuffer[lastVolume]); // Fill own histogram 
-				hist[arguments.nhistograms]->Fill(EdepBuffer[lastVolume]); // Fill sum histogram
-				EdepBuffer[lastVolume] = 0.; // Reset energy buffer to zero
-				multiplicity_counter[lastVolume] = 0; // Reset multiplicity counter to zero
+		if((unsigned int) Volume < arguments.nhistograms){
+			// If addback is disabled or the event number has changed:
+			if (!arguments.addback || lastEvent != Event) {
+				// First process the *last* event still in the buffer:
+				// Increase the volumes multiplicity counter
+				multiplicity_counter[lastVolume]++;
+				// If multiplicity counter is high enough write the buffered energy value to the histogram
+				if(multiplicity_counter[lastVolume]==arguments.multiplicity) {
+					hist[lastVolume]->Fill(EdepBuffer[lastVolume]); // Fill own histogram 
+					hist[arguments.nhistograms]->Fill(EdepBuffer[lastVolume]); // Fill sum histogram
+					EdepBuffer[lastVolume] = 0.; // Reset energy buffer to zero
+					multiplicity_counter[lastVolume] = 0; // Reset multiplicity counter to zero
+				}
+				// Now update history variables to *this* event and increase addback_counter
+				addback_counter++;
+				lastEvent=Event;
+				lastVolume=(unsigned int) Volume;
 			}
-			// Now update history variables to *this* event and increase addback_counter
-			addback_counter++;
-			lastEvent=Event;
-			lastVolume=(unsigned int) Volume;
+			// Add Edep value to buffer (necessary for addback and multiplicity), note that the *last* Volume can now already be *this* event's volume
+			EdepBuffer[lastVolume] += Edep;
+		} else if (arguments.verbose){
+			cout << "Warning: Entry with volume = " << (unsigned int) Volume << " > MAXID = " << arguments.nhistograms - 1  << " encountered. Skipping this entry." << endl;
 		}
-		// Add Edep value to buffer (necessary for addback and multiplicity), note that the *last* Volume can now already be *this* event's volume
-		EdepBuffer[lastVolume] += Edep;
 	}
 
 	// (Post)Process last event manually 

@@ -776,6 +776,7 @@ Optional components:
 * [Qt](https://www.qt.io/) as a visualization driver. Compile Geant4 with the `GEANT4_USE_QT` option (tested with Qt4)
 * [ccmake](https://cmake.org/cmake/help/v3.0/manual/ccmake.1.html) UI for CMake which gives a quick overview of available build options
 * [CADMesh](https://github.com/christopherpoole/CADMesh) is required for DetectorConstructions that depend on the CADMesh library (option `WITH_CADMESH`). Thus, also the dependencies [TetGen](http://tetgen.org) and [ASSIMP](http://www.assimp.org/) are needed.
+* [python3](https://www.python.org/) is required for the [utrwrapper](#utrwrapper) script.
 
 ### 3.2 Compilation <a name="compilation"></a>
 
@@ -1071,13 +1072,13 @@ for any corresponding short options.
 shows how to use the script. The meaning of the arguments to the most important options are:
 
 * EMAX: All energy depositions of a detector are stored in a histogram. This parameter sets the maximum energy of the histogram in MeV (default: 10 MeV). Note that this number will automatically be rounded up to match the required bin width given through the -binning BINNING option, if necessary.
-* BINNING: This option argument sets the bin width of the histograms in keV with the first bin always being centered around 0.
+* BINNING: This optional argument sets the bin width of the histograms in keV with the first bin always being centered around 0.
 * TREENAME: Name of the ROOT tree (Default: TREENAME=="utr") to be processed in all of the input files (which usually are utr output files).
 * PATTERN1 and PATTERN2: Two strings that identify the set of files to be merged. See also the example below. (Default: PATTERN1=="utr", PATTERN2==".root")
-* INPUTDIR: This option argument sets the directory in which getHistogram searches for files to be processed (files containing the patterns) (Default: search in current working directory ".")
+* INPUTDIR: This optional argument sets the directory in which getHistogram searches for files to be processed (files containing the patterns) (Default: search in current working directory ".")
 * OUTPUTFILENAME: Name of the output file to be created that will contain the histograms. Note that an exisiting file will be overwritten! The default behaviour is to use the PATTERN1 value with a possibly trailing _t removed and _hist.root appended. 
-* OUTPUTDIR: This option argument sets the directory in which getHistogram writes its output histogram file (Default: Use the input directory INPUTDIR)
-* MAXID: With this option argument the highest volume ID occurring in the input files is disclosed to getHistogram, causing getHistogram to prepare MAXID + 2 energy deposition histograms (for detectors 0 to MAXID and a sum histogram over all detectors). Should a detector ID higher than MAXID occur in the inputfiles getHistogram will crash! (Default: MAXID is 12)
+* OUTPUTDIR: This optional argument sets the directory in which getHistogram writes its output histogram file (Default: Use the input directory INPUTDIR)
+* MAXID: Determines the maximum number of volumes for which an output histogram is created. In total, MAXID+1 histograms from 0 to MAXID-1, plus a histogram called `sum` which contains the sum of the MAXID ones, are created. The optimum performance and memory usage can be obtained by numbering the sensitive volumes (using `G4SensitiveDetector::SetDetectorID()`, see also [2.2 Sensitive Detectors](#sensitivedetectors)) from 0 to MAXID. Otherwise, `getHistogram` will create a lot of unnecessary histograms. For example, if MAXID=10 is set, but the simulation only contains two detectors with IDs 0 and 9, eight empty histograms from 1 to 8 will be in the output of `getHistogram`. On the other hand, if MAXID is lower than the number of sensitive detectors, a warning will be printed every time a volume is encountered whose number is larger. (Default MAXID is 12)
 * MULTIPLICITY: Determines how many events per detector should be accumulated before adding the energy deposition to the histogram. This can be used, for example, to simulate higher multiplicity events in a detector: Imagine two photons with energies of 511 keV hit a detector and deposit all their energy. However, the two events cannot be distinguished by the detector due to pileup, so a single event with an energy of 1022 keV will be added to the spectrum in the experiment. Similarly, Geant4 simulates event by event. In order to simulate pileup of n events, set MULTIPLICITY to n. (Default: MULTIPLICITY is 1)
 * BIN: Number of the histogram bin that should be printed to the screen while executing `getHistogram`. This option was introduced because often, one is only interested in the content of a special bin in the histograms (for example the full-energy peak). If the histograms are defined such that bin `3001` contains the events with an energy deposition between `2.9995 MeV` and `3.0005 MeV` and so on, so there is an easy correspondence between bin number and energy. (The default for BIN is -1, disabling the output)
 
