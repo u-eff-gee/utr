@@ -27,9 +27,10 @@ def schiff(k, E0, Z, e2=ELECTRON_CHARGE_SQUARED):
     """Energy distribution of thin-target bremsstrahlung
     
 This is an analytical expression for the energy spectrum of the bremsstrahlung \
-emitted by an electron beam impining on a thin target as derived by L.I. Schiff [1].
+emitted by an electron beam impinging on a thin target as derived by L.I. Schiff [1].
     
-[1] L.I. Schiff, Energy-Angle Distribution of Thin Target Bremsstrahlung
+[1] L.I. Schiff, Energy-Angle Distribution of Thin Target Bremsstrahlung, \
+Phys. Rev. 83 (1951)
     
 Parameters
 ----------
@@ -60,11 +61,11 @@ float: Intensity of the spectrum at the energy E
     inverse_b_squared = inverse_b*inverse_b
     M0 = auxiliary_M(0., E, E0, k, Z)
     
-    return (4.*Z*Z*ALPHA*(e2/(mu))**2/k*
+    return (2.*Z*Z*ALPHA*(e2/(mu))**2/k*
             (
-                ((E0*E0+E*E)/(E0*E0)-2.*E/(3.*E0))*log(M0+1.-2.*inverse_b*arctan(b))
+                ((E0*E0+E*E)/(E0*E0)-2.*E/(3.*E0))*(log(M0)+1.-2.*inverse_b*arctan(b))
                 +E/E0*(2.*inverse_b_squared*log(1.+b_squared)+
-                       (4.*(2.+b_squared)/(3.*b_squared*b))*arctan(b)-
+                       (4.*(2.-b_squared)/(3.*b_squared*b))*arctan(b)-
                        2.66666666666*inverse_b_squared+0.22222222222)
             )
            )
