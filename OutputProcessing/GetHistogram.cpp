@@ -57,7 +57,7 @@ static struct argp_option options[] = {
 	{ "binning", 'b', "BINNING", 0, "Size of bins in the histogram in keV (default: 1 keV)" },
 	{ "maxenergy", 'e', "EMAX", 0, "Maximum energy displayed in histogram in MeV (rounded up to match BINNING) (default: 10 MeV)" },
 	{ "showbin", 'B', "BIN", 0, "Number of energy bin whose value should be displayed, -1 to disable (default: -1)" },
-	{ "maxid", 'n', "MAXID", 0, "Highest detection volume ID (default: 12). 'getHistogram' only processes energy depositions in detectors with integer volume ID numbers from 0 to MAXID." },
+	{ "maxid", 'n', "MAXID", 0, "Highest detection volume ID (default: 12). 'getHistogram' only processes energy depositions in detectors with integer volume ID numbers from 0 to MAXID (MAXID is included)." },
 	{ "multiplicity", 'm', "MULTIPLICITY", 0, "Particle multiplicity, sum energy depositions for each detector among MULTIPLICITY events (default: 1)" },
 	{ "addback", 'a', 0, 0, "Add back energy depositions that occurred in a single event to the detector first listed in the event (usually this is the first one hit) (default: Off)" },
 	{ "silent", 's', 0, 0, "Silent mode (does not silence -B option) (default: Off" },
@@ -234,7 +234,14 @@ int main(int argc, char* argv[]){
 	unsigned int addback_counter = 0;
 	unsigned int warningCounter = 0;
 	
-	// (Pre)Process first event manually (so it is considered the last event)
+	// The addback-option compares the event number of the last energy deposition to the present event number.
+	// If the present event number is different from the last one, the energy deposition buffer is filled into
+	// the histogram, set to zero, and then the present energy deposition is added to the buffer.
+	// This procedure requires that the 'last event' has been defined, therefore getHistogram
+	// preprocesses the first event manually.
+	//
+	// A valid last event has a valid detector ID. The following while loop reads entries until it finds a
+	// valid last event.
 	fileChain.GetEntry(0);
 	long entry = 1;
 	while ((unsigned int) Volume >= arguments.nhistograms && entry < fileChain.GetEntries()) { // Make sure that always a valid volume is given as the last volume
