@@ -53,6 +53,9 @@ listing all available options with their effect and default values
 #                                     # to utr's code directory and using all
 #                                     # other supplied paths relative to it
 #                                     # (Default: True)
+#ensureTerminalMultiplexer=False      # Whether to warn and abort if """+ programName +""" 
+#                                     # is not run inside a tmux or GNU Screen 
+#                                     # session (Default: False)
 #cmakeArgs=--debug-output             # Pure string of additional arguments to
 #                                     # cmake on utr, see also [utrBuildOptions]
 #                                     # section (Default: None)
@@ -91,6 +94,7 @@ listing all available options with their effect and default values
 #USE_TARGETS=ON                       # Example
 #GENERATOR_ANGCORR=OFF                # Example
 #GENERATOR_ANGDIST=ON                 # Example
+#ZERODEGREE_OFFSET=30                 # Example
 
 #[getHistogramArgs]                   # Optional section with additional longform
 #                                     # options (--LONGOPTION=VALUE) to getHistogram
@@ -143,6 +147,10 @@ config.optionxform=lambda option: option # Keep keys' case as is, overwrites the
 config.read_string("".join(cfgParts))
 if not config.has_section("generalConfig") :
     exit("ERROR: Extended macro file is missing required section '[generalConfig]' in its configuration header")
+
+# If required by config, script will abort if not run in a TMUX or Screen session
+if config["generalConfig"].getboolean("ensureTerminalMultiplexer", False) and 'TMUX' not in os.environ and 'STY' not in os.environ :
+    exit("ERROR: " + os.path.basename(sys.argv[0]) + " is not run within a tmux or screen session as required by the configuration header! Aborting...")
 
 # Get all options from the configuration
 logging=config["generalConfig"].getboolean("logging", True)
