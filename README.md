@@ -1025,7 +1025,7 @@ Executing
 
 ```bash
 $ ./OutputProcessing/getHistogram --help
-Usage: getHistogram [OPTION...] 
+Usage: getHistogram [OPTION...]
 Create histograms of energy depositions in detectors from a list of events
 stored among multiple ROOT files
 
@@ -1039,7 +1039,7 @@ stored among multiple ROOT files
                              displayed, -1 to disable (default: -1)
   -d, --inputdir=INPUTDIR    Directory to search for input files matching the
                              patterns (default: current working directory '.' )
-                            
+
   -e, --maxenergy=EMAX       Maximum energy displayed in histogram in MeV
                              (rounded up to match BINNING) (default: 10 MeV)
   -m, --multiplicity=MULTIPLICITY
@@ -1047,8 +1047,9 @@ stored among multiple ROOT files
                              each detector among MULTIPLICITY events (default:
                              1)
   -n, --maxid=MAXID          Highest detection volume ID (default: 12).
-                             'getHistogram' expects to only encounter detectors
-                             labeled with integer numbers from 0 to MAXID.
+                             'getHistogram' only processes energy depositions
+                             in detectors with integer volume ID numbers from 0
+                             to MAXID.
   -o, --filename=OUTPUTFILENAME   Output file name, file will be overwritten!
                              (default: {PATTERN1}_hist.root with a trailing
                              '_t' in PATTERN1 dropped)
@@ -1078,7 +1079,7 @@ shows how to use the script. The meaning of the arguments to the most important 
 * INPUTDIR: This optional argument sets the directory in which getHistogram searches for files to be processed (files containing the patterns) (Default: search in current working directory ".")
 * OUTPUTFILENAME: Name of the output file to be created that will contain the histograms. Note that an exisiting file will be overwritten! The default behaviour is to use the PATTERN1 value with a possibly trailing _t removed and _hist.root appended. 
 * OUTPUTDIR: This optional argument sets the directory in which getHistogram writes its output histogram file (Default: Use the input directory INPUTDIR)
-* MAXID: Determines the maximum number of volumes for which an output histogram is created. In total, MAXID+1 histograms from 0 to MAXID-1, plus a histogram called `sum` which contains the sum of the MAXID ones, are created. The optimum performance and memory usage can be obtained by numbering the sensitive volumes (using `G4SensitiveDetector::SetDetectorID()`, see also [2.2 Sensitive Detectors](#sensitivedetectors)) from 0 to MAXID. Otherwise, `getHistogram` will create a lot of unnecessary histograms. For example, if MAXID=10 is set, but the simulation only contains two detectors with IDs 0 and 9, eight empty histograms from 1 to 8 will be in the output of `getHistogram`. On the other hand, if MAXID is lower than the number of sensitive detectors, a warning will be printed every time a volume is encountered whose number is larger. (Default MAXID is 12)
+* MAXID: This optional argument determines the highest volume ID for which an output histogram is created. In total MAXID + 2 energy deposition histograms (for detectors 0 to MAXID, and a histogram called `sum` which contains the sum of all other ones) are created.  The optimum performance and memory usage can be obtained by numbering the sensitive volumes (using `G4SensitiveDetector::SetDetectorID()`, see also [2.2 Sensitive Detectors](#sensitivedetectors)) from 0 to MAXID. Otherwise, `getHistogram` will create a lot of unnecessary histograms. For example, if MAXID=10 is set, but the simulation only contains two detectors with IDs 0 and 10, eight empty histograms from 1 to 9 will be in the output of `getHistogram`. On the other hand warnings will be printed when a volume is encountered whose number is larger than MAXID. (Default MAXID is 12)
 * MULTIPLICITY: Determines how many events per detector should be accumulated before adding the energy deposition to the histogram. This can be used, for example, to simulate higher multiplicity events in a detector: Imagine two photons with energies of 511 keV hit a detector and deposit all their energy. However, the two events cannot be distinguished by the detector due to pileup, so a single event with an energy of 1022 keV will be added to the spectrum in the experiment. Similarly, Geant4 simulates event by event. In order to simulate pileup of n events, set MULTIPLICITY to n. (Default: MULTIPLICITY is 1)
 * BIN: Number of the histogram bin that should be printed to the screen while executing `getHistogram`. This option was introduced because often, one is only interested in the content of a special bin in the histograms (for example the full-energy peak). If the histograms are defined such that bin `3001` contains the events with an energy deposition between `2.9995 MeV` and `3.0005 MeV` and so on, so there is an easy correspondence between bin number and energy. (The default for BIN is -1, disabling the output)
 
@@ -1257,6 +1258,9 @@ listing all available options with their effect and default values
 #                                     # to utr's code directory and using all
 #                                     # other supplied paths relative to it
 #                                     # (Default: True)
+#ensureTerminalMultiplexer=False      # Whether to warn and abort if utrwrapper.py
+#                                     # is not run inside a tmux or GNU Screen
+#                                     # session (Default: False)
 #cmakeArgs=--debug-output             # Pure string of additional arguments to
 #                                     # cmake on utr, see also [utrBuildOptions]
 #                                     # section (Default: None)
@@ -1295,6 +1299,7 @@ listing all available options with their effect and default values
 #USE_TARGETS=ON                       # Example
 #GENERATOR_ANGCORR=OFF                # Example
 #GENERATOR_ANGDIST=ON                 # Example
+#ZERODEGREE_OFFSET=30                 # Example
 
 #[getHistogramArgs]                   # Optional section with additional longform
 #                                     # options (--LONGOPTION=VALUE) to getHistogram
