@@ -207,11 +207,17 @@ int main(int argc, char* argv[]){
 	for(unsigned int i = 0; i < arguments.nhistograms; ++i){
 		histname << "det" << i;
 		histtitle << "Energy deposition in Detector " << i;
-		hist[i] = new TH1F(histname.str().c_str(), histtitle.str().c_str(), nbins, emin, eMax);
+		// Choice of proper data type in TH1 is VERY important here! A TH1F for example uses Floats as the datatype for the bin contents, limiting their precision to about 7 digits.
+		// With this precision at a bin content of 1.67772e+07 an incrementation by one gets lost in precision, leaving the value effectively unchanged.
+		// Hence the fill() method would fail unnoticed for (Float) bins as soon as they reach this content, effectively limiting the bin's content to this value (although the Float
+		// datatype could handle much higher values, just not with the needed precision on integer basis).
+		// Hence a TH1D is used: The Double datatype has a precision of about 14 digits (more digits than an Integer can store), and the incrementation by one gets lost at 
+		// a bin content of about 9.0e+15, which should suffice for all (utr) cases (one could also implement throwing an exception if a bin passes some threshold after filling).
+		hist[i] = new TH1D(histname.str().c_str(), histtitle.str().c_str(), nbins, emin, eMax);
 		histname.str("");
 		histtitle.str("");
 	}
-	hist[arguments.nhistograms] = new TH1F("sum", "Sum spectrum of all detectors", nbins, emin, eMax);
+	hist[arguments.nhistograms] = new TH1D("sum", "Sum spectrum of all detectors", nbins, emin, eMax);
 
 	vector<unsigned int> multiplicity_counter(arguments.nhistograms, 0);
 
