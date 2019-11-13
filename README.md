@@ -1392,7 +1392,7 @@ The unit test can be activated by selecting the geometry in `DetectorConstructio
 
 Copyright (C) 2017-2019
 
-U. Gayer (ugayer@ikp.tu-darmstadt.de)
+U. Friman-Gayer (ufrimangayer@ikp.tu-darmstadt.de)
 
 J. Kleemann (jkleemann@ikp.tu-darmstadt.de)
 

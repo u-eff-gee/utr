@@ -43,7 +43,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 using namespace std;
 
 const char *argp_program_version = "1.0.0";
-const char *argp_program_bug_address = "<ugayer@ikp.tu-darmstadt.de>";
+const char *argp_program_bug_address = "<ufrimangayer@ikp.tu-darmstadt.de>";
 static char doc[] = "GEANT4 simulation of the UTR at HIGS";
 static char args_doc[] = "";
 static struct argp_option options[] = {
