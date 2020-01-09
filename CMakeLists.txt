@@ -60,6 +60,7 @@ set(ZERODEGREE_OFFSET 30 CACHE STRING "Set the offset of the zero-degree detecto
 option(GENERATOR_ANGDIST "Use AngularDistributionGenerator as primary generator instead of G4GeneralParticleSource (has a higher priority than USE_ANGCORR if both are checked)" OFF)
 option(GENERATOR_ANGCORR "Use AngularCorrelationGenerator as primary generator instead of G4GeneralParticleSource" OFF)
 option(USE_TARGETS "Use Targets in the geometry" ON)
+option(USE_ZERODEGREE "Use zerodegree detector in the geometry" ON)
 
 option(EM_FAST "Use G4EmStandardPhysics_option1" OFF)
 option(EM_STANDARD "Use G4EmStandardPhysics_option4" OFF)
