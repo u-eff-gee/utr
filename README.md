@@ -786,12 +786,12 @@ The most simple way to build and compile the simulation is
 
 ```bash
 $ cmake .
-$ make
+$ cmake --build .
 ```
 
 This will compile the simulation using default options for everything. To change the default configuration, many CMake build options are available and described in the next section.
 
-After the `make` step, an executable `utr` will have been created in the top-level directory, which can be used to execute `utr` (see also [4 Usage and Visualization](#usage)).
+After the `cmake --build .` step, an executable `utr` will have been created in the top-level directory, which can be used to execute `utr` (see also [4 Usage and Visualization](#usage)).
 
 ### 3.3 Build configuration <a name="build"></a>
 
