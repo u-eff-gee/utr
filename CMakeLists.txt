@@ -44,12 +44,12 @@ ENDMACRO()
 #----------------------------------------------------------------------------
 # Choose campaign (an experimental campaign usually has a bulk geometry which is not changed, and several files like the detector arrangment which differ from run to run)
 set(CAMPAIGN "Campaign_2018_2019" CACHE STRING "Select experimental campaign from directory DetectorConstruction/")
-SUBDIRLIST(SETUP_CHOICE ${CMAKE_CURRENT_BINARY_DIR}/DetectorConstruction)
+SUBDIRLIST(SETUP_CHOICE ${CMAKE_CURRENT_SOURCE_DIR}/DetectorConstruction)
 set_property(CACHE CAMPAIGN PROPERTY STRINGS ${SETUP_CHOICE})
 
 # Choose geometry
 set(DETECTOR_CONSTRUCTION "64Ni_271_279" CACHE STRING "Select detector construction from directory DetectorConstruction/$CAMPAIGN/")
-SUBDIRLIST(DETECTOR_CONSTRUCTION_CHOICE ${CMAKE_CURRENT_BINARY_DIR}/DetectorConstruction/${CAMPAIGN})
+SUBDIRLIST(DETECTOR_CONSTRUCTION_CHOICE ${CMAKE_CURRENT_SOURCE_DIR}/DetectorConstruction/${CAMPAIGN})
 set_property(CACHE DETECTOR_CONSTRUCTION PROPERTY STRINGS ${DETECTOR_CONSTRUCTION_CHOICE})
 
 mark_as_advanced(CLEAR CAMPAIGN DETECTOR_CONSTRUCTION)
