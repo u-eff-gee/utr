@@ -39,15 +39,14 @@ Actually, the g3 setup is valid until run 489
 
 #include "Collimator_Room.hh"
 #include "Room.hh"
-#include "Beampipe_Upstream.hh"
-#include "Beampipe_Downstream.hh"
+#include "Beampipe_Long.hh"
 #include "First_UTR_Wall.hh"
-#include "First_Setup.hh"
-#include "G3_Wall_243_279.hh"
+#include "First_Setup_318_576.hh"
+#include "G3_Wall_318_576.hh"
 #include "Detectors_G3_Setup_4.hh"
 #include "Wheel.hh"
-#include "G3_Table.hh"
-#include "Table2_243_279.hh"
+#include "G3_Table_318_576.hh"
+#include "Table2_318_576.hh"
 #include "Detectors_2nd_Setup_4.hh"
 #include "ZeroDegree_Setup.hh"
 #include "Nd150_Target.hh"
@@ -70,8 +69,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 	 * COLLIMATOR_ROOM (Collimator, paddle and shielding in collimator room)
 	 * ROOM (UTR walls and floor)
 	 * WORLD (world volume)
-	 * BEAMPIPE_UPSTREAM 
-	 * BEAMPIPE_DOWNSTREAM
+	 * BEAMPIPE_LONG
 	 * FIRST_UTR_WALL
 	 * FIRST_SETUP (first setup upstream of g3)
 	 * G3_WALL (wall immediately in front of g3)
@@ -136,15 +134,14 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	Collimator_Room collimator_Room(World_Logical, 0.5*0.75*inch);
 	Room room(World_Logical);
-	Beampipe_Upstream beampipe_Upstream(World_Logical);
+	Beampipe_Long beampipe_Long(World_Logical);
 	First_UTR_Wall first_UTR_Wall(World_Logical);
-	First_Setup first_Setup(World_Logical);
-	G3_Wall_243_279 g3_Wall(World_Logical); // Was not there in these runs. However, it still defines the floor height, so it is needed here
+	First_Setup_318_576 first_Setup(World_Logical);
+	G3_Wall_318_576 g3_Wall(World_Logical); // Was not there in these runs. However, it still defines the floor height, so it is needed here
 	Detectors_G3_Setup_4 detectors_G3(World_Logical);
 	Wheel wheel(World_Logical);
-	G3_Table g3_Table(World_Logical);
-	Table2_243_279 table2(World_Logical);
-	Beampipe_Downstream beampipe_Downstream(World_Logical);
+	G3_Table_318_576 g3_Table_318_576(World_Logical);
+	Table2_318_576 table2(World_Logical);
 	Detectors_2nd_Setup_4 detectors_2nd(World_Logical);	
 	ZeroDegree_Setup zeroDegree_Setup(World_Logical);
 	Nd150_Target g3_Target;
@@ -165,9 +162,9 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
             Wheel_To_Target - First_Setup_To_Wheel - first_Setup.Get_Length() - First_UTR_Wall_To_First_Setup - first_UTR_Wall.Get_Length(),
 	g3_Wall.Get_Floor_Level());
 
-	/***************** BEAMPIPE_UPSTREAM *****************/
+	/***************** BEAMPIPE_LONG *****************/
 
-	beampipe_Upstream.Construct(G4ThreeVector(0., 0., beampipe_Upstream.Get_Z_Axis_Offset_Z()), 1e-2);
+	beampipe_Long.Construct(G4ThreeVector(0., 0., beampipe_Long.Get_Z_Axis_Offset_Z()), 1e-2);
 
 	/***************** FIRST_UTR_WALL *****************/
 
@@ -191,15 +188,11 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	/***************** G3_TABLE *****************/
 
-	g3_Table.Construct(G4ThreeVector(0., 0., Wheel_To_Target + wheel.Get_Length() + g3_Table.Get_Length()*0.5));
+	g3_Table_318_576.Construct(G4ThreeVector(0., 0., Wheel_To_Target + wheel.Get_Length() + g3_Table_318_576.Get_Length()*0.5));
 
 	/***************** TABLE_2 *****************/
 
-	table2.Construct(G4ThreeVector(0., 0.,  Wheel_To_Target + wheel.Get_Length() + g3_Table.Get_Length() + table2.Get_Length()*0.5 + table2.Get_Z_Axis_Offset_Z()));
-
-	/***************** BEAMPIPE_DOWNSTREAM *****************/
-
-	beampipe_Downstream.Construct(G4ThreeVector(0., 0., G3_Target_To_2nd_Target + beampipe_Downstream.Get_Z_Axis_Offset_Z()), 1e-2);
+	table2.Construct(G4ThreeVector(0., 0.,  Wheel_To_Target + wheel.Get_Length() + g3_Table_318_576.Get_Length() + table2.Get_Length()*0.5 + table2.Get_Z_Axis_Offset_Z()));
 
 	/***************** DETECTORS_2ND *****************/
 
@@ -207,18 +200,20 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	/***************** ZERODEGREE_SETUP *****************/
 
+#ifdef USE_ZERODEGREE
 	zeroDegree_Setup.Construct(G4ThreeVector(0., 0., G3_Target_To_2nd_Target + ZeroDegree_To_2nd_Target));
+#endif
 
 #ifdef USE_TARGETS	
 	/***************** G3_TARGET *****************/
 
-	g3_Target.Set_Containing_Volume(beampipe_Upstream.Get_Beampipe_Vacuum());
-	g3_Target.Construct(G4ThreeVector(0., 0., -beampipe_Upstream.Get_Z_Axis_Offset_Z()));
+	g3_Target.Set_Containing_Volume(beampipe_Long.Get_Beampipe_Vacuum());
+	g3_Target.Construct(G4ThreeVector(0., 0., -beampipe_Long.Get_Z_Axis_Offset_Z()));
 
 	/***************** SECOND_TARGET *****************/
 
-	second_Target.Set_Containing_Volume(beampipe_Downstream.Get_Beampipe_Vacuum());
-	second_Target.Construct(G4ThreeVector(0., 0., -beampipe_Downstream.Get_Z_Axis_Offset_Z()));
+	second_Target.Set_Containing_Volume(beampipe_Long.Get_Beampipe_Vacuum());
+	second_Target.Construct(G4ThreeVector(0., 0., G3_Target_To_2nd_Target - beampipe_Long.Get_Z_Axis_Offset_Z()));
 #endif
 
 	print_info();
@@ -227,13 +222,14 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 }
 
 void DetectorConstruction::ConstructSDandField() {
-
 	/********* ZeroDegree detector *******/
 
+#ifdef USE_ZERODEGREE
 	EnergyDepositionSD *ZeroDegreeSD = new EnergyDepositionSD("ZeroDegree", "ZeroDegree");
 	G4SDManager::GetSDMpointer()->AddNewDetector(ZeroDegreeSD);
 	ZeroDegreeSD->SetDetectorID(0);
 	SetSensitiveDetector("ZeroDegree", ZeroDegreeSD, true);
+#endif
 
 	/*************** Gamma3 **************/
 
@@ -277,6 +273,7 @@ void DetectorConstruction::ConstructSDandField() {
 	LaBr4SD->SetDetectorID(8);
 	SetSensitiveDetector("LaBr4", LaBr4SD, true);
 
+#if 0
 	/*************** Second setup **************/
 
 	EnergyDepositionSD *HPGe9SD = new EnergyDepositionSD("HPGe9", "HPGe9");
@@ -298,6 +295,7 @@ void DetectorConstruction::ConstructSDandField() {
 	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe12SD);
 	HPGe12SD->SetDetectorID(12);
 	SetSensitiveDetector("HPGe12", HPGe12SD, true);
+#endif
 }
 
 void DetectorConstruction::print_info() const {

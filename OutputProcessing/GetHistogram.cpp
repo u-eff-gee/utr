@@ -35,7 +35,6 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 using std::cout;
 using std::cerr;
 using std::endl;
-using std::min;
 using std::string;
 using std::stringstream;
 using std::vector;
@@ -58,7 +57,7 @@ static struct argp_option options[] = {
 	{ "binning", 'b', "BINNING", 0, "Size of bins in the histogram in keV (default: 1 keV)" },
 	{ "maxenergy", 'e', "EMAX", 0, "Maximum energy displayed in histogram in MeV (rounded up to match BINNING) (default: 10 MeV)" },
 	{ "showbin", 'B', "BIN", 0, "Number of energy bin whose value should be displayed, -1 to disable (default: -1)" },
-	{ "maxid", 'n', "MAXID", 0, "Highest detection volume ID (default: 12). 'getHistogram' expects to only encounter detectors labeled with integer numbers from 0 to MAXID." },
+	{ "maxid", 'n', "MAXID", 0, "Highest detection volume ID (default: 12). 'getHistogram' only processes energy depositions in detectors with integer volume ID numbers from 0 to MAXID (MAXID is included)." },
 	{ "multiplicity", 'm', "MULTIPLICITY", 0, "Particle multiplicity, sum energy depositions for each detector among MULTIPLICITY events (default: 1)" },
 	{ "addback", 'a', 0, 0, "Add back energy depositions that occurred in a single event to the detector first listed in the event (usually this is the first one hit) (default: Off)" },
 	{ "silent", 's', 0, 0, "Silent mode (does not silence -B option) (default: Off" },
@@ -78,7 +77,7 @@ struct arguments {
 	double binning=1./1000.;
 	double eMax=10.;
 	int binToPrint=-1;
-	unsigned int nhistograms=12;
+	unsigned int nhistograms=12 + 1; // Default value for MAXID of 12 and +1 (histograms 0 to 12)
 	unsigned int multiplicity=1;
 	bool addback=false;
 	bool verbose=true;
@@ -99,7 +98,7 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state) {
 		case 'b': arguments->binning = atof(arg)/1000.; break;
 		case 'e': arguments->eMax = atof(arg); break;
 		case 'B': arguments->binToPrint = atoi(arg); break;
-		case 'n': arguments->nhistograms = (unsigned int) atoi(arg)+1; break;
+		case 'n': arguments->nhistograms = (unsigned int) atoi(arg) + 1; break; // = MAXID + 1 (histograms 0 to MAXID)
 		case 'm': arguments->multiplicity = (unsigned int) atoi(arg); break;
 		case 'a': arguments->addback = true; break;
 		case 's': arguments->verbose = false; break;
@@ -208,11 +207,17 @@ int main(int argc, char* argv[]){
 	for(unsigned int i = 0; i < arguments.nhistograms; ++i){
 		histname << "det" << i;
 		histtitle << "Energy deposition in Detector " << i;
-		hist[i] = new TH1F(histname.str().c_str(), histtitle.str().c_str(), nbins, emin, eMax);
+		// Choice of proper data type in TH1 is VERY important here! A TH1F for example uses Floats as the datatype for the bin contents, limiting their precision to about 7 digits.
+		// With this precision at a bin content of 1.67772e+07 an incrementation by one gets lost in precision, leaving the value effectively unchanged.
+		// Hence the fill() method would fail unnoticed for (Float) bins as soon as they reach this content, effectively limiting the bin's content to this value (although the Float
+		// datatype could handle much higher values, just not with the needed precision on integer basis).
+		// Hence a TH1D is used: The Double datatype has a precision of about 14 digits (more digits than an Integer can store), and the incrementation by one gets lost at 
+		// a bin content of about 9.0e+15, which should suffice for all (utr) cases (one could also implement throwing an exception if a bin passes some threshold after filling).
+		hist[i] = new TH1D(histname.str().c_str(), histtitle.str().c_str(), nbins, emin, eMax);
 		histname.str("");
 		histtitle.str("");
 	}
-	hist[arguments.nhistograms] = new TH1F("sum", "Sum spectrum of all detectors", nbins, emin, eMax);
+	hist[arguments.nhistograms] = new TH1D("sum", "Sum spectrum of all detectors", nbins, emin, eMax);
 
 	vector<unsigned int> multiplicity_counter(arguments.nhistograms, 0);
 
@@ -233,18 +238,38 @@ int main(int argc, char* argv[]){
 	}
 
 	unsigned int addback_counter = 0;
+	unsigned int warningCounter = 0;
 	
-	// (Pre)Process first event manually (so it is considered the last event)
+	// The addback-option compares the event number of the last energy deposition to the present event number.
+	// If the present event number is different from the last one, the energy deposition buffer is filled into
+	// the histogram, set to zero, and then the present energy deposition is added to the buffer.
+	// This procedure requires that the 'last event' has been defined, therefore getHistogram
+	// preprocesses the first event manually.
+	//
+	// A valid last event has a valid detector ID. The following while loop reads entries until it finds a
+	// valid last event.
 	fileChain.GetEntry(0);
+	long entry = 1;
+	while ((unsigned int) Volume >= arguments.nhistograms && entry < fileChain.GetEntries()) { // Make sure that always a valid volume is given as the last volume
+		if (warningCounter < 10) {
+			cout << "Warning: Entry with volume = " << (unsigned int) Volume << " > MAXID = " << arguments.nhistograms - 1  << " encountered. Skipping this entry." << endl;
+			warningCounter++;
+			if (warningCounter == 10) {
+				cout << "Warning: No more warnings of this type will be displayed!" << endl;
+			}
+		}
+		fileChain.GetEntry(entry);
+		entry++;
+	}
 	lastEvent=Event;
-	lastVolume=min(arguments.nhistograms-1, (unsigned int) Volume); // The min() ensures that a valid volume is given as the last volume
+	lastVolume=(unsigned int) Volume;
 	EdepBuffer[lastVolume] = Edep;
 
 	//Process next events in loops
-	for(long i = 1; i < fileChain.GetEntries(); ++i) {
+	while(entry < fileChain.GetEntries()) {
 		// Get the entry, this sets the values for the Edep, Volume and Event variables
-		fileChain.GetEntry(i);
-		if((unsigned int) Volume < arguments.nhistograms){
+		fileChain.GetEntry(entry);
+		if((unsigned int) Volume < arguments.nhistograms){ // nhistograms=MAXID+1 so must always be greater than Volume to consider that Volume
 			// If addback is disabled or the event number has changed:
 			if (!arguments.addback || lastEvent != Event) {
 				// First process the *last* event still in the buffer:
@@ -264,9 +289,14 @@ int main(int argc, char* argv[]){
 			}
 			// Add Edep value to buffer (necessary for addback and multiplicity), note that the *last* Volume can now already be *this* event's volume
 			EdepBuffer[lastVolume] += Edep;
-		} else if (arguments.verbose){
+		} else if (arguments.verbose && warningCounter < 10){
 			cout << "Warning: Entry with volume = " << (unsigned int) Volume << " > MAXID = " << arguments.nhistograms - 1  << " encountered. Skipping this entry." << endl;
+			warningCounter++;
+			if (warningCounter == 10) {
+				cout << "Warning: No more warnings of this type will be displayed!" << endl;
+			}
 		}
+		++entry;
 	}
 
 	// (Post)Process last event manually 

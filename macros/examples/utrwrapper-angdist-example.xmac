@@ -12,7 +12,7 @@
 #filenamePrefix=AngDist_0+_1+_2+_Delta=
 #filenameSuffix=
 #filenameTemplate={filenamePrefix}{loopVar}
-#setterCmd=/ang/delta12 {loopVar}
+#setterCmd=/ang/delta23 {loopVar}
 
 #[utrBuildOptions]
 #CAMPAIGN=Campaign_2014_2015

@@ -210,7 +210,9 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	/***************** ZERODEGREE_SETUP *****************/
 
+#ifdef USE_ZERODEGREE
 	zeroDegree_Setup.Construct(G4ThreeVector(0., 0., G3_Target_To_2nd_Target + ZeroDegree_To_2nd_Target));
+#endif
 
 	/***************** G3_TARGET *****************/
 	#ifdef USE_TARGETS
@@ -227,10 +229,12 @@ void DetectorConstruction::ConstructSDandField() {
 
 	/********* ZeroDegree detector *******/
 
+#ifdef USE_ZERODEGREE
 	EnergyDepositionSD *ZeroDegreeSD = new EnergyDepositionSD("ZeroDegree", "ZeroDegree");
 	G4SDManager::GetSDMpointer()->AddNewDetector(ZeroDegreeSD);
 	ZeroDegreeSD->SetDetectorID(0);
 	SetSensitiveDetector("ZeroDegree", ZeroDegreeSD, true);
+#endif
 
 	/*************** Gamma3 **************/
 

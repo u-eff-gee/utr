@@ -40,7 +40,9 @@ listing all available options with their effect and default values
 #                                     # directory of """+ programName +"""'s directory)
 #checkForExistingOutput=True          # Whether to check for already existing
 #                                     # output files in the output directory
-#                                     # and potentially abort (Default: True)
+#                                     # and potentially abort (Default: True,
+#                                     # ignored when -s option is supplied to
+#                                     # call of """+ programName +""")
 #processOutput=True                   # Whether to process the output with
 #                                     # getHistogram and histogramToTxt after
 #                                     # the simulation ended (Default: True)
@@ -53,6 +55,9 @@ listing all available options with their effect and default values
 #                                     # to utr's code directory and using all
 #                                     # other supplied paths relative to it
 #                                     # (Default: True)
+#ensureTerminalMultiplexer=False      # Whether to warn and abort if """+ programName +""" 
+#                                     # is not run inside a tmux or GNU Screen 
+#                                     # session (Default: False)
 #cmakeArgs=--debug-output             # Pure string of additional arguments to
 #                                     # cmake on utr, see also [utrBuildOptions]
 #                                     # section (Default: None)
@@ -63,7 +68,7 @@ listing all available options with their effect and default values
 #                                     # histogramToTxt, see also [histogramToTxtArgs]
 #                                     # section (Default: None)
 
-## Use multiple '#' for comments in the header (first '#' must not be indented!)
+## Use multiple '#' for comments in the header
 
 #[environmentVariables]               # Semi-optional section of environment
 #                                     # variables to be supplied to the call
@@ -91,6 +96,7 @@ listing all available options with their effect and default values
 #USE_TARGETS=ON                       # Example
 #GENERATOR_ANGCORR=OFF                # Example
 #GENERATOR_ANGDIST=ON                 # Example
+#ZERODEGREE_OFFSET=30                 # Example
 
 #[getHistogramArgs]                   # Optional section with additional longform
 #                                     # options (--LONGOPTION=VALUE) to getHistogram
@@ -110,6 +116,10 @@ listing all available options with their effect and default values
 #Here the actual utr/GEANT4 macro would start
 """, formatter_class=argparse.RawTextHelpFormatter)
 argparser.add_argument('macFile', metavar='EXTENDEDMACROFILE', help='the extended macro file to process')
+argparser.add_argument('-s', '--skipSimulation', action='store_true', help="""\
+skip simulation with utr (e.g. to only process output of a
+previous simulation)
+""")
 args=argparser.parse_args()
 
 # The given extended macro file must exist
@@ -121,6 +131,8 @@ if not os.path.isfile(macFile) :
 cfgParts=[]
 with open(macFile) as openMacFile:
     for line in openMacFile:
+        # First strip leading whitespace
+        line=line.lstrip()
         # If magic string signaling end of configuration is encountered stop reading
         if line.startswith("#START_OF_MACRO") :
             break
@@ -143,6 +155,10 @@ config.optionxform=lambda option: option # Keep keys' case as is, overwrites the
 config.read_string("".join(cfgParts))
 if not config.has_section("generalConfig") :
     exit("ERROR: Extended macro file is missing required section '[generalConfig]' in its configuration header")
+
+# If required by config, script will abort if not run in a TMUX or Screen session
+if config["generalConfig"].getboolean("ensureTerminalMultiplexer", False) and 'TMUX' not in os.environ and 'STY' not in os.environ :
+    exit("ERROR: " + os.path.basename(sys.argv[0]) + " is not run within a tmux or screen session as required by the configuration header! Aborting...")
 
 # Get all options from the configuration
 logging=config["generalConfig"].getboolean("logging", True)
@@ -196,7 +212,7 @@ os.makedirs(outputDirRaw, exist_ok=True)
 os.makedirs(outputDirHists, exist_ok=True)
 
 # Check if output directory already contains files matching the supplied filename structure
-if checkForExistingOutput and glob.glob(
+if checkForExistingOutput and not args.skipSimulation and glob.glob(
     glob.escape(os.path.join(outputDirRaw, filenamePrefix))
     + "*"
     + glob.escape(filenameSuffix)
@@ -205,19 +221,38 @@ if checkForExistingOutput and glob.glob(
     exit("ERROR: Output directory seems to contain files matching the supplied filename structure! Aborting...")
 
 
-# Prepare logfile if logging is requested
+# Set logfile path if logging is requested
 if logging :
     logfilePath=os.path.join(outputDir, filenamePrefix + "X" + filenameSuffix + "_" + startTime.strftime("%Y-%m-%d_%H-%M-%S") + ".log")
-    with open(logfilePath, "w") as logfile:
-        print(programName + ">", "Started processing extended macro file '" + macFile + "' at", startTime.strftime("%Y-%m-%d %H-%M-%S"), file=logfile)
-        # Dump extended and also referred macro files to the logfile
-        fileType="extended macro"
-        fileQueue=[macFile]
-        for mac in fileQueue :
-            if not os.path.isfile(mac) :
-                print("ERROR: Referred macro file '" + mac + "' not found! Aborting...", file=logfile)
-                exit("ERROR: Referred macro file '" + mac + "' not found! Aborting...")
-            print(programName + ">", "Contents of", fileType, "file '" + mac + "'", file=logfile)
+
+# Define combined print and log function
+def loggingPrint(*args, tag=programName + ">", **kwargs):
+    print(tag, *args, **kwargs)
+    if logging :
+        with open(logfilePath, "a") as f:
+            kwargs["file"]=f
+            print(tag, *args, **kwargs)
+
+# Define function to print and log errors and quit
+def error(*args, **kwargs) :
+    # '*(args + tuple(["Aborting..."]))' instead of '*args, append' for python < 3.5 compatibility
+    loggingPrint(*(args + tuple(["Aborting..."])), tag="ERROR:", file=sys.stderr, **kwargs)
+    exit(1)
+
+# Print and log startup info
+loggingPrint("Started processing extended macro file '" + macFile + "' at", startTime.strftime("%Y-%m-%d %H-%M-%S"))
+if args.skipSimulation :
+    loggingPrint("Command-line argument '--skipSimulation' was supplied. Simulation will be skipped!")
+
+# Dump extended and also referred macro files to the logfile
+if logging :
+    fileType="extended macro"
+    fileQueue=[macFile]
+    for mac in fileQueue :
+        if not os.path.isfile(mac) :
+            error("Referred macro file '" + mac + "' not found!")
+        with open(logfilePath, "a") as logfile:
+            print(programName + ">", "Contents of", fileType, "file '" + mac + "':", file=logfile)
             with open(mac) as openMac:
                 # Inspect every line in the macro, if it is a known GEANT4 command executing another macro, queue that macro for dumping and inspecting, if it was not already queued
                 for line in openMac :
@@ -233,21 +268,8 @@ if logging :
                 if not line.endswith("\n") :
                     logfile.write("\n")
             print(programName + ">", "End of", fileType, "file '" + mac + "'", file=logfile)
-            fileType="referred macro"
+        fileType="referred macro"
 
-# Define combined log and print function
-def loggingPrint(*args, tag=programName + ">", **kwargs):
-    print(tag, *args, **kwargs)
-    if logging :
-        with open(logfilePath, "a") as f:
-            kwargs["file"]=f
-            print(tag, *args, **kwargs)
-
-# Define function to log and print errors and quit
-def error(*args, **kwargs) :
-    # '*(args + tuple(["Aborting..."]))' instead of '*args, append' for python < 3.5 compatibility
-    loggingPrint(*(args + tuple(["Aborting..."])), tag="ERROR:", file=sys.stderr, **kwargs)
-    exit(1)
 
 # Define function to run processes, respecting logging and checking exit status
 def runProcess(prog, *procArgs, announce=True, **kwargs) :
@@ -265,8 +287,9 @@ def runProcess(prog, *procArgs, announce=True, **kwargs) :
 
 
 # Compile the programs
-runProcess("cmake on utr", ["cmake","."] + cmakeArgs, cwd=utrPath)
-runProcess("make on utr", ["make", "-j" + str(threads)], cwd=utrPath)
+if not args.skipSimulation :
+    runProcess("cmake on utr", ["cmake","."] + cmakeArgs, cwd=utrPath)
+    runProcess("make on utr", ["make", "-j" + str(threads)], cwd=utrPath)
 if processOutput :
     outputProcessingPath=os.path.join(utrPath, "OutputProcessing")
     if not os.path.isdir(outputProcessingPath) :
@@ -291,16 +314,17 @@ if processOutput :
                 histogramToTxtArgs.append("--" + opt + "=" + config["histogramToTxtArgs"][opt])
     runProcess("make on OutputProcessing scripts", ["make", "-j" + str(threads)], cwd=outputProcessingPath)
 
-# Run utr
-runProcess("utr", [
-    "nice", "-n" + str(niceness),
-    os.path.join(utrPath, "utr"),
-    "--nthreads=" + str(threads),
-    "--outputdir=" + outputDirRaw + "",
-    "--macrofile=" + macFile + ""
-    ],
-    env=environmentVariables
-)
+# Run utr (if not skipped)
+if not args.skipSimulation :
+    runProcess("utr", [
+        "nice", "-n" + str(niceness),
+        os.path.join(utrPath, "utr"),
+        "--nthreads=" + str(threads),
+        "--outputdir=" + outputDirRaw + "",
+        "--macrofile=" + macFile + ""
+        ],
+        env=environmentVariables
+    )
 
 # Process the output if requested
 if processOutput :
@@ -327,4 +351,6 @@ if processOutput :
             os.path.join(outputDirHists, rootFilename) + "_hist.root"
             ] + histogramToTxtArgs, announce=False)
 
-loggingPrint("Finished processing extended macro file '" + macFile + "' at", datetime.datetime.now().strftime("%Y-%m-%d %H-%M-%S"))
+endTime=datetime.datetime.now()
+elapsedSeconds=int((endTime-startTime).total_seconds())
+loggingPrint("Finished processing extended macro file '" + macFile + "' at", datetime.datetime.now().strftime("%Y-%m-%d %H-%M-%S"), f"(took {elapsedSeconds//(60*60)}h {(elapsedSeconds//60)%60:02}m {elapsedSeconds%60:02}s)")

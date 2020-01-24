@@ -16,6 +16,7 @@
 #cmakedefine GENERATOR_ANGCORR
 
 #cmakedefine USE_TARGETS
+#cmakedefine USE_ZERODEGREE
 
 #cmakedefine EM_FAST 
 #cmakedefine EM_STANDARD 
