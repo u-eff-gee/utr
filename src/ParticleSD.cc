@@ -50,7 +50,6 @@ G4bool ParticleSD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
 	G4int eventID = G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID();
 
 	if (trackID != getCurrentTrackID() || eventID != getCurrentEventID()) {
-
 		setCurrentTrackID(trackID);
 		setCurrentEventID(eventID);
 
@@ -82,27 +81,27 @@ G4bool ParticleSD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
 	++nentry;
 #endif
 #ifdef EVENT_POSX
-	analysisManager->FillNtupleDColumn(nentry, track->GetPosition().x());
+	analysisManager->FillNtupleDColumn(nentry, aStep->GetPreStepPoint()->GetPosition().x());
 	++nentry;
 #endif
 #ifdef EVENT_POSY
-	analysisManager->FillNtupleDColumn(nentry, track->GetPosition().y());
+	analysisManager->FillNtupleDColumn(nentry, aStep->GetPreStepPoint()->GetPosition().y());
 	++nentry;
 #endif
 #ifdef EVENT_POSZ
-	analysisManager->FillNtupleDColumn(nentry, track->GetPosition().z());
+	analysisManager->FillNtupleDColumn(nentry, aStep->GetPreStepPoint()->GetPosition().z());
 	++nentry;
 #endif
 #ifdef EVENT_MOMX
-	analysisManager->FillNtupleDColumn(nentry, track->GetMomentum().x());
+	analysisManager->FillNtupleDColumn(nentry, aStep->GetPreStepPoint()->GetMomentum().x());
 	++nentry;
 #endif
 #ifdef EVENT_MOMY
-	analysisManager->FillNtupleDColumn(nentry, track->GetMomentum().y());
+	analysisManager->FillNtupleDColumn(nentry, aStep->GetPreStepPoint()->GetMomentum().y());
 	++nentry;
 #endif
 #ifdef EVENT_MOMZ
-	analysisManager->FillNtupleDColumn(nentry, track->GetMomentum().z());
+	analysisManager->FillNtupleDColumn(nentry, aStep->GetPreStepPoint()->GetMomentum().z());
 #endif
 
 	analysisManager->AddNtupleRow();
