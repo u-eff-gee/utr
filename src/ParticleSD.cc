@@ -53,7 +53,7 @@ G4bool ParticleSD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
 		setCurrentTrackID(trackID);
 		setCurrentEventID(eventID);
 
-		if (track->GetKineticEnergy() == 0.)
+		if (aStep->GetPreStepPoint()->GetKineticEnergy() == 0.)
 			return false;
 
 		G4AnalysisManager *analysisManager = G4AnalysisManager::Instance();
