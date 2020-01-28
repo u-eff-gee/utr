@@ -25,11 +25,13 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <sstream>
 
+#include "G4Box.hh"
 #include "G4Color.hh"
 #include "G4Cons.hh"
 #include "G4NistManager.hh"
 #include "G4PhysicalConstants.hh"
 #include "G4PVPlacement.hh"
+#include "G4SubtractionSolid.hh"
 #include "G4Tubs.hh"
 #include "G4VisAttributes.hh"
 
@@ -166,8 +168,14 @@ void LaBr_Galatea::Construct(G4ThreeVector global_coordinates, G4double theta, G
 	/************** PMT housing *************/
 
 	if(!use_old_configuration){
-		G4Tubs *pmt_housing_solid = new G4Tubs(detector_name + "_pmt_housing_solid",
-				pmt_housing_inner_radius, pmt_housing_outer_radius, pmt_housing_length*0.5, 0., twopi);
+		G4double pmt_housing_carving_radius = 45.*mm; // Technical drawing
+		G4double pmt_housing_carving_length = 160.*mm; // Technical drawing
+
+		G4Tubs *pmt_housing_raw_solid = new G4Tubs(detector_name + "_pmt_housing_raw_solid", pmt_housing_inner_radius, pmt_housing_outer_radius, pmt_housing_length*0.5, 0., twopi);
+		G4Box *pmt_housing_carving_solid = new G4Box(detector_name + "_pmt_housing_carving_sold", pmt_housing_outer_radius, pmt_housing_outer_radius, 0.5*pmt_housing_length);
+		G4SubtractionSolid *pmt_housing_raw_2_solid = new G4SubtractionSolid(detector_name + "_pmt_housing_raw_2", pmt_housing_raw_solid, pmt_housing_carving_solid, 0, G4ThreeVector(pmt_housing_outer_radius + pmt_housing_carving_radius, 0., pmt_housing_length - pmt_housing_carving_length));
+		G4SubtractionSolid *pmt_housing_solid = new G4SubtractionSolid(detector_name + "_pmt_housing_solid", pmt_housing_raw_2_solid, pmt_housing_carving_solid, 0, G4ThreeVector(-pmt_housing_outer_radius - pmt_housing_carving_radius, 0., pmt_housing_length - pmt_housing_carving_length));
+
 		G4LogicalVolume *pmt_housing_logical = new G4LogicalVolume(pmt_housing_solid, nist->FindOrBuildMaterial("G4_Al"), detector_name + "_pmt_housing_logical");
 		pmt_housing_logical->SetVisAttributes(new G4VisAttributes(G4Color::Grey()));
 
