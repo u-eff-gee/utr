@@ -34,7 +34,8 @@ using std::vector;
 
 class LaBr_Galatea : public Detector{
   public:
-	LaBr_Galatea(G4LogicalVolume *World_Logical, G4String name) : Detector (World_Logical, name){};
+	LaBr_Galatea(G4LogicalVolume *World_Logical, G4String name, bool use_old_config) : Detector (World_Logical, name), use_old_configuration(use_old_config){};
+	LaBr_Galatea(G4LogicalVolume *World_Logical, G4String name) : Detector (World_Logical, name), use_old_configuration(false){};
 	~LaBr_Galatea(){};
 
 	void Construct(G4ThreeVector global_coordinates, G4double theta, G4double phi,
@@ -43,4 +44,7 @@ class LaBr_Galatea : public Detector{
 	// the Construct() method above is called
 	void Construct(G4ThreeVector global_coordinates, G4double theta, G4double phi,
 		       G4double dist_from_center, G4double intrinsic_rotation_angle) const override;
+
+  protected:
+	bool use_old_configuration;
 };

@@ -1408,6 +1408,8 @@ We thank M. Schilling for implementing the DHIPS geometry and helpful suggestion
 
 We thank M. Peck for contributing photofission setups.
 
+We thank M. Baumann, M. Beckstein, and D. Symochko for providing a Geant4 implementation and a technical drawing of the Galatea LaBr detectors.
+
 ## 10 References <a name="references"></a>
 
 <a name="ref-g4_1">[1]</a> S. Agostinelli *et al.*, “GEANT4 - a simulation toolkit”, Nucl. Inst. Meth. A **506.3**, 250 (2003). [`doi:10.1016/S0168-9002(03)01368-8`](https://doi.org/10.1016/S0168-9002(03)01368-8).  
