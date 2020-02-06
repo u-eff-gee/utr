@@ -292,7 +292,7 @@ def runProcess(prog, procArgs, announce=True, **kwargs) :
 # Compile the programs
 if not args.skipSimulation :
     runProcess("cmake on utr", ["cmake","."] + cmakeArgs, cwd=utrPath)
-    runProcess("make on utr", ["make", "-j" + str(threads)], cwd=utrPath)
+    runProcess("buildsystem on utr", ["cmake", "--build", ".", "-j" + str(threads)], cwd=utrPath)
 if processOutput :
     outputProcessingPath=os.path.join(utrPath, "OutputProcessing")
     if not os.path.isdir(outputProcessingPath) :
