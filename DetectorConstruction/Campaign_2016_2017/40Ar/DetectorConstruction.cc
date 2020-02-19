@@ -793,7 +793,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	/**************** Collimator *************************/
 
-	G4double Collimator_Length = 270. * mm;            // Measured
+	G4double Collimator_Length = 12.*inch;            // Measured
 	G4double Collimator_XY = 60. * mm;                 // Measured
 	G4double CollimatorHole_Radius = 0.75 * inch / 2.; // Measured
 	G4Material *Collimator_Material = Pb;

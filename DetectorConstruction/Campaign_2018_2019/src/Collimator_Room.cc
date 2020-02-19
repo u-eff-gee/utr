@@ -56,7 +56,7 @@ void Collimator_Room::Construct(G4ThreeVector global_coordinates){
 
 	G4double Collimator_X = 60.*mm;
 	G4double Collimator_Y = 60.*mm;
-	G4double Collimator_Z = 270.*mm;
+	G4double Collimator_Z = 12.*inch;
 
 	G4Box *Collimator_Solid_Solid = new G4Box("Collimator_Solid_Solid", Collimator_X*0.5, Collimator_Y*0.5, Collimator_Z*0.5);
 	G4Tubs *Collimator_Hole_Solid = new G4Tubs("Collimator_Hole_Solid", 0., Collimator_Radius, Collimator_Z, 0., twopi);

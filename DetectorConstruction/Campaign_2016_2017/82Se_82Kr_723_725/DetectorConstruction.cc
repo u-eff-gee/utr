@@ -86,7 +86,7 @@ DetectorConstruction::DetectorConstruction() :
 world_x(4000.*mm),
 world_y(4000.*mm),
 world_z(9000.*mm),
-Collimator_Length(270.*mm)
+Collimator_Length(12.*inch)
 {}
 
 DetectorConstruction::~DetectorConstruction() {}
@@ -993,7 +993,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	/**************** Collimator *************************/
 
-	Collimator_Length = 270. * mm;            // Measured
+	Collimator_Length = 12.*inch;            // Measured
 	G4double Collimator_XY = 60. * mm;                 // Measured
 	G4double CollimatorHole_Radius = 0.75 * inch / 2.; // Measured
 	G4Material *Collimator_Material = Pb;
