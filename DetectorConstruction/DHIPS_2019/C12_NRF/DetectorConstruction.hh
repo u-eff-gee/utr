@@ -33,7 +33,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
 	~DetectorConstruction();
 
 	virtual G4VPhysicalVolume *Construct();
-	// virtual void ConstructSDandField();
+	void ConstructSDandField() override;
 
 	void print_info() const;
 

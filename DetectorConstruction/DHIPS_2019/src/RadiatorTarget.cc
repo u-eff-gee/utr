@@ -79,9 +79,9 @@ void RadiatorTarget::Construct(G4ThreeVector global_coordinates,G4String target_
 	// A frame with an integrated water pipe
 	//*************************************************
 
-	G4double radiator_Holder_x = 70.*mm;	
-	G4double radiator_Holder_y = 50.*mm;	
-	G4double radiator_Holder_z = 10.*mm;	
+	G4double radiator_Holder_x = 70.*mm;
+	G4double radiator_Holder_y = 50.*mm;
+	G4double radiator_Holder_z = 10.*mm;
 
 	// Construct the window in as two parts. Actually not necessary here, but keeps the code adaptive
 	G4double radiator_Holder_Window_x = 26.*mm;

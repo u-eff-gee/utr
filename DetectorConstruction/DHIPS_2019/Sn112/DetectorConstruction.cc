@@ -54,17 +54,11 @@ Materials *materials = Materials::Instance();
 #include "SecondarySD.hh"
 
 //Detectors
-#include "Germanium1_TUD.hh"
-#include "Germanium2_TUD.hh"
-#include "Polarimeter_TUD.hh"
-#include "BGO.hh"
-
 #include "RadiatorTarget.hh"
 #include "BeamPipe_Upstream.hh"
 #include "BeamPipe_Downstream.hh"
 #include "LeadCastle.hh"
 #include "Detectors.hh"
-#include "Sn112_Target.hh"
 #include "Sn112116_Target.hh"
 
 // Geometry
@@ -131,11 +125,11 @@ G4VPhysicalVolume *DetectorConstruction::Construct()
 	/*****************  CONSTRUCTION  *****************/
 	/***************************************************/
 
-	BeamPipe_Upstream.Construct(G4ThreeVector(0,0,-2500*mm),0.1); // Position estimated
-	RadiatorTarget.Construct(G4ThreeVector(0,0,-2000*mm),"Radiator1","Au",0.5*mm,"Au",0.); // Position estimated
-	RadiatorTarget.Construct(G4ThreeVector(0,0,-1800*mm),"Radiator2","Au",2.*mm,"Au",0.); // Position estimated
-	LeadCastle.Construct(G4ThreeVector());
+	BeamPipe_Upstream.Construct(G4ThreeVector(0,0,-1500*mm),0.1);  // Position guesstimated
+	RadiatorTarget.Construct(G4ThreeVector(0,0,-1190*mm),"Radiator1","Au",3*mm,"Al",0.);  // Position guesstimated
+	RadiatorTarget.Construct(G4ThreeVector(0,0,-1160*mm),"Radiator2","Au",3*mm,"Al",0.);  // Position guesstimated
 	Detectors.Construct(G4ThreeVector());
+	LeadCastle.Construct(G4ThreeVector(), &Detectors.BGO1, &Detectors.BGO2, &Detectors.BGOPol);
 	Detectors.ConstructDetectorFilter(G4ThreeVector(),"HPGe1",10.*mm, 10.*mm);
 	Detectors.ConstructDetectorFilter(G4ThreeVector(),"HPGe2",10.*mm,5.*mm);
 	Detectors.ConstructDetectorFilter(G4ThreeVector(),"HPGePol",10.*mm,10.*mm);
@@ -145,7 +139,6 @@ G4VPhysicalVolume *DetectorConstruction::Construct()
 	Sn112_Target.Construct(G4ThreeVector(0., 0., 0.));
 	//Sn112116_Target Sn112116_Target(World_Logical);
 	//Sn112116_Target.Construct(G4ThreeVector(0., 0., 0.));
-
 #endif
 	
 	print_info();

@@ -1,4 +1,4 @@
-#include "Detectors.hh"
+#include "Detectors_80.hh"
 
 #include <iostream>
 #include <sstream>
@@ -19,16 +19,20 @@ using std::cout;
 using std::endl;
 using std::stringstream;
 
-Detectors::Detectors(G4LogicalVolume *World_Log) : World_Logical(World_Log) {}
+Detectors_80::Detectors_80(G4LogicalVolume *World_Log)
+	: BGO1(BGO("BGO1"))
+	, BGO2(BGO("BGO2"))
+	, BGOPol(BGO("BGOPol"))
+	, World_Logical(World_Log) {}
 
-void Detectors::Construct(G4ThreeVector global_coordinates)
+void Detectors_80::Construct(G4ThreeVector global_coordinates)
 {
 	HPGe_Collection hpge_Collection;
 
-	// HPGe1
-	HPGe_Coaxial HPGe1(World_Logical, "HPGe1");
-	HPGe1.setProperties(hpge_Collection.HPGe_100_TUD_73760);
-	HPGe1.useDewar();
+	// HPGe80
+	HPGe_Coaxial HPGe80(World_Logical, "HPGe80");
+	HPGe80.setProperties(hpge_Collection.HPGe_80_TUD_90006);
+	HPGe80.useDewar();
 
 	// HPGe2
 	HPGe_Coaxial HPGe2(World_Logical, "HPGe2");
@@ -40,56 +44,51 @@ void Detectors::Construct(G4ThreeVector global_coordinates)
 	HPGePol.setProperties(hpge_Collection.HPGe_100_TUD_72930);
 	HPGePol.useDewar();
 
-	// BGOs
-	BGO *BGO1 = new BGO("BGO1");
-	BGO *BGO2 = new BGO("BGO2");
-	BGO *BGOPol = new BGO("BGOPol");
-
-	G4LogicalVolume *BGO1_Logical = BGO1->Get_Logical();
-	G4LogicalVolume *BGO2_Logical = BGO2->Get_Logical();
-	G4LogicalVolume *BGOPol_Logical = BGOPol->Get_Logical();
+	G4LogicalVolume *BGO1_Logical = BGO1.Get_Logical();
+	G4LogicalVolume *BGO2_Logical = BGO2.Get_Logical();
+	G4LogicalVolume *BGOPol_Logical = BGOPol.Get_Logical();
 
 	G4RotationMatrix *RotDet1 = new G4RotationMatrix();
-	RotDet1->rotateY(g1_phi - 90 * deg);
+	RotDet1->rotateY(g80_phi - 90 * deg);
 
-	G4double BGO1_Dist = -(detectordistance1 + BGO1->Get_Length() * 0.5);
-	G4ThreeVector BGO1_Pos(BGO1_Dist * sin(g1_theta) * cos(g1_phi), BGO1_Dist * cos(g1_theta), BGO1_Dist * sin(g1_theta) * sin(g1_phi));
+	G4double BGO1_Dist = -(detectordistance80 + BGO1.Get_Length() * 0.5);
+	G4ThreeVector BGO1_Pos(BGO1_Dist * sin(g80_theta) * cos(g80_phi), BGO1_Dist * cos(g80_theta), BGO1_Dist * sin(g80_theta) * sin(g80_phi));
 
 	new G4PVPlacement(RotDet1, global_coordinates + BGO1_Pos, BGO1_Logical, "BGO1", World_Logical, 0, 0);
-	HPGe1.Construct(global_coordinates + G4ThreeVector(0, 0, 0),
-			-90.*deg - g1_phi, 0., detectordistance1 + (BGO1->Get_Length() - BGO1->Get_Max_Penetration_Depth()));
+	HPGe80.Construct(global_coordinates + G4ThreeVector(0, 0, 0),
+			-90.*deg - g80_phi, 0., detectordistance80 + (BGO1.Get_Length() - BGO1.Get_Max_Penetration_Depth()));
 
 	G4RotationMatrix *RotDet2 = new G4RotationMatrix();
 	RotDet2->rotateY(g2_phi - 90 * deg);
 
-	G4double BGO2_Dist = -(detectordistance2 + BGO2->Get_Length() * 0.5);
+	G4double BGO2_Dist = -(detectordistance2 + BGO2.Get_Length() * 0.5);
 	G4ThreeVector BGO2_Pos(BGO2_Dist * sin(g2_theta) * cos(g2_phi), BGO2_Dist * cos(g2_theta), BGO2_Dist * sin(g2_theta) * sin(g2_phi));
 
 	new G4PVPlacement(RotDet2, global_coordinates + BGO2_Pos, BGO2_Logical, "BGO2", World_Logical, 0, 0);
 	HPGe2.Construct(global_coordinates + G4ThreeVector(0, 0, 0),
-			-90.*deg - g2_phi, 0., detectordistance2 + (BGO2->Get_Length() - BGO2->Get_Max_Penetration_Depth()));
+			-90.*deg - g2_phi, 0., detectordistance2 + (BGO2.Get_Length() - BGO2.Get_Max_Penetration_Depth()));
 
 	G4RotationMatrix *RotDetPol = new G4RotationMatrix();
 	RotDetPol->rotateY(gPol_phi - 90 * deg);
 
-	G4double BGOPol_Dist = -(detectordistancePol + BGOPol->Get_Length() * 0.5);
+	G4double BGOPol_Dist = -(detectordistancePol + BGOPol.Get_Length() * 0.5);
 	G4ThreeVector BGOPol_Pos(BGOPol_Dist * sin(gPol_theta) * cos(gPol_phi), BGOPol_Dist * cos(gPol_theta), BGOPol_Dist * sin(gPol_theta) * sin(gPol_phi));
 
 	new G4PVPlacement(RotDetPol, global_coordinates + BGOPol_Pos, BGOPol_Logical, "BGOPol", World_Logical, 0, 0);
 	HPGePol.Construct(global_coordinates + G4ThreeVector(0, 0, 0),
-			-90.*deg - gPol_phi, 0., detectordistancePol + (BGOPol->Get_Length() - BGOPol->Get_Max_Penetration_Depth()));
+			-90.*deg - gPol_phi, 0., detectordistancePol + (BGOPol.Get_Length() - BGOPol.Get_Max_Penetration_Depth()));
 }
-void Detectors::ConstructDetectorFilter(G4ThreeVector global_coordinates, std::string det, G4double CuLength, G4double PbLength)
+void Detectors_80::ConstructDetectorFilter(G4ThreeVector global_coordinates, std::string det, G4double CuLength, G4double PbLength)
 {
 	bool detcheck = false;
 	G4double det_phi = 0;
 	G4double det_theta = 0;
 	G4double det_dist = 0;
-	if (det == "HPGe1")
+	if (det == "HPGe80")
 	{
-		det_phi = g1_phi;
-		det_theta = g1_theta;
-		det_dist = detectordistance1;
+		det_phi = g80_phi;
+		det_theta = g80_theta;
+		det_dist = detectordistance80;
 		detcheck = true;
 	}
 	else if (det == "HPGe2")
@@ -109,7 +108,7 @@ void Detectors::ConstructDetectorFilter(G4ThreeVector global_coordinates, std::s
 	else
 	{
 		printf("\n");
-		printf("No Proper detector name used. Please use: HPGe1, HPGe2 or HPGePol in function ConstructDetectorFilter\n");
+		printf("No Proper detector name used. Please use: HPGe80, HPGe2 or HPGePol in function ConstructDetectorFilter\n");
 		printf("No filters were used in ConstructDetectorFilter(%s,%f,%f)", det.c_str(), CuLength, PbLength);
 		printf("\n");
 		abort();

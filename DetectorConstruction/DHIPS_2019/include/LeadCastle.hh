@@ -1,12 +1,8 @@
-#ifndef LEADCASTLE_HH
-#define LEADCASTLE_HH 1
+#pragma once
 
 #include "G4LogicalVolume.hh"
 #include <math.h>
 
-#include "Germanium1_TUD.hh"
-#include "Germanium2_TUD.hh"
-#include "Polarimeter_TUD.hh"
 #include "BGO.hh"
 
 class LeadCastle
@@ -15,7 +11,7 @@ public:
 
 	LeadCastle(G4LogicalVolume *World_Log);
 	~LeadCastle(){};
-	void Construct(G4ThreeVector global_coordinates);
+	void Construct(G4ThreeVector global_coordinates, BGO*, BGO*, BGO*);
 private:
 	G4LogicalVolume* World_Logical;
 
@@ -40,21 +36,10 @@ private:
 	// G4double detectordistancepol = 225.*mm;
 	G4double distcollimatortotarget = 162*mm;
 
-	Germanium1_TUD* HPGe1;
-	Germanium2_TUD* HPGe2;
-	Polarimeter_TUD* HPGePol;
-	BGO* BGO1;
-	BGO* BGO2;
-	BGO* BGOPol; 
-
-
-
-	void ConsturctCollimator(G4ThreeVector local_coordinates);
-	void ConsturctIronShield(G4ThreeVector local_coordinates);
-	void ConsturctLeadShield(G4ThreeVector local_coordinates);
+	void ConstructCollimator(G4ThreeVector local_coordinates);
+	void ConstructIronShield(G4ThreeVector local_coordinates);
+	void ConstructLeadShield(G4ThreeVector local_coordinates, BGO*, BGO*, BGO*);
 
 
 
 };
-
-#endif
