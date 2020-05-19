@@ -120,14 +120,6 @@ void Detectors_80::ConstructDetectorFilter(G4ThreeVector global_coordinates, std
 		G4NistManager *nist = G4NistManager::Instance();
 		G4Material *Cu = nist->FindOrBuildMaterial("G4_Cu");
 		G4Material *Pb = nist->FindOrBuildMaterial("G4_Pb");
-		G4Tubs *Cu_Filter_Solid = new G4Tubs("Cu_Filter_Solid", 0, 25 * mm, CuLength * 0.5, 0. * deg, 360. * deg);
-		G4Tubs *Pb_Filter_Solid = new G4Tubs("Pb_Filter_Solid", 0, 25 * mm, PbLength * 0.5, 0. * deg, 360. * deg);
-
-		G4LogicalVolume *Cu_Filter_Logical = new G4LogicalVolume(Cu_Filter_Solid, Cu, "Cu_Filter_Logical", 0, 0, 0);
-		G4LogicalVolume *Pb_Filter_Logical = new G4LogicalVolume(Pb_Filter_Solid, Pb, "Pb_Filter_Logical", 0, 0, 0);
-
-		Cu_Filter_Logical->SetVisAttributes(G4Color::Brown());
-		Pb_Filter_Logical->SetVisAttributes(G4Color::Grey());
 
 		G4double Cu_dist = -det_dist + 0.5 * CuLength;
 		G4double Pb_dist = -det_dist + 0.5 * PbLength + CuLength;
@@ -135,7 +127,18 @@ void Detectors_80::ConstructDetectorFilter(G4ThreeVector global_coordinates, std
 		G4ThreeVector Pb_Filter_Dist(Pb_dist * sin(det_theta) * cos(det_phi), Pb_dist * cos(det_theta), Pb_dist * sin(det_theta) * sin(det_phi));
 		G4ThreeVector Cu_Filter_Dist(Cu_dist * sin(det_theta) * cos(det_phi), Cu_dist * cos(det_theta), Cu_dist * sin(det_theta) * sin(det_phi));
 
-		new G4PVPlacement(RotDet, global_coordinates + Cu_Filter_Dist, Cu_Filter_Logical, (det + "_Cu_Filter").c_str(), World_Logical, 0, 0);
-		new G4PVPlacement(RotDet, global_coordinates + Pb_Filter_Dist, Pb_Filter_Logical, (det + "_Pb_Filter").c_str(), World_Logical, 0, 0);
+		if (CuLength > 0.) {
+			G4Tubs *Cu_Filter_Solid = new G4Tubs("Cu_Filter_Solid", 0, 25 * mm, CuLength * 0.5, 0. * deg, 360. * deg);
+			G4LogicalVolume *Cu_Filter_Logical = new G4LogicalVolume(Cu_Filter_Solid, Cu, "Cu_Filter_Logical", 0, 0, 0);
+			Cu_Filter_Logical->SetVisAttributes(G4Color::Brown());
+			new G4PVPlacement(RotDet, global_coordinates + Cu_Filter_Dist, Cu_Filter_Logical, (det + "_Cu_Filter").c_str(), World_Logical, 0, 0);
+		}
+
+		if (PbLength > 0.) {
+			G4Tubs *Pb_Filter_Solid = new G4Tubs("Pb_Filter_Solid", 0, 25 * mm, PbLength * 0.5, 0. * deg, 360. * deg);
+			G4LogicalVolume *Pb_Filter_Logical = new G4LogicalVolume(Pb_Filter_Solid, Pb, "Pb_Filter_Logical", 0, 0, 0);
+			Pb_Filter_Logical->SetVisAttributes(G4Color::Grey());
+			new G4PVPlacement(RotDet, global_coordinates + Pb_Filter_Dist, Pb_Filter_Logical, (det + "_Pb_Filter").c_str(), World_Logical, 0, 0);
+		}
 	}
 }

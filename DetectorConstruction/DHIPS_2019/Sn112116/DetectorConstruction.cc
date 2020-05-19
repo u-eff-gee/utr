@@ -132,7 +132,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct()
 	LeadCastle.Construct(G4ThreeVector(), &Detectors_80.BGO1, &Detectors_80.BGO2, &Detectors_80.BGOPol);
 	Detectors_80.ConstructDetectorFilter(G4ThreeVector(),"HPGe80",10.*mm, 0.*mm);
 	Detectors_80.ConstructDetectorFilter(G4ThreeVector(),"HPGe2",10.*mm, 0.*mm);
-	Detectors_80.ConstructDetectorFilter(G4ThreeVector(),"HPGePol",10.*mm,0.*mm);
+	Detectors_80.ConstructDetectorFilter(G4ThreeVector(),"HPGePol",10.*mm, 0.*mm);
 
 #ifdef USE_TARGETS
 	Sn112116_Target Sn112116_Target(World_Logical);
