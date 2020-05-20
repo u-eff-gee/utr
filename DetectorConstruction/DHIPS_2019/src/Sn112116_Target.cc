@@ -33,7 +33,6 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4Tubs.hh"
 #include "G4PhysicalConstants.hh"
 #include "G4SystemOfUnits.hh"
-#include "G4Transform3D.hh"
 
 #include "Sn112116_Target.hh"
 
@@ -100,6 +99,16 @@ void Sn112116_Target::Construct(G4RotationMatrix* rotation, G4ThreeVector global
 	G4Material *PVC = nist->FindOrBuildMaterial("G4_POLYVINYL_CHLORIDE");
 
 
+	// Mother volume consisting of Air
+	G4Tubs *Sn112116_Mother_Solid =
+	    new G4Tubs("Sn112116_Mother_Solid", 0, Sn112116_Container_OuterRadius,
+		       Sn112116_Container_OuterHeight * 0.5, 0. * deg, 360. * deg);
+	G4LogicalVolume *Sn112116_Mother_Logical = new G4LogicalVolume(
+	    Sn112116_Mother_Solid, nist->FindOrBuildMaterial("G4_AIR"), "Sn112116_Mother_Logical");
+	Sn112116_Mother_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());
+	new G4PVPlacement(rotation, global_coordinates + G4ThreeVector(), Sn112116_Mother_Logical,
+			  "Sn112116_Target", World_Logical, false, 0);
+
 	// Target Container Barrel
 	G4Tubs *Sn112116_Container_Solid =
 	    new G4Tubs("Sn112116_Container_Solid", Sn112116_Container_InnerRadius,
@@ -110,8 +119,8 @@ void Sn112116_Target::Construct(G4RotationMatrix* rotation, G4ThreeVector global
 	    Sn112116_Container_Solid, PVC, "Sn112116_Container_Logical");
 	Sn112116_Container_Logical->SetVisAttributes(G4Color::Grey());
 
-	new G4PVPlacement(rotation, global_coordinates + G4ThreeVector(), Sn112116_Container_Logical,
-			  "Sn112116_Container", World_Logical, false, 0);
+	new G4PVPlacement(rotation, G4ThreeVector(), Sn112116_Container_Logical,
+			  "Sn112116_Container", Sn112116_Mother_Logical, false, 0);
 
 	// Target Container Caps
 	G4Tubs *Sn112116_ContainerCap_Solid = new G4Tubs(
@@ -125,19 +134,19 @@ void Sn112116_Target::Construct(G4RotationMatrix* rotation, G4ThreeVector global
 
 	//Target Container Bottom
 	new G4PVPlacement(
-		0, global_coordinates + G4ThreeVector(0., 0.,
+		0, G4ThreeVector(0., 0.,
 							(Sn112116_Container_OuterHeight -
 								Sn112116_Container_CapThickness) * 0.5),
 		Sn112116_ContainerCap_Logical, "Sn112116_ContainerBottom",
-		Sn112116_Container_Logical, false, 0);
+		Sn112116_Mother_Logical, false, 0);
 
 	// Target Container Top
 	new G4PVPlacement(
-		0, global_coordinates + G4ThreeVector(0., 0.,
+		0, G4ThreeVector(0., 0.,
 							-(Sn112116_Container_OuterHeight -
 								Sn112116_Container_CapThickness) * 0.5),
 		Sn112116_ContainerCap_Logical, "Sn112116_ContainerTop",
-		Sn112116_Container_Logical, false, 0);
+		Sn112116_Mother_Logical, false, 0);
 
 
 	// Construct targets
@@ -147,21 +156,21 @@ void Sn112116_Target::Construct(G4RotationMatrix* rotation, G4ThreeVector global
 	G4Tubs *Sn116_solid_2 = new G4Tubs("Sn116_solid_2", 0., target_radius, Sn116_thickness_2*0.5, 0., twopi);
 	G4LogicalVolume *Sn116_logical_2 = new G4LogicalVolume(Sn116_solid_2, Sn116_material, "Sn116_logical_2");
 	Sn116_logical_2->SetVisAttributes(G4Color::Yellow());
-	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., -0.5*Sn112116_Container_InnerHeight + 0.5*Sn116_thickness_2), Sn116_logical_2, "Sn116_2", Sn112116_Container_Logical, false, 0);
+	new G4PVPlacement(0, G4ThreeVector(0., 0., -0.5*Sn112116_Container_InnerHeight + 0.5*Sn116_thickness_2), Sn116_logical_2, "Sn116_2", Sn112116_Mother_Logical, false, 0);
 	
 	G4Tubs *Sn112_solid_2 = new G4Tubs("Sn112_solid_2", 0., target_radius, Sn112_thickness_2*0.5, 0., twopi);
 	G4LogicalVolume *Sn112_logical_2 = new G4LogicalVolume(Sn112_solid_2, Sn112_material, "Sn112_logical_2");
 	Sn112_logical_2->SetVisAttributes(G4Color::Red());
-	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., -0.5*Sn112116_Container_InnerHeight + 1.*target_spacing + Sn116_thickness_2 + 0.5*Sn112_thickness_2), Sn112_logical_2, "Sn112_2", Sn112116_Container_Logical, false, 0);
+	new G4PVPlacement(0, G4ThreeVector(0., 0., -0.5*Sn112116_Container_InnerHeight + 1.*target_spacing + Sn116_thickness_2 + 0.5*Sn112_thickness_2), Sn112_logical_2, "Sn112_2", Sn112116_Mother_Logical, false, 0);
 	
 	G4Tubs *Sn116_solid_3 = new G4Tubs("Sn116_solid_3", 0., target_radius, Sn116_thickness_3*0.5, 0., twopi);
 	G4LogicalVolume *Sn116_logical_3 = new G4LogicalVolume(Sn116_solid_3, Sn116_material, "Sn116_logical_3");
 	Sn116_logical_3->SetVisAttributes(G4Color::Yellow());
-	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., -0.5*Sn112116_Container_InnerHeight + 2.*target_spacing + Sn116_thickness_2 + Sn112_thickness_2 + 0.5*Sn116_thickness_3), Sn116_logical_3, "Sn116_3", Sn112116_Container_Logical, false, 0);
+	new G4PVPlacement(0, G4ThreeVector(0., 0., -0.5*Sn112116_Container_InnerHeight + 2.*target_spacing + Sn116_thickness_2 + Sn112_thickness_2 + 0.5*Sn116_thickness_3), Sn116_logical_3, "Sn116_3", Sn112116_Mother_Logical, false, 0);
 	
 	G4Tubs *Sn112_solid_1 = new G4Tubs("Sn112_solid_1", 0., target_radius, Sn112_thickness_1*0.5, 0., twopi);
 	G4LogicalVolume *Sn112_logical_1 = new G4LogicalVolume(Sn112_solid_1, Sn112_material, "Sn112_logical_1");
 	Sn112_logical_1->SetVisAttributes(G4Color::Red());
-	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., -0.5*Sn112116_Container_InnerHeight + 3.*target_spacing + Sn116_thickness_2 + Sn112_thickness_2 + Sn116_thickness_3 + 0.5 * Sn112_thickness_1), Sn112_logical_1, "Sn112_1", Sn112116_Container_Logical, false, 0);
+	new G4PVPlacement(0, G4ThreeVector(0., 0., -0.5*Sn112116_Container_InnerHeight + 3.*target_spacing + Sn116_thickness_2 + Sn112_thickness_2 + Sn116_thickness_3 + 0.5 * Sn112_thickness_1), Sn112_logical_1, "Sn112_1", Sn112116_Mother_Logical, false, 0);
 
 }
