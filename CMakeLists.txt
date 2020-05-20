@@ -107,6 +107,9 @@ include(${Geant4_USE_FILE})
 include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/DetectorConstruction/${CAMPAIGN}/include)
 include_directories(${PROJECT_SOURCE_DIR}/DetectorConstruction/${CAMPAIGN}/${DETECTOR_CONSTRUCTION})
+if(EXISTS ${PROJECT_SOURCE_DIR}/DetectorConstruction/${CAMPAIGN}/${DETECTOR_CONSTRUCTION}/CMakeLists.txt)
+  include(${PROJECT_SOURCE_DIR}/DetectorConstruction/${CAMPAIGN}/${DETECTOR_CONSTRUCTION}/CMakeLists.txt)
+endif()
 
 #----------------------------------------------------------------------------
 # Locate sources and headers for this project
