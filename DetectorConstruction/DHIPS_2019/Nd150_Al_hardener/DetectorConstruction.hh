@@ -20,17 +20,25 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "G4LogicalVolume.hh"
+#include "G4SystemOfUnits.hh"
+#include "G4UnitsTable.hh"
+#include "G4VUserDetectorConstruction.hh"
 
-class Nd150_Target{
-public:
-	Nd150_Target();
-	Nd150_Target(G4LogicalVolume *World_Log);
-	~Nd150_Target(){};
+#include "utrConfig.h"
 
-	void Construct(G4ThreeVector global_coordinates);
-	void Set_Containing_Volume(G4LogicalVolume *World_Log){ World_Logical = World_Log; };
+class DetectorConstruction : public G4VUserDetectorConstruction {
+  public:
+	DetectorConstruction();
+	~DetectorConstruction();
+
+	G4VPhysicalVolume *Construct() override;
+	void ConstructSDandField() override;
+
+	void print_info() const;
 
 private:
-	G4LogicalVolume *World_Logical;
+	G4double World_x;
+	G4double World_y;
+	G4double World_z;
+
 };

@@ -254,7 +254,10 @@ void RadiatorTarget::Construct(G4ThreeVector global_coordinates,G4String target_
 	}
 
 	if(attenuator_thickness > 0.){
-		G4Material *attenuatorMaterial = man->FindOrBuildMaterial(attenuator_material);
+		stringstream attenuator_material_database_name;
+		attenuator_material_database_name << "G4_" << attenuator_material;
+
+		G4Material *attenuatorMaterial = man->FindOrBuildMaterial(attenuator_material_database_name.str());
 
 		G4Box *attenuator_Solid = new G4Box("attenuator_Solid", radiator_Holder_x*0.5, radiator_Holder_y*0.5, attenuator_thickness*0.5);
 
