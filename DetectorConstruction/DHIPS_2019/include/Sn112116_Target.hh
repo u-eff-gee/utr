@@ -28,8 +28,15 @@ public:
 	~Sn112116_Target() = default;
 
 	void Construct(G4ThreeVector global_coordinates);
+	void Construct(G4RotationMatrix* rotation, G4ThreeVector global_coordinates);
 	void Set_Containing_Volume(G4LogicalVolume *World_Log){ World_Logical = World_Log; };
 
 private:
 	G4LogicalVolume *World_Logical;
+	
+	G4double Sn112116_Container_OuterHeight;
+	G4double Sn112116_Container_InnerHeight;
+	G4double Sn112116_Container_OuterRadius;
+    G4double Sn112116_Container_InnerRadius;
+    G4double Sn112116_Container_CapThickness;
 };

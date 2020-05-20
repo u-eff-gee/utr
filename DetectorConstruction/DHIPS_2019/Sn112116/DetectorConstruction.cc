@@ -135,9 +135,12 @@ G4VPhysicalVolume *DetectorConstruction::Construct()
 	Detectors_80.ConstructDetectorFilter(G4ThreeVector(),"HPGePol",10.*mm, 0.*mm);
 
 #ifdef USE_TARGETS
+	auto rotation = new G4RotationMatrix();
+#ifdef ROTATE_TARGET
+	rotation->rotateY(180.*deg);
+#endif
 	Sn112116_Target Sn112116_Target(World_Logical);
-	Sn112116_Target.Construct(G4ThreeVector(0., 0., 0.));
-
+	Sn112116_Target.Construct(rotation, G4ThreeVector(0., 0., 0.));
 #endif
 	
 	print_info();

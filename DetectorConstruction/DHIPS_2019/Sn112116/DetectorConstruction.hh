@@ -25,6 +25,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4VUserDetectorConstruction.hh"
 
 #include "utrConfig.h"
+#include "Sn112116Config.h"
 
 class DetectorConstruction : public G4VUserDetectorConstruction {
   public:
