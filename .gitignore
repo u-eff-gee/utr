@@ -1,7 +1,7 @@
 # CMake-specific files
 CMakeCache.txt
-/Makefile
-CMakeFiles/*
+Makefile
+**/CMakeFiles/*
 cmake_install.cmake
 *Config.h
 

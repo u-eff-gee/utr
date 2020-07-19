@@ -315,7 +315,8 @@ if processOutput :
                 histogramToTxtArgs.append("--" + opt)
             else :
                 histogramToTxtArgs.append("--" + opt + "=" + config["histogramToTxtArgs"][opt])
-    runProcess("make on OutputProcessing scripts", ["make", "-j" + str(threads)], cwd=outputProcessingPath)
+    runProcess("cmake on OutputProcessing scripts", ["cmake", "."], cwd=outputProcessingPath)
+    runProcess("buildsystem on OutputProcessing scripts", ["cmake", "--build", ".", "-j", str(threads)], cwd=outputProcessingPath)
 
 # Run utr (if not skipped)
 if not args.skipSimulation :

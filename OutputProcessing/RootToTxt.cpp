@@ -22,6 +22,7 @@ using std::ofstream;
 #define MAXNBRANCHES 20
 
 int main(int argc, char* argv[]){
+	(void)argc;
 //void RootToTxt(string filename){
 
 	// Open ROOT file

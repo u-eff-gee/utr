@@ -767,7 +767,6 @@ To build and run the simulation, the following dependencies are required:
 
 * [Geant4](https://geant4.web.cern.ch/) (Tested with version 10.5. If your version is older, refer to [3.3 Build configuration](#build) to see how to run `utr` in the backwards compatible mode)
 * CMake (*build*)
-* Make (*build*)
 
 Furthermore, to use the analysis scripts:
 
@@ -994,7 +993,8 @@ The directory `OutputProcessing` contains some **sample** ROOT and shell scripts
 
 ```bash
 $ cd OutputProcessing/
-$ make
+$ cmake .
+$ cmake --build .
 ```
 in this directory should compile all the scripts, generating executables in this directory.
 The compilation may fail if the `ROOTSYS` environment variable is not set on your system.
@@ -1007,7 +1007,7 @@ $ ./OutputProcessing/EXECUTABLENAME {ARGUMENTS}
 from the utr directory. The executables can be removed using the command
 
 ```bash
-$ make clean
+$ cmake --build . --target clean
 ```
 in `OutputProcessing`.
 
