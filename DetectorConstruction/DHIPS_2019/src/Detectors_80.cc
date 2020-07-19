@@ -20,9 +20,9 @@ using std::endl;
 using std::stringstream;
 
 Detectors_80::Detectors_80(G4LogicalVolume *World_Log)
-	: BGO1(BGO("BGO1"))
-	, BGO2(BGO("BGO2"))
-	, BGOPol(BGO("BGOPol"))
+	: BGO1(BGO("BGO1", World_Log))
+	, BGO2(BGO("BGO2", World_Log))
+	, BGOPol(BGO("BGOPol", World_Log))
 	, World_Logical(World_Log) {}
 
 void Detectors_80::Construct(G4ThreeVector global_coordinates)
@@ -44,37 +44,21 @@ void Detectors_80::Construct(G4ThreeVector global_coordinates)
 	HPGePol.setProperties(hpge_Collection.HPGe_100_TUD_72930);
 	HPGePol.useDewar();
 
-	G4LogicalVolume *BGO1_Logical = BGO1.Get_Logical();
-	G4LogicalVolume *BGO2_Logical = BGO2.Get_Logical();
-	G4LogicalVolume *BGOPol_Logical = BGOPol.Get_Logical();
-
-	G4RotationMatrix *RotDet1 = new G4RotationMatrix();
-	RotDet1->rotateY(g80_phi - 90 * deg);
-
 	G4double BGO1_Dist = -(detectordistance80 + BGO1.Get_Length() * 0.5);
-	G4ThreeVector BGO1_Pos(BGO1_Dist * sin(g80_theta) * cos(g80_phi), BGO1_Dist * cos(g80_theta), BGO1_Dist * sin(g80_theta) * sin(g80_phi));
 
-	new G4PVPlacement(RotDet1, global_coordinates + BGO1_Pos, BGO1_Logical, "BGO1", World_Logical, 0, 0);
+	BGO1.Construct(global_coordinates, g80_theta, g80_phi, BGO1_Dist);
 	HPGe80.Construct(global_coordinates + G4ThreeVector(0, 0, 0),
 			-90.*deg - g80_phi, 0., detectordistance80 + (BGO1.Get_Length() - BGO1.Get_Max_Penetration_Depth()));
 
-	G4RotationMatrix *RotDet2 = new G4RotationMatrix();
-	RotDet2->rotateY(g2_phi - 90 * deg);
-
 	G4double BGO2_Dist = -(detectordistance2 + BGO2.Get_Length() * 0.5);
-	G4ThreeVector BGO2_Pos(BGO2_Dist * sin(g2_theta) * cos(g2_phi), BGO2_Dist * cos(g2_theta), BGO2_Dist * sin(g2_theta) * sin(g2_phi));
 
-	new G4PVPlacement(RotDet2, global_coordinates + BGO2_Pos, BGO2_Logical, "BGO2", World_Logical, 0, 0);
+	BGO2.Construct(global_coordinates, g2_theta, g2_phi, BGO2_Dist);
 	HPGe2.Construct(global_coordinates + G4ThreeVector(0, 0, 0),
 			-90.*deg - g2_phi, 0., detectordistance2 + (BGO2.Get_Length() - BGO2.Get_Max_Penetration_Depth()));
 
-	G4RotationMatrix *RotDetPol = new G4RotationMatrix();
-	RotDetPol->rotateY(gPol_phi - 90 * deg);
-
 	G4double BGOPol_Dist = -(detectordistancePol + BGOPol.Get_Length() * 0.5);
-	G4ThreeVector BGOPol_Pos(BGOPol_Dist * sin(gPol_theta) * cos(gPol_phi), BGOPol_Dist * cos(gPol_theta), BGOPol_Dist * sin(gPol_theta) * sin(gPol_phi));
 
-	new G4PVPlacement(RotDetPol, global_coordinates + BGOPol_Pos, BGOPol_Logical, "BGOPol", World_Logical, 0, 0);
+	BGOPol.Construct(global_coordinates, gPol_theta, gPol_phi, BGOPol_Dist);
 	HPGePol.Construct(global_coordinates + G4ThreeVector(0, 0, 0),
 			-90.*deg - gPol_phi, 0., detectordistancePol + (BGOPol.Get_Length() - BGOPol.Get_Max_Penetration_Depth()));
 }

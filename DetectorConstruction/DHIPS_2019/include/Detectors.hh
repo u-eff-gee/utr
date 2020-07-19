@@ -16,6 +16,9 @@ public:
 	void Construct(G4ThreeVector global_coordinates);
 	void ConstructDetectorFilter(G4ThreeVector global_coordinates, std::string det, G4double CuLength, G4double PbLength);
 
+	BGO BGO1;
+	BGO BGO2;
+	BGO BGOPol;
 private:
 	G4LogicalVolume *World_Logical;
 

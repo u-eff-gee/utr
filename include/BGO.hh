@@ -25,8 +25,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 class BGO
 {
 public:
-  BGO(G4String name);
-  ~BGO();
+  BGO(G4String name, G4LogicalVolume* World_Log);
 
   G4LogicalVolume* Get_Logical() { return bgo_Mother_Logical; }
   G4UnionSolid* Get_Al_Case_Solid() { return al_Case_Solid; };
@@ -36,10 +35,13 @@ public:
   G4double Get_Radius(){ return bgo_Mother_Radius; };
   // max_penetration depth denotes how far (measured from the backward end of the BGO) a detector can be pushed inside the BGO
   G4double Get_Max_Penetration_Depth(){ return max_penetration_depth; };
+  void Construct(G4ThreeVector global_coordinates, G4double theta, G4double phi,
+		    	       G4double dist_from_center) const;
 
 
 private:
   G4LogicalVolume* bgo_Mother_Logical;
+	G4LogicalVolume* World_Logical;
   G4UnionSolid* al_Case_Solid;
 
   G4String bgo_Name;
