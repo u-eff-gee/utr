@@ -1,31 +1,97 @@
 #include "BGO.hh"
 
-#include "G4Material.hh"
 #include "G4Box.hh"
 #include "G4Tubs.hh"
-#include "G4Cons.hh"
 #include "G4RotationMatrix.hh"
 #include "G4PVPlacement.hh"
 #include "G4RotationMatrix.hh"
 #include "globals.hh"
 #include "G4VisAttributes.hh"
 #include "G4SubtractionSolid.hh"
+#include "G4Material.hh"
+#include "G4VisAttributes.hh"
 
 #include "G4SystemOfUnits.hh"
 #include "G4NistManager.hh"
-#include "G4VisAttributes.hh"
 
 #include "NamedColors.hh"
 
 #include <sstream>
+#include <cstdint>
+#include <map>
 
 using std::stringstream;
 
-BGO::BGO(G4String name, G4LogicalVolume* World_Log)
+
+G4Cons *
+createCons(const std::string &prefix, const ConsDims &dims)
+{
+	return new G4Cons(prefix + "_Solid", dims.Rmin1, dims.Rmax1, dims.Rmin2, dims.Rmax2, dims.length * 0.5, 0. * deg, 360. * deg);
+}
+
+std::tuple<G4Cons *, G4LogicalVolume *>
+createConsLogical(const std::string &prefix, const ConsDims &dims, G4Material *mat, G4Color color)
+{
+	G4Cons *solid = createCons(prefix, dims);
+	G4LogicalVolume *logical = new G4LogicalVolume(solid, mat, prefix + "_Logical");
+	logical->SetVisAttributes(color);
+
+	return std::make_tuple(solid, logical);
+}
+
+BGO::BGO(G4LogicalVolume *World_Log, G4String name)
 {
 	World_Logical = World_Log;
 
 	bgo_Name = name;
+	
+	/* General dimensions */
+	length = 202. * mm;
+	radius = 115. * mm;
+
+	/* Outer Aluminum Case dimensions */
+	al_Case[1] = ConsDims::angled(8. * mm, 16.5 * deg, 21. * deg, 25. * mm, 62. * mm);
+	al_Case[2] = ConsDims::angled(78. * mm, 21. * deg, 21. * deg, al_Case[1].Rmax2 - 3. * mm, al_Case[1].Rmax2);
+	al_Case[3] = ConsDims::straight(86. * mm, al_Case[2].Rmin2, al_Case[2].Rmax2);
+	al_Case[4] = ConsDims::straight(20. * mm, al_Case[3].Rmin2, al_Case[3].Rmin2 + 23. * mm);
+	al_Case[5] = ConsDims(11. * mm, al_Case[4].Rmin2, al_Case[4].Rmin2, 51.5 * mm, al_Case[4].Rmin2);
+	al_Case[6] = ConsDims::straight(3. * mm, al_Case[5].Rmin2, al_Case[5].Rmax2);
+	al_Case[7] = ConsDims(9. * mm, al_Case[6].Rmin2, al_Case[6].Rmax2, al_Case[6].Rmin2, al_Case[6].Rmin2 + 7. * mm);
+
+	/* Solid Aluminum Case dimensions (for collimator hole carving)
+	 * Consists of the first three parts of the BGO aluminium case as a solid (Rmin = 0)
+	 **/
+	auto al_SolidCase1 = ConsDims::angled(8. * mm, 16.5 * deg, 21. * deg, 0., 62. * mm);
+	auto al_SolidCase2 = ConsDims::angled(78. * mm, 21. * deg, 21. * deg, 0., al_Case[1].Rmax2);
+	auto al_SolidCase3 = ConsDims::straight(86. * mm, 0., al_Case[2].Rmax2);
+
+	/* BGO crystal dimensions */
+	// Not sure if Crystal1 can be further simplified
+	auto bgo_Crystal1_length = 30. * mm;
+	bgo_Crystal[1] = ConsDims(
+		bgo_Crystal1_length, al_Case[1].inner_angle, al_Case[1].outer_angle,
+		al_Case[1].Rmin1 + (al_Case[1].length + 2. * mm) * tan(al_Case[1].inner_angle),
+		al_Case[1].Rmax2 - (3. * mm + 2. * mm) * tan(al_Case[1].outer_angle),
+		al_Case[1].Rmin1 + (al_Case[1].length + 2. * mm + bgo_Crystal1_length) * tan(al_Case[1].inner_angle),
+		al_Case[1].Rmax2 - (3. * mm + 2. * mm) * tan(al_Case[1].outer_angle) + bgo_Crystal1_length * tan(al_Case[1].outer_angle));
+	bgo_Crystal[2] = ConsDims::angled(30. * mm, 0., al_Case[1].outer_angle, 52.3 * mm, bgo_Crystal[1].Rmax2);
+	bgo_Crystal[3] = ConsDims::straight(100. * mm, 52.3 * mm, bgo_Crystal[2].Rmax2);
+	bgo_Crystal[4] = ConsDims(14. * mm, bgo_Crystal[3].Rmin1, bgo_Crystal[3].Rmax1, bgo_Crystal[3].Rmin1, bgo_Crystal[3].Rmin1);
+	
+	/* Inner Aluminum Case dimensions */
+	al_Case[11] = ConsDims::angled(43. * mm, al_Case[1].inner_angle, al_Case[1].inner_angle, al_Case[1].Rmin1 - 1. * mm * tan(al_Case[1].inner_angle), al_Case[1].Rmin1);
+	al_Case[12] = ConsDims::straight(1. * mm, al_Case[11].Rmax2, bgo_Crystal[2].Rmin1 - 2. * mm);
+
+	// TODO: Exact dimensions are unclear
+	al_Case[13] = ConsDims(160. * mm, al_Case[12].Rmax1, al_Case[12].Rmax1 + 1. * mm, al_Case[12].Rmax1, al_Case[12].Rmax1 + 1. * mm);
+	max_penetration_depth = al_Case[13].length;
+
+	G4Cons *al_SolidCase1_Solid = createCons("al_SolidCase1", al_SolidCase1);
+	G4Cons *al_SolidCase2_Solid = createCons("al_SolidCase2", al_SolidCase2);
+	G4Cons *al_SolidCase3_Solid = createCons("al_SolidCase3", al_SolidCase3);
+
+	auto *al_Case_12_Solid = new G4UnionSolid("al_Case_12_Solid", al_SolidCase1_Solid, al_SolidCase2_Solid, 0, G4ThreeVector(0. * mm, 0. * mm, al_SolidCase1.length * 0.5 + al_SolidCase2.length * 0.5));
+	al_Case_Solid = new G4UnionSolid("al_Case_Solid", al_Case_12_Solid, al_SolidCase3_Solid, 0, G4ThreeVector(0. * mm, 0. * mm, al_SolidCase1.length * 0.5 + al_SolidCase2.length + al_SolidCase3.length * 0.5));
 
 	G4NistManager *man = G4NistManager::Instance();
 
@@ -33,313 +99,65 @@ BGO::BGO(G4String name, G4LogicalVolume* World_Log)
 	G4Material *bgo = man->FindOrBuildMaterial("G4_BGO");
 	G4Material *AIR = man->FindOrBuildMaterial("G4_AIR");
 
-	bgo_Mother_Length = 202. * mm;
-	bgo_Mother_Radius = 115. * mm;
+	for (auto &[i, al_Case_Part] : al_Case) {
+		std::stringstream prefix;
+		prefix << "al_Case" << i;
+		std::tie(al_Case_Solids[i], al_Case_Logical[i]) = createConsLogical(prefix.str(), al_Case_Part, Al, magenta);
+	}
+	
+	for (auto &[i, bgo_Crystal_Part] : bgo_Crystal) {
+		std::stringstream prefix;
+		prefix << bgo_Name << '_' << i;
+		bgo_Crystal_name[i] = prefix.str();
+		std::tie(bgo_Crystal_Solids[i], bgo_Crystal_Logical[i]) = createConsLogical(bgo_Crystal_name[i], bgo_Crystal_Part, bgo, blue);
+	}
 
 	//*************************************************
 	// BGO mother volume: a tub filled with air that encloses the whole BGO
 	//*************************************************
 
-	G4Tubs *bgo_Mother_Solid = new G4Tubs("bgo_Mother_Solid", 0., bgo_Mother_Radius, bgo_Mother_Length * 0.5, 0. * deg, 360. * deg);
+	G4Tubs *bgo_Mother_Solid = new G4Tubs("bgo_Mother_Solid", 0., radius, length * 0.5, 0. * deg, 360. * deg);
 
 	bgo_Mother_Logical = new G4LogicalVolume(bgo_Mother_Solid, AIR, "bgo_Mother_Logical");
 	bgo_Mother_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());
+}
+
+void BGO::Construct(G4ThreeVector global_coordinates, G4double theta, G4double phi,
+					G4double dist_from_center)
+{
+	G4RotationMatrix *rot = new G4RotationMatrix();
+	rot->rotateX(180. * deg);
 
 	//*************************************************
 	// BGO aluminium case
 	// Consists of seven parts with labels 1-7 from the target-facing side (1) to the backside (7)
+	// and three parts with labels 11-13 for the inside (target-facing side to backside)
 	//*************************************************
 
-	// Part 1
-
-	G4double al_Case1_Length = 8. * mm;
-	G4double al_Case1_inner_angle = 16.5 * deg;
-	G4double al_Case1_outer_angle = 21. * deg;
-	G4double al_Case1_Rmin1 = 25. * mm;
-	G4double al_Case1_Rmax1 = 62. * mm;
-	G4double al_Case1_Rmin2 = al_Case1_Rmin1 + al_Case1_Length * tan(al_Case1_inner_angle);
-	G4double al_Case1_Rmax2 = al_Case1_Rmax1 + al_Case1_Length * tan(al_Case1_outer_angle);
-
-	G4Cons *al_Case1_Solid = new G4Cons("al_Case1_Solid", al_Case1_Rmin1, al_Case1_Rmax1, al_Case1_Rmin2, al_Case1_Rmax2, al_Case1_Length * 0.5, 0. * deg, 360. * deg);
-	G4LogicalVolume *al_Case1_Logical = new G4LogicalVolume(al_Case1_Solid, Al, "al_Case1_Logical");
-	G4RotationMatrix *rot = new G4RotationMatrix();
-	rot->rotateX(180. * deg);
-	new G4PVPlacement(rot, G4ThreeVector(0., 0., bgo_Mother_Length * 0.5 - al_Case1_Length * 0.5), al_Case1_Logical, "al_Case1", bgo_Mother_Logical, false, 0);
-	al_Case1_Logical->SetVisAttributes(magenta);
-
-	// Part 2
-
-	G4double al_Case2_Length = 78. * mm;
-	G4double al_Case2_inner_angle = 21. * deg;
-	G4double al_Case2_outer_angle = 21. * deg;
-	G4double al_Case2_Rmin1 = al_Case1_Rmax2 - 3. * mm;
-	G4double al_Case2_Rmax1 = al_Case1_Rmax2;
-	G4double al_Case2_Rmin2 = al_Case2_Rmin1 + al_Case2_Length * tan(al_Case2_inner_angle);
-	G4double al_Case2_Rmax2 = al_Case2_Rmax1 + al_Case2_Length * tan(al_Case2_outer_angle);
-
-	G4Cons *al_Case2_Solid = new G4Cons("al_Case2_Solid", al_Case2_Rmin1, al_Case2_Rmax1, al_Case2_Rmin2, al_Case2_Rmax2, al_Case2_Length * 0.5, 0. * deg, 360. * deg);
-	G4LogicalVolume *al_Case2_Logical = new G4LogicalVolume(al_Case2_Solid, Al, "al_Case2_Logical");
-	new G4PVPlacement(rot, G4ThreeVector(0., 0., bgo_Mother_Length * 0.5 - al_Case1_Length - al_Case2_Length * 0.5), al_Case2_Logical, "al_Case2", bgo_Mother_Logical, false, 0);
-	al_Case2_Logical->SetVisAttributes(magenta);
-
-	// Part 3
-
-	G4double al_Case3_Length = 86. * mm;
-	G4double al_Case3_Rmin1 = al_Case2_Rmin2;
-	G4double al_Case3_Rmax1 = al_Case2_Rmax2;
-	G4double al_Case3_Rmin2 = al_Case3_Rmin1;
-	G4double al_Case3_Rmax2 = al_Case3_Rmax1;
-	G4Cons *al_Case3_Solid = new G4Cons("al_Case3_Solid", al_Case3_Rmin1, al_Case3_Rmax1, al_Case3_Rmin2, al_Case3_Rmax2, al_Case3_Length * 0.5, 0. * deg, 360. * deg);
-	G4LogicalVolume *al_Case3_Logical = new G4LogicalVolume(al_Case3_Solid, Al, "al_Case3_Logical");
-	new G4PVPlacement(rot, G4ThreeVector(0., 0., bgo_Mother_Length * 0.5 - al_Case1_Length - al_Case2_Length - al_Case3_Length * 0.5), al_Case3_Logical, "al_Case3", bgo_Mother_Logical, false, 0);
-
-	al_Case3_Logical->SetVisAttributes(magenta);
-
-	// Part 4
-
-	G4double al_Case4_Length = 20. * mm;
-	G4double al_Case4_Rmin1 = al_Case3_Rmin2;
-	G4double al_Case4_Rmax1 = al_Case4_Rmin1 + 23. * mm;
-	G4double al_Case4_Rmin2 = al_Case4_Rmin1;
-	G4double al_Case4_Rmax2 = al_Case4_Rmax1;
-	G4Cons *al_Case4_Solid = new G4Cons("al_Case4_Solid", al_Case4_Rmin1, al_Case4_Rmax1, al_Case4_Rmin2, al_Case4_Rmax2, al_Case4_Length * 0.5, 0. * deg, 360. * deg);
-	G4LogicalVolume *al_Case4_Logical = new G4LogicalVolume(al_Case4_Solid, Al, "al_Case4_Logical");
-	new G4PVPlacement(rot, G4ThreeVector(0., 0., bgo_Mother_Length * 0.5 - al_Case1_Length - al_Case2_Length - al_Case3_Length - al_Case4_Length * 0.5), al_Case4_Logical, "al_Case4", bgo_Mother_Logical, false, 0);
-
-	al_Case4_Logical->SetVisAttributes(magenta);
-
-	// Part 5
-
-	G4double al_Case5_Length = 11. * mm;
-	G4double al_Case5_Rmin1 = al_Case4_Rmin2;
-	G4double al_Case5_Rmax1 = al_Case4_Rmin2;
-	G4double al_Case5_Rmin2 = 51.5 * mm;
-	G4double al_Case5_Rmax2 = al_Case5_Rmax1;
-	G4Cons *al_Case5_Solid = new G4Cons("al_Case5_Solid", al_Case5_Rmin1, al_Case5_Rmax1, al_Case5_Rmin2, al_Case5_Rmax2, al_Case5_Length * 0.5, 0. * deg, 360. * deg);
-	G4LogicalVolume *al_Case5_Logical = new G4LogicalVolume(al_Case5_Solid, Al, "al_Case5_Logical");
-	new G4PVPlacement(rot, G4ThreeVector(0., 0., bgo_Mother_Length * 0.5 - al_Case1_Length - al_Case2_Length - al_Case3_Length - 7. * mm - al_Case5_Length * 0.5), al_Case5_Logical, "al_Case5", bgo_Mother_Logical, false, 0);
-
-	al_Case5_Logical->SetVisAttributes(magenta);
-
-	// Part 6
-
-	G4double al_Case6_Length = 3. * mm;
-	G4double al_Case6_Rmin1 = al_Case5_Rmin2;
-	G4double al_Case6_Rmax1 = al_Case5_Rmax2;
-	G4double al_Case6_Rmin2 = al_Case6_Rmin1;
-	G4double al_Case6_Rmax2 = al_Case6_Rmax1;
-	G4Cons *al_Case6_Solid = new G4Cons("al_Case6_Solid", al_Case6_Rmin1, al_Case6_Rmax1, al_Case6_Rmin2, al_Case6_Rmax2, al_Case6_Length * 0.5, 0. * deg, 360. * deg);
-	G4LogicalVolume *al_Case6_Logical = new G4LogicalVolume(al_Case6_Solid, Al, "al_Case6_Logical");
-	new G4PVPlacement(rot, G4ThreeVector(0., 0., bgo_Mother_Length * 0.5 - al_Case1_Length - al_Case2_Length - al_Case3_Length - 7. * mm - al_Case5_Length - al_Case6_Length * 0.5), al_Case6_Logical, "al_Case6", bgo_Mother_Logical, false, 0);
-
-	al_Case6_Logical->SetVisAttributes(magenta);
-
-	// Part 7
-
-	G4double al_Case7_Length = 9. * mm;
-	G4double al_Case7_Rmin1 = al_Case6_Rmin2;
-	G4double al_Case7_Rmax1 = al_Case6_Rmax2;
-	G4double al_Case7_Rmin2 = al_Case6_Rmin2;
-	G4double al_Case7_Rmax2 = al_Case6_Rmin2 + 7. * mm;
-
-	G4Cons *al_Case7_Solid = new G4Cons("al_Case7_Solid", al_Case7_Rmin1, al_Case7_Rmax1, al_Case7_Rmin2, al_Case7_Rmax2, al_Case7_Length * 0.5, 0. * deg, 360. * deg);
-	G4LogicalVolume *al_Case7_Logical = new G4LogicalVolume(al_Case7_Solid, Al, "al_Case7_Logical");
-	new G4PVPlacement(rot, G4ThreeVector(0., 0., bgo_Mother_Length * 0.5 - al_Case1_Length - al_Case2_Length - al_Case3_Length - 7. * mm - al_Case5_Length - al_Case6_Length - al_Case7_Length * 0.5), al_Case7_Logical, "al_Case7", bgo_Mother_Logical, false, 0);
-
-	al_Case7_Logical->SetVisAttributes(magenta);
-
-	//*************************************************
-	// BGO aluminium case (solid part for use in G4SubtractionSolids)
-	// Consists of the first three parts of the BGO aluminium case as a solid (Rmin = 0). By defining this separate G4UnionSolid al_Case_Solid, it is easier to carve the collimator holes.
-	//*************************************************
-
-	// Part 1
-
-	G4double al_SolidCase1_Length = 8. * mm;
-	//G4double	al_SolidCase1_inner_angle = 16.5*deg;
-	G4double al_SolidCase1_outer_angle = 21. * deg;
-	G4double al_SolidCase1_Rmin1 = 0. * mm;
-	G4double al_SolidCase1_Rmax1 = 62. * mm;
-	G4double al_SolidCase1_Rmin2 = 0. * mm;
-	G4double al_SolidCase1_Rmax2 = al_SolidCase1_Rmax1 + al_SolidCase1_Length * tan(al_SolidCase1_outer_angle);
-
-	G4Cons *al_SolidCase1_Solid = new G4Cons("al_SolidCase1_Solid", al_SolidCase1_Rmin1, al_SolidCase1_Rmax1, al_SolidCase1_Rmin2, al_SolidCase1_Rmax2, al_SolidCase1_Length * 0.5, 0. * deg, 360. * deg);
-
-	// Part 2
-
-	G4double al_SolidCase2_Length = 78. * mm;
-	//G4double	al_SolidCase2_inner_angle = 21.*deg;
-	G4double al_SolidCase2_outer_angle = 21. * deg;
-	G4double al_SolidCase2_Rmin1 = 0. * mm;
-	G4double al_SolidCase2_Rmax1 = al_Case1_Rmax2;
-	G4double al_SolidCase2_Rmin2 = 0. * mm;
-	G4double al_SolidCase2_Rmax2 = al_SolidCase2_Rmax1 + al_SolidCase2_Length * tan(al_SolidCase2_outer_angle);
-
-	G4Cons *al_SolidCase2_Solid = new G4Cons("al_SolidCase2_Solid", al_SolidCase2_Rmin1, al_SolidCase2_Rmax1, al_SolidCase2_Rmin2, al_SolidCase2_Rmax2, al_SolidCase2_Length * 0.5, 0. * deg, 360. * deg);
-
-	// Part 3
-
-	G4double al_SolidCase3_Length = 86. * mm;
-	G4double al_SolidCase3_Rmin1 = 0. * mm;
-	G4double al_SolidCase3_Rmax1 = al_Case2_Rmax2;
-	G4double al_SolidCase3_Rmin2 = 0. * mm;
-	G4double al_SolidCase3_Rmax2 = al_SolidCase3_Rmax1;
-	G4Cons *al_SolidCase3_Solid = new G4Cons("al_SolidCase3_Solid", al_SolidCase3_Rmin1, al_SolidCase3_Rmax1, al_SolidCase3_Rmin2, al_SolidCase3_Rmax2, al_SolidCase3_Length * 0.5, 0. * deg, 360. * deg);
-
-	// Merge the three parts into G4UnionSolid
-
-	G4UnionSolid *al_Case_12_Solid = new G4UnionSolid("al_Case_12_Solid", al_SolidCase1_Solid, al_SolidCase2_Solid, 0, G4ThreeVector(0. * mm, 0. * mm, al_SolidCase1_Length * 0.5 + al_SolidCase2_Length * 0.5));
-
-	al_Case_Solid = new G4UnionSolid("al_Case_Solid", al_Case_12_Solid, al_SolidCase3_Solid, 0, G4ThreeVector(0. * mm, 0. * mm, al_SolidCase1_Length * 0.5 + al_SolidCase2_Length + al_SolidCase3_Length * 0.5));
+	new G4PVPlacement(rot, G4ThreeVector(0., 0., length * 0.5 - al_Case[1].length * 0.5), al_Case_Logical[1], "al_Case1", bgo_Mother_Logical, false, 0);
+	new G4PVPlacement(rot, G4ThreeVector(0., 0., length * 0.5 - al_Case[1].length - al_Case[2].length * 0.5), al_Case_Logical[2], "al_Case2", bgo_Mother_Logical, false, 0);
+	new G4PVPlacement(rot, G4ThreeVector(0., 0., length * 0.5 - al_Case[1].length - al_Case[2].length - al_Case[3].length * 0.5), al_Case_Logical[3], "al_Case3", bgo_Mother_Logical, false, 0);
+	new G4PVPlacement(rot, G4ThreeVector(0., 0., length * 0.5 - al_Case[1].length - al_Case[2].length - al_Case[3].length - al_Case[4].length * 0.5), al_Case_Logical[4], "al_Case4", bgo_Mother_Logical, false, 0);
+	new G4PVPlacement(rot, G4ThreeVector(0., 0., length * 0.5 - al_Case[1].length - al_Case[2].length - al_Case[3].length - 7. * mm - al_Case[5].length * 0.5), al_Case_Logical[5], "al_Case5", bgo_Mother_Logical, false, 0);
+	new G4PVPlacement(rot, G4ThreeVector(0., 0., length * 0.5 - al_Case[1].length - al_Case[2].length - al_Case[3].length - 7. * mm - al_Case[5].length - al_Case[6].length * 0.5), al_Case_Logical[6], "al_Case", bgo_Mother_Logical, false, 0);
+	new G4PVPlacement(rot, G4ThreeVector(0., 0., length * 0.5 - al_Case[1].length - al_Case[2].length - al_Case[3].length - 7. * mm - al_Case[5].length - al_Case[6].length - al_Case[7].length * 0.5), al_Case_Logical[7], "al_Case7", bgo_Mother_Logical, false, 0);
+	new G4PVPlacement(rot, G4ThreeVector(0., 0., length * 0.5 - al_Case[11].length * 0.5), al_Case_Logical[11], "al_Case_11", bgo_Mother_Logical, false, 0);
+	new G4PVPlacement(rot, G4ThreeVector(0., 0., length * 0.5 - al_Case[11].length + al_Case[12].length * 0.5), al_Case_Logical[12], "al_Case12", bgo_Mother_Logical, false, 0);
+	new G4PVPlacement(rot, G4ThreeVector(0., 0., length * 0.5 - al_Case[11].length + 1. * mm - al_Case[13].length * 0.5), al_Case_Logical[13], "al_Case13", bgo_Mother_Logical, false, 0);
 
 	//*************************************************
 	// BGO crystal
 	// Consists of four parts with labels 1-4 from the target-facing side (1) to the backside (4)
 	//*************************************************
 
-	// Part 1
+	new G4PVPlacement(rot, G4ThreeVector(0., 0., length * 0.5 - al_Case[1].length - 2. * mm - bgo_Crystal[1].length * 0.5), bgo_Crystal_Logical[1], "bgo_Crystal1", bgo_Mother_Logical, false, 0);
+	new G4PVPlacement(rot, G4ThreeVector(0., 0., length * 0.5 - al_Case[1].length - 2. * mm - bgo_Crystal[1].length - bgo_Crystal[2].length * 0.5), bgo_Crystal_Logical[2], "bgo_Crystal2", bgo_Mother_Logical, false, 0);
+	new G4PVPlacement(rot, G4ThreeVector(0., 0., length * 0.5 - al_Case[1].length - 2. * mm - bgo_Crystal[1].length - bgo_Crystal[2].length - bgo_Crystal[3].length * 0.5), bgo_Crystal_Logical[3], "bgo_Crystal3", bgo_Mother_Logical, false, 0);
+	new G4PVPlacement(rot, G4ThreeVector(0., 0., length * 0.5 - al_Case[1].length - 2. * mm - bgo_Crystal[1].length - bgo_Crystal[2].length - bgo_Crystal[3].length - bgo_Crystal[4].length * 0.5), bgo_Crystal_Logical[4], "bgo_Crystal4", bgo_Mother_Logical, false, 0);
 
-	G4double bgo_Crystal1_Length = 30. * mm;
-	//G4double	bgo_Crystal1_inner_angle = al_Case1_inner_angle;
-	//G4double	bgo_Crystal1_outer_angle = al_Case1_outer_angle;
-	G4double bgo_Crystal1_Rmin1 = al_Case1_Rmin1 + (al_Case1_Length + 2. * mm) * tan(al_Case1_inner_angle);
-	G4double bgo_Crystal1_Rmax1 = al_Case1_Rmax2 - (3. * mm + 2. * mm) * tan(al_Case1_outer_angle);
-
-	G4double bgo_Crystal1_Rmin2 = al_Case1_Rmin1 + (al_Case1_Length + 2. * mm + bgo_Crystal1_Length) * tan(al_Case1_inner_angle);
-	G4double bgo_Crystal1_Rmax2 = al_Case1_Rmax2 - (3. * mm + 2. * mm) * tan(al_Case1_outer_angle) + bgo_Crystal1_Length * tan(al_Case1_outer_angle);
-
-	G4Cons *bgo_Crystal1_Solid = new G4Cons("bgo_Crystal1_Solid", bgo_Crystal1_Rmin1, bgo_Crystal1_Rmax1, bgo_Crystal1_Rmin2, bgo_Crystal1_Rmax2, bgo_Crystal1_Length * 0.5, 0. * deg, 360. * deg);
-
-	stringstream logicalVolume_name;
-	logicalVolume_name << bgo_Name << "_1";
-
-	G4LogicalVolume *bgo_Crystal1_Logical = new G4LogicalVolume(bgo_Crystal1_Solid, bgo, logicalVolume_name.str());
-	new G4PVPlacement(rot, G4ThreeVector(0., 0., bgo_Mother_Length * 0.5 - al_Case1_Length - 2. * mm - bgo_Crystal1_Length * 0.5), bgo_Crystal1_Logical, "bgo_Crystal1", bgo_Mother_Logical, false, 0);
-
-	bgo_Crystal1_Logical->SetVisAttributes(blue);
-
-	// Part 2
-
-	G4double bgo_Crystal2_Length = 30. * mm;
-	//G4double	bgo_Crystal2_outer_angle = al_Case1_outer_angle;
-	G4double bgo_Crystal2_Rmin1 = 52.3 * mm;
-	G4double bgo_Crystal2_Rmax1 = bgo_Crystal1_Rmax2;
-
-	G4double bgo_Crystal2_Rmin2 = bgo_Crystal2_Rmin1;
-	G4double bgo_Crystal2_Rmax2 = bgo_Crystal2_Rmax1 + bgo_Crystal2_Length * tan(al_Case1_outer_angle);
-
-	G4Cons *bgo_Crystal2_Solid = new G4Cons("bgo_Crystal2_Solid", bgo_Crystal2_Rmin1, bgo_Crystal2_Rmax1, bgo_Crystal2_Rmin2, bgo_Crystal2_Rmax2, bgo_Crystal2_Length * 0.5, 0. * deg, 360. * deg);
-
-	logicalVolume_name.str("");
-	logicalVolume_name.clear();
-	logicalVolume_name << bgo_Name << "_2";
-
-	G4LogicalVolume *bgo_Crystal2_Logical = new G4LogicalVolume(bgo_Crystal2_Solid, bgo, logicalVolume_name.str());
-	new G4PVPlacement(rot, G4ThreeVector(0., 0., bgo_Mother_Length * 0.5 - al_Case1_Length - 2. * mm - bgo_Crystal1_Length - bgo_Crystal2_Length * 0.5), bgo_Crystal2_Logical, "bgo_Crystal2", bgo_Mother_Logical, false, 0);
-
-	bgo_Crystal2_Logical->SetVisAttributes(blue);
-
-	// Part 3
-
-	G4double bgo_Crystal3_Length = 100. * mm;
-	G4double bgo_Crystal3_Rmin1 = 52.3 * mm;
-	G4double bgo_Crystal3_Rmax1 = bgo_Crystal2_Rmax2;
-
-	G4double bgo_Crystal3_Rmin2 = bgo_Crystal3_Rmin1;
-	G4double bgo_Crystal3_Rmax2 = bgo_Crystal3_Rmax1;
-
-	G4Cons *bgo_Crystal3_Solid = new G4Cons("bgo_Crystal3_Solid", bgo_Crystal3_Rmin1, bgo_Crystal3_Rmax1, bgo_Crystal3_Rmin2, bgo_Crystal3_Rmax2, bgo_Crystal3_Length * 0.5, 0. * deg, 360. * deg);
-
-	logicalVolume_name.str("");
-	logicalVolume_name.clear();
-	logicalVolume_name << bgo_Name << "_3";
-
-	G4LogicalVolume *bgo_Crystal3_Logical = new G4LogicalVolume(bgo_Crystal3_Solid, bgo, logicalVolume_name.str());
-	new G4PVPlacement(rot, G4ThreeVector(0., 0., bgo_Mother_Length * 0.5 - al_Case1_Length - 2. * mm - bgo_Crystal1_Length - bgo_Crystal2_Length - bgo_Crystal3_Length * 0.5), bgo_Crystal3_Logical, "bgo_Crystal3", bgo_Mother_Logical, false, 0);
-
-	bgo_Crystal3_Logical->SetVisAttributes(blue);
-
-	// Part 4
-
-	G4double bgo_Crystal4_Length = 14. * mm;
-	G4double bgo_Crystal4_Rmin1 = bgo_Crystal3_Rmin1;
-	G4double bgo_Crystal4_Rmax1 = bgo_Crystal3_Rmax1;
-
-	G4double bgo_Crystal4_Rmin2 = bgo_Crystal4_Rmin1;
-	G4double bgo_Crystal4_Rmax2 = bgo_Crystal4_Rmin1;
-
-	G4Cons *bgo_Crystal4_Solid = new G4Cons("bgo_Crystal4_Solid", bgo_Crystal4_Rmin1, bgo_Crystal4_Rmax1, bgo_Crystal4_Rmin2, bgo_Crystal4_Rmax2, bgo_Crystal4_Length * 0.5, 0. * deg, 360. * deg);
-
-	logicalVolume_name.str("");
-	logicalVolume_name.clear();
-	logicalVolume_name << bgo_Name << "_4";
-
-	G4LogicalVolume *bgo_Crystal4_Logical = new G4LogicalVolume(bgo_Crystal4_Solid, bgo, logicalVolume_name.str());
-	new G4PVPlacement(rot, G4ThreeVector(0., 0., bgo_Mother_Length * 0.5 - al_Case1_Length - 2. * mm - bgo_Crystal1_Length - bgo_Crystal2_Length - bgo_Crystal3_Length - bgo_Crystal4_Length * 0.5), bgo_Crystal4_Logical, "bgo_Crystal4", bgo_Mother_Logical, false, 0);
-
-	bgo_Crystal4_Logical->SetVisAttributes(blue);
-
-	//*************************************************
-	// BGO inner aluminium case
-	// Consists of three parts with labels 1-3 from the target-facing side (1) to the backside (3)
-	//*************************************************
-
-	// Part 1
-
-	G4double al_Inner_Case1_Length = 43. * mm;
-	//G4double	al_Inner_Case1_inner_angle = al_Case1_inner_angle;
-	//G4double	al_Inner_Case1_outer_angle = al_Case1_outer_angle;
-	G4double al_Inner_Case1_Rmin1 = al_Case1_Rmin1 - 1. * mm * tan(al_Case1_inner_angle);
-	G4double al_Inner_Case1_Rmax1 = al_Case1_Rmin1;
-
-	G4double al_Inner_Case1_Rmin2 = al_Inner_Case1_Rmin1 + al_Inner_Case1_Length * tan(al_Case1_inner_angle);
-	G4double al_Inner_Case1_Rmax2 = al_Inner_Case1_Rmax1 + al_Inner_Case1_Length * tan(al_Case1_inner_angle);
-
-	G4Cons *al_Inner_Case1_Solid = new G4Cons("al_Inner_Case1_Solid", al_Inner_Case1_Rmin1, al_Inner_Case1_Rmax1, al_Inner_Case1_Rmin2, al_Inner_Case1_Rmax2, al_Inner_Case1_Length * 0.5, 0. * deg, 360. * deg);
-	G4LogicalVolume *al_Inner_Case1_Logical = new G4LogicalVolume(al_Inner_Case1_Solid, Al, "al_Inner_Case1_Logical");
-	new G4PVPlacement(rot, G4ThreeVector(0., 0., bgo_Mother_Length * 0.5 - al_Inner_Case1_Length * 0.5), al_Inner_Case1_Logical, "al_Inner_Case1", bgo_Mother_Logical, false, 0);
-
-	al_Inner_Case1_Logical->SetVisAttributes(magenta);
-
-	// Part 2
-
-	G4double al_Inner_Case2_Length = 1. * mm;
-	G4double al_Inner_Case2_Rmin1 = al_Inner_Case1_Rmax2;
-	G4double al_Inner_Case2_Rmax1 = bgo_Crystal2_Rmin1 - 2. * mm;
-
-	G4double al_Inner_Case2_Rmin2 = al_Inner_Case2_Rmin1;
-	G4double al_Inner_Case2_Rmax2 = al_Inner_Case2_Rmax1;
-
-	G4Cons *al_Inner_Case2_Solid = new G4Cons("al_Inner_Case2_Solid", al_Inner_Case2_Rmin1, al_Inner_Case2_Rmax1, al_Inner_Case2_Rmin2, al_Inner_Case2_Rmax2, al_Inner_Case2_Length * 0.5, 0. * deg, 360. * deg);
-	G4LogicalVolume *al_Inner_Case2_Logical = new G4LogicalVolume(al_Inner_Case2_Solid, Al, "al_Inner_Case2_Logical");
-	new G4PVPlacement(rot, G4ThreeVector(0., 0., bgo_Mother_Length * 0.5 - al_Inner_Case1_Length + al_Inner_Case2_Length * 0.5), al_Inner_Case2_Logical, "al_Inner_Case2", bgo_Mother_Logical, false, 0);
-
-	al_Inner_Case2_Logical->SetVisAttributes(magenta);
-
-	// Part 3
-
-	G4double al_Inner_Case3_Length = 160. * mm;
-	max_penetration_depth = al_Inner_Case3_Length;
-	G4double al_Inner_Case3_Rmin1 = al_Inner_Case2_Rmax1;
-	G4double al_Inner_Case3_Rmax1 = al_Inner_Case2_Rmax1 + 1. * mm;
-
-	G4double al_Inner_Case3_Rmin2 = al_Inner_Case3_Rmin1;
-	G4double al_Inner_Case3_Rmax2 = al_Inner_Case2_Rmax1;
-
-	G4Cons *al_Inner_Case3_Solid = new G4Cons("al_Inner_Case3_Solid", al_Inner_Case3_Rmin1, al_Inner_Case3_Rmax1, al_Inner_Case3_Rmin2, al_Inner_Case3_Rmax2, al_Inner_Case3_Length * 0.5, 0. * deg, 360. * deg);
-	G4LogicalVolume *al_Inner_Case3_Logical = new G4LogicalVolume(al_Inner_Case3_Solid, Al, "al_Inner_Case3_Logical");
-	new G4PVPlacement(rot, G4ThreeVector(0., 0., bgo_Mother_Length * 0.5 - al_Inner_Case1_Length + 1. * mm - al_Inner_Case3_Length * 0.5), al_Inner_Case3_Logical, "al_Inner_Case3", bgo_Mother_Logical, false, 0);
-
-	al_Inner_Case3_Logical->SetVisAttributes(magenta);
-}
-
-void BGO::Construct(G4ThreeVector global_coordinates, G4double theta, G4double phi,
-					G4double dist_from_center) const
-{
 	G4RotationMatrix *RotDet = new G4RotationMatrix();
-	RotDet->rotateY(- 90 * deg + phi);
+	RotDet->rotateY(-90 * deg + phi);
 
 	G4ThreeVector BGO_Pos(dist_from_center * sin(theta) * cos(phi), dist_from_center * cos(theta), dist_from_center * sin(theta) * sin(phi));
-
 	new G4PVPlacement(RotDet, global_coordinates + BGO_Pos, bgo_Mother_Logical, bgo_Name, World_Logical, 0, 0);
 }

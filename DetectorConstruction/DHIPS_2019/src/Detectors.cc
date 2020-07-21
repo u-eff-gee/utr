@@ -20,9 +20,9 @@ using std::endl;
 using std::stringstream;
 
 Detectors::Detectors(G4LogicalVolume *World_Log)
-	: BGO1(BGO("BGO1", World_Log))
-	, BGO2(BGO("BGO2", World_Log))
-	, BGOPol(BGO("BGOPol", World_Log))
+	: BGO1(BGO(World_Log, "BGO1"))
+	, BGO2(BGO(World_Log, "BGO2"))
+	, BGOPol(BGO(World_Log, "BGOPol"))
 	, World_Logical(World_Log) {}
 
 void Detectors::Construct(G4ThreeVector global_coordinates)
