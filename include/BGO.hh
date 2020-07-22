@@ -25,6 +25,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4LogicalVolume.hh"
 #include "G4UnionSolid.hh"
 #include "G4Cons.hh"
+#include "G4Polycone.hh"
 
 struct ConsDims
 {
@@ -50,13 +51,18 @@ struct ConsDims
 	{
 		return ConsDims(_length, Rmin, Rmax, Rmin, Rmax);
 	}
+
+  static ConsDims filled(ConsDims cd)
+  {
+    return ConsDims(cd.length, 0., cd.outer_angle, 0., cd.Rmax1, 0., cd.Rmax2);
+  }
 };
 class BGO
 {
 public:
   BGO(G4LogicalVolume *World_Log, G4String name);
 
-  G4UnionSolid *Get_Al_Case_Solid() { return al_Case_Solid; };
+  G4Polycone *Get_Al_Case_Solid() { return al_Case_Solid; };
 
   // Length and radius of the BGO mother volume which just encloses all of the parts of the BGO
   G4double Get_Length() { return length; };
@@ -69,7 +75,7 @@ public:
 private:
   G4LogicalVolume *bgo_Mother_Logical;
   G4LogicalVolume *World_Logical;
-  G4UnionSolid *al_Case_Solid;
+  G4Polycone *al_Case_Solid;
 
   G4String bgo_Name;
 

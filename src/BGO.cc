@@ -2,6 +2,7 @@
 
 #include "G4Box.hh"
 #include "G4Tubs.hh"
+#include "G4Polycone.hh"
 #include "G4RotationMatrix.hh"
 #include "G4PVPlacement.hh"
 #include "G4RotationMatrix.hh"
@@ -58,13 +59,6 @@ BGO::BGO(G4LogicalVolume *World_Log, G4String name)
 	al_Case[6] = ConsDims::straight(3. * mm, al_Case[5].Rmin2, al_Case[5].Rmax2);
 	al_Case[7] = ConsDims(9. * mm, al_Case[6].Rmin2, al_Case[6].Rmax2, al_Case[6].Rmin2, al_Case[6].Rmin2 + 7. * mm);
 
-	/* Solid Aluminum Case dimensions (for collimator hole carving)
-	 * Consists of the first three parts of the BGO aluminium case as a solid (Rmin = 0)
-	 **/
-	auto al_SolidCase1 = ConsDims::angled(8. * mm, 16.5 * deg, 21. * deg, 0., 62. * mm);
-	auto al_SolidCase2 = ConsDims::angled(78. * mm, 21. * deg, 21. * deg, 0., al_Case[1].Rmax2);
-	auto al_SolidCase3 = ConsDims::straight(86. * mm, 0., al_Case[2].Rmax2);
-
 	/* BGO crystal dimensions */
 	// Not sure if Crystal1 can be further simplified
 	auto bgo_Crystal1_length = 30. * mm;
@@ -86,12 +80,14 @@ BGO::BGO(G4LogicalVolume *World_Log, G4String name)
 	al_Case[13] = ConsDims(160. * mm, al_Case[12].Rmax1, al_Case[12].Rmax1 + 1. * mm, al_Case[12].Rmax1, al_Case[12].Rmax1 + 1. * mm);
 	max_penetration_depth = al_Case[13].length;
 
-	G4Cons *al_SolidCase1_Solid = createCons("al_SolidCase1", al_SolidCase1);
-	G4Cons *al_SolidCase2_Solid = createCons("al_SolidCase2", al_SolidCase2);
-	G4Cons *al_SolidCase3_Solid = createCons("al_SolidCase3", al_SolidCase3);
-
-	auto *al_Case_12_Solid = new G4UnionSolid("al_Case_12_Solid", al_SolidCase1_Solid, al_SolidCase2_Solid, 0, G4ThreeVector(0. * mm, 0. * mm, al_SolidCase1.length * 0.5 + al_SolidCase2.length * 0.5));
-	al_Case_Solid = new G4UnionSolid("al_Case_Solid", al_Case_12_Solid, al_SolidCase3_Solid, 0, G4ThreeVector(0. * mm, 0. * mm, al_SolidCase1.length * 0.5 + al_SolidCase2.length + al_SolidCase3.length * 0.5));
+	/* Solid Aluminum Case (for collimator hole carving) */
+	G4double al_Case_Solid_z[] = {
+		0., 0., al_Case[1].length, al_Case[1].length + al_Case[2].length,
+		al_Case[1].length + al_Case[2].length + al_Case[3].length * 1.1,
+		al_Case[1].length + al_Case[2].length + al_Case[3].length * 1.1
+	};
+	G4double al_Case_Solid_r[] = {0., al_Case[1].Rmax1, al_Case[1].Rmax2, al_Case[2].Rmax2, al_Case[3].Rmax2, 0.};
+	al_Case_Solid = new G4Polycone("al_Case_Solid", 0., 360.* deg, 6, al_Case_Solid_r, al_Case_Solid_z);
 
 	G4NistManager *man = G4NistManager::Instance();
 

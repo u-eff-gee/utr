@@ -248,8 +248,8 @@ void LeadCastle::ConstructLeadShield(G4ThreeVector local_coordinates, BGO *BGO1,
 	G4SubtractionSolid *oneFilterHole_Det2_Pol_Box_Solid = new G4SubtractionSolid("oneFilterHole_Det2_Pol_Box_Solid", cut2Det2_Pol_Box_Solid, FilterHole_Solid, &RotationDet2_Y, G4ThreeVector(0, 0, -22.003 * cm));
 	G4SubtractionSolid *FilterHoles_Det2_Pol_Box_Solid = new G4SubtractionSolid("FilterHoles_Det2_Pol_Box_Solid", oneFilterHole_Det2_Pol_Box_Solid, FilterHole_Solid, &RotationPol_Y, G4ThreeVector(0, 0, 0));
 
-	G4UnionSolid *BGO2_AlCase = BGO2->Get_Al_Case_Solid();
-	G4UnionSolid *BGOPol_AlCase = BGOPol->Get_Al_Case_Solid();
+	auto *BGO2_AlCase = BGO2->Get_Al_Case_Solid();
+	auto *BGOPol_AlCase = BGOPol->Get_Al_Case_Solid();
 
 	G4SubtractionSolid *Det2_Pol_BGO_Solid = new G4SubtractionSolid("Det2_Pol_BGO_Solid", FilterHoles_Det2_Pol_Box_Solid, BGOPol_AlCase, &RotationPol_Y, TranslationPol);
 	G4SubtractionSolid *LeadCollimator_Pol_Det2_Solid = new G4SubtractionSolid("LeadCollimator_Pol_Det2_Solid", Det2_Pol_BGO_Solid, BGO2_AlCase, &RotationDet2_Y, TranslationDet2);
