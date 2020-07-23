@@ -20,6 +20,8 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
+#include <string>
+
 #include "G4LogicalVolume.hh"
 
 class Sn112116_Target{
@@ -32,7 +34,21 @@ public:
 	void Set_Containing_Volume(G4LogicalVolume *World_Log){ World_Logical = World_Log; };
 
 private:
+	void print_pos_info(std::string name, G4ThreeVector pos, G4double thickness, G4RotationMatrix* rotation) const;
+	void print_info(G4RotationMatrix* rotation) const;
 	G4LogicalVolume *World_Logical;
+
+	G4double target_radius;
+
+	G4double Sn116_2_thickness;
+	G4double Sn112_2_thickness;
+	G4double Sn116_3_thickness;
+	G4double Sn112_1_thickness;
+	
+	G4ThreeVector Sn116_2_pos;
+	G4ThreeVector Sn112_2_pos;
+	G4ThreeVector Sn116_3_pos;
+	G4ThreeVector Sn112_1_pos;
 	
 	G4double Sn112116_Container_OuterHeight;
 	G4double Sn112116_Container_InnerHeight;
