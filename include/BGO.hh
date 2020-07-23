@@ -37,6 +37,7 @@ public:
   G4double Get_Max_Penetration_Depth() { return max_penetration_depth; };
   void Construct(G4ThreeVector global_coordinates, G4double theta, G4double phi,
                  G4double dist_from_center);
+  G4ThreeVector GetPos(G4double theta, G4double phi, G4double dist_from_center) const;
 
 private:
   G4LogicalVolume *World_Logical;

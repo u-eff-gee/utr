@@ -1,7 +1,6 @@
 #pragma once
 
 #include "G4LogicalVolume.hh"
-#include <math.h>
 
 #include "HPGe_Collection.hh"
 #include "HPGe_Coaxial.hh"
@@ -24,8 +23,8 @@ private:
 	G4double g80_theta = 90. * deg;
 	G4double g80_phi = 0. * deg;
 
-	G4double g2_phi = 140 * deg;
 	G4double g2_theta = 90 * deg;
+	G4double g2_phi = 140 * deg;
 
 	G4double gPol_theta = 90. * deg;
 	G4double gPol_phi = 180. * deg;

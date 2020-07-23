@@ -1,8 +1,6 @@
-#ifndef DETECTORS_HH
-#define DETECTORS_HH 1
+#pragma once
 
 #include "G4LogicalVolume.hh"
-#include <math.h>
 
 #include "HPGe_Collection.hh"
 #include "HPGe_Coaxial.hh"
@@ -35,5 +33,3 @@ private:
 	G4double detectordistance2 = 225. * mm;
 	G4double detectordistancePol = 225. * mm;
 };
-
-#endif

@@ -50,16 +50,20 @@ BGO::BGO(G4LogicalVolume *World_Log, G4String name)
 	bgo_Logical->SetVisAttributes(blue);
 }
 
-void BGO::Construct(G4ThreeVector global_coordinates, G4double theta, G4double phi,
-					G4double dist_from_center)
+G4ThreeVector BGO::GetPos(G4double theta, G4double phi, G4double dist_from_center) const
 {
 	auto dist = dist_from_center + length * 0.5;
-	auto pos = global_coordinates + G4ThreeVector(
+	return G4ThreeVector(
 		dist * sin(theta) * cos(phi),
 		dist * cos(theta),
 		dist * sin(theta) * sin(phi));
-	G4RotationMatrix *rot = new G4RotationMatrix();
-	rot->rotateY(90 * deg + phi);
+}
+
+void BGO::Construct(G4ThreeVector global_coordinates, G4double theta, G4double phi, G4double dist_from_center)
+{
+	auto pos = global_coordinates + GetPos(theta, phi, dist_from_center);
+	auto* rot = new G4RotationMatrix();
+	rot->rotateY(90. * deg + phi);
 
 	new G4PVPlacement(rot, pos, bgo_case_Logical, bgo_name + "_case", World_Logical, false, 0);
 	new G4PVPlacement(rot, pos, bgo_Logical, bgo_name , World_Logical, false, 0);
