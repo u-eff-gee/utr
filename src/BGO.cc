@@ -39,14 +39,14 @@ BGO::BGO(G4LogicalVolume *World_Log, G4String name)
 	G4Material *Al = man->FindOrBuildMaterial("G4_Al");
 	G4Material *bgo = man->FindOrBuildMaterial("G4_BGO");
 
-	caseFilled_Solid = new G4Polycone("caseFilled_Solid", 0., 360.* deg, sizeof(caseFilled_z)/sizeof(caseFilled_z[0]), caseFilled_r, caseFilled_z);
-	auto* caseOut_Solid = new G4GenericPolycone("caseOut_Solid", 0., 360. * deg, sizeof(caseOut_z)/sizeof(caseOut_z[0]), caseOut_r, caseOut_z);
-	auto* caseIn_Solid = new G4GenericPolycone("caseIn_Solid", 0., 360. * deg, sizeof(caseIn_z)/sizeof(caseIn_z[0]), caseIn_r, caseIn_z);
-	auto* bgo_case_Solid = new G4SubtractionSolid("bgo_case_Solid", caseOut_Solid, caseIn_Solid, 0, G4ThreeVector(0, 0, 0));
-	bgo_case_Logical = new G4LogicalVolume(bgo_case_Solid, Al, "bgo_case_Logical");
+	caseFilled_Solid = new G4Polycone(bgo_name + "_caseFilled_Solid", 0., 360.* deg, sizeof(caseFilled_z)/sizeof(caseFilled_z[0]), caseFilled_r, caseFilled_z);
+	auto* caseOut_Solid = new G4GenericPolycone(bgo_name + "_caseOut_Solid", 0., 360. * deg, sizeof(caseOut_z)/sizeof(caseOut_z[0]), caseOut_r, caseOut_z);
+	auto* caseIn_Solid = new G4GenericPolycone(bgo_name + "_caseIn_Solid", 0., 360. * deg, sizeof(caseIn_z)/sizeof(caseIn_z[0]), caseIn_r, caseIn_z);
+	auto* bgo_case_Solid = new G4SubtractionSolid(bgo_name + "_case_Solid", caseOut_Solid, caseIn_Solid, 0, G4ThreeVector(0, 0, 0));
+	bgo_case_Logical = new G4LogicalVolume(bgo_case_Solid, Al, bgo_name + "_case_Logical");
 	bgo_case_Logical->SetVisAttributes(magenta);
-	auto* bgo_Solid = new G4GenericPolycone("bgo_Solid", 0., 360. * deg, sizeof(bgo_z)/sizeof(bgo_z[0]), bgo_r, bgo_z);
-	bgo_Logical = new G4LogicalVolume(bgo_Solid, bgo, "bgo_Logical");
+	auto* bgo_Solid = new G4GenericPolycone(bgo_name + "_Solid", 0., 360. * deg, sizeof(bgo_z)/sizeof(bgo_z[0]), bgo_r, bgo_z);
+	bgo_Logical = new G4LogicalVolume(bgo_Solid, bgo, bgo_name + "_Logical");
 	bgo_Logical->SetVisAttributes(blue);
 }
 

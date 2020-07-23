@@ -19,18 +19,10 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 /*
- * Setup of the Sn112 NRF experiment from the 2015 DHIPS campaign
- * The purpose of this experiment was to measure the excitation strength
- * of the 2^+_1 state of 112Sn in NRF relative to the known strengths
- * of excited states in 27Al and 59Co. This was supposed to clarify the
- * experimental situation of the systematics of B(E2; 0^+_1 -> 2^+_1)
- * strengths in the tin isotopic chain.
- * 
- * An alternative would have been to determine two B(E2) strengths
- * of the tin isotopes 112Sn and 116Sn simultaneously. A sandwich
- * target which would be necessary for this alternative experiment
- * has also been implemented.
-*/
+ * Setup of the 150Nd NRF experiment from the 2020 DHIPS campaign.
+ * The purpose of this experiment was to complement the γ3 measurements
+ * performed at HIγS and resolve individual states up to about 6 MeV.
+ */
 
 #include "DetectorConstruction.hh"
 
