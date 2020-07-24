@@ -3,12 +3,16 @@
 #include "G4Box.hh"
 #include "G4Polycone.hh"
 #include "G4GenericPolycone.hh"
+#include "G4Polyhedra.hh"
 #include "G4RotationMatrix.hh"
 #include "G4PVPlacement.hh"
 #include "G4RotationMatrix.hh"
+#include "G4Tubs.hh"
 #include "globals.hh"
 #include "G4VisAttributes.hh"
 #include "G4SubtractionSolid.hh"
+#include "G4MultiUnion.hh"
+#include "G4IntersectionSolid.hh"
 #include "G4Material.hh"
 #include "G4VisAttributes.hh"
 
@@ -45,7 +49,18 @@ BGO::BGO(G4LogicalVolume *World_Log, G4String name)
 	auto* bgo_case_Solid = new G4SubtractionSolid(bgo_name + "_case_Solid", caseOut_Solid, caseIn_Solid, 0, G4ThreeVector(0, 0, 0));
 	bgo_case_Logical = new G4LogicalVolume(bgo_case_Solid, Al, bgo_name + "_case_Logical");
 	bgo_case_Logical->SetVisAttributes(magenta);
-	auto* bgo_Solid = new G4GenericPolycone(bgo_name + "_Solid", 0., 360. * deg, sizeof(bgo_z)/sizeof(bgo_z[0]), bgo_r, bgo_z);
+
+	auto* bgo_continuous_Solid = new G4Polyhedra(bgo_name + "_continuous_Solid", 0., 360. * deg, 8, sizeof(bgo_z)/sizeof(bgo_z[0]), bgo_r, bgo_z);
+	auto* bgo_cut = new G4Tubs("bgo_cut_Solid", 0, radius, length, 0., 45.*deg);
+	auto* bgo_crystal_Solid = new G4IntersectionSolid(bgo_name + "_crystal_Solid", bgo_continuous_Solid, bgo_cut, 0, G4ThreeVector(.5*cos(22.5*deg), 0.5*sin(22.5*deg), 0.));
+
+	auto* bgo_Solid = new G4MultiUnion(bgo_name + "_Solid");
+
+	for (int i = 0; i < 8; ++i) {
+		G4Transform3D* rot = new G4RotateZ3D(45.*deg*i);
+		bgo_Solid->AddNode(*bgo_crystal_Solid, *rot);
+	}
+	bgo_Solid->Voxelize();
 	bgo_Logical = new G4LogicalVolume(bgo_Solid, bgo, bgo_name + "_Logical");
 	bgo_Logical->SetVisAttributes(blue);
 }
@@ -66,5 +81,5 @@ void BGO::Construct(G4ThreeVector global_coordinates, G4double theta, G4double p
 	rot->rotateY(90. * deg + phi);
 
 	new G4PVPlacement(rot, pos, bgo_case_Logical, bgo_name + "_case", World_Logical, false, 0);
-	new G4PVPlacement(rot, pos, bgo_Logical, bgo_name , World_Logical, false, 0);
+	new G4PVPlacement(rot, pos, bgo_Logical, bgo_name, World_Logical, false, 0);
 }
