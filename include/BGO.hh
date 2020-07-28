@@ -23,6 +23,8 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4UnionSolid.hh"
 #include "G4Polycone.hh"
 
+#include <vector>
+
 class BGO
 {
 public:
@@ -50,5 +52,5 @@ private:
   G4double max_penetration_depth;
 
   G4LogicalVolume *bgo_case_Logical;
-  G4LogicalVolume *bgo_Logical;
+  std::vector<G4LogicalVolume*> bgo_Logical;
 };
