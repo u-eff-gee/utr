@@ -31,10 +31,6 @@ BGO::BGO(G4LogicalVolume *World_Log, G4String name)
 	// be determined correctly. The following is a best effort that is better
 	// than doing nothing but probably does not reflect the reality.
 
-	length = caseOut_z[9];
-	radius = caseOut_z[5];
-	max_penetration_depth = length - caseOut_z[11];
-
 	G4NistManager *man = G4NistManager::Instance();
 	G4Material *Al = man->FindOrBuildMaterial("G4_Al");
 	G4Material *bgo = man->FindOrBuildMaterial("G4_BGO");
@@ -49,7 +45,7 @@ BGO::BGO(G4LogicalVolume *World_Log, G4String name)
 
 	auto* bgo_continuous_Solid = new G4Polyhedra(bgo_name + "_continuous_Solid", 0., 360. * deg, 8, bgo_z.size(), bgo_r.data(), bgo_z.data());
 	auto* bgo_abrased_Solid = new G4Polyhedra(bgo_name + "_abrased_Solid", 22.5*deg, 360. * deg, 8, bgo_abrased_z.size(), bgo_abrased_r.data(), bgo_abrased_z.data());
-	auto* bgo_cut = new G4Tubs("bgo_cut_Solid", 0, radius, length, 0., 45.*deg);
+	auto* bgo_cut = new G4Tubs("bgo_cut_Solid", 0, Get_Radius(), Get_Length(), 0., 45.*deg);
 	auto* bgo_crystal_unfit1_Solid = new G4IntersectionSolid(bgo_name + "_crystal_unfit1_Solid", bgo_continuous_Solid, bgo_cut, 0, G4ThreeVector(.5*cos(22.5*deg), 0.5*sin(22.5*deg), 0.));
 	auto* bgo_crystal_unfit2_Solid = new G4IntersectionSolid(bgo_name + "_crystal_unfit2_Solid", bgo_crystal_unfit1_Solid, bgo_abrased_Solid, 0, G4ThreeVector());
 	auto* bgo_crystal_Solid = new G4IntersectionSolid(bgo_name + "_crystal_Solid", bgo_crystal_unfit2_Solid, caseGap_Solid, 0, G4ThreeVector());
@@ -65,7 +61,7 @@ BGO::BGO(G4LogicalVolume *World_Log, G4String name)
 
 G4ThreeVector BGO::GetPos(G4double theta, G4double phi, G4double dist_from_center) const
 {
-	auto dist = dist_from_center + length * 0.5;
+	auto dist = dist_from_center + Get_Length() * 0.5;
 	return G4ThreeVector(
 		dist * sin(theta) * cos(phi),
 		dist * cos(theta),

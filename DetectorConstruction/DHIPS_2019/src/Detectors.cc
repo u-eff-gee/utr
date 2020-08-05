@@ -3,13 +3,13 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <utility>
 
 #include "G4Box.hh"
 #include "G4Tubs.hh"
 #include "G4SubtractionSolid.hh"
 #include "G4PVPlacement.hh"
 
-#include "G4Color.hh"
 #include "G4VisAttributes.hh"
 #include "G4NistManager.hh"
 #include "G4SystemOfUnits.hh"
@@ -19,107 +19,90 @@ using std::cout;
 using std::endl;
 using std::stringstream;
 
-Detectors::Detectors(G4LogicalVolume *World_Log)
-	: BGO1(BGO(World_Log, "BGO1"))
-	, BGO2(BGO(World_Log, "BGO2"))
-	, BGOPol(BGO(World_Log, "BGOPol"))
-	, World_Logical(World_Log) {}
-
-void Detectors::Construct(G4ThreeVector global_coordinates)
+DetectorPos DetectorPos::get(PositionDHIPS pos)
 {
-	HPGe_Collection hpge_Collection;
-
-	// HPGe1
-	HPGe_Coaxial HPGe1(World_Logical, "HPGe1");
-	HPGe1.setProperties(hpge_Collection.HPGe_100_TUD_73760);
-	HPGe1.useDewar();
-
-	// HPGe2
-	HPGe_Coaxial HPGe2(World_Logical, "HPGe2");
-	HPGe2.setProperties(hpge_Collection.HPGe_100_TUD_72902);
-	//HPGe2.useDewar();  // Dewar does not fit into implemented Lead Castle
-	
-	// Polarimeter 
-	HPGe_Coaxial HPGePol(World_Logical, "HPGePol");
-	HPGePol.setProperties(hpge_Collection.HPGe_100_TUD_72930);
-	HPGePol.useDewar();
-
-	G4double BGO1_Dist = -(detectordistance1 + BGO1.Get_Length() * 0.5);
-
-	BGO1.Construct(global_coordinates, g1_theta, g1_phi, BGO1_Dist);
-	HPGe1.Construct(global_coordinates + G4ThreeVector(0, 0, 0),
-			-90.*deg - g1_phi, 0., detectordistance1 + (BGO1.Get_Length() - BGO1.Get_Max_Penetration_Depth()));
-
-	G4double BGO2_Dist = -(detectordistance2 + BGO2.Get_Length() * 0.5);
-
-	BGO2.Construct(global_coordinates, g2_theta, g2_phi, BGO2_Dist);
-	HPGe2.Construct(global_coordinates + G4ThreeVector(0, 0, 0),
-			-90.*deg - g2_phi, 0., detectordistance2 + (BGO2.Get_Length() - BGO2.Get_Max_Penetration_Depth()));
-
-	G4double BGOPol_Dist = -(detectordistancePol + BGOPol.Get_Length() * 0.5);
-
-	BGOPol.Construct(global_coordinates, gPol_theta, gPol_phi, BGOPol_Dist);
-	HPGePol.Construct(global_coordinates + G4ThreeVector(0, 0, 0),
-			-90.*deg - gPol_phi, 0., detectordistancePol + (BGOPol.Get_Length() - BGOPol.Get_Max_Penetration_Depth()));
-}
-void Detectors::ConstructDetectorFilter(G4ThreeVector global_coordinates, std::string det, G4double CuLength, G4double PbLength)
-{
-	bool detcheck = false;
-	G4double det_phi = 0;
-	G4double det_theta = 0;
-	G4double det_dist = 0;
-	if (det == "HPGe1")
+	switch (pos)
 	{
-		det_phi = g1_phi;
-		det_theta = g1_theta;
-		det_dist = detectordistance1;
-		detcheck = true;
-	}
-	else if (det == "HPGe2")
-	{
-		det_phi = g2_phi;
-		det_theta = g2_theta;
-		det_dist = detectordistance2;
-		detcheck = true;
-	}
-	else if (det == "HPGePol")
-	{
-		det_phi = gPol_phi;
-		det_theta = gPol_theta;
-		det_dist = detectordistancePol;
-		detcheck = true;
-	}
-	else
-	{
-		printf("\n");
-		printf("No Proper detector name used. Please use: HPGe1, HPGe2 or HPGePol in function ConstructDetectorFilter\n");
-		printf("No filters were used in ConstructDetectorFilter(%s,%f,%f)", det.c_str(), CuLength, PbLength);
-		printf("\n");
+	case PositionDHIPS::Right90:
+		return DetectorPos({90. * deg, 0. * deg, 225. * mm});
+	case PositionDHIPS::Left90:
+		return DetectorPos({90. * deg, 180. * deg, 225. * mm});
+	case PositionDHIPS::Left130:
+		return DetectorPos({90. * deg, 140. * deg, 225. * mm});
+	default:
 		abort();
 	}
-	if (detcheck)
+}
+
+DetectorInfo DetectorInfo::get(DetectorDHIPS det, PositionDHIPS pos, bool _dewar)
+{
+	return DetectorInfo::get(det, DetectorPos::get(pos), _dewar);
+}
+
+DetectorInfo DetectorInfo::get(DetectorDHIPS det, DetectorPos pos, bool _dewar)
+{
+	HPGe_Collection hpge_Collection;
+	switch (det)
+	{
+	case DetectorDHIPS::HPGe1:
+		return DetectorInfo(hpge_Collection.HPGe_100_TUD_73760, "HPGe1", pos, _dewar);
+	case DetectorDHIPS::HPGe2:
+		return DetectorInfo(hpge_Collection.HPGe_100_TUD_72902, "HPGe2", pos, _dewar);
+	case DetectorDHIPS::HPGePol:
+		return DetectorInfo(hpge_Collection.HPGe_100_TUD_72930, "HPGePol", pos, _dewar);
+	case DetectorDHIPS::HPGe80:
+		return DetectorInfo(hpge_Collection.HPGe_80_TUD_90006, "HPGe80", pos, _dewar);
+	default:
+		abort();
+	}
+}
+
+Detectors::Detectors(G4LogicalVolume *World_Log)
+	: World_Logical(World_Log) {}
+
+void Detectors::ConstructDetector(G4ThreeVector global_coordinates, DetectorInfo &det_info)
+{
+	HPGe_Coaxial HPGe(World_Logical, det_info.name);
+	HPGe.setProperties(det_info.properties);
+	if (det_info.dewar)
+	{
+		HPGe.useDewar();
+	}
+
+	HPGe.Construct(global_coordinates + G4ThreeVector(0, 0, 0),
+				   -90. * deg - det_info.position.phi, 0.,
+				   det_info.position.distance + (BGO::Get_Length() - BGO::Get_Max_Penetration_Depth()));
+}
+
+void Detectors::ConstructDetectorBGO(G4ThreeVector global_coordinates, DetectorInfo &det_info, BGO &BGO)
+{
+	G4double BGO_Dist = -(det_info.position.distance + BGO::Get_Length() * 0.5);
+	BGO.Construct(global_coordinates, det_info.position.theta, det_info.position.phi, BGO_Dist);
+	ConstructDetector(global_coordinates, det_info);
+}
+
+void Detectors::ConstructDetectorFilter(G4ThreeVector global_coordinates, DetectorInfo &det_info, G4double CuLength, G4double PbLength)
+{
+	G4double Cu_dist = -det_info.position.distance + 0.5 * CuLength;
+	G4double Pb_dist = -det_info.position.distance + 0.5 * PbLength + CuLength;
+
+	ConstructDetectorFilter(global_coordinates, det_info, CuLength, "Cu", Cu_dist, G4Color::Brown());
+	ConstructDetectorFilter(global_coordinates, det_info, PbLength, "Pb", Pb_dist, G4Color::Grey());
+}
+
+void Detectors::ConstructDetectorFilter(G4ThreeVector global_coordinates, DetectorInfo &det_info, G4double length, G4String material, G4double dist, G4Color color)
+{
+	if (length > 0.)
 	{
 		G4RotationMatrix *RotDet = new G4RotationMatrix();
-		RotDet->rotateY(det_phi - 90 * deg);
+		RotDet->rotateY(det_info.position.phi - 90 * deg);
 		G4NistManager *nist = G4NistManager::Instance();
-		G4Material *Cu = nist->FindOrBuildMaterial("G4_Cu");
-		G4Material *Pb = nist->FindOrBuildMaterial("G4_Pb");
-		G4Tubs *Cu_Filter_Solid = new G4Tubs("Cu_Filter_Solid", 0, 25 * mm, CuLength * 0.5, 0. * deg, 360. * deg);
-		G4Tubs *Pb_Filter_Solid = new G4Tubs("Pb_Filter_Solid", 0, 25 * mm, PbLength * 0.5, 0. * deg, 360. * deg);
+		G4Material *mat = nist->FindOrBuildMaterial("G4_" + material);
 
-		G4LogicalVolume *Cu_Filter_Logical = new G4LogicalVolume(Cu_Filter_Solid, Cu, "Cu_Filter_Logical", 0, 0, 0);
-		G4LogicalVolume *Pb_Filter_Logical = new G4LogicalVolume(Pb_Filter_Solid, Pb, "Pb_Filter_Logical", 0, 0, 0);
-
-		Cu_Filter_Logical->SetVisAttributes(G4Color::Brown());
-		Pb_Filter_Logical->SetVisAttributes(G4Color::Grey());
-
-		G4double Cu_dist = -det_dist + 0.5 * CuLength;
-		G4double Pb_dist = -det_dist + 0.5 * PbLength + CuLength;
-
-		G4ThreeVector Pb_Filter_Dist(Pb_dist * sin(det_theta) * cos(det_phi), Pb_dist * cos(det_theta), Pb_dist * sin(det_theta) * sin(det_phi));
-		G4ThreeVector Cu_Filter_Dist(Cu_dist * sin(det_theta) * cos(det_phi), Cu_dist * cos(det_theta), Cu_dist * sin(det_theta) * sin(det_phi));
-
-		new G4PVPlacement(RotDet, global_coordinates + Cu_Filter_Dist, Cu_Filter_Logical, (det + "_Cu_Filter").c_str(), World_Logical, 0, 0);
-		new G4PVPlacement(RotDet, global_coordinates + Pb_Filter_Dist, Pb_Filter_Logical, (det + "_Pb_Filter").c_str(), World_Logical, 0, 0);
+		G4ThreeVector Filter_Dist(dist * sin(det_info.position.theta) * cos(det_info.position.phi), dist * cos(det_info.position.theta), dist * sin(det_info.position.theta) * sin(det_info.position.phi));
+		G4Tubs *Filter_Solid = new G4Tubs(material + "_Filter_Solid", 0, 25 * mm, length * 0.5, 0. * deg, 360. * deg);
+		G4LogicalVolume *Filter_Logical = new G4LogicalVolume(Filter_Solid, mat, "Filter_Logical", 0, 0, 0);
+		Filter_Logical->SetVisAttributes(color);
+		new G4PVPlacement(RotDet, global_coordinates + Filter_Dist, Filter_Logical, (det_info.name + "_" + material + "_Filter").c_str(), World_Logical, 0, 0);
 	}
 }

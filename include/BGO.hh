@@ -26,6 +26,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <vector>
 #include <array>
+#include <algorithm>
 
 constexpr G4double get_edge(G4double midpoint, G4double angle) {
   return midpoint / cos(angle);
@@ -47,10 +48,10 @@ public:
   G4Polycone *Get_CaseFilled_Solid() { return caseFilled_Solid; };
 
   // Length and radius of the BGO mother volume which just encloses all of the parts of the BGO
-  G4double Get_Length() { return length; };
-  G4double Get_Radius() { return radius; };
+  static constexpr G4double Get_Length() { return *std::max_element(caseOut_z.begin(), caseOut_z.end()); };
+  static constexpr G4double Get_Radius() { return *std::max_element(caseOut_r.begin(), caseOut_r.end()); };
   // max_penetration depth denotes how far (measured from the backward end of the BGO) a detector can be pushed inside the BGO
-  G4double Get_Max_Penetration_Depth() { return max_penetration_depth; };
+  static constexpr G4double Get_Max_Penetration_Depth() { return Get_Length() - caseOut_z[11]; };
   void Construct(G4ThreeVector global_coordinates, G4double theta, G4double phi,
                  G4double dist_from_center);
   G4ThreeVector GetPos(G4double theta, G4double phi, G4double dist_from_center) const;
@@ -75,10 +76,6 @@ private:
   G4Polycone *caseFilled_Solid;
 
   G4String bgo_name;
-
-  G4double length;
-  G4double radius;
-  G4double max_penetration_depth;
 
   G4LogicalVolume *bgo_case_Logical;
   std::vector<G4LogicalVolume*> bgo_Logical;
