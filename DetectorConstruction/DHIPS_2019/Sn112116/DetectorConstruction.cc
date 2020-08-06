@@ -52,7 +52,7 @@ Materials *materials = Materials::Instance();
 #include "BeamPipe_Upstream.hh"
 #include "BeamPipe_Downstream.hh"
 #include "LeadCastle.hh"
-#include "Detectors_80.hh"
+#include "Detectors.hh"
 #include "Sn112116_Target.hh"
 
 // Geometry
@@ -112,7 +112,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct()
 	BeamPipe_Upstream BeamPipe_Upstream(World_Logical);
 	RadiatorTarget RadiatorTarget(World_Logical);
 	LeadCastle LeadCastle(World_Logical);
-	Detectors_80 Detectors_80(World_Logical);
+	Detectors Detectors(World_Logical);
 
 
 	/***************************************************/
@@ -122,11 +122,21 @@ G4VPhysicalVolume *DetectorConstruction::Construct()
 	BeamPipe_Upstream.Construct(G4ThreeVector(0,0,-1500*mm),0.1);  // Position guesstimated
 	RadiatorTarget.Construct(G4ThreeVector(0,0,-1190*mm),"Radiator1","Au",2.5*mm,"Al",0.);  // Position guesstimated
 	RadiatorTarget.Construct(G4ThreeVector(0,0,-1160*mm),"Radiator2","Au",0.,"Al",0.);  // Position guesstimated
-	Detectors_80.Construct(G4ThreeVector());
-	LeadCastle.Construct(G4ThreeVector(), &Detectors_80.BGO1, &Detectors_80.BGO2, &Detectors_80.BGOPol);
-	Detectors_80.ConstructDetectorFilter(G4ThreeVector(),"HPGe80",10.*mm, 0.*mm);
-	Detectors_80.ConstructDetectorFilter(G4ThreeVector(),"HPGe2",10.*mm, 0.*mm);
-	Detectors_80.ConstructDetectorFilter(G4ThreeVector(),"HPGePol",10.*mm, 0.*mm);
+
+	auto BGO1 = BGO(World_Logical, "BGO1");
+	auto BGO2 = BGO(World_Logical, "BGO2");
+	auto BGOPol = BGO(World_Logical, "BGOPol");
+	auto HPGe80 = DetectorInfo::get(DetectorDHIPS::HPGe80, PositionDHIPS::Right90);
+	auto HPGe2 = DetectorInfo::get(DetectorDHIPS::HPGe2, PositionDHIPS::Left130, false);
+	auto HPGePol = DetectorInfo::get(DetectorDHIPS::HPGePol, PositionDHIPS::Left90);
+
+	Detectors.ConstructDetectorBGO(G4ThreeVector(), HPGe80, BGO1);
+	Detectors.ConstructDetectorBGO(G4ThreeVector(), HPGe2, BGO2);
+	Detectors.ConstructDetectorBGO(G4ThreeVector(), HPGePol, BGOPol);
+	LeadCastle.Construct(G4ThreeVector(), &BGO1, &BGO2, &BGOPol);
+	Detectors.ConstructDetectorFilter(G4ThreeVector(), HPGe80, 10. * mm, 0.);
+	Detectors.ConstructDetectorFilter(G4ThreeVector(), HPGe2, 10. * mm, 0.);
+	Detectors.ConstructDetectorFilter(G4ThreeVector(), HPGePol, 10. * mm, 0.);
 
 #ifdef USE_TARGETS
 	auto rotation = new G4RotationMatrix();
