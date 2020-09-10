@@ -54,6 +54,15 @@ double AngularDistribution::AngDist(
 			             2. * cos(2. * phi) * (1. + 2. * cos(2. * theta)) *
 			                 pow(sin(theta), 2.));
 		}
+        
+        // 0^+ -> 2^- -> 0^+ or 0^- -> 2^+ -> 0^-
+        if ((st[0] == 0. && st[1] == -2. && st[2] == 0.) ||
+            (st[0] == -0.1 && st[1] == 2. && st[2] == -0.1))
+        {
+            return (10.0 * pow(sin(phi), 2) * pow(sin(theta), 4) -
+                    7.5 * pow(sin(phi), 2) * pow(sin(theta), 2) -
+                    2.5 * pow(sin(theta), 2) + 2.5);
+        }
 
 		// 0^+ -> 2^+ -> 2^+ or 0^- -> 2^- -> 2^-
 		if ((st[0] == 0. && st[1] == 2. && st[2] == 2.) ||
