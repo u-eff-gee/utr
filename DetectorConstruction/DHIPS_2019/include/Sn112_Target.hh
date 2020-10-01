@@ -35,9 +35,9 @@ private:
 	G4LogicalVolume *World_Logical;
 
 	G4double container_inner_radius;
-	G4double co59_I_thickness;
-	G4double al27_II_thickness;
+	G4double al27_I_thickness;
+	G4double co59_II_thickness;
 	G4double sn112_III_thickness;
-	G4double al27_IV_thickness;
-	G4double co59_V_thickness;
+	G4double co59_IV_thickness;
+	G4double al27_V_thickness;
 };

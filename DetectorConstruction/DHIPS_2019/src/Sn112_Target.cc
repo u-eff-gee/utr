@@ -61,31 +61,32 @@ void Sn112_Target::Construct(G4ThreeVector global_coordinates){
 	G4double container_outer_radius = 11.*mm;
 	G4double container_lid_thickness = 2.*mm;
 
-	G4double co59_I_density = 8.90*g/cm3; // Density of natural cobalt from Wikipedia
-	G4double co59_I_mass = 0.7689*g; // +- 0.0003 g
-	co59_I_thickness = co59_I_mass/(co59_I_density*pi*container_inner_radius*container_inner_radius);
+	G4double al27_I_density = 2.70*g/cm3; // Density of natural aluminium from Wikipedia
+	G4double al27_I_mass = 1.7055*g; // +- 0.0003 g
+	al27_I_thickness = al27_I_mass/(al27_I_density*pi*container_inner_radius*container_inner_radius);
 
-	G4double al27_II_density = 2.70*g/cm3; // Density of natural aluminium from Wikipedia
-	G4double al27_II_mass = 1.7055*g; // +- 0.0003 g
-	al27_II_thickness = al27_II_mass/(al27_II_density*pi*container_inner_radius*container_inner_radius);
+	G4double co59_II_density = 8.90*g/cm3; // Density of natural cobalt from Wikipedia
+	G4double co59_II_mass = 0.7689*g; // +- 0.0003 g
+	co59_II_thickness = co59_II_mass/(co59_II_density*pi*container_inner_radius*container_inner_radius);
 
 	G4double sn112_III_density = 7.265*g/cm3; // Density of natural beta-tin from Wikipedia.
 	G4double sn112_III_mass = 4.4285*g; // +- 0.0003 g
 	sn112_III_thickness = sn112_III_mass/(sn112_III_density*pi*container_inner_radius*container_inner_radius);
 
-	G4double al27_IV_density = 2.70*g/cm3; // Density of natural aluminium from Wikipedia
-	G4double al27_IV_mass = 1.7067*g; // +- 0.0003 g
-	al27_IV_thickness = al27_IV_mass/(al27_IV_density*pi*container_inner_radius*container_inner_radius);
+	G4double co59_IV_density = 8.90*g/cm3; // Density of natural cobalt from Wikipedia
+	G4double co59_IV_mass = 0.7511*g; // +- 0.0003 g
+	co59_IV_thickness = co59_IV_mass/(co59_IV_density*pi*container_inner_radius*container_inner_radius);
 
-	G4double co59_V_density = 8.90*g/cm3; // Density of natural cobalt from Wikipedia
-	G4double co59_V_mass = 0.7511*g; // +- 0.0003 g
-	co59_V_thickness = co59_V_mass/(co59_V_density*pi*container_inner_radius*container_inner_radius);
+	G4double al27_V_density = 2.70*g/cm3; // Density of natural aluminium from Wikipedia
+	G4double al27_V_mass = 1.7067*g; // +- 0.0003 g
+	al27_V_thickness = al27_V_mass/(al27_V_density*pi*container_inner_radius*container_inner_radius);
 
-	G4double container_inner_length = 	  co59_I_thickness
-						+ al27_II_thickness
-						+ sn112_III_thickness
-						+ al27_IV_thickness
-						+ co59_V_thickness;
+	G4double container_inner_length = (
+		al27_I_thickness +
+		co59_II_thickness +
+		sn112_III_thickness +
+		co59_IV_thickness +
+		al27_V_thickness);
 	
 	// Create / load materials
 	G4NistManager *nist = G4NistManager::Instance();
@@ -122,12 +123,24 @@ void Sn112_Target::Construct(G4ThreeVector global_coordinates){
 	new G4PVPlacement(0, global_coordinates+G4ThreeVector(0., 0., 0.5*container_lid_thickness + 0.5*container_inner_length), container_top_logical, "container_top", World_Logical, false, 0);
 
 	// Construct targets in a loop
-	vector<G4String> target_names = {"Co59_I", "Al27_II", "Sn112_III", "Al27_IV", "Co59_V"};
-	vector<G4Material*> target_materials = {nat_Co, nat_Al, sn112_material, nat_Al, nat_Co};
+	vector<G4String> target_names = {"Al27_I", "Co59_II", "Sn112_III", "Co59_IV", "Al27_V"};
+	vector<G4Material*> target_materials = {nat_Al, nat_Co, sn112_material, nat_Co, nat_Al};
 	vector<G4Tubs*> target_solids;
 	vector<G4LogicalVolume*> target_logicals;
-	vector<G4Color> target_colors = {G4Color::Green(), G4Color::Cyan(), G4Color::Yellow(), G4Color::Cyan(), G4Color::Green()};
-	vector<double> target_thicknesses = {co59_I_thickness, al27_II_thickness, sn112_III_thickness, al27_IV_thickness, co59_V_thickness};
+	vector<G4Color> target_colors = {
+		G4Color::Cyan(),
+		G4Color::Green(),
+		G4Color::Yellow(),
+		G4Color::Green(),
+		G4Color::Cyan(),
+	};
+	vector<double> target_thicknesses = {
+		al27_I_thickness,
+		co59_II_thickness,
+		sn112_III_thickness,
+		co59_IV_thickness,
+		al27_V_thickness,
+	};
 
 	stringstream name;
 	G4double next_target_z = 0.;
