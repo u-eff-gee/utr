@@ -164,7 +164,7 @@ void DetectorConstruction::ConstructSDandField()
 	HPGePolSD->SetDetectorID(3);
 	SetSensitiveDetector("HPGePol", HPGePolSD, true);
 
-	EnergyDepositionSD *BGO1SD = new EnergyDepositionSD("BGO1", "BGO1");
+	/*EnergyDepositionSD *BGO1SD = new EnergyDepositionSD("BGO1", "BGO1");
 	G4SDManager::GetSDMpointer()->AddNewDetector(BGO1SD);
 	BGO1SD->SetDetectorID(4);
 	SetSensitiveDetector("BGO1_Logical", BGO1SD, true);
@@ -177,7 +177,7 @@ void DetectorConstruction::ConstructSDandField()
 	EnergyDepositionSD *BGOPolSD = new EnergyDepositionSD("BGOPol", "BGOPol");
 	G4SDManager::GetSDMpointer()->AddNewDetector(BGOPolSD);
 	BGOPolSD->SetDetectorID(6);
-	SetSensitiveDetector("BGOPol_Logical", BGOPolSD, true);
+	SetSensitiveDetector("BGOPol_Logical", BGOPolSD, true);*/
 }
 
 void DetectorConstruction::print_info() const
