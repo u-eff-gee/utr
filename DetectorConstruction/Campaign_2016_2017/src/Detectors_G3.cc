@@ -61,7 +61,7 @@ void Detectors_G3::Construct(G4ThreeVector global_coordinates){
 	/**************** HPGE2 *******************/
 
 	G4double hpge2_rt = 84.5 * mm;
-	G4double hpge2_dx = 15. * mm;
+	G4double hpge2_dy = 15. * mm;
 	G4double hpge2_dz = 0. * mm;
 	G4double hpge2_phi = 180. * deg;
 	G4double hpge2_theta = 90. * deg;
@@ -74,7 +74,7 @@ void Detectors_G3::Construct(G4ThreeVector global_coordinates){
 	hpge2.Add_Filter("G4_Cu", 2.*1.15*mm, 45.*mm);
 	hpge2.Add_Filter("G4_Pb", 2.*2.*mm, 45.*mm);
 	hpge2.Add_Wrap("G4_Pb", 1.*1.2*mm);
-	hpge2.Construct(global_coordinates + G4ThreeVector(hpge2_dx, 0., hpge2_dz),
+	hpge2.Construct(global_coordinates + G4ThreeVector(0., hpge2_dy, hpge2_dz),
 			hpge2_theta, hpge2_phi, hpge2_rt, 0.*deg);
 
 	/**************** HPGE3 *******************/
