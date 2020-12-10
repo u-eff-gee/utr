@@ -52,7 +52,7 @@ void Detectors_G3::Construct(G4ThreeVector global_coordinates){
 	hpge1.useFilterCase();
 	hpge1.useFilterCaseRing();
 	hpge1.useDewar();
-	hpge1.Add_Filter("G4_Cu", 2.*1.15*mm, 45.*mm);
+	hpge1.Add_Filter("G4_Cu", 2.*1.02*mm, 45.*mm);
 	hpge1.Add_Filter("G4_Pb", 2.*2.*mm, 45.*mm);
 	hpge1.Add_Wrap("G4_Pb", 1.*1.2*mm);
 	hpge1.Construct(global_coordinates + G4ThreeVector(0., hpge1_dy, hpge1_dz),
@@ -71,7 +71,7 @@ void Detectors_G3::Construct(G4ThreeVector global_coordinates){
 	hpge2.useFilterCase();
 	hpge2.useFilterCaseRing();
 	hpge2.useDewar();
-	hpge2.Add_Filter("G4_Cu", 2.*1.15*mm, 45.*mm);
+	hpge2.Add_Filter("G4_Cu", 2.*1.02*mm, 45.*mm);
 	hpge2.Add_Filter("G4_Pb", 2.*2.*mm, 45.*mm);
 	hpge2.Add_Wrap("G4_Pb", 1.*1.2*mm);
 	hpge2.Construct(global_coordinates + G4ThreeVector(0., hpge2_dy, hpge2_dz),
@@ -88,7 +88,7 @@ void Detectors_G3::Construct(G4ThreeVector global_coordinates){
 	HPGe_Coaxial hpge3(World_Logical, "HPGe3");
 	hpge3.setProperties(hpge_Collection.HPGe_100_TUD_72930);
 	hpge3.useDewar();
-	hpge3.Add_Filter("G4_Cu", 2.*1.15*mm, 50.*mm);
+	hpge3.Add_Filter("G4_Cu", 2.*1.02*mm, 50.*mm);
 	hpge3.Add_Filter("G4_Pb", 2.*2.*mm, 50.*mm);
 	hpge3.Add_Wrap("G4_Pb", 2.*1.2*mm);
 	hpge3.Construct(global_coordinates + G4ThreeVector(hpge3_dx, 0., hpge3_dz),
@@ -107,7 +107,7 @@ void Detectors_G3::Construct(G4ThreeVector global_coordinates){
 	hpge4.useFilterCase();
 	hpge4.useFilterCaseRing();
 	hpge4.useDewar();
-	hpge4.Add_Filter("G4_Cu", 2.*1.15*mm, 45.*mm);
+	hpge4.Add_Filter("G4_Cu", 2.*1.02*mm, 45.*mm);
 	hpge4.Add_Filter("G4_Pb", 2.*1.2*mm, 45.*mm);
 	hpge4.Add_Wrap("G4_Pb", 2.*1.2*mm);
 	hpge4.Construct(global_coordinates + G4ThreeVector(0., hpge4_dy, hpge4_dz),
@@ -125,7 +125,7 @@ void Detectors_G3::Construct(G4ThreeVector global_coordinates){
 	labr1.useFilterCase();
 	labr1.useFilterCaseRing();
 	labr1.useHousing();
-	labr1.Add_Filter("G4_Cu", 1.*1.15*mm, 45.*mm);
+	labr1.Add_Filter("G4_Cu", 1.*1.02*mm, 45.*mm);
 	labr1.Add_Wrap("G4_Pb", 1.*1.2*mm);
 	labr1.Construct(global_coordinates + G4ThreeVector(labr1_dx, 0., labr1_dz),
 			labr1_theta, labr1_phi, labr1_rt);
@@ -142,7 +142,7 @@ void Detectors_G3::Construct(G4ThreeVector global_coordinates){
 	labr2.useFilterCase();
 	labr2.useFilterCaseRing();
 	labr2.useHousing();
-	labr2.Add_Filter("G4_Cu", 1.*1.15*mm, 45.*mm);
+	labr2.Add_Filter("G4_Cu", 1.*1.02*mm, 45.*mm);
 	labr2.Add_Wrap("G4_Pb", 1.*1.2*mm);
 	labr2.Construct(global_coordinates + G4ThreeVector(labr2_dx, 0., labr2_dz),
 			labr2_theta, labr2_phi, labr2_rt);
@@ -159,7 +159,7 @@ void Detectors_G3::Construct(G4ThreeVector global_coordinates){
 	labr3.useFilterCase();
 	labr3.useFilterCaseRing();
 	labr3.useHousing();
-	labr3.Add_Filter("G4_Cu", 1.*1.15*mm, 45.*mm);
+	labr3.Add_Filter("G4_Cu", 1.*1.02*mm, 45.*mm);
 	labr3.Construct(global_coordinates + G4ThreeVector(0., labr3_dy, labr3_dz),
 			labr3_theta, labr3_phi, labr3_rt);
 
@@ -175,7 +175,7 @@ void Detectors_G3::Construct(G4ThreeVector global_coordinates){
 	labr4.useFilterCase();
 	labr4.useFilterCaseRing();
 	labr4.useHousing();
-	labr4.Add_Filter("G4_Cu", 1.*1.15*mm, 45.*mm);
+	labr4.Add_Filter("G4_Cu", 1.*1.02*mm, 45.*mm);
 	labr4.Construct(global_coordinates + G4ThreeVector(0., labr4_dy, labr4_dz),
 			labr4_theta, labr4_phi, labr4_rt);
 
