@@ -53,28 +53,17 @@ struct HPGe_Collection{
 		HPGe_55_TUNL_21638.detector_face_radius = 8.*mm; // (J) in ORTEC data sheet
 		HPGe_55_TUNL_21638.hole_radius = 0.5*9.2*mm; // (C) in ORTEC data sheet
 		HPGe_55_TUNL_21638.hole_depth = 73.1*mm; // (D) in ORTEC data sheet
-		HPGe_55_TUNL_21638.hole_face_radius = HPGe_55_TUNL_21638.hole_radius; // Estimated to be the same as hole radius
 		HPGe_55_TUNL_21638.mount_cup_thickness = 0.8*mm; // (K) in ORTEC data sheet
 		HPGe_55_TUNL_21638.mount_cup_base_thickness = 3.*mm; // ORTEC data sheet
 		HPGe_55_TUNL_21638.mount_cup_material = "G4_Al"; // ORTEC data sheet
 		HPGe_55_TUNL_21638.end_cap_outer_radius = 0.5*80.*mm; // Estimated
 		HPGe_55_TUNL_21638.end_cap_to_crystal_gap_front = 4.*mm; // (G) in ORTEC data sheet
 		HPGe_55_TUNL_21638.end_cap_thickness = 1.*mm; // (L) in ORTEC data sheet
-		HPGe_55_TUNL_21638.end_cap_to_crystal_gap_side = 
-			HPGe_55_TUNL_21638.end_cap_outer_radius- 
-			HPGe_55_TUNL_21638.end_cap_thickness- 
-			HPGe_55_TUNL_21638.mount_cup_thickness-
-			HPGe_55_TUNL_21638.detector_radius; // Calculated from outer radius and other given dimensions
 		HPGe_55_TUNL_21638.end_cap_window_thickness = 0.5*mm; // (I) in ORTEC data sheet
 		HPGe_55_TUNL_21638.end_cap_length = 6.5*inch; // Measured at the detector
-		HPGe_55_TUNL_21638.mount_cup_length = 
-			HPGe_55_TUNL_21638.end_cap_length-
-			HPGe_55_TUNL_21638.end_cap_window_thickness-
-			HPGe_55_TUNL_21638.end_cap_to_crystal_gap_front; // Calculated from end cap length. Different from (F) in ORTEC data sheet, because it shows only the part which contains the detector crystal.
 		HPGe_55_TUNL_21638.end_cap_material = "G4_Al"; // ORTEC data sheet
 		HPGe_55_TUNL_21638.end_cap_window_material = "G4_Be"; // ORTEC data sheet
 		HPGe_55_TUNL_21638.cold_finger_radius = 0.5*4.*mm; // Suggestion by B. Fallin, Duke University. Not in ORTEC data sheet
-		HPGe_55_TUNL_21638.cold_finger_penetration_depth = HPGe_55_TUNL_21638.hole_depth - 5.*mm; // Estimated
 		HPGe_55_TUNL_21638.cold_finger_material = "G4_Cu"; // Estimated
 		HPGe_55_TUNL_21638.connection_length = 1.5*inch; // Measured
 		HPGe_55_TUNL_21638.connection_radius = 0.75*inch; // Estimated
@@ -84,7 +73,18 @@ struct HPGe_Collection{
 		HPGe_55_TUNL_21638.dewar_outer_radius = 4.5*inch; // Measured
 		HPGe_55_TUNL_21638.dewar_wall_thickness = 5.*mm; // Estimated
 		HPGe_55_TUNL_21638.dewar_material = "G4_Al"; // Estimated
-		
+		HPGe_55_TUNL_21638.hole_face_radius = HPGe_55_TUNL_21638.hole_radius; // Estimated to be the same as hole radius
+		HPGe_55_TUNL_21638.cold_finger_penetration_depth = HPGe_55_TUNL_21638.hole_depth - 5.*mm; // Estimated
+		HPGe_55_TUNL_21638.end_cap_to_crystal_gap_side = 
+			HPGe_55_TUNL_21638.end_cap_outer_radius- 
+			HPGe_55_TUNL_21638.end_cap_thickness- 
+			HPGe_55_TUNL_21638.mount_cup_thickness-
+			HPGe_55_TUNL_21638.detector_radius; // Calculated from outer radius and other given dimensions
+		HPGe_55_TUNL_21638.mount_cup_length = 
+			HPGe_55_TUNL_21638.end_cap_length-
+			HPGe_55_TUNL_21638.end_cap_window_thickness-
+			HPGe_55_TUNL_21638.end_cap_to_crystal_gap_front; // Calculated from end cap length. Different from (F) in ORTEC data sheet, because it shows only the part which contains the detector crystal.
+
 		// 55% coaxial HPGe with ORTEC serial number 41-TN31524A
 		// Property of TUNL
 		HPGe_55_TUNL_31524.detector_radius = 0.5*67.1*mm; // ORTEC data sheet
@@ -92,28 +92,17 @@ struct HPGe_Collection{
 		HPGe_55_TUNL_31524.detector_face_radius = 8.*mm; // (J) in ORTEC data sheet
 		HPGe_55_TUNL_31524.hole_radius = 0.5*8.7*mm; // ORTEC data sheet
 		HPGe_55_TUNL_31524.hole_depth = 54.3*mm; // ORTEC data sheet
-		HPGe_55_TUNL_31524.hole_face_radius = HPGe_55_TUNL_31524.hole_radius; // Estimated to be the same as hole radius
 		HPGe_55_TUNL_31524.mount_cup_thickness = 0.76*mm; // (H) in ORTEC data sheet
 		HPGe_55_TUNL_31524.mount_cup_base_thickness = 3.2*mm; // (C) in ORTEC data sheet
 		HPGe_55_TUNL_31524.mount_cup_material = "G4_Al"; // ORTEC data sheet
 		HPGe_55_TUNL_31524.end_cap_outer_radius = 0.5*80.*mm; // Estimated
 		HPGe_55_TUNL_31524.end_cap_to_crystal_gap_front = 4.*mm; // (B) in ORTEC data sheet
 		HPGe_55_TUNL_31524.end_cap_thickness = 1.*mm; // (I) in ORTEC data sheet
-		HPGe_55_TUNL_31524.end_cap_to_crystal_gap_side = 
-			HPGe_55_TUNL_31524.end_cap_outer_radius- 
-			HPGe_55_TUNL_31524.end_cap_thickness- 
-			HPGe_55_TUNL_31524.mount_cup_thickness-
-			HPGe_55_TUNL_31524.detector_radius; // Calculated from outer radius and other given dimensions
 		HPGe_55_TUNL_31524.end_cap_length = 6.5*inch; // Measured at the detector
-		HPGe_55_TUNL_31524.mount_cup_length = 
-			HPGe_55_TUNL_31524.end_cap_length-
-			HPGe_55_TUNL_31524.end_cap_window_thickness-
-			HPGe_55_TUNL_31524.end_cap_to_crystal_gap_front; // Calculated from end cap length. Different from (A) in ORTEC data sheet, because it shows only the part which contains the detector crystal.
 		HPGe_55_TUNL_31524.end_cap_window_thickness = 0.5*mm; // (D) in ORTEC data sheet
 		HPGe_55_TUNL_31524.end_cap_material = "G4_Al"; // ORTEC data sheet
 		HPGe_55_TUNL_31524.end_cap_window_material = "G4_Be"; // ORTEC data sheet
 		HPGe_55_TUNL_31524.cold_finger_radius = 0.5*4.*mm; // Suggestion by B. Fallin, Duke University. Not in ORTEC data sheet
-		HPGe_55_TUNL_31524.cold_finger_penetration_depth = HPGe_55_TUNL_31524.hole_depth - 5.*mm; // Estimated
 		HPGe_55_TUNL_31524.cold_finger_material = "G4_Cu"; // Estimated
 		HPGe_55_TUNL_31524.connection_length = 1.5*inch; // Measured
 		HPGe_55_TUNL_31524.connection_radius = 0.75*inch; // Estimated
@@ -123,7 +112,18 @@ struct HPGe_Collection{
 		HPGe_55_TUNL_31524.dewar_outer_radius = 4.5*inch; // Measured
 		HPGe_55_TUNL_31524.dewar_wall_thickness = 5.*mm; // Estimated
 		HPGe_55_TUNL_31524.dewar_material = "G4_Al"; // Estimated
-	
+		HPGe_55_TUNL_31524.hole_face_radius = HPGe_55_TUNL_31524.hole_radius; // Estimated to be the same as hole radius
+		HPGe_55_TUNL_31524.cold_finger_penetration_depth = HPGe_55_TUNL_31524.hole_depth - 5.*mm; // Estimated
+		HPGe_55_TUNL_31524.mount_cup_length = 
+			HPGe_55_TUNL_31524.end_cap_length-
+			HPGe_55_TUNL_31524.end_cap_window_thickness-
+			HPGe_55_TUNL_31524.end_cap_to_crystal_gap_front; // Calculated from end cap length. Different from (A) in ORTEC data sheet, because it shows only the part which contains the detector crystal.
+		HPGe_55_TUNL_31524.end_cap_to_crystal_gap_side = 
+			HPGe_55_TUNL_31524.end_cap_outer_radius- 
+			HPGe_55_TUNL_31524.end_cap_thickness- 
+			HPGe_55_TUNL_31524.mount_cup_thickness-
+			HPGe_55_TUNL_31524.detector_radius; // Calculated from outer radius and other given dimensions
+
 		// 60% coaxial HPGe with ORTEC serial number 36-TN21033A
 		// Property of TUNL
 		HPGe_60_TUNL_21033.detector_radius = 0.5*68.*mm; // ORTEC data sheet
@@ -131,28 +131,17 @@ struct HPGe_Collection{
 		HPGe_60_TUNL_21033.detector_face_radius = 8.*mm; // (J) in ORTEC data sheet
 		HPGe_60_TUNL_21033.hole_radius = 0.5*9.3*mm; // ORTEC data sheet
 		HPGe_60_TUNL_21033.hole_depth = 73.1*mm; // ORTEC data sheet
-		HPGe_60_TUNL_21033.hole_face_radius = HPGe_60_TUNL_21033.hole_radius; // Estimated to be the same as hole radius
 		HPGe_60_TUNL_21033.mount_cup_thickness = 0.76*mm; // (H) in ORTEC data sheet
 		HPGe_60_TUNL_21033.mount_cup_base_thickness = 3.2*mm; // (C) in ORTEC data sheet
 		HPGe_60_TUNL_21033.mount_cup_material = "G4_Al"; // ORTEC data sheet
 		HPGe_60_TUNL_21033.end_cap_outer_radius = 0.5*85.*mm; // Estimated
 		HPGe_60_TUNL_21033.end_cap_to_crystal_gap_front = 4.*mm; // (B) in ORTEC data sheet
 		HPGe_60_TUNL_21033.end_cap_thickness = 1.*mm; // (I) in ORTEC data sheet
-		HPGe_60_TUNL_21033.end_cap_to_crystal_gap_side = 
-			HPGe_60_TUNL_21033.end_cap_outer_radius- 
-			HPGe_60_TUNL_21033.end_cap_thickness- 
-			HPGe_60_TUNL_21033.mount_cup_thickness-
-			HPGe_60_TUNL_21033.detector_radius; // Calculated from outer radius and other given dimensions
 		HPGe_60_TUNL_21033.end_cap_window_thickness = 0.5*mm; // (D) in ORTEC data sheet
 		HPGe_60_TUNL_21033.end_cap_length = 10.5*inch; // Measured at the detector
-		HPGe_60_TUNL_21033.mount_cup_length = 
-			HPGe_60_TUNL_21033.end_cap_length-
-			HPGe_60_TUNL_21033.end_cap_window_thickness-
-			HPGe_60_TUNL_21033.end_cap_to_crystal_gap_front; // Calculated from end cap length. Different from (F) in ORTEC data sheet, because it shows only the part which contains the detector crystal.
 		HPGe_60_TUNL_21033.end_cap_material = "G4_Al"; // ORTEC data sheet
 		HPGe_60_TUNL_21033.end_cap_window_material = "G4_Be"; // ORTEC data sheet
 		HPGe_60_TUNL_21033.cold_finger_radius = 0.5*4.*mm; // Suggestion by B. Fallin, Duke University. Not in ORTEC data sheet
-		HPGe_60_TUNL_21033.cold_finger_penetration_depth = HPGe_60_TUNL_21033.hole_depth - 5.*mm; // Estimated
 		HPGe_60_TUNL_21033.cold_finger_material = "G4_Cu"; // Estimated
 		HPGe_60_TUNL_21033.connection_length = 2.*inch; // Measured
 		HPGe_60_TUNL_21033.connection_radius = 0.75*inch; // Estimated
@@ -162,6 +151,17 @@ struct HPGe_Collection{
 		HPGe_60_TUNL_21033.dewar_outer_radius = 3.*inch; // Measured
 		HPGe_60_TUNL_21033.dewar_wall_thickness = 5.*mm; // Estimated
 		HPGe_60_TUNL_21033.dewar_material = "G4_Al"; // Estimated
+		HPGe_60_TUNL_21033.hole_face_radius = HPGe_60_TUNL_21033.hole_radius; // Estimated to be the same as hole radius
+		HPGe_60_TUNL_21033.cold_finger_penetration_depth = HPGe_60_TUNL_21033.hole_depth - 5.*mm; // Estimated
+		HPGe_60_TUNL_21033.mount_cup_length = 
+			HPGe_60_TUNL_21033.end_cap_length-
+			HPGe_60_TUNL_21033.end_cap_window_thickness-
+			HPGe_60_TUNL_21033.end_cap_to_crystal_gap_front; // Calculated from end cap length. Different from (F) in ORTEC data sheet, because it shows only the part which contains the detector crystal.
+		HPGe_60_TUNL_21033.end_cap_to_crystal_gap_side = 
+			HPGe_60_TUNL_21033.end_cap_outer_radius- 
+			HPGe_60_TUNL_21033.end_cap_thickness- 
+			HPGe_60_TUNL_21033.mount_cup_thickness-
+			HPGe_60_TUNL_21033.detector_radius; // Calculated from outer radius and other given dimensions
 
 		// 60% coaxial HPGe with ORTEC serial number 36-TN30986A
 		// Property of TUNL
@@ -170,28 +170,17 @@ struct HPGe_Collection{
 		HPGe_60_TUNL_30986.detector_face_radius = 8.*mm; // (J) in ORTEC data sheet
 		HPGe_60_TUNL_30986.hole_radius = 0.5*11.7*mm; // ORTEC data sheet
 		HPGe_60_TUNL_30986.hole_depth = 70.9*mm; // ORTEC data sheet
-		HPGe_60_TUNL_30986.hole_face_radius = HPGe_60_TUNL_30986.hole_radius; // Estimated to be the same as hole radius
 		HPGe_60_TUNL_30986.mount_cup_thickness = 0.76*mm; // (H) in ORTEC data sheet
 		HPGe_60_TUNL_30986.mount_cup_base_thickness = 3.2*mm; // (C) in ORTEC data sheet
 		HPGe_60_TUNL_30986.mount_cup_material = "G4_Al"; // ORTEC data sheet
 		HPGe_60_TUNL_30986.end_cap_outer_radius = 0.5*85.*mm; // Estimated
 		HPGe_60_TUNL_30986.end_cap_to_crystal_gap_front = 4.*mm; // (B) in ORTEC data sheet
 		HPGe_60_TUNL_30986.end_cap_thickness = 1.*mm; // (I) in ORTEC data sheet
-		HPGe_60_TUNL_30986.end_cap_to_crystal_gap_side = 
-			HPGe_60_TUNL_30986.end_cap_outer_radius- 
-			HPGe_60_TUNL_30986.end_cap_thickness- 
-			HPGe_60_TUNL_30986.mount_cup_thickness-
-			HPGe_60_TUNL_30986.detector_radius; // Calculated from outer radius and other given dimensions
 		HPGe_60_TUNL_30986.end_cap_window_thickness = 0.5*mm; // (D) in ORTEC data sheet
 		HPGe_60_TUNL_30986.end_cap_length = 10.5*inch; // Measured at the detector
-		HPGe_60_TUNL_30986.mount_cup_length = 
-			HPGe_60_TUNL_30986.end_cap_length-
-			HPGe_60_TUNL_30986.end_cap_window_thickness-
-			HPGe_60_TUNL_30986.end_cap_to_crystal_gap_front; // Calculated from end cap length. Different from (A) in ORTEC data sheet, because it shows only the part which contains the detector crystal.
 		HPGe_60_TUNL_30986.end_cap_material = "G4_Al"; // ORTEC data sheet
 		HPGe_60_TUNL_30986.end_cap_window_material = "G4_Be"; // ORTEC data sheet
 		HPGe_60_TUNL_30986.cold_finger_radius = 0.5*4.*mm; // Suggestion by B. Fallin, Duke University. Not in ORTEC data sheet
-		HPGe_60_TUNL_30986.cold_finger_penetration_depth = HPGe_60_TUNL_30986.hole_depth - 5.*mm; // Estimated
 		HPGe_60_TUNL_30986.cold_finger_material = "G4_Cu"; // Estimated
 		HPGe_60_TUNL_30986.connection_length = 2.*inch; // Measured
 		HPGe_60_TUNL_30986.connection_radius = 0.75*inch; // Estimated
@@ -201,6 +190,17 @@ struct HPGe_Collection{
 		HPGe_60_TUNL_30986.dewar_outer_radius = 3.*inch; // Measured
 		HPGe_60_TUNL_30986.dewar_wall_thickness = 5.*mm; // Estimated
 		HPGe_60_TUNL_30986.dewar_material = "G4_Al"; // Estimated
+		HPGe_60_TUNL_30986.hole_face_radius = HPGe_60_TUNL_30986.hole_radius; // Estimated to be the same as hole radius
+		HPGe_60_TUNL_30986.cold_finger_penetration_depth = HPGe_60_TUNL_30986.hole_depth - 5.*mm; // Estimated
+		HPGe_60_TUNL_30986.end_cap_to_crystal_gap_side = 
+			HPGe_60_TUNL_30986.end_cap_outer_radius- 
+			HPGe_60_TUNL_30986.end_cap_thickness- 
+			HPGe_60_TUNL_30986.mount_cup_thickness-
+			HPGe_60_TUNL_30986.detector_radius; // Calculated from outer radius and other given dimensions
+		HPGe_60_TUNL_30986.mount_cup_length = 
+			HPGe_60_TUNL_30986.end_cap_length-
+			HPGe_60_TUNL_30986.end_cap_window_thickness-
+			HPGe_60_TUNL_30986.end_cap_to_crystal_gap_front; // Calculated from end cap length. Different from (A) in ORTEC data sheet, because it shows only the part which contains the detector crystal.
 
 		// 60% coaxial HPGe with ORTEC serial number 36-TN31061A
 		// Property of TUNL
@@ -211,28 +211,17 @@ struct HPGe_Collection{
 		HPGe_60_TUNL_31061.detector_face_radius = 8.*mm; // (J) in ORTEC data sheet
 		HPGe_60_TUNL_31061.hole_radius = 0.5*11.2*mm; // ORTEC data sheet
 		HPGe_60_TUNL_31061.hole_depth = 72.7*mm; // ORTEC data sheet
-		HPGe_60_TUNL_31061.hole_face_radius = HPGe_60_TUNL_31061.hole_radius; // Estimated to be the same as hole radius
 		HPGe_60_TUNL_31061.mount_cup_thickness = 0.76*mm; // (H) in ORTEC data sheet
 		HPGe_60_TUNL_31061.mount_cup_base_thickness = 3.2*mm; // (C) in ORTEC data sheet
 		HPGe_60_TUNL_31061.mount_cup_material = "G4_Al"; // ORTEC data sheet
 		HPGe_60_TUNL_31061.end_cap_outer_radius = 0.5*85.*mm; // Estimated
 		HPGe_60_TUNL_31061.end_cap_to_crystal_gap_front = 4.*mm; // (B) in ORTEC data sheet
 		HPGe_60_TUNL_31061.end_cap_thickness = 1.*mm; // (I) in ORTEC data sheet
-		HPGe_60_TUNL_31061.end_cap_to_crystal_gap_side = 
-			HPGe_60_TUNL_31061.end_cap_outer_radius- 
-			HPGe_60_TUNL_31061.end_cap_thickness- 
-			HPGe_60_TUNL_31061.mount_cup_thickness-
-			HPGe_60_TUNL_31061.detector_radius; // Calculated from outer radius and other given dimensions
 		HPGe_60_TUNL_31061.end_cap_window_thickness = 0.5*mm; // (D) in ORTEC data sheet
 		HPGe_60_TUNL_31061.end_cap_length = 10.5*inch; // Measured at the detector
-		HPGe_60_TUNL_31061.mount_cup_length = 
-			HPGe_60_TUNL_31061.end_cap_length-
-			HPGe_60_TUNL_31061.end_cap_window_thickness-
-			HPGe_60_TUNL_31061.end_cap_to_crystal_gap_front; // Calculated from end cap length. Different from (A) in ORTEC data sheet, because it shows only the part which contains the detector crystal.
 		HPGe_60_TUNL_31061.end_cap_material = "G4_Al"; // ORTEC data sheet
 		HPGe_60_TUNL_31061.end_cap_window_material = "G4_Be"; // ORTEC data sheet
 		HPGe_60_TUNL_31061.cold_finger_radius = 0.5*4.*mm; // Suggestion by B. Fallin, Duke University. Not in ORTEC data sheet
-		HPGe_60_TUNL_31061.cold_finger_penetration_depth = HPGe_60_TUNL_31061.hole_depth - 5.*mm; // Estimated
 		HPGe_60_TUNL_31061.cold_finger_material = "G4_Cu"; // Estimated
 		HPGe_60_TUNL_31061.connection_length = 2.*inch; // Measured
 		HPGe_60_TUNL_31061.connection_radius = 0.75*inch; // Estimated
@@ -242,7 +231,18 @@ struct HPGe_Collection{
 		HPGe_60_TUNL_31061.dewar_outer_radius = 3.*inch; // Measured
 		HPGe_60_TUNL_31061.dewar_wall_thickness = 5.*mm; // Estimated
 		HPGe_60_TUNL_31061.dewar_material = "G4_Al"; // Estimated
-		
+		HPGe_60_TUNL_31061.hole_face_radius = HPGe_60_TUNL_31061.hole_radius; // Estimated to be the same as hole radius
+		HPGe_60_TUNL_31061.cold_finger_penetration_depth = HPGe_60_TUNL_31061.hole_depth - 5.*mm; // Estimated
+		HPGe_60_TUNL_31061.mount_cup_length = 
+			HPGe_60_TUNL_31061.end_cap_length-
+			HPGe_60_TUNL_31061.end_cap_window_thickness-
+			HPGe_60_TUNL_31061.end_cap_to_crystal_gap_front; // Calculated from end cap length. Different from (A) in ORTEC data sheet, because it shows only the part which contains the detector crystal.
+		HPGe_60_TUNL_31061.end_cap_to_crystal_gap_side = 
+			HPGe_60_TUNL_31061.end_cap_outer_radius- 
+			HPGe_60_TUNL_31061.end_cap_thickness- 
+			HPGe_60_TUNL_31061.mount_cup_thickness-
+			HPGe_60_TUNL_31061.detector_radius; // Calculated from outer radius and other given dimensions
+
 		// 60% coaxial HPGe with ORTEC serial number 36-TN40663A
 		// Property of TUNL
 		HPGe_60_TUNL_40663.detector_radius = 0.5*69.7*mm; // ORTEC data sheet
@@ -250,7 +250,6 @@ struct HPGe_Collection{
 		HPGe_60_TUNL_40663.detector_face_radius = 8.*mm; // (J) in ORTEC data sheet
 		HPGe_60_TUNL_40663.hole_radius = 0.5*9.9*mm; // ORTEC data sheet
 		HPGe_60_TUNL_40663.hole_depth = 60.*mm; // ORTEC data sheet
-		HPGe_60_TUNL_40663.hole_face_radius = HPGe_60_TUNL_40663.hole_radius; // Estimated to be the same as hole radius
 		HPGe_60_TUNL_40663.mount_cup_thickness = 0.76*mm; // (H) in ORTEC data sheet
 		HPGe_60_TUNL_40663.mount_cup_base_thickness = 3.2*mm; // (C) in ORTEC data sheet
 		HPGe_60_TUNL_40663.mount_cup_material = "G4_Al"; // ORTEC data sheet
@@ -258,21 +257,11 @@ struct HPGe_Collection{
 		HPGe_60_TUNL_40663.end_cap_to_crystal_gap_front = 4.*mm; // (B) in ORTEC data sheet
 		HPGe_60_TUNL_40663.end_cap_to_crystal_gap_side = 4.*mm; // (B) in ORTEC data sheet
 		HPGe_60_TUNL_40663.end_cap_thickness = 1.*mm; // (I) in ORTEC data sheet
-		HPGe_60_TUNL_40663.end_cap_to_crystal_gap_side = 
-			HPGe_60_TUNL_40663.end_cap_outer_radius- 
-			HPGe_60_TUNL_40663.end_cap_thickness- 
-			HPGe_60_TUNL_40663.mount_cup_thickness-
-			HPGe_60_TUNL_40663.detector_radius; // Calculated from outer radius and other given dimensions
 		HPGe_60_TUNL_40663.end_cap_window_thickness = 0.5*mm; // (D) in ORTEC data sheet
 		HPGe_60_TUNL_40663.end_cap_length = 10.5*inch; // Measured at the detector
-		HPGe_60_TUNL_40663.mount_cup_length = 
-			HPGe_60_TUNL_40663.end_cap_length-
-			HPGe_60_TUNL_40663.end_cap_window_thickness-
-			HPGe_60_TUNL_40663.end_cap_to_crystal_gap_front; // Calculated from end cap length. Different from (A) in ORTEC data sheet, because it shows only the part which contains the detector crystal.
 		HPGe_60_TUNL_40663.end_cap_material = "G4_Al"; // ORTEC data sheet
 		HPGe_60_TUNL_40663.end_cap_window_material = "G4_Be"; // ORTEC data sheet
 		HPGe_60_TUNL_40663.cold_finger_radius = 0.5*4.*mm; // Suggestion by B. Fallin, Duke University. Not in ORTEC data sheet
-		HPGe_60_TUNL_40663.cold_finger_penetration_depth = HPGe_60_TUNL_40663.hole_depth - 5.*mm; // Estimated
 		HPGe_60_TUNL_40663.cold_finger_material = "G4_Cu"; // Estimated
 		HPGe_60_TUNL_40663.connection_length = 2.*inch; // Measured
 		HPGe_60_TUNL_40663.connection_radius = 0.75*inch; // Estimated
@@ -282,6 +271,17 @@ struct HPGe_Collection{
 		HPGe_60_TUNL_40663.dewar_outer_radius = 3.*inch; // Measured
 		HPGe_60_TUNL_40663.dewar_wall_thickness = 5.*mm; // Estimated
 		HPGe_60_TUNL_40663.dewar_material = "G4_Al"; // Estimated
+		HPGe_60_TUNL_40663.hole_face_radius = HPGe_60_TUNL_40663.hole_radius; // Estimated to be the same as hole radius
+		HPGe_60_TUNL_40663.cold_finger_penetration_depth = HPGe_60_TUNL_40663.hole_depth - 5.*mm; // Estimated
+		HPGe_60_TUNL_40663.end_cap_to_crystal_gap_side = 
+			HPGe_60_TUNL_40663.end_cap_outer_radius- 
+			HPGe_60_TUNL_40663.end_cap_thickness- 
+			HPGe_60_TUNL_40663.mount_cup_thickness-
+			HPGe_60_TUNL_40663.detector_radius; // Calculated from outer radius and other given dimensions
+		HPGe_60_TUNL_40663.mount_cup_length = 
+			HPGe_60_TUNL_40663.end_cap_length-
+			HPGe_60_TUNL_40663.end_cap_window_thickness-
+			HPGe_60_TUNL_40663.end_cap_to_crystal_gap_front; // Calculated from end cap length. Different from (A) in ORTEC data sheet, because it shows only the part which contains the detector crystal.
 
 		// 120% coaxial HPGe with ORTEC serial number 33-P40383A
 		// 'zero-degree detector'
@@ -294,7 +294,6 @@ struct HPGe_Collection{
 		HPGe_120_TUNL_40383.detector_face_radius = 8.*mm; // (J) in ORTEC data sheet
 		HPGe_120_TUNL_40383.hole_radius = 0.5*10.9*mm; // ORTEC data sheet
 		HPGe_120_TUNL_40383.hole_depth = 96.1*mm; // ORTEC data sheet
-		HPGe_120_TUNL_40383.hole_face_radius = HPGe_120_TUNL_40383.hole_radius; // Estimated to be the same as hole radius
 		HPGe_120_TUNL_40383.mount_cup_thickness = 0.76*mm; // (H) in ORTEC data sheet
 		HPGe_120_TUNL_40383.mount_cup_base_thickness = 3.2*mm; // (C) in ORTEC data sheet
 		HPGe_120_TUNL_40383.mount_cup_material = "G4_Al"; // ORTEC data sheet
@@ -302,21 +301,11 @@ struct HPGe_Collection{
 		HPGe_120_TUNL_40383.end_cap_to_crystal_gap_front = 4.*mm; // (B) in ORTEC data sheet
 		HPGe_120_TUNL_40383.end_cap_to_crystal_gap_side = 4.*mm; // (B) in ORTEC data sheet
 		HPGe_120_TUNL_40383.end_cap_thickness = 1.5*mm; // (I) in ORTEC data sheet
-		HPGe_120_TUNL_40383.end_cap_to_crystal_gap_side = 
-			HPGe_120_TUNL_40383.end_cap_outer_radius- 
-			HPGe_120_TUNL_40383.end_cap_thickness- 
-			HPGe_120_TUNL_40383.mount_cup_thickness-
-			HPGe_120_TUNL_40383.detector_radius; // Calculated from outer radius and other given dimensions
 		HPGe_120_TUNL_40383.end_cap_window_thickness = 1.5*mm; // (D) in ORTEC data sheet
 		HPGe_120_TUNL_40383.end_cap_length = 5.5*inch; // Estimated
-		HPGe_120_TUNL_40383.mount_cup_length = 
-			HPGe_120_TUNL_40383.end_cap_length-
-			HPGe_120_TUNL_40383.end_cap_window_thickness-
-			HPGe_120_TUNL_40383.end_cap_to_crystal_gap_front; // Calculated from end cap length. Different from (A) in ORTEC data sheet, because it shows only the part which contains the detector crystal.
 		HPGe_120_TUNL_40383.end_cap_material = "G4_Al"; // ORTEC data sheet
 		HPGe_120_TUNL_40383.end_cap_window_material = "G4_Be"; // ORTEC data sheet
 		HPGe_120_TUNL_40383.cold_finger_radius = 0.5*4.*mm; // Suggestion by B. Fallin, Duke University. Not in ORTEC data sheet
-		HPGe_120_TUNL_40383.cold_finger_penetration_depth = HPGe_120_TUNL_40383.hole_depth - 5.*mm; // Estimated
 		HPGe_120_TUNL_40383.cold_finger_material = "G4_Cu"; // Estimated
 		HPGe_120_TUNL_40383.connection_length = 2.*inch; // Estimated and irrelevant
 		HPGe_120_TUNL_40383.connection_radius = 0.75*inch; // Estimated and irrelevant
@@ -326,6 +315,17 @@ struct HPGe_Collection{
 		HPGe_120_TUNL_40383.dewar_outer_radius = 3.*inch; // Estimated and irrelevant
 		HPGe_120_TUNL_40383.dewar_wall_thickness = 5.*mm; // Estimated and irrelevant
 		HPGe_120_TUNL_40383.dewar_material = "G4_Al"; // Estimated and irrelevant
+		HPGe_120_TUNL_40383.hole_face_radius = HPGe_120_TUNL_40383.hole_radius; // Estimated to be the same as hole radius
+		HPGe_120_TUNL_40383.cold_finger_penetration_depth = HPGe_120_TUNL_40383.hole_depth - 5.*mm; // Estimated
+		HPGe_120_TUNL_40383.mount_cup_length = 
+			HPGe_120_TUNL_40383.end_cap_length-
+			HPGe_120_TUNL_40383.end_cap_window_thickness-
+			HPGe_120_TUNL_40383.end_cap_to_crystal_gap_front; // Calculated from end cap length. Different from (A) in ORTEC data sheet, because it shows only the part which contains the detector crystal.
+		HPGe_120_TUNL_40383.end_cap_to_crystal_gap_side = 
+			HPGe_120_TUNL_40383.end_cap_outer_radius- 
+			HPGe_120_TUNL_40383.end_cap_thickness- 
+			HPGe_120_TUNL_40383.mount_cup_thickness-
+			HPGe_120_TUNL_40383.detector_radius; // Calculated from outer radius and other given dimensions
 
 		// 80% (68.2% according to data sheet) coaxial HPGe with
 		// CANBERRA serial number b90006
@@ -338,29 +338,17 @@ struct HPGe_Collection{
 		HPGe_80_TUD_90006.detector_length = 69.4*mm; // CANBERRA data sheet
 		HPGe_80_TUD_90006.detector_face_radius = 2.*mm; // Estimated
 		HPGe_80_TUD_90006.hole_radius = 0.5*8.*mm; // Estimated
-		HPGe_80_TUD_90006.hole_depth = 0.8*HPGe_80_TUD_90006.detector_length; // Estimated
-		HPGe_80_TUD_90006.hole_face_radius = HPGe_80_TUD_90006.hole_radius; // Estimated to be the same as hole radius
 		HPGe_80_TUD_90006.mount_cup_thickness = 0.5*mm; // Estimated
 		HPGe_80_TUD_90006.mount_cup_base_thickness = 3.*mm; // Estimated
 		HPGe_80_TUD_90006.mount_cup_material = "G4_Al"; // Estimated
 		HPGe_80_TUD_90006.end_cap_outer_radius = 0.5*95.*mm; // Measured
 		HPGe_80_TUD_90006.end_cap_to_crystal_gap_front = 6.*mm - HPGe_80_TUD_90006.mount_cup_thickness; // Estimated from the distance of the crystal to the end cap in the CANBERRA data sheet
 		HPGe_80_TUD_90006.end_cap_thickness = 1.*mm; // Estimated
-		HPGe_80_TUD_90006.end_cap_to_crystal_gap_side = 
-			HPGe_80_TUD_90006.end_cap_outer_radius- 
-			HPGe_80_TUD_90006.end_cap_thickness- 
-			HPGe_80_TUD_90006.mount_cup_thickness-
-			HPGe_80_TUD_90006.detector_radius; // Calculated from outer radius and other given dimensions
 		HPGe_80_TUD_90006.end_cap_window_thickness = 0.5*mm; // Estimated
 		HPGe_80_TUD_90006.end_cap_length = 172.*mm; // Measured at the detector
-		HPGe_80_TUD_90006.mount_cup_length = 
-			HPGe_80_TUD_90006.end_cap_length-
-			HPGe_80_TUD_90006.end_cap_window_thickness-
-			HPGe_80_TUD_90006.end_cap_to_crystal_gap_front; // Calculated from end cap length
 		HPGe_80_TUD_90006.end_cap_material = "G4_Al"; // Estimated
 		HPGe_80_TUD_90006.end_cap_window_material = "G4_Al"; // Estimated, definitely the same as the rest of the end cap
 		HPGe_80_TUD_90006.cold_finger_radius = 0.5*6.*mm; // Estimated
-		HPGe_80_TUD_90006.cold_finger_penetration_depth = HPGe_80_TUD_90006.hole_depth - 2.*mm; // Estimated
 		HPGe_80_TUD_90006.cold_finger_material = "G4_Cu"; // Estimated
 		HPGe_80_TUD_90006.connection_length = 214.*mm; // Measured
 		HPGe_80_TUD_90006.connection_radius = 0.5*25.*mm; // Measured
@@ -370,7 +358,19 @@ struct HPGe_Collection{
 		HPGe_80_TUD_90006.dewar_outer_radius = 110.*mm; // Measured
 		HPGe_80_TUD_90006.dewar_wall_thickness = 5.*mm; // Estimated
 		HPGe_80_TUD_90006.dewar_material = "G4_Al"; // Estimated
-		
+		HPGe_80_TUD_90006.hole_depth = 0.8*HPGe_80_TUD_90006.detector_length; // Estimated
+		HPGe_80_TUD_90006.hole_face_radius = HPGe_80_TUD_90006.hole_radius; // Estimated to be the same as hole radius
+		HPGe_80_TUD_90006.cold_finger_penetration_depth = HPGe_80_TUD_90006.hole_depth - 2.*mm; // Estimated
+		HPGe_80_TUD_90006.end_cap_to_crystal_gap_side = 
+			HPGe_80_TUD_90006.end_cap_outer_radius- 
+			HPGe_80_TUD_90006.end_cap_thickness- 
+			HPGe_80_TUD_90006.mount_cup_thickness-
+			HPGe_80_TUD_90006.detector_radius; // Calculated from outer radius and other given dimensions
+		HPGe_80_TUD_90006.mount_cup_length = 
+			HPGe_80_TUD_90006.end_cap_length-
+			HPGe_80_TUD_90006.end_cap_window_thickness-
+			HPGe_80_TUD_90006.end_cap_to_crystal_gap_front; // Calculated from end cap length
+
 		// 100% (102% according to data sheet) coaxial HPGe with
 		// CANBERRA serial number 73760
 		// Informally known as 'Detector 1'
@@ -382,28 +382,16 @@ struct HPGe_Collection{
 		HPGe_100_TUD_73760.detector_face_radius = 2.*mm; // Not included in original simulation
 		HPGe_100_TUD_73760.hole_radius = 0.5*8.*mm; // Estimated
 		HPGe_100_TUD_73760.hole_depth = 48.*mm; // Estimated. In the original simulation, the cold finger was simply placed inside the Germanium crystal. Constructed the hole such that it is 2mm wider than the cold finger
-		HPGe_100_TUD_73760.hole_face_radius = HPGe_100_TUD_73760.hole_radius; // Estimated to be the same as hole radius
 		HPGe_100_TUD_73760.mount_cup_thickness = 0.5*mm; // Estimated
 		HPGe_100_TUD_73760.mount_cup_base_thickness = 3.*mm; // Not included in original simulation
 		HPGe_100_TUD_73760.mount_cup_material = "G4_Al"; // Estimated
 		HPGe_100_TUD_73760.end_cap_outer_radius = 0.5*100.*mm; // Estimated
-		HPGe_100_TUD_73760.end_cap_to_crystal_gap_front = 3.5*mm - HPGe_100_TUD_73760.mount_cup_thickness; // Estimated from the distance of the crystal to the end cap in the CANBERRA data sheet
 		HPGe_100_TUD_73760.end_cap_thickness = 1.*mm; // Estimated
-		HPGe_100_TUD_73760.end_cap_to_crystal_gap_side = 
-			HPGe_100_TUD_73760.end_cap_outer_radius- 
-			HPGe_100_TUD_73760.end_cap_thickness- 
-			HPGe_100_TUD_73760.mount_cup_thickness-
-			HPGe_100_TUD_73760.detector_radius; // Calculated from outer radius and other given dimensions
 		HPGe_100_TUD_73760.end_cap_window_thickness = 0.5*mm; // Estimated
 		HPGe_100_TUD_73760.end_cap_length = 150.*mm; // Measured at the detector
-		HPGe_100_TUD_73760.mount_cup_length = 
-			HPGe_100_TUD_73760.end_cap_length-
-			HPGe_100_TUD_73760.end_cap_window_thickness-
-			HPGe_100_TUD_73760.end_cap_to_crystal_gap_front; // Calculated from end cap length
 		HPGe_100_TUD_73760.end_cap_material = "G4_Al"; // From original simulation
 		HPGe_100_TUD_73760.end_cap_window_material = "G4_Be"; // Estimated
 		HPGe_100_TUD_73760.cold_finger_radius = 0.5*6.*mm; // Estimated. The original simulation has a radius of 6 mm in it, which seemed extremely large. Assumed that the diameter and radius were confused.
-		HPGe_100_TUD_73760.cold_finger_penetration_depth = HPGe_100_TUD_73760.hole_depth - 2.*mm; // Estimated. See also the comment to the hole depth.
 		HPGe_100_TUD_73760.cold_finger_material = "G4_Cu"; // Estimated
 		HPGe_100_TUD_73760.connection_length = 2.*inch; // Estimated
 		HPGe_100_TUD_73760.connection_radius = 0.75*inch; // Estimated
@@ -413,7 +401,19 @@ struct HPGe_Collection{
 		HPGe_100_TUD_73760.dewar_outer_radius = 3.*inch; // Estimated
 		HPGe_100_TUD_73760.dewar_wall_thickness = 5.*mm; // Estimated
 		HPGe_100_TUD_73760.dewar_material = "G4_Al"; // Estimated
-	
+		HPGe_100_TUD_73760.hole_face_radius = HPGe_100_TUD_73760.hole_radius; // Estimated to be the same as hole radius
+		HPGe_100_TUD_73760.end_cap_to_crystal_gap_front = 3.5*mm - HPGe_100_TUD_73760.mount_cup_thickness; // Estimated from the distance of the crystal to the end cap in the CANBERRA data sheet
+		HPGe_100_TUD_73760.end_cap_to_crystal_gap_side = 
+			HPGe_100_TUD_73760.end_cap_outer_radius- 
+			HPGe_100_TUD_73760.end_cap_thickness- 
+			HPGe_100_TUD_73760.mount_cup_thickness-
+			HPGe_100_TUD_73760.detector_radius; // Calculated from outer radius and other given dimensions
+		HPGe_100_TUD_73760.mount_cup_length = 
+			HPGe_100_TUD_73760.end_cap_length-
+			HPGe_100_TUD_73760.end_cap_window_thickness-
+			HPGe_100_TUD_73760.end_cap_to_crystal_gap_front; // Calculated from end cap length
+		HPGe_100_TUD_73760.cold_finger_penetration_depth = HPGe_100_TUD_73760.hole_depth - 2.*mm; // Estimated. See also the comment to the hole depth.
+
 		// 100% (98% according to data sheet) coaxial HPGe with
 		// CANBERRA serial number 72902
 		// Informally known as 'Detector 2'
@@ -424,28 +424,16 @@ struct HPGe_Collection{
 		HPGe_100_TUD_72902.detector_face_radius = 2.*mm; // Not included in original simulation
 		HPGe_100_TUD_72902.hole_radius = 0.5*8.*mm; // Estimated
 		HPGe_100_TUD_72902.hole_depth = 48.*mm; // Estimated. In the original simulation, the cold finger was simply placed inside the Germanium crystal. Constructed the hole such that it is 2mm wider than the cold finger
-		HPGe_100_TUD_72902.hole_face_radius = HPGe_100_TUD_72902.hole_radius; // Estimated to be the same as hole radius
 		HPGe_100_TUD_72902.mount_cup_thickness = 0.5*mm; // Estimated
 		HPGe_100_TUD_72902.mount_cup_base_thickness = 3.*mm; // Not included in original simulation
 		HPGe_100_TUD_72902.mount_cup_material = "G4_Al"; // Estimated
 		HPGe_100_TUD_72902.end_cap_outer_radius = 0.5*100.*mm; // Measured
-		HPGe_100_TUD_72902.end_cap_to_crystal_gap_front = 5.0*mm - HPGe_100_TUD_72902.mount_cup_thickness; // Estimated from the distance of the crystal to the end cap in the CANBERRA data sheet
-		HPGe_100_TUD_72902.end_cap_to_crystal_gap_side = 
-			HPGe_100_TUD_72902.end_cap_outer_radius- 
-			HPGe_100_TUD_72902.end_cap_thickness- 
-			HPGe_100_TUD_72902.mount_cup_thickness-
-			HPGe_100_TUD_72902.detector_radius; // Calculated from outer radius and other given dimensions
 		HPGe_100_TUD_72902.end_cap_thickness = 1.*mm; // Estimated
 		HPGe_100_TUD_72902.end_cap_window_thickness = 0.5*mm; // Estimated
 		HPGe_100_TUD_72902.end_cap_length = 258.*mm; // Measured at the detector
-		HPGe_100_TUD_72902.mount_cup_length = 
-			HPGe_100_TUD_72902.end_cap_length-
-			HPGe_100_TUD_72902.end_cap_window_thickness-
-			HPGe_100_TUD_72902.end_cap_to_crystal_gap_front; // Calculated from end cap length
 		HPGe_100_TUD_72902.end_cap_material = "G4_Al"; // From original simulation
 		HPGe_100_TUD_72902.end_cap_window_material = "G4_Be"; // Estimated
 		HPGe_100_TUD_72902.cold_finger_radius = 0.5*6.*mm; // Estimated. The original simulation has a radius of 6 mm in it, which seemed extremely large. Assumed that the diameter and radius were confused.
-		HPGe_100_TUD_72902.cold_finger_penetration_depth = HPGe_100_TUD_72902.hole_depth - 2.*mm; // Estimated. See also the comment to the hole depth.
 		HPGe_100_TUD_72902.cold_finger_material = "G4_Cu"; // Estimated
 		HPGe_100_TUD_72902.connection_length = 60.*mm; // Measured
 		HPGe_100_TUD_72902.connection_radius = 25.*mm; // Measured
@@ -455,6 +443,18 @@ struct HPGe_Collection{
 		HPGe_100_TUD_72902.dewar_outer_radius = 110.*mm; // Measured
 		HPGe_100_TUD_72902.dewar_wall_thickness = 5.*mm; // Estimated
 		HPGe_100_TUD_72902.dewar_material = "G4_Al"; // Estimated
+		HPGe_100_TUD_72902.hole_face_radius = HPGe_100_TUD_72902.hole_radius; // Estimated to be the same as hole radius
+		HPGe_100_TUD_72902.end_cap_to_crystal_gap_front = 5.0*mm - HPGe_100_TUD_72902.mount_cup_thickness; // Estimated from the distance of the crystal to the end cap in the CANBERRA data sheet
+		HPGe_100_TUD_72902.end_cap_to_crystal_gap_side = 
+			HPGe_100_TUD_72902.end_cap_outer_radius- 
+			HPGe_100_TUD_72902.end_cap_thickness- 
+			HPGe_100_TUD_72902.mount_cup_thickness-
+			HPGe_100_TUD_72902.detector_radius; // Calculated from outer radius and other given dimensions
+		HPGe_100_TUD_72902.mount_cup_length = 
+			HPGe_100_TUD_72902.end_cap_length-
+			HPGe_100_TUD_72902.end_cap_window_thickness-
+			HPGe_100_TUD_72902.end_cap_to_crystal_gap_front; // Calculated from end cap length
+		HPGe_100_TUD_72902.cold_finger_penetration_depth = HPGe_100_TUD_72902.hole_depth - 2.*mm; // Estimated. See also the comment to the hole depth.
 
 		// 100% (99% according to data sheet from 2019, 100% according to data sheet
 		// from 1997) segmented coaxial HPGe with
@@ -467,28 +467,16 @@ struct HPGe_Collection{
 		HPGe_100_TUD_72930.detector_face_radius = 2.*mm; // Not included in original simulation
 		HPGe_100_TUD_72930.hole_radius = 0.5*8.*mm; // Estimated
 		HPGe_100_TUD_72930.hole_depth = 48.*mm; // Estimated. In the original simulation, the cold finger was simply placed inside the Germanium crystal. Constructed the hole such that it is 2mm wider than the cold finger
-		HPGe_100_TUD_72930.hole_face_radius = HPGe_100_TUD_72930.hole_radius; // Estimated to be the same as hole radius
 		HPGe_100_TUD_72930.mount_cup_thickness = 0.5*mm; // Estimated
 		HPGe_100_TUD_72930.mount_cup_base_thickness = 3.*mm; // Not included in original simulation
 		HPGe_100_TUD_72930.mount_cup_material = "G4_Al"; // Estimated
 		HPGe_100_TUD_72930.end_cap_outer_radius = 0.5*99.*mm; // Measured
-		HPGe_100_TUD_72930.end_cap_to_crystal_gap_front = 5.0*mm - HPGe_100_TUD_72930.mount_cup_thickness; // Estimated from the distance of the crystal to the end cap in the CANBERRA data sheet
 		HPGe_100_TUD_72930.end_cap_thickness = 1.*mm; // Estimated
-		HPGe_100_TUD_72930.end_cap_to_crystal_gap_side = 
-			HPGe_100_TUD_72930.end_cap_outer_radius- 
-			HPGe_100_TUD_72930.end_cap_thickness- 
-			HPGe_100_TUD_72930.mount_cup_thickness-
-			HPGe_100_TUD_72930.detector_radius; // Calculated from outer radius and other given dimensions
 		HPGe_100_TUD_72930.end_cap_window_thickness = 0.5*mm; // Estimated
 		HPGe_100_TUD_72930.end_cap_length = 350.*mm; // Measured at the detector
-		HPGe_100_TUD_72930.mount_cup_length = 
-			HPGe_100_TUD_72930.end_cap_length-
-			HPGe_100_TUD_72930.end_cap_window_thickness-
-			HPGe_100_TUD_72930.end_cap_to_crystal_gap_front; // Calculated from end cap length
 		HPGe_100_TUD_72930.end_cap_material = "G4_Al"; // From original simulation
 		HPGe_100_TUD_72930.end_cap_window_material = "G4_Be"; // Estimated
 		HPGe_100_TUD_72930.cold_finger_radius = 0.5*6.*mm; // Estimated. The original simulation has a radius of 6 mm in it, which seemed extremely large. Assumed that the diameter and radius were confused.
-		HPGe_100_TUD_72930.cold_finger_penetration_depth = HPGe_100_TUD_72930.hole_depth - 2.*mm; // Estimated. See also the comment to the hole depth.
 		HPGe_100_TUD_72930.cold_finger_material = "G4_Cu"; // Estimated
 		HPGe_100_TUD_72930.connection_length = 50.*mm; // Measured
 		HPGe_100_TUD_72930.connection_radius = 25.*mm; // Measured
@@ -498,6 +486,18 @@ struct HPGe_Collection{
 		HPGe_100_TUD_72930.dewar_outer_radius = 110.*mm; // Measured
 		HPGe_100_TUD_72930.dewar_wall_thickness = 5.*mm; // Estimated
 		HPGe_100_TUD_72930.dewar_material = "G4_Al"; // Estimated
+		HPGe_100_TUD_72930.hole_face_radius = HPGe_100_TUD_72930.hole_radius; // Estimated to be the same as hole radius
+		HPGe_100_TUD_72930.end_cap_to_crystal_gap_front = 5.0*mm - HPGe_100_TUD_72930.mount_cup_thickness; // Estimated from the distance of the crystal to the end cap in the CANBERRA data sheet
+		HPGe_100_TUD_72930.end_cap_to_crystal_gap_side = 
+			HPGe_100_TUD_72930.end_cap_outer_radius- 
+			HPGe_100_TUD_72930.end_cap_thickness- 
+			HPGe_100_TUD_72930.mount_cup_thickness-
+			HPGe_100_TUD_72930.detector_radius; // Calculated from outer radius and other given dimensions
+		HPGe_100_TUD_72930.mount_cup_length = 
+			HPGe_100_TUD_72930.end_cap_length-
+			HPGe_100_TUD_72930.end_cap_window_thickness-
+			HPGe_100_TUD_72930.end_cap_to_crystal_gap_front; // Calculated from end cap length
+		HPGe_100_TUD_72930.cold_finger_penetration_depth = HPGe_100_TUD_72930.hole_depth - 2.*mm; // Estimated. See also the comment to the hole depth.
 
 		// 100% coaxial HPGe, Ortec serial number 73954
 		// Dimensions from g4horus Geant4 implementation of the
@@ -510,7 +510,6 @@ struct HPGe_Collection{
 		HPGe_100_Cologne_73954.detector_face_radius = 2.*mm; // Estimated
 		HPGe_100_Cologne_73954.hole_radius = 5.8*mm;
 		HPGe_100_Cologne_73954.hole_depth = 52.*mm;
-		HPGe_100_Cologne_73954.hole_face_radius = HPGe_100_Cologne_73954.hole_radius; // Estimated to be the same as hole radius
 		HPGe_100_Cologne_73954.mount_cup_thickness = 1.*mm;
 		HPGe_100_Cologne_73954.mount_cup_base_thickness = 5.*mm;
 		HPGe_100_Cologne_73954.mount_cup_material = "G4_Al";
@@ -518,21 +517,11 @@ struct HPGe_Collection{
 		HPGe_100_Cologne_73954.end_cap_to_crystal_gap_front = 3.*mm;
 		HPGe_100_Cologne_73954.end_cap_to_crystal_gap_side = 3.*mm;
 		HPGe_100_Cologne_73954.end_cap_thickness = 1.*mm;
-		HPGe_100_Cologne_73954.end_cap_to_crystal_gap_side = 
-			HPGe_100_Cologne_73954.end_cap_outer_radius- 
-			HPGe_100_Cologne_73954.end_cap_thickness- 
-			HPGe_100_Cologne_73954.mount_cup_thickness-
-			HPGe_100_Cologne_73954.detector_radius; // Calculated from outer radius and other given dimensions
 		HPGe_100_Cologne_73954.end_cap_window_thickness = 1.*mm;
 		HPGe_100_Cologne_73954.end_cap_length = 10.5*inch; // Measured at the detector
-		HPGe_100_Cologne_73954.mount_cup_length = 
-			HPGe_100_Cologne_73954.end_cap_length-
-			HPGe_100_Cologne_73954.end_cap_window_thickness-
-			HPGe_100_Cologne_73954.end_cap_to_crystal_gap_front; // Calculated from end cap length
 		HPGe_100_Cologne_73954.end_cap_material = "G4_Al";
 		HPGe_100_Cologne_73954.end_cap_window_material = "G4_Al";
 		HPGe_100_Cologne_73954.cold_finger_radius = 0.5*4.*mm; // Estimated
-		HPGe_100_Cologne_73954.cold_finger_penetration_depth = HPGe_100_Cologne_73954.hole_depth - 5.*mm; // Estimated
 		HPGe_100_Cologne_73954.cold_finger_material = "G4_Cu"; // Estimated
 		HPGe_100_Cologne_73954.connection_length = 3.5*inch; // Measured
 		HPGe_100_Cologne_73954.connection_radius = 0.75*inch; // Measured
@@ -542,7 +531,18 @@ struct HPGe_Collection{
 		HPGe_100_Cologne_73954.dewar_outer_radius = 5.*inch; // Measured
 		HPGe_100_Cologne_73954.dewar_wall_thickness = 5.*mm; // Estimated
 		HPGe_100_Cologne_73954.dewar_material = "G4_Al"; // Estimated
-		
+		HPGe_100_Cologne_73954.hole_face_radius = HPGe_100_Cologne_73954.hole_radius; // Estimated to be the same as hole radius
+		HPGe_100_Cologne_73954.end_cap_to_crystal_gap_side = 
+			HPGe_100_Cologne_73954.end_cap_outer_radius- 
+			HPGe_100_Cologne_73954.end_cap_thickness- 
+			HPGe_100_Cologne_73954.mount_cup_thickness-
+			HPGe_100_Cologne_73954.detector_radius; // Calculated from outer radius and other given dimensions
+		HPGe_100_Cologne_73954.mount_cup_length = 
+			HPGe_100_Cologne_73954.end_cap_length-
+			HPGe_100_Cologne_73954.end_cap_window_thickness-
+			HPGe_100_Cologne_73954.end_cap_to_crystal_gap_front; // Calculated from end cap length
+		HPGe_100_Cologne_73954.cold_finger_penetration_depth = HPGe_100_Cologne_73954.hole_depth - 5.*mm; // Estimated
+
 		// 86.2% coaxial HPGe, CANBERRA serial number 37-N31120A
 		// Dimensions from CANBERRA data sheet and CT scan by C. Fransen
 		// if not indicated otherwise
@@ -554,8 +554,6 @@ struct HPGe_Collection{
 		HPGe_86_Stuttgart_31120.detector_length = 92.*mm; // CANBERRA data sheet
 		HPGe_86_Stuttgart_31120.detector_face_radius = 12.*mm; // CT scan 
 		HPGe_86_Stuttgart_31120.hole_radius = 0.5*10.3*mm; // CT scan
-		HPGe_86_Stuttgart_31120.hole_depth = 0.8*HPGe_86_Stuttgart_31120.detector_length; // Estimated by C. Fransen
-		HPGe_86_Stuttgart_31120.hole_face_radius = HPGe_86_Stuttgart_31120.hole_radius; // Estimated to be the same as hole radius
 		HPGe_86_Stuttgart_31120.mount_cup_length = 178.*mm; // CT scan
 		HPGe_86_Stuttgart_31120.mount_cup_thickness = 0.76*mm; // Estimated
 		HPGe_86_Stuttgart_31120.mount_cup_base_thickness = 6.*mm; // CT scan
@@ -563,21 +561,11 @@ struct HPGe_Collection{
 		HPGe_86_Stuttgart_31120.end_cap_to_crystal_gap_front = 5.*mm; // CANBERRA data sheet
 		HPGe_86_Stuttgart_31120.end_cap_outer_radius = 0.5*90.*mm; // Estimated
 		HPGe_86_Stuttgart_31120.end_cap_thickness = 1.*mm; // Estimated
-		HPGe_86_Stuttgart_31120.end_cap_to_crystal_gap_side = 
-			HPGe_86_Stuttgart_31120.end_cap_outer_radius- 
-			HPGe_86_Stuttgart_31120.end_cap_thickness- 
-			HPGe_86_Stuttgart_31120.mount_cup_thickness-
-			HPGe_86_Stuttgart_31120.detector_radius; // Calculated from outer radius and other given dimensions
 		HPGe_86_Stuttgart_31120.end_cap_window_thickness = 0.5*mm; // Estimated
 		HPGe_86_Stuttgart_31120.end_cap_length = 178.*mm; // Measured at the detector
-		HPGe_86_Stuttgart_31120.mount_cup_length = 
-			HPGe_86_Stuttgart_31120.end_cap_length-
-			HPGe_86_Stuttgart_31120.end_cap_window_thickness-
-			HPGe_86_Stuttgart_31120.end_cap_to_crystal_gap_front; // Calculated from end cap length
 		HPGe_86_Stuttgart_31120.end_cap_material = "G4_Al"; // Estimated
 		HPGe_86_Stuttgart_31120.end_cap_window_material = "G4_Al"; // Estimated
 		HPGe_86_Stuttgart_31120.cold_finger_radius = 0.5*8.*mm; // CT scan
-		HPGe_86_Stuttgart_31120.cold_finger_penetration_depth = HPGe_86_Stuttgart_31120.hole_depth - 5.*mm; // Estimated
 		HPGe_86_Stuttgart_31120.cold_finger_material = "G4_Cu"; // Estimated
 		HPGe_86_Stuttgart_31120.connection_length = 13.1*inch; // Measured
 		HPGe_86_Stuttgart_31120.connection_radius = 16.*mm; // Measured
@@ -587,6 +575,18 @@ struct HPGe_Collection{
 		HPGe_86_Stuttgart_31120.dewar_outer_radius = 6.*inch; // Measured
 		HPGe_86_Stuttgart_31120.dewar_wall_thickness = 5.*mm; // Estimated
 		HPGe_86_Stuttgart_31120.dewar_material = "G4_Al"; // Estimated
+		HPGe_86_Stuttgart_31120.hole_face_radius = HPGe_86_Stuttgart_31120.hole_radius; // Estimated to be the same as hole radius
+		HPGe_86_Stuttgart_31120.hole_depth = 0.8*HPGe_86_Stuttgart_31120.detector_length; // Estimated by C. Fransen
+		HPGe_86_Stuttgart_31120.end_cap_to_crystal_gap_side = 
+			HPGe_86_Stuttgart_31120.end_cap_outer_radius- 
+			HPGe_86_Stuttgart_31120.end_cap_thickness- 
+			HPGe_86_Stuttgart_31120.mount_cup_thickness-
+			HPGe_86_Stuttgart_31120.detector_radius; // Calculated from outer radius and other given dimensions
+		HPGe_86_Stuttgart_31120.mount_cup_length = 
+			HPGe_86_Stuttgart_31120.end_cap_length-
+			HPGe_86_Stuttgart_31120.end_cap_window_thickness-
+			HPGe_86_Stuttgart_31120.end_cap_to_crystal_gap_front; // Calculated from end cap length
+		HPGe_86_Stuttgart_31120.cold_finger_penetration_depth = HPGe_86_Stuttgart_31120.hole_depth - 5.*mm; // Estimated
 
 		// 100% (103.5% according to data sheet) coaxial HPGe 
 		// with ORTEC serial number 42-TP41203A
@@ -595,29 +595,16 @@ struct HPGe_Collection{
 		HPGe_ANL_41203.detector_length = 98.3*mm; // Data sheet
 		HPGe_ANL_41203.detector_face_radius = 2.*mm; // Estimated
 		HPGe_ANL_41203.hole_radius = 0.5*10.*mm; // Estimated from 60% ORTEC models
-		HPGe_ANL_41203.hole_depth = 0.8*HPGe_ANL_41203.detector_length; // Estimated
-		HPGe_ANL_41203.hole_face_radius = HPGe_ANL_41203.hole_radius; // Estimated
 		HPGe_ANL_41203.mount_cup_thickness = 0.8*mm; // Estimated
-		HPGe_ANL_41203.mount_cup_base_thickness = HPGe_ANL_41203.mount_cup_thickness; // Estimated
 		HPGe_ANL_41203.mount_cup_material = "G4_Al"; // Estimated
 		HPGe_ANL_41203.end_cap_outer_radius = 0.5*4.25*inch; // Data sheet
 		HPGe_ANL_41203.end_cap_to_crystal_gap_front = 6.5*mm; // Data sheet
 		HPGe_ANL_41203.end_cap_thickness = 3.5*mm; // 'Absorbing layer' in data sheet
-		HPGe_ANL_41203.end_cap_to_crystal_gap_side = 
-			HPGe_ANL_41203.end_cap_outer_radius- 
-			HPGe_ANL_41203.end_cap_thickness- 
-			HPGe_ANL_41203.mount_cup_thickness-
-			HPGe_ANL_41203.detector_radius; // Calculated from outer radius and other given dimensions
 		HPGe_ANL_41203.end_cap_window_thickness = 3.5*mm; // 'Absorbing layer' in data sheet
 		HPGe_ANL_41203.end_cap_length = 8.*inch; // Data sheet
-		HPGe_ANL_41203.mount_cup_length = 
-			HPGe_ANL_41203.end_cap_length-
-			HPGe_ANL_41203.end_cap_window_thickness-
-			HPGe_ANL_41203.end_cap_to_crystal_gap_front; // Calculated from end cap length
 		HPGe_ANL_41203.end_cap_material = "G4_Al"; // Data sheet
 		HPGe_ANL_41203.end_cap_window_material = "G4_Al"; // Data sheet
 		HPGe_ANL_41203.cold_finger_radius = 0.5*4.*mm; // Estimated from 60% ORTEC models
-		HPGe_ANL_41203.cold_finger_penetration_depth = HPGe_ANL_41203.hole_depth - 5.*mm; // Estimated
 		HPGe_ANL_41203.cold_finger_material = "G4_Cu"; // Estimated
 		HPGe_ANL_41203.connection_length = 4.5*inch; // Data sheet
 		HPGe_ANL_41203.connection_radius = 0.5*4.5*inch; // Data sheet
@@ -627,7 +614,20 @@ struct HPGe_Collection{
 		HPGe_ANL_41203.dewar_outer_radius = 0.5*9.*inch; // Data sheet
 		HPGe_ANL_41203.dewar_wall_thickness = 5.*mm; // Estimated
 		HPGe_ANL_41203.dewar_material = "G4_Al"; // Estimated
-		
+		HPGe_ANL_41203.hole_depth = 0.8*HPGe_ANL_41203.detector_length; // Estimated
+		HPGe_ANL_41203.hole_face_radius = HPGe_ANL_41203.hole_radius; // Estimated
+		HPGe_ANL_41203.mount_cup_base_thickness = HPGe_ANL_41203.mount_cup_thickness; // Estimated
+		HPGe_ANL_41203.end_cap_to_crystal_gap_side = 
+			HPGe_ANL_41203.end_cap_outer_radius- 
+			HPGe_ANL_41203.end_cap_thickness- 
+			HPGe_ANL_41203.mount_cup_thickness-
+			HPGe_ANL_41203.detector_radius; // Calculated from outer radius and other given dimensions
+		HPGe_ANL_41203.mount_cup_length = 
+			HPGe_ANL_41203.end_cap_length-
+			HPGe_ANL_41203.end_cap_window_thickness-
+			HPGe_ANL_41203.end_cap_to_crystal_gap_front; // Calculated from end cap length
+		HPGe_ANL_41203.cold_finger_penetration_depth = HPGe_ANL_41203.hole_depth - 5.*mm; // Estimated
+
 		// 100% coaxial HPGe 
 		// with ORTEC serial number 43-TP31670A
 		// Property of R.V.F. Janssens group, Argonne National Lab

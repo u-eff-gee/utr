@@ -16,6 +16,9 @@ mergeFiles
 angdisttest
 angcorrtest
 
+# Build directory
+build
+
 # C++ objects
 unit_test/AngularDistributionGenerator/AngularDistribution.o
 unit_test/AngularCorrelationGenerator/AngularDistribution.o
