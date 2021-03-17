@@ -272,14 +272,14 @@ if logging :
 
 
 # Define function to run processes, respecting logging and checking exit status
-def runProcess(prog, *procArgs, announce=True, **kwargs) :
+def runProcess(prog, procArgs, announce=True, **kwargs) :
     if announce :
         loggingPrint("Running", prog)
     if not logging :
-        if (subprocess.run(*procArgs, **kwargs).returncode != 0) :
+        if (subprocess.run(procArgs, **kwargs).returncode != 0) :
             error(prog, "failed!")
     else :
-        with subprocess.Popen(*procArgs, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True, **kwargs) as proc :
+        with subprocess.Popen(procArgs, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True, **kwargs) as proc :
             for line in proc.stdout:
                 loggingPrint(line, tag=prog+">", end="")
             if (proc.wait() != 0) :
