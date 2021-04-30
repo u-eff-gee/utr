@@ -34,6 +34,7 @@
 #cmakedefine HADRON_INELASTIC_HP
 #cmakedefine HADRON_INELASTIC_LEND
 
+#cmakedefine EVENT_EVENTWISE
 #cmakedefine EVENT_ID
 #cmakedefine EVENT_EDEP
 #cmakedefine EVENT_EKIN

@@ -104,6 +104,9 @@ if(G4Threading::G4GetThreadId()==0)
 {	G4cout << "================================================================"
 	          "================"
 	       << G4endl;
+	#ifdef EVENT_EVENTWISE
+	G4cout << "ActionInitialization: EDEP will be saved to the output file in EVENTWISE mode" << G4endl;
+	#else
 	G4cout << "ActionInitialization: The following quantities will be saved to "
 	          "the output file:"
 	       << G4endl;
@@ -112,6 +115,7 @@ if(G4Threading::G4GetThreadId()==0)
 			G4cout << runAction->GetOutputFlagName(i) << G4endl;
 		}
 	}
+	#endif
 	G4cout << "================================================================"
 	          "================"
 	       << G4endl;
