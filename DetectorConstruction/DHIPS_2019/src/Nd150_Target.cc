@@ -18,6 +18,8 @@ You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <iostream>
+
 #include "G4Element.hh"
 #include "G4Isotope.hh"
 #include "G4Material.hh"
@@ -147,21 +149,31 @@ void Nd150_Target::Construct(G4ThreeVector global_coordinates)
 	// Aluminum plates
 	G4Material *Al27 = nist->FindOrBuildMaterial("G4_Al");
 
-	G4double Al27_mass_1 = 0.6795*g;
-	G4double Al27_mass_2 = 0.6894*g;
-	G4double Al27_radius = 0.5*inch;
+	G4double Al27_mass_1 = 0.6795 * g;
+	G4double Al27_mass_2 = 0.6894 * g;
+	G4double Al27_radius = 0.5 * inch;
 
-	G4double Al27_thickness_1 = Al27_mass_1/(Al27->GetDensity()*pi*Al27_radius*Al27_radius);
-	G4double Al27_thickness_2 = Al27_mass_2/(Al27->GetDensity()*pi*Al27_radius*Al27_radius);
+	G4double Al27_thickness_1 = Al27_mass_1 / (Al27->GetDensity() * pi * Al27_radius * Al27_radius);
+	G4double Al27_thickness_2 = Al27_mass_2 / (Al27->GetDensity() * pi * Al27_radius * Al27_radius);
 
 	G4Tubs *Al27_Solid_1 = new G4Tubs("Al27_Solid_1", 0, Al27_radius, Al27_thickness_1 * 0.5, 0, twopi);
 	G4LogicalVolume *Al27_Logical_1 = new G4LogicalVolume(Al27_Solid_1, Al27, "Al27_Logical_1");
 	Al27_Logical_1->SetVisAttributes(G4Color::White());
-	
+
 	G4Tubs *Al27_Solid_2 = new G4Tubs("Al27_Solid_2", 0, Al27_radius, Al27_thickness_2 * 0.5, 0, twopi);
 	G4LogicalVolume *Al27_Logical_2 = new G4LogicalVolume(Al27_Solid_2, Al27, "Al27_Logical_2");
 	Al27_Logical_2->SetVisAttributes(G4Color::White());
 
-	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., - 0.5*Nd150_Container_OuterHeight - 0.5 * Al27_thickness_1), Al27_Logical_1, "Al27_1", World_Logical, false, 0);
-	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., 0.5*Nd150_Container_OuterHeight + 0.5 * Al27_thickness_2), Al27_Logical_2, "Al27_2", World_Logical, false, 0);
+	auto Al27_posz_1 = -0.5 * Nd150_Container_OuterHeight - 0.5 * Al27_thickness_1;
+	auto Al27_posz_2 = 0.5 * Nd150_Container_OuterHeight + 0.5 * Al27_thickness_2;
+	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., Al27_posz_1), Al27_Logical_1, "Al27_1", World_Logical, false, 0);
+	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., Al27_posz_2), Al27_Logical_2, "Al27_2", World_Logical, false, 0);
+
+	std::cout << "********** Al27 target information **********\n";
+	std::cout << "Al27_diameter = " << 2*Al27_radius << '\n';
+	std::cout << "Al27_thickness_1 = " << Al27_thickness_1 << '\n';
+	std::cout << "Al27_thickness_2 = " << Al27_thickness_2 << '\n';
+	std::cout << "Al27_posz_1 = " << Al27_posz_1 << '\n';
+	std::cout << "Al27_posz_2 = " << Al27_posz_2 << '\n';
+	std::cout << "*********************************************\n";
 }
