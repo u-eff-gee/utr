@@ -7,6 +7,7 @@
 
 #[generalConfig]
 #outputDir=output/Efficiency
+#getHistogramExe=getHistogram-Eventwise
 
 #[environmentVariables]
 #filenamePrefix=Efficiency_
@@ -15,19 +16,20 @@
 #setterCmd=/gps/ene/mono {loopVar} MeV
 
 #[utrBuildOptions]
-#CAMPAIGN=Campaign_2014_2015
-#DETECTOR_CONSTRUCTION=150Sm
+#CAMPAIGN=Campaign_2018_2019
+#DETECTOR_CONSTRUCTION=64Ni_271_279
 #USE_TARGETS=ON
 #GENERATOR_ANGCORR=OFF
 #GENERATOR_ANGDIST=OFF
-#EVENT_EVENTWISE=OFF
+#EVENT_EVENTWISE=ON
 
 #[getHistogramArgs]
 #maxenergy=5
+#addback=5
 
 #[histogramToTxtArgs]
 #begin=1
-#end=4
+#end=-1
 
 ## The required magic string signals the end of the configuration header
 #START_OF_MACRO

@@ -1,10 +1,13 @@
 CPP=g++
-CFLAGS=-Wall -Wconversion -Wsign-conversion -O3
-ROOTFLAGS=-isystem$(shell root-config --incdir) -L$(shell root-config --libdir) -lCore -lRIO -lHist -lTree
+CFLAGS=-Wall -Wconversion -Wsign-conversion -O3 -std=$(shell root-config --cflags | sed 's/.*-std=\(\S\+\)\s.*/\1/')
+ROOTFLAGS=-isystem$(shell root-config --incdir) -L$(shell root-config --libdir) -lCore -lRIO -lHist -lTree -lROOTDataFrame -lTreePlayer
 
-all: getHistogram getSolidAngleCoverage histogramToTxt rootToTxt mergeFiles
+all: getHistogram getHistogram-Eventwise getSolidAngleCoverage histogramToTxt rootToTxt mergeFiles
 
 getHistogram: GetHistogram.cpp
+	$(CPP) -o $@ $< $(CFLAGS) $(ROOTFLAGS)
+
+getHistogram-Eventwise: GetHistogram-Eventwise.cpp
 	$(CPP) -o $@ $< $(CFLAGS) $(ROOTFLAGS)
 
 getSolidAngleCoverage: GetSolidAngleCoverage.cpp
@@ -22,7 +25,7 @@ rootToTxt: RootToTxt.cpp
 .PHONY: all clean
 
 clean:
-	for f in getHistogram getHistogramRDF getSolidAngleCoverage histogramToTxt mergeFiles rootToTxt ; do \
+	for f in getHistogram getHistogram-Eventwise getHistogramRDF getSolidAngleCoverage histogramToTxt mergeFiles rootToTxt ; do \
 	  if [ -e "$$f" ] ; then \
 	    rm "$$f" ; \
 	  fi ; \
