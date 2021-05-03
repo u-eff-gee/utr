@@ -30,6 +30,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "RunAction.hh"
 #include "TargetHit.hh"
 #include "DetectorConstruction.hh"
+#include "G4Threading.hh"
 
 #include "utrConfig.h"
 
@@ -73,6 +74,9 @@ G4bool EnergyDepositionSD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
 	return true;
 }
 
+// Initialize static member needed for EVENT_EVENTWISE mode, actual initialization values is, however, set in utr.cc
+std::vector<bool> EnergyDepositionSD::anyDetectorHitInEvent = std::vector<bool>();
+
 void EnergyDepositionSD::EndOfEvent(G4HCofThisEvent *) {
 
 	G4int nHits = hitsCollection->entries();
@@ -87,10 +91,11 @@ void EnergyDepositionSD::EndOfEvent(G4HCofThisEvent *) {
 		G4AnalysisManager *analysisManager = G4AnalysisManager::Instance();
 		if (totalEnergyDeposition > 0.) {
 			analysisManager->FillNtupleDColumn(0, GetDetectorID(), totalEnergyDeposition);
+			anyDetectorHitInEvent[G4Threading::G4GetThreadId()]=true;
 		}
-		// TODO: Writing is done for every event, even when no detector was hit, possibly writing a lof of empty (zeroes-only) rows to file
-		if (GetDetectorID() == ((DetectorConstruction*) G4RunManager::GetRunManager()->GetUserDetectorConstruction())->Max_Sensitive_Detector_ID) {
+		if (anyDetectorHitInEvent[G4Threading::G4GetThreadId()] && GetDetectorID() == ((DetectorConstruction*) G4RunManager::GetRunManager()->GetUserDetectorConstruction())->Max_Sensitive_Detector_ID) {
 			analysisManager->AddNtupleRow();
+			anyDetectorHitInEvent[G4Threading::G4GetThreadId()]=false;
 		}
 	#else
 		if (totalEnergyDeposition > 0.) {

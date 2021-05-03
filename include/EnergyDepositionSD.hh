@@ -40,6 +40,7 @@ class EnergyDepositionSD : public G4VSensitiveDetector {
 	virtual void EndOfEvent(G4HCofThisEvent *hitCollection);
 	unsigned int GetDetectorID() { return detectorID; };
 	void SetDetectorID(unsigned int detID) { detectorID = detID; };
+	static std::vector<bool> anyDetectorHitInEvent; // Needed for EVENT_EVENTWISE mode, signals whether an entry (row) needs to be written to the root file for the current event (or whether the row would be zeroes only)
 
   private:
 	TargetHitsCollection *hitsCollection;
