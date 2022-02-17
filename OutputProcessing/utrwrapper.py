@@ -46,6 +46,8 @@ listing all available options with their effect and default values
 #processOutput=True                   # Whether to process the output with
 #                                     # getHistogram and histogramToTxt after
 #                                     # the simulation ended (Default: True)
+#getHistogramExe=My-getHistogram      # The getHistogram executeable/version
+#                                     # to use
 #outputDir=/path/to/utr/output        # The output directory
 #separateRawOutputAndHistograms=True  # Whether to separate utr's output from
 #                                     # the processed output by two subfolders
@@ -171,6 +173,7 @@ utrPath=config["generalConfig"].get("utrPath",
             "..")))
 checkForExistingOutput=config["generalConfig"].getboolean("checkForExistingOutput", True)
 processOutput=config["generalConfig"].getboolean("processOutput", True)
+getHistogramExe=config["generalConfig"].get("getHistogramExe", "getHistogram")
 outputDir=config["generalConfig"].get("outputDir", "output")
 outputDirRaw=outputDir
 outputDirHists=outputDir
@@ -272,14 +275,14 @@ if logging :
 
 
 # Define function to run processes, respecting logging and checking exit status
-def runProcess(prog, *procArgs, announce=True, **kwargs) :
+def runProcess(prog, procArgs, announce=True, **kwargs) :
     if announce :
         loggingPrint("Running", prog)
     if not logging :
-        if (subprocess.run(*procArgs, **kwargs).returncode != 0) :
+        if (subprocess.run(procArgs, **kwargs).returncode != 0) :
             error(prog, "failed!")
     else :
-        with subprocess.Popen(*procArgs, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True, **kwargs) as proc :
+        with subprocess.Popen(procArgs, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True, **kwargs) as proc :
             for line in proc.stdout:
                 loggingPrint(line, tag=prog+">", end="")
             if (proc.wait() != 0) :
@@ -340,8 +343,8 @@ if processOutput :
         loggingPrint("Processing output file '" + rootFilename.rpartition("_t")[0] + "'...")
         # Strip _t0.root and directory name from string
         rootFilename=os.path.basename(rootFilename).rpartition("_t")[0]
-        runProcess("getHistogram", [
-            os.path.join(outputProcessingPath, "getHistogram"),
+        runProcess(getHistogramExe, [
+            os.path.join(outputProcessingPath, getHistogramExe),
             "--pattern1=" + rootFilename + "_t",
             "--inputdir=" + outputDirRaw,
             "--outputdir=" + outputDirHists

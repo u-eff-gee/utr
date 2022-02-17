@@ -31,6 +31,11 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "utrMessenger.hh"
 #include "utrFilenameTools.hh"
 
+#ifdef EVENT_EVENTWISE
+	#include "EnergyDepositionSD.hh"
+#endif
+
+
 #include "G4UIExecutive.hh"
 #include "G4UImanager.hh"
 
@@ -118,6 +123,12 @@ int main(int argc, char *argv[]) {
 	ActionInitialization *actionInitialization = new ActionInitialization();
 	actionInitialization->setNThreads(arguments.nthreads);
 	runManager->SetUserInitialization(actionInitialization);
+
+	#ifdef EVENT_EVENTWISE
+		G4cout << "Initializing EnergyDepositionSD::anyDetectorHitInEvent vector..." << G4endl;
+		EnergyDepositionSD::anyDetectorHitInEvent = std::vector<bool>(arguments.nthreads, false);
+	#endif
+
 
 	if (!arguments.macrofile) {
 		G4cout << "Initializing VisManager" << G4endl;

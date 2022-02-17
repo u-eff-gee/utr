@@ -8,6 +8,7 @@ include/utrConfig.h
 # Compiled binaries
 utr
 getHistogram
+getHistogram-Eventwise
 getHistogramRDF
 getSolidAngleCoverage
 histogramToTxt
@@ -48,3 +49,6 @@ output/*
 
 # VRML visualization output
 *.wrl
+
+# VS Code directory
+.vscode

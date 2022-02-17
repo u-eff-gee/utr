@@ -31,6 +31,9 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include <TChain.h>
 #include <TH1.h>
 #include <TFile.h>
+#include <ROOT/RDataFrame.hxx>
+// #include <ROOT/RFile.hxx>
+
 
 using std::cout;
 using std::cerr;
@@ -46,7 +49,7 @@ static char args_doc[] = ""; // No arguments, only options!
 
 // The options argp understands
 static struct argp_option options[] = {
-	{ "tree", 't', "TREENAME", 0, "Name of tree composing the list of events to process (default: utr)" },
+	{ "tree", 't', "TREENAME", 0, "Name of tree composing the list of events to process (default: edep)" },
 	{ "pattern1", 'p', "PATTERN1", 0, "First string files must contain to be processed (default: utr)" },
 	{ "pattern2", 'q', "PATTERN2", 0, "Second string files must contain to be processed (default: .root)" },
     { "inputdir", 'd', "INPUTDIR", 0, "Directory to search for input files matching the patterns (default: current working directory '.' )" },
@@ -57,16 +60,15 @@ static struct argp_option options[] = {
 	{ "binning", 'b', "BINNING", 0, "Size of bins in the histogram in keV (default: 1 keV)" },
 	{ "maxenergy", 'e', "EMAX", 0, "Maximum energy displayed in histogram in MeV (rounded up to match BINNING) (default: 10 MeV)" },
 	{ "showbin", 'B', "BIN", 0, "Number of energy bin whose value should be displayed, -1 to disable (default: -1)" },
-	{ "maxid", 'n', "MAXID", 0, "Highest detection volume ID (default: 12). 'getHistogram' only processes energy depositions in detectors with integer volume ID numbers from 0 to MAXID (MAXID is included)." },
-	{ "multiplicity", 'm', "MULTIPLICITY", 0, "Particle multiplicity, sum energy depositions for each detector among MULTIPLICITY events (default: 1)" },
-	{ "addback", 'a', 0, 0, "Add back energy depositions that occurred in a single event to the detector first listed in the event (usually this is the first one hit) (default: Off)" },
+	{ "maxid", 'n', "MAXID", 0, "Highest detection volume ID (default: 12). 'getHistogram-Eventwise' only processes energy depositions in detectors with integer volume ID numbers from 0 to MAXID (MAXID is included)." },
+	{ "addback", 'a', "ADDBACKSTARTID", 0, "Add back energy depositions that occurred in 4 leaves of clover detectors. Assumes clover leaves' volume IDs start at ADDBACKSTARTID and volume IDs of all leaves of one clover are consecutive. -1 to disable (default: -1)" },
 	{ "silent", 's', 0, 0, "Silent mode (does not silence -B option) (default: Off" },
 	{ 0, 0, 0, 0, 0 }
 };
 
 // Used by main to communicate with parse_opt
 struct arguments {
-	string tree="utr";
+	string tree="edep";
 	string p1="utr";
 	string p2=".root";
 	string inputDir=".";
@@ -78,8 +80,7 @@ struct arguments {
 	double eMax=10.;
 	int binToPrint=-1;
 	unsigned int nhistograms=12 + 1; // Default value for MAXID of 12 and +1 (histograms 0 to 12)
-	unsigned int multiplicity=1;
-	bool addback=false;
+	int addback=-1;
 	bool verbose=true;
 };
 
@@ -99,11 +100,10 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state) {
 		case 'e': arguments->eMax = atof(arg); break;
 		case 'B': arguments->binToPrint = atoi(arg); break;
 		case 'n': arguments->nhistograms = (unsigned int) atoi(arg) + 1; break; // = MAXID + 1 (histograms 0 to MAXID)
-		case 'm': arguments->multiplicity = (unsigned int) atoi(arg); break;
-		case 'a': arguments->addback = true; break;
+		case 'a': arguments->addback = atoi(arg); break;
 		case 's': arguments->verbose = false; break;
 		case ARGP_KEY_ARG: 
-			cerr << "> Error: getHistogram takes only options and no arguments!" << endl;
+			cerr << "> Error: getHistogram-Eventwise takes only options and no arguments!" << endl;
 			argp_usage (state); 
 			break;
 		case ARGP_KEY_END: break;
@@ -136,7 +136,7 @@ int main(int argc, char* argv[]){
 
 	if(arguments.verbose){
 		cout << "#############################################" << endl;
-		cout << "> getHistogram" << endl;
+		cout << "> getHistogram-Eventwise" << endl;
 		cout << "> TREENAME     : " << arguments.tree << endl;
 		cout << "> FILES        : " << "*" << arguments.p1 << "*" << arguments.p2 << "*" << endl;
 		cout << "> INPUTDIR     : " << arguments.inputDir << endl;
@@ -145,15 +145,11 @@ int main(int argc, char* argv[]){
 		cout << "> BINNING      : " << arguments.binning * 1000 << " keV" << endl;
 		cout << "> EMAX         : " << arguments.eMax << " MeV" << endl;
 		cout << "> MAXID        : " << arguments.nhistograms - 1 << endl;
-		cout << "> MULTIPLICITY : " << arguments.multiplicity << endl;
 		if(arguments.binToPrint != -1){
 			cout << "> BIN          : " << arguments.binToPrint << endl;
 		}
-		cout << "> ADDBACK      : ";
-		if(arguments.addback){
-			cout << "TRUE" << endl;
-		} else {
-			cout << "FALSE" << endl;
+		if(arguments.addback != -1){
+			cout << "> ADDBACK      : " << arguments.addback << endl;
 		}
 		cout << "#############################################" << endl;
 	}
@@ -191,7 +187,7 @@ int main(int argc, char* argv[]){
 	// Prepare empty histograms
 
 	// Minimum energy of histograms in MeV: bin centered around 0
-	const double emin  = 0             -arguments.binning/2; 
+	const double emin  = 0 - arguments.binning/2; 
 	// Number of bins in the histograms: Chosen so that the end of the last bin using the given binning is greater or equal to the given maximum energy
 	const int    nbins = (int) ceil((arguments.eMax-emin)/arguments.binning);
 	// Maximum energy of histograms in MeV: Choosen so that it matches the given binning
@@ -201,7 +197,11 @@ int main(int argc, char* argv[]){
 		cout << "> Rounded up EMAX from " << arguments.eMax << " MeV to " << eMax << " MeV in order to match the requested BINNING of " << arguments.binning << " MeV"<< endl;
 	}	
 
-	vector<TH1*> hist(arguments.nhistograms + 1); // +1 For sum histogram
+
+	ROOT::EnableImplicitMT();
+	auto df = ROOT::RDataFrame(fileChain);
+
+	vector<ROOT::RDF::RResultPtr<TH1D>> histPtr(arguments.nhistograms);
 	stringstream histname, histtitle;
 
 	for(unsigned int i = 0; i < arguments.nhistograms; ++i){
@@ -213,99 +213,43 @@ int main(int argc, char* argv[]){
 		// datatype could handle much higher values, just not with the needed precision on integer basis).
 		// Hence a TH1D is used: The Double datatype has a precision of about 14 digits (more digits than an Integer can store), and the incrementation by one gets lost at 
 		// a bin content of about 9.0e+15, which should suffice for all (utr) cases (one could also implement throwing an exception if a bin passes some threshold after filling).
-		hist[i] = new TH1D(histname.str().c_str(), histtitle.str().c_str(), nbins, emin, eMax);
+
+		histPtr[i] = df
+		           .Filter([](double e) { return e > 0.; }, {"det" + std::to_string(i)})
+							 .Histo1D(TH1D(histname.str().c_str(), histtitle.str().c_str(), nbins, emin, eMax), "det" + std::to_string(i));
 		histname.str("");
 		histtitle.str("");
 	}
-	hist[arguments.nhistograms] = new TH1D("sum", "Sum spectrum of all detectors", nbins, emin, eMax);
 
-	vector<unsigned int> multiplicity_counter(arguments.nhistograms, 0);
-
-	// Fill histogram from TBranch in TChain with user-defined conditions
-	// Define variables and automatically update their values from the ROOT tree using the GetEntry method after registering them with the SetBranchAddress method
-	double Event, lastEvent;
-	double Volume; // Needs to be double to correctly work with GetEntry and SetBranchAddress methods
-	unsigned int lastVolume; // Needs to be unsigned int to correctly work with array indices
-	double Edep;
-	vector<double> EdepBuffer(arguments.nhistograms, 0.);
-
-	fileChain.SetBranchAddress("edep", &Edep);
-	fileChain.SetBranchAddress("volume", &Volume);
-	if (arguments.addback) {
-		fileChain.SetBranchAddress("event", &Event);
-	} else {
-		Event=-1; // If addback is disabled, Event will not be relevant in the code below, and the ROOT tree is not required to contain it
-	}
-
-	unsigned int addback_counter = 0;
-	unsigned int warningCounter = 0;
-	
-	// The addback-option compares the event number of the last energy deposition to the present event number.
-	// If the present event number is different from the last one, the energy deposition buffer is filled into
-	// the histogram, set to zero, and then the present energy deposition is added to the buffer.
-	// This procedure requires that the 'last event' has been defined, therefore getHistogram
-	// preprocesses the first event manually.
-	//
-	// A valid last event has a valid detector ID. The following while loop reads entries until it finds a
-	// valid last event.
-	fileChain.GetEntry(0);
-	long entry = 1;
-	while ((unsigned int) Volume >= arguments.nhistograms && entry < fileChain.GetEntries()) { // Make sure that always a valid volume is given as the last volume
-		if (warningCounter < 10) {
-			cout << "Warning: Entry with volume = " << (unsigned int) Volume << " > MAXID = " << arguments.nhistograms - 1  << " encountered. Skipping this entry." << endl;
-			warningCounter++;
-			if (warningCounter == 10) {
-				cout << "Warning: No more warnings of this type will be displayed!" << endl;
-			}
+	if (arguments.addback >= 0) {
+		int clover=1;
+		for(unsigned int i = static_cast<unsigned int>(arguments.addback); i+3 < arguments.nhistograms; i+=4){
+			histname << "addback" << clover;
+			histtitle << "Addback energy deposition in clover detector " << clover;
+			histPtr.push_back(
+				df.Define("ADDBACK" + std::to_string(clover),
+									[](double e1, double e2, double e3, double e4) { return e1+e2+e3+e4; },
+									{"det" + std::to_string(i), "det" + std::to_string(i+1), "det" + std::to_string(i+2), "det" + std::to_string(i+3)}
+									)
+					.Filter([](double e) { return e > 0.; }, {"ADDBACK" + std::to_string(clover)})
+					.Histo1D(TH1D(histname.str().c_str(), histtitle.str().c_str(), nbins, emin, eMax), "ADDBACK" + std::to_string(clover))
+				);
+			histname.str("");
+			histtitle.str("");
+			clover++;
 		}
-		fileChain.GetEntry(entry);
-		entry++;
-	}
-	lastEvent=Event;
-	lastVolume=(unsigned int) Volume;
-	EdepBuffer[lastVolume] = Edep;
-
-	//Process next events in loops
-	while(entry < fileChain.GetEntries()) {
-		// Get the entry, this sets the values for the Edep, Volume and Event variables
-		fileChain.GetEntry(entry);
-		if((unsigned int) Volume < arguments.nhistograms){ // nhistograms=MAXID+1 so must always be greater than Volume to consider that Volume
-			// If addback is disabled or the event number has changed:
-			if (!arguments.addback || lastEvent != Event) {
-				// First process the *last* event still in the buffer:
-				// Increase the volumes multiplicity counter
-				multiplicity_counter[lastVolume]++;
-				// If multiplicity counter is high enough write the buffered energy value to the histogram
-				if(multiplicity_counter[lastVolume]==arguments.multiplicity) {
-					hist[lastVolume]->Fill(EdepBuffer[lastVolume]); // Fill own histogram 
-					hist[arguments.nhistograms]->Fill(EdepBuffer[lastVolume]); // Fill sum histogram
-					EdepBuffer[lastVolume] = 0.; // Reset energy buffer to zero
-					multiplicity_counter[lastVolume] = 0; // Reset multiplicity counter to zero
-				}
-				// Now update history variables to *this* event and increase addback_counter
-				addback_counter++;
-				lastEvent=Event;
-				lastVolume=(unsigned int) Volume;
-			}
-			// Add Edep value to buffer (necessary for addback and multiplicity), note that the *last* Volume can now already be *this* event's volume
-			EdepBuffer[lastVolume] += Edep;
-		} else if (arguments.verbose && warningCounter < 10){
-			cout << "Warning: Entry with volume = " << (unsigned int) Volume << " > MAXID = " << arguments.nhistograms - 1  << " encountered. Skipping this entry." << endl;
-			warningCounter++;
-			if (warningCounter == 10) {
-				cout << "Warning: No more warnings of this type will be displayed!" << endl;
-			}
-		}
-		++entry;
 	}
 
-	// (Post)Process last event manually 
-	multiplicity_counter[lastVolume]++;
-	if(multiplicity_counter[lastVolume]==arguments.multiplicity) {
-		hist[lastVolume]->Fill(EdepBuffer[lastVolume]); // Fill own histogram 
-		hist[arguments.nhistograms]->Fill(EdepBuffer[lastVolume]); // Fill sum histogram
+	vector<TH1D> hist(histPtr.size() + 1); // +1 For sum histogram
+	hist[arguments.nhistograms] = TH1D("sum", "Sum spectrum of all detectors", nbins, emin, eMax);
+	for(unsigned int i = 0; i < arguments.nhistograms; ++i){
+		hist[i]=histPtr[i].GetValue();
+		hist[arguments.nhistograms].Add(&(hist[i]));
 	}
-	addback_counter++;
+	for(unsigned int i = arguments.nhistograms + 1; i < hist.size(); ++i){
+		hist[i]=histPtr[i-1].GetValue();
+	}
+
 
 	if(arguments.verbose) {
 		cout << "> Processed " << fileChain.GetEntries() << " entries" << endl;
@@ -313,12 +257,12 @@ int main(int argc, char* argv[]){
 
 	// Display counts of a specific bin in each histogram, if requested
 	if(arguments.binToPrint != -1){
-		cout << "Counts in bin " << arguments.binToPrint << " (centered around " << hist[0]->GetBinCenter(arguments.binToPrint) << " MeV ) for each histogram : [ ";
+		cout << "Counts in bin " << arguments.binToPrint << " (centered around " << hist[0].GetBinCenter(arguments.binToPrint) << " MeV ) for each histogram : [ ";
 		for(unsigned int i = 0; i <= arguments.nhistograms; ++i){
 			if(i != 0){
 				cout << ", ";
 			}
-			cout << hist[i]->GetBinContent(arguments.binToPrint);
+			cout << hist[i].GetBinContent(arguments.binToPrint);
 		}
 		cout << "]" << endl;
 	}
@@ -326,17 +270,11 @@ int main(int argc, char* argv[]){
 	// Write histogram to a new TFile
 	TFile *outFile = new TFile((arguments.outputDir + "/" + arguments.outputFilename).c_str(), "RECREATE");
 	for(auto h: hist){
-		h->Write();
+		h.Write();
 	}
 	outFile->Close();
 
-	if (arguments.verbose) {
-		if (arguments.addback) {
-			if(addback_counter == fileChain.GetEntries())
-				cout << "> No events added back" << endl;
-			else
-				cout << "> Percentage of events added back: " << ((1.-((double) addback_counter) / (double) fileChain.GetEntries())*100.) << " %" << endl;
-		}
+	if(arguments.verbose) {
 		cout << "> Created output file " << arguments.outputFilename << endl;
 	}
 }

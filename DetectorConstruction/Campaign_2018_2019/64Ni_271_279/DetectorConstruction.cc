@@ -296,6 +296,8 @@ void DetectorConstruction::ConstructSDandField() {
 	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe12SD);
 	HPGe12SD->SetDetectorID(12);
 	SetSensitiveDetector("HPGe12", HPGe12SD, true);
+
+	Max_Sensitive_Detector_ID=12;
 }
 
 void DetectorConstruction::print_info() const {

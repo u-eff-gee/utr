@@ -18,6 +18,8 @@ You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <string>
+
 #include "G4Run.hh"
 #include "G4RunManager.hh"
 #include "G4SDManager.hh"
@@ -28,6 +30,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "RunAction.hh"
 #include "utrFilenameTools.hh"
+#include "DetectorConstruction.hh"
 #include "g4root.hh"
 #include <limits.h>
 
@@ -41,39 +44,47 @@ void RunAction::BeginOfRunAction(const G4Run *) {
 	// Get analysis manager
 	G4AnalysisManager *analysisManager = G4AnalysisManager::Instance();
 
-	analysisManager->CreateNtuple("utr", "Particle information");
-	#ifdef EVENT_ID
-		analysisManager->CreateNtupleDColumn("event");
-	#endif
-	#ifdef EVENT_EDEP
-		analysisManager->CreateNtupleDColumn("edep");
-	#endif
-	#ifdef EVENT_EKIN
-		analysisManager->CreateNtupleDColumn("ekin");
-	#endif
-	#ifdef EVENT_PARTICLE
-		analysisManager->CreateNtupleDColumn("particle");
-	#endif
-	#ifdef EVENT_VOLUME
-		analysisManager->CreateNtupleDColumn("volume");
-	#endif
-	#ifdef EVENT_POSX
-		analysisManager->CreateNtupleDColumn("x");
-	#endif
-	#ifdef EVENT_POSY
-		analysisManager->CreateNtupleDColumn("y");
-	#endif
-	#ifdef EVENT_POSZ
-		analysisManager->CreateNtupleDColumn("z");
-	#endif
-	#ifdef EVENT_MOMX
-		analysisManager->CreateNtupleDColumn("vx");
-	#endif
-	#ifdef EVENT_MOMY
-		analysisManager->CreateNtupleDColumn("vy");
-	#endif
-	#ifdef EVENT_MOMZ
-		analysisManager->CreateNtupleDColumn("vz");
+  #ifdef EVENT_EVENTWISE
+    analysisManager->CreateNtuple("edep", "Energy Deposition");
+		auto max_sensitive_detector_ID = ((DetectorConstruction*) G4RunManager::GetRunManager()->GetUserDetectorConstruction())->Max_Sensitive_Detector_ID;
+    for(size_t i = 0; i < max_sensitive_detector_ID + 1; ++i){
+      analysisManager->CreateNtupleDColumn("det" + std::to_string(i));
+    }
+  #else
+	  analysisManager->CreateNtuple("utr", "Particle information");
+	  #ifdef EVENT_ID
+	  	analysisManager->CreateNtupleDColumn("event");
+	  #endif
+	  #ifdef EVENT_EDEP
+	  	analysisManager->CreateNtupleDColumn("edep");
+	  #endif
+	  #ifdef EVENT_EKIN
+	  	analysisManager->CreateNtupleDColumn("ekin");
+	  #endif
+	  #ifdef EVENT_PARTICLE
+	  	analysisManager->CreateNtupleDColumn("particle");
+	  #endif
+	  #ifdef EVENT_VOLUME
+	  	analysisManager->CreateNtupleDColumn("volume");
+	  #endif
+	  #ifdef EVENT_POSX
+	  	analysisManager->CreateNtupleDColumn("x");
+	  #endif
+	  #ifdef EVENT_POSY
+	  	analysisManager->CreateNtupleDColumn("y");
+	  #endif
+	  #ifdef EVENT_POSZ
+	  	analysisManager->CreateNtupleDColumn("z");
+	  #endif
+	  #ifdef EVENT_MOMX
+	  	analysisManager->CreateNtupleDColumn("vx");
+	  #endif
+	  #ifdef EVENT_MOMY
+	  	analysisManager->CreateNtupleDColumn("vy");
+	  #endif
+	  #ifdef EVENT_MOMZ
+	  	analysisManager->CreateNtupleDColumn("vz");
+	  #endif
 	#endif
 	analysisManager->FinishNtuple();
 

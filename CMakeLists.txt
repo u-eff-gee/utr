@@ -80,6 +80,7 @@ option(HADRON_INELASTIC_LEND "Use G4HadronPhysicsShieldingLEND" OFF)
 
 option(BACKWARD_COMPATIBLE_BUILD "Build for Geant4 versions < 10.5" OFF)
 
+option(EVENT_EVENTWISE "For each event, record the total energy deposition in each detector in a single root entry (row). Causes all other EVENT_* cmake build options to be ignored." OFF)
 option(EVENT_ID "For each event, record the event number." OFF)
 option(EVENT_EDEP "For each event, record total energy deposition in the detectors" ON)
 option(EVENT_EKIN "For each event, record kinetic energy at the time a particle first hits a detector" OFF)
