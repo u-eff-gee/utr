@@ -19,7 +19,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "EnergyDepositionSD.hh"
-#include "g4root.hh"
+#include "G4RootAnalysisManager.hh"
 #include "G4HCofThisEvent.hh"
 #include "G4RunManager.hh"
 #include "G4SDManager.hh"
@@ -88,7 +88,7 @@ void EnergyDepositionSD::EndOfEvent(G4HCofThisEvent *) {
 
 
 	#ifdef EVENT_EVENTWISE
-		G4AnalysisManager *analysisManager = G4AnalysisManager::Instance();
+		G4RootAnalysisManager *analysisManager = G4RootAnalysisManager::Instance();
 		if (totalEnergyDeposition > 0.) {
 			analysisManager->FillNtupleDColumn(0, GetDetectorID(), totalEnergyDeposition);
 			anyDetectorHitInEvent[G4Threading::G4GetThreadId()]=true;
@@ -99,7 +99,7 @@ void EnergyDepositionSD::EndOfEvent(G4HCofThisEvent *) {
 		}
 	#else
 		if (totalEnergyDeposition > 0.) {
-			G4AnalysisManager *analysisManager = G4AnalysisManager::Instance();
+			G4RootAnalysisManager *analysisManager = G4RootAnalysisManager::Instance();
 
 			unsigned int nentry = 0;
 

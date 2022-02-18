@@ -19,7 +19,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "SecondarySD.hh"
-#include "g4root.hh"
+#include "G4RootAnalysisManager.hh"
 #include "G4Event.hh"
 #include "G4HCofThisEvent.hh"
 #include "G4RunManager.hh"
@@ -62,7 +62,7 @@ G4bool SecondarySD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
 		if (track->GetKineticEnergy() == 0.)
 			return false;
 
-		G4AnalysisManager *analysisManager = G4AnalysisManager::Instance();
+		G4RootAnalysisManager *analysisManager = G4RootAnalysisManager::Instance();
 
 		unsigned int nentry = 0;
 

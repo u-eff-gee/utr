@@ -31,18 +31,18 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "RunAction.hh"
 #include "utrFilenameTools.hh"
 #include "DetectorConstruction.hh"
-#include "g4root.hh"
+#include "G4RootAnalysisManager.hh"
 #include <limits.h>
 
 #include "utrConfig.h"
 
 RunAction::RunAction() : G4UserRunAction() {}
 
-RunAction::~RunAction() { delete G4AnalysisManager::Instance(); }
+RunAction::~RunAction() { delete G4RootAnalysisManager::Instance(); }
 
 void RunAction::BeginOfRunAction(const G4Run *) {
 	// Get analysis manager
-	G4AnalysisManager *analysisManager = G4AnalysisManager::Instance();
+	G4RootAnalysisManager *analysisManager = G4RootAnalysisManager::Instance();
 
   #ifdef EVENT_EVENTWISE
     analysisManager->CreateNtuple("edep", "Energy Deposition");
@@ -122,12 +122,12 @@ void RunAction::BeginOfRunAction(const G4Run *) {
 }
 
 void RunAction::EndOfRunAction(const G4Run *) {
-	G4AnalysisManager *analysisManager = G4AnalysisManager::Instance();
+	G4RootAnalysisManager *analysisManager = G4RootAnalysisManager::Instance();
 
 	analysisManager->Write();
 	analysisManager->CloseFile();
 
-	delete G4AnalysisManager::Instance();
+	delete G4RootAnalysisManager::Instance();
 }
 
 G4String RunAction::GetOutputFlagName(unsigned int n) {
