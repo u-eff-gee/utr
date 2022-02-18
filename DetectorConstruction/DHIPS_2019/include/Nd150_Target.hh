@@ -21,23 +21,16 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 #include "G4LogicalVolume.hh"
-#include "G4SystemOfUnits.hh"
 
-class Sn112_Target{
+class Nd150_Target{
 public:
-	Sn112_Target(G4LogicalVolume *World_Log);
-	~Sn112_Target() = default;
+	Nd150_Target();
+	Nd150_Target(G4LogicalVolume *World_Log);
+	~Nd150_Target(){};
 
 	void Construct(G4ThreeVector global_coordinates);
 	void Set_Containing_Volume(G4LogicalVolume *World_Log){ World_Logical = World_Log; };
 
 private:
 	G4LogicalVolume *World_Logical;
-
-	G4double container_inner_radius;
-	G4double co59_I_thickness;
-	G4double al27_II_thickness;
-	G4double sn112_III_thickness;
-	G4double al27_IV_thickness;
-	G4double co59_V_thickness;
 };

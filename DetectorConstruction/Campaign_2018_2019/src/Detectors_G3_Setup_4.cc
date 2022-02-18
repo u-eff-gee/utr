@@ -34,9 +34,9 @@ void Detectors_G3_Setup_4::Construct(G4ThreeVector global_coordinates){
 
 	/**************** HPGE1 *******************/
 
-	G4double hpge1_rt = 121.2 * mm;
-	G4double hpge1_dy = 9. * mm;
-	G4double hpge1_dz = 0. * mm;
+	G4double hpge1_rt = 121.2 * mm; // Estimated (Detector radius larger than estimated?)
+	G4double hpge1_dy = 7.8 * mm;
+	G4double hpge1_dz = 5. * mm;
 	G4double hpge1_phi = 315. * deg;
 	G4double hpge1_theta = 135. * deg;
 
@@ -53,7 +53,7 @@ void Detectors_G3_Setup_4::Construct(G4ThreeVector global_coordinates){
 
 	G4double hpge2_rt = 82.55 * mm;
 	G4double hpge2_dy = 0. * mm;
-	G4double hpge2_dz = 0. * mm;
+	G4double hpge2_dz = 7.5 * mm;
 	G4double hpge2_phi = 90. * deg;
 	G4double hpge2_theta = 90. * deg;
 
@@ -69,11 +69,11 @@ void Detectors_G3_Setup_4::Construct(G4ThreeVector global_coordinates){
 
 	/**************** HPGE3 *******************/
 
-	G4double hpge3_rt = 121.2 * mm;
-	G4double hpge3_dy = 9. * mm; 
-	G4double hpge3_dz = 0. * mm;
+	G4double hpge3_rt = 123.4 * mm;
+	G4double hpge3_dy = 0. * mm; 
+	G4double hpge3_dz = 10. * mm;
 	G4double hpge3_phi = 45. * deg;
-	G4double hpge3_theta = 135. * deg;
+	G4double hpge3_theta = 137.15 * deg;
 
 	HPGe_Coaxial hpge3(World_Logical, "HPGe3");
 	hpge3.setProperties(hpge_Collection.HPGe_60_TUNL_31061);
@@ -87,8 +87,8 @@ void Detectors_G3_Setup_4::Construct(G4ThreeVector global_coordinates){
 	/**************** HPGE4 *******************/
 
 	G4double hpge4_rt = 90.55 * mm; 
-	G4double hpge4_dy = 0. * mm; 
-	G4double hpge4_dz = 0. * mm; 
+	G4double hpge4_dy = 10. * mm;  // estimated
+	G4double hpge4_dz = -13. * mm; 
 	G4double hpge4_phi = 180. * deg;
 	G4double hpge4_theta = 90. * deg;
 
@@ -105,7 +105,7 @@ void Detectors_G3_Setup_4::Construct(G4ThreeVector global_coordinates){
 
 	G4double labr1_rt = 75.55 * mm; 
 	G4double labr1_dy = 0. * mm; 
-	G4double labr1_dz = 0. * mm; 
+	G4double labr1_dz = 8.5 * mm; 
 	G4double labr1_phi = 0. * deg;
 	G4double labr1_theta = 90. * deg;
 
@@ -123,7 +123,7 @@ void Detectors_G3_Setup_4::Construct(G4ThreeVector global_coordinates){
 
 	G4double labr2_rt = 75.55 * mm; 
 	G4double labr2_dy = 0. * mm; 
-	G4double labr2_dz = 0. * mm; 
+	G4double labr2_dz = 5.5 * mm; 
 	G4double labr2_phi = 270. * deg;
 	G4double labr2_theta = 90. * deg;
 
@@ -138,9 +138,9 @@ void Detectors_G3_Setup_4::Construct(G4ThreeVector global_coordinates){
 
 	/**************** LABR3 *******************/
 
-	G4double labr3_rt = 112.2 * mm; 
-	G4double labr3_dy = -7. * mm; 
-	G4double labr3_dz = 0. * mm; 
+	G4double labr3_rt = 113.51 * mm; 
+	G4double labr3_dy = -16. * mm; 
+	G4double labr3_dz = -5. * mm; 
 	G4double labr3_phi = 225. * deg;
 	G4double labr3_theta = 135. * deg;
 
@@ -153,9 +153,9 @@ void Detectors_G3_Setup_4::Construct(G4ThreeVector global_coordinates){
 
 	/**************** LABR4 *******************/
 
-	G4double labr4_rt = 112.2 * mm;
-	G4double labr4_dy = -7. * mm;
-	G4double labr4_dz = 0. * mm;
+	G4double labr4_rt = 115.5 * mm;
+	G4double labr4_dy = -4. * mm;
+	G4double labr4_dz = -2.7 * mm;
 	G4double labr4_phi = 135. * deg;
 	G4double labr4_theta = 135. * deg;
 

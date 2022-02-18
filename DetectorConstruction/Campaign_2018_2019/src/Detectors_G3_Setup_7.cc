@@ -19,16 +19,16 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "Units.hh"
-#include "Detectors_G3_Setup_6.hh"
+#include "Detectors_G3_Setup_7.hh"
 #include "HPGe_Coaxial.hh"
 #include "HPGe_Collection.hh"
 #include "LaBr_3x3.hh"
 
-Detectors_G3_Setup_6::Detectors_G3_Setup_6(G4LogicalVolume *World_Log):
+Detectors_G3_Setup_7::Detectors_G3_Setup_7(G4LogicalVolume *World_Log):
 World_Logical(World_Log)
 {}
 
-void Detectors_G3_Setup_6::Construct(G4ThreeVector global_coordinates){
+void Detectors_G3_Setup_7::Construct(G4ThreeVector global_coordinates){
 
 	HPGe_Collection hpge_Collection;
 
@@ -51,7 +51,7 @@ void Detectors_G3_Setup_6::Construct(G4ThreeVector global_coordinates){
 
 	/**************** HPGE2 *******************/
 
-	G4double hpge2_rt = 95.55 * mm;
+	G4double hpge2_rt = 126.55 * mm;
 	G4double hpge2_dy = 0. * mm;
 	G4double hpge2_dz = 7.5 * mm;
 	G4double hpge2_phi = 90. * deg;
@@ -86,7 +86,7 @@ void Detectors_G3_Setup_6::Construct(G4ThreeVector global_coordinates){
 
 	/**************** HPGE4 *******************/
 
-	G4double hpge4_rt = 110.55 * mm; 
+	G4double hpge4_rt = 135.55 * mm; 
 	G4double hpge4_dy = 10. * mm;  // estimated
 	G4double hpge4_dz = -13. * mm; 
 	G4double hpge4_phi = 180. * deg;

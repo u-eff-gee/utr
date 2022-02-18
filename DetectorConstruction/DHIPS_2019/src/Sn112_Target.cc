@@ -57,29 +57,29 @@ World_Logical(World_Log)
 void Sn112_Target::Construct(G4ThreeVector global_coordinates){
 
 	// Target data
-	G4double container_inner_radius = 10.*mm;
+	container_inner_radius = 10.*mm;
 	G4double container_outer_radius = 11.*mm;
 	G4double container_lid_thickness = 2.*mm;
 
 	G4double co59_I_density = 8.90*g/cm3; // Density of natural cobalt from Wikipedia
 	G4double co59_I_mass = 0.7689*g; // +- 0.0003 g
-	G4double co59_I_thickness = co59_I_mass/(co59_I_density*pi*container_inner_radius*container_inner_radius);
+	co59_I_thickness = co59_I_mass/(co59_I_density*pi*container_inner_radius*container_inner_radius);
 
 	G4double al27_II_density = 2.70*g/cm3; // Density of natural aluminium from Wikipedia
 	G4double al27_II_mass = 1.7055*g; // +- 0.0003 g
-	G4double al27_II_thickness = al27_II_mass/(al27_II_density*pi*container_inner_radius*container_inner_radius);
+	al27_II_thickness = al27_II_mass/(al27_II_density*pi*container_inner_radius*container_inner_radius);
 
 	G4double sn112_III_density = 7.265*g/cm3; // Density of natural beta-tin from Wikipedia.
 	G4double sn112_III_mass = 4.4285*g; // +- 0.0003 g
-	G4double sn112_III_thickness = sn112_III_mass/(sn112_III_density*pi*container_inner_radius*container_inner_radius);
+	sn112_III_thickness = sn112_III_mass/(sn112_III_density*pi*container_inner_radius*container_inner_radius);
 
 	G4double al27_IV_density = 2.70*g/cm3; // Density of natural aluminium from Wikipedia
 	G4double al27_IV_mass = 1.7067*g; // +- 0.0003 g
-	G4double al27_IV_thickness = al27_IV_mass/(al27_IV_density*pi*container_inner_radius*container_inner_radius);
+	al27_IV_thickness = al27_IV_mass/(al27_IV_density*pi*container_inner_radius*container_inner_radius);
 
 	G4double co59_V_density = 8.90*g/cm3; // Density of natural cobalt from Wikipedia
 	G4double co59_V_mass = 0.7511*g; // +- 0.0003 g
-	G4double co59_V_thickness = co59_V_mass/(co59_V_density*pi*container_inner_radius*container_inner_radius);
+	co59_V_thickness = co59_V_mass/(co59_V_density*pi*container_inner_radius*container_inner_radius);
 
 	G4double container_inner_length = 	  co59_I_thickness
 						+ al27_II_thickness
@@ -131,7 +131,10 @@ void Sn112_Target::Construct(G4ThreeVector global_coordinates){
 
 	stringstream name;
 	G4double next_target_z = 0.;
+	G4ThreeVector pos;
 
+	printf("==============================================================\n");
+	printf("  Sn112 Target: Info (all dimensions in mm)\n");
 	for(unsigned int i = 0; i < target_materials.size(); ++i){
 		name << target_names[i] << "solid";
 		target_solids.push_back(new G4Tubs(name.str(), 0., container_inner_radius, target_thicknesses[i]*0.5, 0., twopi));
@@ -143,8 +146,12 @@ void Sn112_Target::Construct(G4ThreeVector global_coordinates){
 		name.str("");
 
 		name << target_names[i];
-		new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., -0.5*container_inner_length + next_target_z + 0.5*target_thicknesses[i]), target_logicals[i], name.str(), World_Logical, false, 0);
+		pos = G4ThreeVector(0., 0., -0.5*container_inner_length + next_target_z + 0.5*target_thicknesses[i]);
+		new G4PVPlacement(0, global_coordinates + pos, target_logicals[i], name.str(), World_Logical, false, 0);
+		printf("> %s position   (source)  : ( %8.5f, %8.5f, %8.5f )\n", name.str().c_str(), pos.getX(), pos.getY(), pos.getZ());
+		printf("> %s dimensions (sourceD) : ( %8.5f, %8.5f, %8.5f )\n", name.str().c_str(), 2.*container_inner_radius, 2.*container_inner_radius, target_thicknesses[i]);
 		name.str("");
 		next_target_z += target_thicknesses[i];
 	}
+	printf("==============================================================\n");
 }

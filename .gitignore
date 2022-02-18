@@ -1,9 +1,9 @@
 # CMake-specific files
 CMakeCache.txt
-/Makefile
-CMakeFiles/*
+Makefile
+**/CMakeFiles/*
 cmake_install.cmake
-include/utrConfig.h
+*Config.h
 
 # Compiled binaries
 utr
@@ -46,6 +46,7 @@ output/*
 
 # Text files
 *.txt
+!CMakeLists.txt
 
 # VRML visualization output
 *.wrl

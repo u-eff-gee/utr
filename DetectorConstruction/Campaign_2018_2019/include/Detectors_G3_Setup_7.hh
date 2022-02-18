@@ -18,26 +18,26 @@ You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
+/*
+ * Setup 10 for G3 was used between run 409 and 489.
+ * In between, for runs 425 to 464, the 2nd setup was
+ * modified to Setup 11, but the G3 setup was not changed.
+ */
+
+#ifndef DETECTORS_G3_SETUP_7_HH
+#define DETECTORS_G3_SETUP_7_HH 1
 
 #include "G4LogicalVolume.hh"
-#include "G4SystemOfUnits.hh"
 
-class Sn112_Target{
+class Detectors_G3_Setup_7{
 public:
-	Sn112_Target(G4LogicalVolume *World_Log);
-	~Sn112_Target() = default;
+	Detectors_G3_Setup_7(G4LogicalVolume *World_Log);
+	~Detectors_G3_Setup_7(){};
 
 	void Construct(G4ThreeVector global_coordinates);
-	void Set_Containing_Volume(G4LogicalVolume *World_Log){ World_Logical = World_Log; };
 
 private:
 	G4LogicalVolume *World_Logical;
-
-	G4double container_inner_radius;
-	G4double co59_I_thickness;
-	G4double al27_II_thickness;
-	G4double sn112_III_thickness;
-	G4double al27_IV_thickness;
-	G4double co59_V_thickness;
 };
+
+#endif

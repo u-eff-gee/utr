@@ -292,7 +292,7 @@ def runProcess(prog, procArgs, announce=True, **kwargs) :
 # Compile the programs
 if not args.skipSimulation :
     runProcess("cmake on utr", ["cmake","."] + cmakeArgs, cwd=utrPath)
-    runProcess("make on utr", ["make", "-j" + str(threads)], cwd=utrPath)
+    runProcess("buildsystem on utr", ["cmake", "--build", ".", "-j" , threads], cwd=utrPath)
 if processOutput :
     outputProcessingPath=os.path.join(utrPath, "OutputProcessing")
     if not os.path.isdir(outputProcessingPath) :
@@ -315,7 +315,8 @@ if processOutput :
                 histogramToTxtArgs.append("--" + opt)
             else :
                 histogramToTxtArgs.append("--" + opt + "=" + config["histogramToTxtArgs"][opt])
-    runProcess("make on OutputProcessing scripts", ["make", "-j" + str(threads)], cwd=outputProcessingPath)
+    runProcess("cmake on OutputProcessing scripts", ["cmake", "."], cwd=outputProcessingPath)
+    runProcess("buildsystem on OutputProcessing scripts", ["cmake", "--build", ".", "-j", str(threads)], cwd=outputProcessingPath)
 
 # Run utr (if not skipped)
 if not args.skipSimulation :
