@@ -132,7 +132,7 @@ An implementation of the Darmstadt High-Intensity Photon Setup (DHIPS) [[6]](#re
 By default, `utr` will use the geometry in `DetectorConstruction/Campaign_2018/64Ni_271_279`. Existing geometries can be switched very quickly using cmake build variables. For example, to use the geometry in `utr/DetectorConstruction/Campaign_YEAR/TARGETS_RUNS`, set the corresponding CMake variables and re-build the code (see also [3 Installation](#installation)):
 
 ```bash
-$ cmake -DCAMPAIGN="Campaign_YEAR" -DDETECTOR_CONSTRUCTION="TARGETS_RUNS" .
+$ cmake -S . -B build -DCAMPAIGN="Campaign_YEAR" -DDETECTOR_CONSTRUCTION="TARGETS_RUNS"
 ```
 
 Several pre-defined classes exist to simplify the geometry construction which are explained in the following.
@@ -431,7 +431,7 @@ Event generation is done by classes derived from the `G4VUserPrimaryGeneratorAct
 By default, `utr` uses the Geant4 standard [`G4GeneralParticleSource`](#generalparticlesource). To use the [`AngularDistributionGenerator`](#angulardistributiongenerator) or the [`AngularCorrelationGenerator`](#angularcorrelationgenerator) of `utr`, which implement angular distributions and correlations (not exclusively, but mainly for Nuclear Resonance Fluorescence (NRF) applications at the moment), set the corresponding `GENERATOR_XY` option when building the source code (see also [3.3 Build configuration](#build)):
 
 ```bash
-$ cmake -DGENERATOR_ANGDIST=ON -DGENERATOR_ANGCORR=OFF .
+$ cmake -S . -B build -DGENERATOR_ANGDIST=ON -DGENERATOR_ANGCORR=OFF
 ```
 
 All the event generators have macro commands defined that simplify their control. Sample macro files can be found in the `macros/examples` directory. As a rule of thumb, a user should use ...
@@ -674,7 +674,7 @@ The physics processes are separated into two logical groups, which contain the m
 Geant4 provides complete EM and hadronic modules for different energy ranges and with different precision. In `utr`, a selection of those, which was considered most suitable for low-energy NRF applications, can be selected via the `HADRON*` and `EM*` cmake build options (see also [3.3 Build configuration](#build)): 
 
 ```
-$ cmake -DEM_LIVERMORE=ON -DHADRON_ELASTIC_HP=ON .
+$ cmake -S . -B build -DEM_LIVERMORE=ON -DHADRON_ELASTIC_HP=ON
 ```
 
 Though possible, it is safer not to include several EM or hadronic models at the same time. If in doubt, the command line output at the beginning of a Geant4 simulation can be checked to see which model is actually used for a certain process. For example, if both `EM_LIVERMORE` and `EM_LIVERMORE_POLARIZED` are switched on, that output will include lines like:
@@ -695,7 +695,7 @@ A description of the physics lists and the implementation of the processes can b
 Physics modules can be switched by setting the different `HADRON*` and `EM*` cmake build flags, for example:
 
 ```
-$ cmake -DEM_LIVERMORE=ON -DHADRON_ELASTIC_HP=ON .
+$ cmake -S . -B build -DEM_LIVERMORE=ON -DHADRON_ELASTIC_HP=ON
 ```
 
 An output like 
@@ -779,16 +779,17 @@ Optional components:
 
 ### 3.2 Compilation <a name="compilation"></a>
 
-The most simple way to build and compile the simulation is
+The most simple way to build and compile the simulation is executing
 
 ```bash
-$ cmake .
-$ cmake --build .
+$ cmake -S . -B build
+$ cmake --build build
 ```
+from the utr directory.
 
 This will compile the simulation using default options for everything. To change the default configuration, many CMake build options are available and described in the next section.
 
-After the `cmake --build .` step, an executable `utr` will have been created in the top-level directory, which can be used to execute `utr` (see also [4 Usage and Visualization](#usage)).
+After the `cmake --build build` step, an executable `utr` will have been created in the `build` directory, which can be used to execute utr via `build/utr` (see also [4 Usage and Visualization](#usage)).
 
 ### 3.3 Build configuration <a name="build"></a>
 
@@ -805,7 +806,7 @@ which are described in the following subsections.
 They are used in the `cmake` step of the compilation process, which was described in the previous section. In general, an option `OPTION` of CMake is set to a specific value `VALUE` by typing:
 
 ```
-$ cmake -DOPTION=VALUE .
+$ cmake -S . -B build -DOPTION=VALUE
 ```
 
 Most options are **flags**, i.e. their only possible values are `ON` and `OFF`. Only the options of the geometry configuration are **string options**, which take an arbitrary string as a value. The option that sets the frequency of updates takes an integer number.
@@ -815,10 +816,10 @@ Most options are **flags**, i.e. their only possible values are `ON` and `OFF`. 
 As described in section [2.1 Geometry](#geometry), the different available `DetectorConstructions` are sorted into campaigns and runs. To select a specific geometry, the build options `CAMPAIGN` and `DETECTOR_CONSTRUCTION` have to be set with the names of the corresponding directories. For example, to choose the `64Ni_271_279` geometry from the 2018 campaign, type
 
 ```
-$ cmake -DCAMPAIGN=Campaign_2018 -DDETECTOR_CONSTRUCTION=64Ni_271_279 .
+$ cmake -S . -B build -DCAMPAIGN=Campaign_2018 -DDETECTOR_CONSTRUCTION=64Ni_271_279
 ```
 
-If the ccmake GUI of CMake is used, it is possible to loop over the available campaigns and detector constructions by repeatedly pressing enter. The campaign takes precedence over the detector construction, i.e. if the campaign is changed, the build needs to be reconfigured before the correct selection of detector constructions is displayed. If a new directory has been added, rerun `cmake` again in the `utr/` directory to register it to CMake.
+If the ccmake GUI of CMake is used, it is possible to loop over the available campaigns and detector constructions by repeatedly pressing enter. The campaign takes precedence over the detector construction, i.e. if the campaign is changed, the build needs to be reconfigured before the correct selection of detector constructions is displayed. If a new directory has been added, rerun `cmake -S . -B build` again in the `utr/` directory to register it to CMake.
 
 #### 3.3.2 Configuration of the physics list
 
@@ -831,7 +832,7 @@ As described in section [2.4 Physics](#physics), different physics models can be
 To switch to another EM physics list, for example, one would type
 
 ```
-$ cmake -DEM_STANDARD=ON -DEM_LIVERMORE_POLARIZED=OFF .
+$ cmake -S . -B build -DEM_STANDARD=ON -DEM_LIVERMORE_POLARIZED=OFF
 ```
 
 Note that the previously used physics list needs to be switched off as well, to avoid getting unexpected behavior if two physics lists implement the same processes.
@@ -841,7 +842,7 @@ Note that the previously used physics list needs to be switched off as well, to 
 `utr` offers three different primary generators (see [2.3 Event Generation]()), the Geant4-builtin `G4GeneralParticleSource` (GPS) and the generators for angular distributions and angular correlations. To replace the default GPS with either `AngularDistributionGenerator` or `AngularCorrelationGenerator`, use one of the `GENERATOR` options
 
 ```
-$ cmake -DGENERATOR_XY=ON .
+$ cmake -S . -B build -DGENERATOR_XY=ON
 ```
 
 Switching both generator options to `ON` works, but leads to unexpected behavior.
@@ -853,7 +854,7 @@ In real NRF experiments, one often removes the NRF target and puts a radioactive
 To remove the targets in the simulation, type:
 
 ```
-$ cmake -DUSE_TARGETS=OFF .
+$ cmake -S . -B build -DUSE_TARGETS=OFF
 ```
 
 To see which part is actually ignored when this flag is set to `OFF`, look at the currently activated `DetectorConstruction.cc` and search for code embedded in a
@@ -880,7 +881,7 @@ The options for the output file format are described in [2.6 Output File Format]
 
 the user can decide which of the quantities are written to the ROOT output file as branches. For example, to write the x coordinate of the first hit in the detector volume, type
 
-$ cmake -DPOSX=ON .
+$ cmake -S . -B build -DPOSX=ON
 
 For the three implemented detector types (see [Sensitive Detectors](#sensitivedetectors)), the output quantities may have a different meaning.
 
@@ -889,7 +890,7 @@ For the three implemented detector types (see [Sensitive Detectors](#sensitivede
 By default, `utr` prints updates about the number of processed events and the execution time every 10^5 events (see [4 Usage and Visualization](#usage)). To change that number, set the value of the `PRINT_PROGRESS` variable:
 
 ```
-$ cmake -DPRINT_PROGRESS=1000 .
+$ cmake -S . -B build -DPRINT_PROGRESS=1000
 ```
 
 ## 4 Usage and Visualization <a name="usage"></a>
@@ -897,7 +898,7 @@ $ cmake -DPRINT_PROGRESS=1000 .
 The compiled `utr` binary can be run with different arguments. To get an overview, type
 
 ```bash
-$ ./utr --help
+$ build/utr --help
 ```
 Any execution of `utr` will print (amongst the output of Geant4 itself) information about the output quantities and (since the 2018 campaign) about the position of important parts in the geometry:
 
@@ -922,15 +923,15 @@ G4WT0 > ========================================================================
 
 Important optional arguments besides `--help` are:
 ```bash
-$ ./utr -m MACROFILE
+$ build/utr -m MACROFILE
 ```
 Executes macro file MACROFILE
 ```bash
-$ ./utr -t NTHREADS
+$ build/utr -t NTHREADS
 ```
 Sets the number of threads in multithreaded mode (default: 1)
 ```bash
-$ ./utr -o OUTPUTDIR
+$ build/utr -o OUTPUTDIR
 ```
 
 Sets the output directory of `utr` where the ROOT files will be placed.
@@ -944,7 +945,7 @@ Progress: [          160000/100000000]  0.16 %  Running time:   0d  0h   0mn   4
 That means there is no need to use the `/run/printProgress` macro of Geant4 any more. The number of events `NEVENTS` after which a new progress update is printed can be set using the `PRINT_PROGRESS` preprocessor variable at compile-time (see also [3.3 Build configuration](#build)):
 
 ```bash
-$ cmake -DPRINT_PROGRESS=NEVENTS .
+$ cmake -S . -B build -DPRINT_PROGRESS=NEVENTS
 ```
 
 Running `utr` without any argument will launch a UI session where macro commands can be entered. It should also automatically execute the macro file `init_vis.mac` in the `scripts` directory, which visualizes the geometry.
@@ -981,29 +982,28 @@ It is also possible to create 3D visualization files that can be viewed by an ex
 The directory `OutputProcessing` contains some **sample** ROOT and shell scripts that can be adapted by the user to process their simulation output. For example, a complete toolchain exists to extract full-energy peak efficiencies from a series of simulations (see also [5.5 fep_efficieny](#fepefficiency)). Executing
 
 ```bash
-$ cd OutputProcessing/
-$ cmake .
-$ cmake --build .
+$ cmake -S OutputProcessing/ -B build/OutputProcessing/
+$ cmake --build build/OutputProcessing/
 ```
-in this directory should compile all the scripts, generating executables in this directory.
+in the utr directory should compile/copy all the scripts, generating executables in the `build/OutputProcessing` directory.
 The compilation may fail if the `ROOTSYS` environment variable is not set on your system.
 
 Executables can be run like
 
 ```bash
-$ ./OutputProcessing/EXECUTABLENAME {ARGUMENTS}
+$ build/OutputProcessing/EXECUTABLENAME {ARGUMENTS}
 ```
 from the utr directory. The executables can be removed using the command
 
 ```bash
-$ cmake --build . --target clean
+$ cmake --build build/OutputProcessing/ --target clean
 ```
-in `OutputProcessing`.
+in the utr directory or by simply deleting the `build/OutputProcessing` directory altogether.
 
 ### 5.1 RootToTxt.cpp
 `RootToTxt` converts a ROOT output file (*TFile*) containing an n-tuple of data (a *TTree* with *TBranch* objects) to a simple text file with the same content. If you want to convert a ROOT file ROOTFILE, type
 ```bash
-$ ./OutputProcessing/rootToTxt ROOTFILE
+$ build/OutputProcessing/rootToTxt ROOTFILE
 ```
 The ROOT file can have a TTree with an arbitrary name and an arbitrary number of TBranch objects. The output text file has the same name as the ROOT file but with a ".txt" suffix.
 Be aware that conversion into text files increases the file size.
@@ -1015,7 +1015,7 @@ For a text spectrum use getHistogram in combination with histogramToTxt.
 Executing
 
 ```bash
-$ ./OutputProcessing/getHistogram --help
+$ build/OutputProcessing/getHistogram --help
 Usage: getHistogram [OPTION...]
 Create histograms of energy depositions in detectors from a list of events
 stored among multiple ROOT files
@@ -1087,19 +1087,19 @@ utr1_t1.root
 ```
 Assuming you would like to merge both threads of `utr0` and write the accumulated histogram to `hist.root`, you execute
 ```bash
-$ ./OutputProcessing/getHistogram -d output -t utr -p utr0 -q .root -o hist.root
+$ build/OutputProcessing/getHistogram -d output -t utr -p utr0 -q .root -o hist.root
 ```
 This will create an output file called `hist.root` with the desired histogram.
 If, instead, you wanted to merge *all* ROOT files, do
 ```bash
-$ ./OutputProcessing/getHistogram -d output -t utr -p utr -q .root -o hist.root
+$ build/OutputProcessing/getHistogram -d output -t utr -p utr -q .root -o hist.root
 ```
 In this simple example, already the first pattern uniquely identifies the files you want to merge. However, imagine there was a file `utr0.txt` in the same directory, then the second pattern could be used to exclude this.
 
 Yet another possibility is that you would like to merge both threads of `utr0` into one histogram, and both threads of `utr1` into another one. The shell script `loopGetHistogram.sh` can be used for this task. Executing
 ```bash
 $ cd output
-$ ../OutputProcessing/loopGetHistogram 0 1 utr utr
+$ build/OutputProcessing/loopGetHistogram 0 1 utr utr
 ```
 would do just what is described above, creating the output files `utr0.root` and `utr1.root`.
 
@@ -1107,7 +1107,7 @@ would do just what is described above, creating the output files `utr0.root` and
 A direct follow-up to `getHistogram`, `HistogramToTxt.cpp` takes a ROOT file that contains **only** 1D histograms (*TH1* objects) and converts each histogram to a single text file. Executing
 
 ```bash
-$ ./OutputProcessing/histogramToTxt --help
+$ build/OutputProcessing/histogramToTxt --help
 Usage: histogramToTxt [OPTION...] ROOT_FILE
 Extract TH1 histograms from a ROOT file as separate txt histograms
 
@@ -1129,7 +1129,7 @@ for any corresponding short options.
 shows how to use the script. For example 
 
 ```bash
-$ ./OutputProcessing/histogramToTxt utr0_hist.root
+$ build/OutputProcessing/histogramToTxt utr0_hist.root
 ```
 would extract all TH1 histograms from the utr0_hist.root file created by getHistogram as utr0_hist_detN.txt files.
 Using the -c option allows for example to directly view those files in TV or HDTV as uncalibrated spectra.
@@ -1141,7 +1141,7 @@ Refer to the next-to next section [5.5 fep_efficiency](#fepefficiency) to see ho
 `MergeFiles` creates a ROOT file which contains a `TChain` of multiple simulation output files. This makes it possible to access the data in all files as if they were in a single ROOT tree. `MergeFiles` recognizes similar arguments as `GetHistogram` (in fact, `MergeFiles` was created by 'cannibalizing' `GetHistogram`):
 
 ```bash
-$ ./OutputProcessing/mergeFiles --help
+$ build/OutputProcessing/mergeFiles --help
 Usage: mergeFiles [OPTION...] Merge ROOT output files
 MergeFiles
 
@@ -1160,11 +1160,11 @@ The `TChain` file can also be post-processed with the aforementioned scripts, in
 A follow-up to [histogramToTxt](#histogramToTxt), `fep_efficiency` can loop over two-column histogram files and extract the full-energy peak (FEP) efficiency, assuming that this is the content of the bin with the highest energy which has a nonzero content. Note that this may not always be what a user interprets as the 'efficiency' of a detector. A call of `fep_efficiency` without command-line arguments describes the usage in detail:
 
 ```
-$ ./OutputProcessing/fep_efficiency
+$ build/OutputProcessing/fep_efficiency
 The script loops over text histograms [1] with names PREFIX<i>SUFFIX (where <i> denotes all integer numbers from START to STOP, including these limits), reads out the full-energy peak (FEP) content [2] and determines the FEP efficiency.
 
   For example, the command
-    $ ./OutputProcessing/fep_efficiency.sh det0_utr 1 3 .txt 1000000
+    $ ./fep_efficiency.sh det0_utr 1 3 .txt 1000000
   will loop over the following files:
     det0_utr1.txt
     det0_utr2.txt

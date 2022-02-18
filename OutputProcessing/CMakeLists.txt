@@ -120,3 +120,9 @@ target_compile_options(getSolidAngleCoverage PRIVATE ${common_compile_options})
 target_compile_options(histogramToTxt PRIVATE ${common_compile_options})
 target_compile_options(mergeFiles PRIVATE ${common_compile_options})
 target_compile_options(rootToTxt PRIVATE ${common_compile_options})
+
+# Copy the scripts which don't need to be compiled
+configure_file(fep_efficiency.sh fep_efficiency.sh COPYONLY)
+configure_file(loopGetHistogram.sh loopGetHistogram.sh COPYONLY)
+configure_file(loopHistogramToTxt.sh loopHistogramToTxt.sh COPYONLY)
+configure_file(utrwrapper.py utrwrapper.py COPYONLY)

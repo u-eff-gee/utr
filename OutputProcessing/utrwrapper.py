@@ -94,6 +94,7 @@ listing all available options with their effect and default values
 #[utrBuildOptions]                    # Optional section with cmake build options
 #                                     # for utr of the form BUILDOPTION=VALUE
 #CAMPAIGN=Campaign_2014_2015          # Example
+#CMAKE_BUILD_TYPE=Release             # Example
 #DETECTOR_CONSTRUCTION=150Sm          # Example
 #USE_TARGETS=ON                       # Example
 #GENERATOR_ANGCORR=OFF                # Example
@@ -166,11 +167,12 @@ if config["generalConfig"].getboolean("ensureTerminalMultiplexer", False) and 'T
 logging=config["generalConfig"].getboolean("logging", True)
 niceness=config["generalConfig"].get("niceness", 18)
 threads=config["generalConfig"].get("threads", os.cpu_count())
-utrPath=config["generalConfig"].get("utrPath",
-    os.path.realpath(
-        os.path.join(
+utrPath=os.path.realpath(os.path.join(
             os.path.dirname(__file__),
-            "..")))
+            ".."))
+if utrPath.endswith("/build"):
+    utrPath=utrPath[:-6]
+utrPath=config["generalConfig"].get("utrPath", utrPath)
 checkForExistingOutput=config["generalConfig"].getboolean("checkForExistingOutput", True)
 processOutput=config["generalConfig"].getboolean("processOutput", True)
 getHistogramExe=config["generalConfig"].get("getHistogramExe", "getHistogram")
@@ -291,11 +293,10 @@ def runProcess(prog, procArgs, announce=True, **kwargs) :
 
 # Compile the programs
 if not args.skipSimulation :
-    runProcess("cmake on utr", ["cmake","."] + cmakeArgs, cwd=utrPath)
-    runProcess("buildsystem on utr", ["cmake", "--build", ".", "-j" , threads], cwd=utrPath)
+    runProcess("cmake on utr", ["cmake", "-S", ".", "-B", "build"] + cmakeArgs, cwd=utrPath)
+    runProcess("buildsystem on utr", ["cmake", "--build", "build", "-j" , str(threads)], cwd=utrPath)
 if processOutput :
-    outputProcessingPath=os.path.join(utrPath, "OutputProcessing")
-    if not os.path.isdir(outputProcessingPath) :
+    if not os.path.isdir(os.path.join(utrPath, "OutputProcessing")) :
         error("Could not find OutputProcessing directory!")
     getHistogramArgs=[] # Gather getHistogramArgs options from the configuration
     if "getHistogramArgs" in config["generalConfig"] :
@@ -315,14 +316,14 @@ if processOutput :
                 histogramToTxtArgs.append("--" + opt)
             else :
                 histogramToTxtArgs.append("--" + opt + "=" + config["histogramToTxtArgs"][opt])
-    runProcess("cmake on OutputProcessing scripts", ["cmake", "."], cwd=outputProcessingPath)
-    runProcess("buildsystem on OutputProcessing scripts", ["cmake", "--build", ".", "-j", str(threads)], cwd=outputProcessingPath)
+    runProcess("cmake on OutputProcessing scripts", ["cmake", "-S", "OutputProcessing", "-B", "build/OutputProcessing"], cwd=utrPath)
+    runProcess("buildsystem on OutputProcessing scripts", ["cmake", "--build", "build/OutputProcessing", "-j", str(threads)], cwd=utrPath)
 
 # Run utr (if not skipped)
 if not args.skipSimulation :
     runProcess("utr", [
         "nice", "-n" + str(niceness),
-        os.path.join(utrPath, "utr"),
+        os.path.join(utrPath, "build", "utr"),
         "--nthreads=" + str(threads),
         "--outputdir=" + outputDirRaw + "",
         "--macrofile=" + macFile + ""
@@ -345,13 +346,13 @@ if processOutput :
         # Strip _t0.root and directory name from string
         rootFilename=os.path.basename(rootFilename).rpartition("_t")[0]
         runProcess(getHistogramExe, [
-            os.path.join(outputProcessingPath, getHistogramExe),
+            os.path.join(utrPath, "build", "OutputProcessing", getHistogramExe),
             "--pattern1=" + rootFilename + "_t",
             "--inputdir=" + outputDirRaw,
             "--outputdir=" + outputDirHists
             ] + getHistogramArgs, announce=False)
         runProcess("histogramToTxt", [
-            os.path.join(outputProcessingPath, "histogramToTxt"),
+            os.path.join(utrPath, "build", "OutputProcessing", "histogramToTxt"),
             os.path.join(outputDirHists, rootFilename) + "_hist.root"
             ] + histogramToTxtArgs, announce=False)
 

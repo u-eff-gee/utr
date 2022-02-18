@@ -15,6 +15,7 @@
 #setterCmd=/ang/delta23 {loopVar}
 
 #[utrBuildOptions]
+#CMAKE_BUILD_TYPE=Release
 #CAMPAIGN=Campaign_2014_2015
 #DETECTOR_CONSTRUCTION=150Sm
 #USE_TARGETS=ON

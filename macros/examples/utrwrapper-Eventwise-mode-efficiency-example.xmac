@@ -16,6 +16,7 @@
 #setterCmd=/gps/ene/mono {loopVar} MeV
 
 #[utrBuildOptions]
+#CMAKE_BUILD_TYPE=Release
 #CAMPAIGN=Campaign_2018_2019
 #DETECTOR_CONSTRUCTION=64Ni_271_279
 #USE_TARGETS=ON
