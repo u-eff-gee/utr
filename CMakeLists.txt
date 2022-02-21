@@ -69,7 +69,6 @@ option(EM_FAST "Use G4EmStandardPhysics_option1" OFF)
 option(EM_STANDARD "Use G4EmStandardPhysics_option4" OFF)
 option(EM_LIVERMORE "Use G4EmLivermorePhysics" OFF)
 option(EM_LIVERMORE_POLARIZED "Use G4EmLivermorePolarizedPhysics" ON)
-option(EM_LIVERMORE_POLARIZED_JAEA "Use G4EmLivermorePolarizedPhysics with elastic scattering processes from JAEA" OFF)
 option(EM_PENELOPE "Use G4EmPenelopePhysics" OFF)
 option(EM_EXTRA "Use G4EmExtraPhysics" OFF)
 
@@ -80,8 +79,6 @@ option(HADRON_ELASTIC_LEND "Use G4HadronElasticPhysicsLEND" OFF)
 option(HADRON_INELASTIC_STANDARD "Use G4HadronPhysicsFTFP_BERT" ON)
 option(HADRON_INELASTIC_HP "Use G4HadronPhysicsFTFP_BERT_HP" OFF)
 option(HADRON_INELASTIC_LEND "Use G4HadronPhysicsShieldingLEND" OFF)
-
-option(BACKWARD_COMPATIBLE_BUILD "Build for Geant4 versions < 10.5" OFF)
 
 option(EVENT_EVENTWISE "For each event, record the total energy deposition in each detector in a single root entry (row). Causes all other EVENT_* cmake build options to be ignored." OFF)
 option(EVENT_ID "For each event, record the event number." OFF)
@@ -119,10 +116,6 @@ endif()
 
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc ${PROJECT_SOURCE_DIR}/DetectorConstruction/${CAMPAIGN}/src/*.cc ${PROJECT_SOURCE_DIR}/DetectorConstruction/${CAMPAIGN}/${DETECTOR_CONSTRUCTION}/*.cc)
 file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh ${PROJECT_SOURCE_DIR}/DetectorConstruction/${CAMPAIGN}/include/*.hh ${PROJECT_SOURCE_DIR}/DetectorConstruction/${CAMPAIGN}/${DETECTOR_CONSTRUCTION}/*.hh)
-if(BACKWARD_COMPATIBLE_BUILD)
-	list(REMOVE_ITEM sources ${PROJECT_SOURCE_DIR}/src/EMPhysicsPolarizedJAEA.cc)
-	list(REMOVE_ITEM headers ${PROJECT_SOURCE_DIR}/include/EMPhysicsPolarizedJAEA.hh)
-endif(BACKWARD_COMPATIBLE_BUILD)
 
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries

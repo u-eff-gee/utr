@@ -692,8 +692,6 @@ This shows that the unpolarized model is used (otherwise, `LivermoreCompton` wou
 
 A description of the physics lists and the implementation of the processes can be found in the [GEANT4 Physics Reference Manual](https://geant4-userdoc.web.cern.ch/geant4-userdoc/UsersGuides/PhysicsReferenceManual/html/index.html)
 
-Of the available physics modules, only `EMPhysicsPolarizedJAEA` comes with `utr`, the others are included in the Geant4 code. `EMPhysicsPolarizedJAEA` is based on the `G4EmLivermorePolarizedPhysics` module, but the photon elastic scattering model has been changed to the one recently introduced by Omer and Hajima, which has a different implementation of Rayleigh scattering and introduces Delbrueck scattering in Geant4 [[7]](#ref-delbrueck), [[8]](#ref-jaea).
-
 Physics modules can be switched by setting the different `HADRON*` and `EM*` cmake build flags, for example:
 
 ```
@@ -705,7 +703,7 @@ An output like
 ```
 ================================================================================
 Using the following physics lists:
-        G4EmLivermorePolarizedPhysics with JAEA elastic processes ...
+        G4EmLivermorePolarizedPhysics ...
         G4HadronElasticPhysicsLEND ...
         G4HadronPhysicsFTFP_BERT ...
 ================================================================================ 
@@ -765,7 +763,7 @@ By using cmake build options (see [3.3 Build configuration](#build)), the user c
 
 To build and run the simulation, the following dependencies are required:
 
-* [Geant4](https://geant4.web.cern.ch/) (Tested with version 10.5. If your version is older, refer to [3.3 Build configuration](#build) to see how to run `utr` in the backwards compatible mode)
+* [Geant4](https://geant4.web.cern.ch/) (Tested with version 10.5 and 10.7)
 * CMake (*build*)
 
 Furthermore, to use the analysis scripts:
@@ -801,7 +799,6 @@ Using CMake build options, the simulation can be configured. There are options a
  * Select the primary generator
  * Select the output quantities
  * Switch targets on and off
- * Run in backward compatible mode
  * Set the frequency of runtime updates
 
 which are described in the following subsections.
@@ -887,15 +884,7 @@ $ cmake -DPOSX=ON .
 
 For the three implemented detector types (see [Sensitive Detectors](#sensitivedetectors)), the output quantities may have a different meaning.
 
-#### 3.3.6 Backward compatibility
-
-Geant4 version 10.5 introduces the JAEA models for the elastic scattering of photons, which was integrated in the `utr` code. Unfortunately, this breaks backward compatibility with earlier versions. The optimum solution would be to update your version of Geant4, of course, but if this is not possible, set the `BACKWARD_COMPATIBLE_BUILD` flag to ignore the physics list which use the JAEA models:
-
-```
-$ cmake -DBACKWARD_COMPATIBLE_BUILD=ON .
-``` 
-
-#### 3.3.7 Configuration of runtime updates
+#### 3.3.6 Configuration of runtime updates
 
 By default, `utr` prints updates about the number of processed events and the execution time every 10^5 events (see [4 Usage and Visualization](#usage)). To change that number, set the value of the `PRINT_PROGRESS` variable:
 
@@ -1420,5 +1409,3 @@ We thank D. Savran for reporting and investigating architecture-dependent runtim
 <a name="ref-higs">[4]</a> H. R. Weller *et al.*, “Research opportunities at the upgraded HIγS facility”, Prog. Part. Nucl. Phys. **62.1**, 257 (2009). [`doi:10.1016/j.ppnp.2008.07.001`](https://doi.org/10.1016/j.ppnp.2008.07.001).  
 <a name="ref-g3">[5]</a> B. Löher *et al.*, “The high-efficiency γ-ray spectroscopy setup γ³ at HIγS”, Nucl. Instr. Meth. Phys. Res. A **723**, 136 (2013). [`doi:10.1016/j.nima.2013.04.087`](https://doi.org/10.1016/j.nima.2013.04.087).   
 <a name="ref-dhips">[6]</a> K. Sonnabend *et al.*, "The Darmstadt High-Intensity Photon setup (DHIPS) at the S-DALINAC", Nucl. Instr. Meth. Phys. Res. A **640**, 6 (2011). [`https://doi.org/10.1016/j.nima.2011.02.107`](https://doi.org/10.1016/j.nima.2011.02.107)  
-<a name="ref-delbrueck">[7]</a> M. Omer and R. Hajima, “Including Delbrueck scattering in Geant4”, Nucl. Instr. Meth. Phys. Res. B **405**, 43 (2017). [`doi.org/10.1016/j.nimb.2017.05.028`](https://doi.org/10.1016/j.nimb.2017.05.028).   
-<a name="ref-jaea">[8]</a> M. Omer and R. Hajima, “Geant4 physics process for elastic scattering of gamma-rays”, JAEA Technical Report **2018-007** (2018). [`doi.org/10.11484/jaea-data-code-2018-007`](https://doi.org/10.11484/jaea-data-code-2018-007).
