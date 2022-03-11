@@ -49,9 +49,9 @@ void HPGe_Clover::Construct(G4ThreeVector global_coordinates, G4double theta, G4
 
 	/******** Front end cap *********/
 
-	G4VSolid *end_cap_front_solid = rounded_box("end_cap_front_solid", properties.end_cap_front_side_length, properties.end_cap_front_length, properties.end_cap_front_rounding_radius, 20);
+	G4VSolid *end_cap_front_solid = rounded_box("_end_cap_front_solid", properties.end_cap_front_side_length, properties.end_cap_front_length, properties.end_cap_front_rounding_radius, 20);
 	G4LogicalVolume* end_cap_front_logical = new G4LogicalVolume(end_cap_front_solid, nist->FindOrBuildMaterial(properties.end_cap_material), detector_name + "_end_cap_front_logical");
-	new G4PVPlacement(rotation, global_coordinates + (dist_from_center + 0.5*properties.end_cap_front_length)*symmetry_axis, end_cap_front_logical, detector_name+"end_cap_front", world_Logical, 0, 0, false);
+	new G4PVPlacement(rotation, global_coordinates + (dist_from_center + 0.5*properties.end_cap_front_length)*symmetry_axis, end_cap_front_logical, detector_name+"_end_cap_front", world_Logical, 0, 0, false);
 
 
 	/******** Vacuum around crystal ********/
@@ -81,32 +81,32 @@ void HPGe_Clover::Construct(G4ThreeVector global_coordinates, G4double theta, G4
 	G4SubtractionSolid *crystal_step4_solid = new G4SubtractionSolid(detector_name + "_crystal_step4_solid", crystal_step3_solid, subtraction_solid, 0, G4ThreeVector(0., properties.crystal_radius + 23.*mm, 0.));
 
 	G4LogicalVolume *crystal1_logical = new G4LogicalVolume(crystal_step4_solid, nist->FindOrBuildMaterial("G4_Ge"), detector_name + "_1");
-	crystal1_logical->SetVisAttributes(new G4VisAttributes(G4Color::Green()));
-	new G4PVPlacement(0, G4ThreeVector(22.*mm + 0.5*properties.crystal_gap, 22.*mm + 0.5*properties.crystal_gap, -0.5*properties.vacuum_length + 0.5*properties.crystal_length + properties.end_cap_to_crystal_gap_front), crystal1_logical, detector_name + "_crystal1", vacuum_logical, 0, 0, false);
+	crystal1_logical->SetVisAttributes(new G4VisAttributes(G4Color::Blue()));
+	new G4PVPlacement(0, G4ThreeVector(22.*mm + 0.5*properties.crystal_gap, 22.*mm + 0.5*properties.crystal_gap, -0.5*properties.vacuum_length + 0.5*properties.crystal_length + properties.end_cap_to_crystal_gap_front), crystal1_logical, detector_name + "_crystal_1", vacuum_logical, 0, 0, false);
 
 	G4RotationMatrix *rotate2 = new G4RotationMatrix();
 	rotate2->rotateZ(-90.*deg);
 	G4LogicalVolume *crystal2_logical = new G4LogicalVolume(crystal_step4_solid, nist->FindOrBuildMaterial("G4_Ge"), detector_name + "_2");
 	crystal2_logical->SetVisAttributes(new G4VisAttributes(G4Color::Red()));
-	new G4PVPlacement(rotate2, G4ThreeVector(-22.*mm - 0.5*properties.crystal_gap, 22.*mm + 0.5*properties.crystal_gap, -0.5*properties.vacuum_length + 0.5*properties.crystal_length + properties.end_cap_to_crystal_gap_front), crystal2_logical, detector_name + "_crystal2", vacuum_logical, 0, 0, false);
+	new G4PVPlacement(rotate2, G4ThreeVector(-22.*mm - 0.5*properties.crystal_gap, 22.*mm + 0.5*properties.crystal_gap, -0.5*properties.vacuum_length + 0.5*properties.crystal_length + properties.end_cap_to_crystal_gap_front), crystal2_logical, detector_name + "_crystal_2", vacuum_logical, 0, 0, false);
 
 	G4RotationMatrix *rotate3 = new G4RotationMatrix();
-	rotate3->rotateZ(-270.*deg);
+	rotate3->rotateZ(-180.*deg);
 	G4LogicalVolume *crystal3_logical = new G4LogicalVolume(crystal_step4_solid, nist->FindOrBuildMaterial("G4_Ge"), detector_name + "_3");
-	crystal3_logical->SetVisAttributes(new G4VisAttributes(G4Color::Blue()));
-	new G4PVPlacement(rotate3, G4ThreeVector(22.*mm + 0.5*properties.crystal_gap, -22.*mm - 0.5*properties.crystal_gap, -0.5*properties.vacuum_length + 0.5*properties.crystal_length + properties.end_cap_to_crystal_gap_front), crystal3_logical, detector_name + "_crystal3", vacuum_logical, 0, 0, false);
+	crystal3_logical->SetVisAttributes(new G4VisAttributes(G4Color::Green()));
+	new G4PVPlacement(rotate3, G4ThreeVector(-22.*mm - 0.5*properties.crystal_gap, -22.*mm - 0.5*properties.crystal_gap, -0.5*properties.vacuum_length + 0.5*properties.crystal_length + properties.end_cap_to_crystal_gap_front), crystal3_logical, detector_name + "_crystal_3", vacuum_logical, 0, 0, false);
 
 	G4RotationMatrix *rotate4 = new G4RotationMatrix();
-	rotate4->rotateZ(-180.*deg);
+	rotate4->rotateZ(-270.*deg);
 	G4LogicalVolume *crystal4_logical = new G4LogicalVolume(crystal_step4_solid, nist->FindOrBuildMaterial("G4_Ge"), detector_name + "_4");
 	crystal4_logical->SetVisAttributes(new G4VisAttributes(G4Color::Brown()));
-	new G4PVPlacement(rotate4, G4ThreeVector(-22.*mm - 0.5*properties.crystal_gap, -22.*mm - 0.5*properties.crystal_gap, -0.5*properties.vacuum_length + 0.5*properties.crystal_length + properties.end_cap_to_crystal_gap_front), crystal4_logical, detector_name + "_crystal4", vacuum_logical, 0, 0, false);
+	new G4PVPlacement(rotate4, G4ThreeVector(22.*mm + 0.5*properties.crystal_gap, -22.*mm - 0.5*properties.crystal_gap, -0.5*properties.vacuum_length + 0.5*properties.crystal_length + properties.end_cap_to_crystal_gap_front), crystal4_logical, detector_name + "_crystal_4", vacuum_logical, 0, 0, false);
 
 	/******** Back end cap *********/
 
-	G4VSolid *end_cap_back_solid = rounded_box("end_cap_back_solid", properties.end_cap_back_side_length, properties.end_cap_back_length, properties.end_cap_back_rounding_radius, 20);
+	G4VSolid *end_cap_back_solid = rounded_box("_end_cap_back_solid", properties.end_cap_back_side_length, properties.end_cap_back_length, properties.end_cap_back_rounding_radius, 20);
 	G4LogicalVolume* end_cap_back_logical = new G4LogicalVolume(end_cap_back_solid, nist->FindOrBuildMaterial(properties.end_cap_material), detector_name + "_end_cap_back_logical");
-	new G4PVPlacement(rotation, global_coordinates + (dist_from_center + properties.end_cap_front_length + 0.5*properties.end_cap_back_length)*symmetry_axis, end_cap_back_logical, detector_name+"end_cap_back", world_Logical, 0, 0, false);
+	new G4PVPlacement(rotation, global_coordinates + (dist_from_center + properties.end_cap_front_length + 0.5*properties.end_cap_back_length)*symmetry_axis, end_cap_back_logical, detector_name+"_end_cap_back", world_Logical, 0, 0, false);
 
 	/******** Air inside the back end cap ********/
 
@@ -118,31 +118,24 @@ void HPGe_Clover::Construct(G4ThreeVector global_coordinates, G4double theta, G4
 
 	if(use_dewar){
 		/************* Connection dewar-detector *************/
-		G4Tubs *connection_solid = new G4Tubs(detector_name + "connection_solid", 0., properties.connection_radius, properties.connection_length*0.5, 0., twopi);
-		G4LogicalVolume *connection_logical = new G4LogicalVolume(connection_solid, nist->FindOrBuildMaterial(properties.connection_material), detector_name + "connection_logical");
+		G4Tubs *connection_solid = new G4Tubs(detector_name + "_dewar_connection_solid", 0., properties.connection_radius, properties.connection_length*0.5, 0., twopi);
+		G4LogicalVolume *connection_logical = new G4LogicalVolume(connection_solid, nist->FindOrBuildMaterial(properties.connection_material), detector_name + "_dewar_connection_logical");
 		connection_logical->SetVisAttributes(new G4VisAttributes(G4Color::White()));
-		new G4PVPlacement(rotation, global_coordinates + (dist_from_center + properties.end_cap_front_length + properties.end_cap_back_length + properties.connection_length*0.5)*symmetry_axis, connection_logical, detector_name + "connection", world_Logical, 0, 0, false);
+		new G4PVPlacement(rotation, global_coordinates + (dist_from_center + properties.end_cap_front_length + properties.end_cap_back_length + properties.connection_length*0.5)*symmetry_axis, connection_logical, detector_name + "_dewar_connection", world_Logical, 0, 0, false);
 
 		/************* Dewar *************/
-		G4double dewar_side_length = properties.dewar_length - 2.*properties.dewar_wall_thickness;
 
 		// Dewar face
-		G4Tubs *dewar_face_solid = new G4Tubs(detector_name + "_dewar_face_solid", 0., properties.dewar_outer_radius, properties.dewar_wall_thickness*0.5, 0., twopi);
-		G4LogicalVolume *dewar_face_logical = new G4LogicalVolume(dewar_face_solid, nist->FindOrBuildMaterial(properties.dewar_material),detector_name +  "_dewar_face_logical");
-		dewar_face_logical->SetVisAttributes(new G4VisAttributes(G4Color::Brown()));
-		new G4PVPlacement(rotation, global_coordinates + (dist_from_center + properties.end_cap_front_length + properties.end_cap_back_length + properties.connection_length + properties.dewar_wall_thickness*0.5)*symmetry_axis, dewar_face_logical, detector_name + "_dewar_face", world_Logical, 0, 0, false);
+		G4Tubs *dewar_solid = new G4Tubs(detector_name + "_dewar_solid", 0., properties.dewar_outer_radius, properties.dewar_length*0.5, 0., twopi);
+		G4LogicalVolume *dewar_logical = new G4LogicalVolume(dewar_solid, nist->FindOrBuildMaterial(properties.dewar_material), detector_name + "_dewar_logical");
+		dewar_logical->SetVisAttributes(G4Color::Brown());
+		new G4PVPlacement(rotation, global_coordinates + (dist_from_center + properties.end_cap_front_length + properties.end_cap_back_length + properties.connection_length + properties.dewar_length*0.5)*symmetry_axis, dewar_logical, detector_name + "_dewar", world_Logical, 0, 0, false);
 
-		// Dewar side
-		G4Tubs *dewar_side_solid = new G4Tubs(detector_name + "_dewar_side_solid", properties.dewar_outer_radius - properties.dewar_wall_thickness, properties.dewar_outer_radius, dewar_side_length*0.5, 0., twopi);
-		G4LogicalVolume *dewar_side_logical = new G4LogicalVolume(dewar_side_solid, nist->FindOrBuildMaterial(properties.dewar_material), detector_name + "_dewar_side_logical");
-		dewar_side_logical->SetVisAttributes(new G4VisAttributes(G4Color::Brown()));
-		new G4PVPlacement(rotation, global_coordinates + (dist_from_center + properties.end_cap_front_length + properties.end_cap_back_length + properties.connection_length + properties.dewar_wall_thickness + dewar_side_length*0.5)*symmetry_axis, dewar_side_logical, detector_name + "_dewar_side", world_Logical, 0, 0, false);
-		
-		// Dewar base
-		G4Tubs *dewar_base_solid = new G4Tubs(detector_name + "_dewar_base_solid", 0., properties.dewar_outer_radius, properties.dewar_wall_thickness*0.5, 0., twopi);
-		G4LogicalVolume *dewar_base_logical = new G4LogicalVolume(dewar_base_solid, nist->FindOrBuildMaterial(properties.dewar_material), detector_name + "_dewar_base_logical");
-		dewar_base_logical->SetVisAttributes(new G4VisAttributes(G4Color::Brown()));
-		new G4PVPlacement(rotation, global_coordinates + (dist_from_center + properties.end_cap_front_length + properties.end_cap_back_length + properties.connection_length + dewar_side_length + 1.5*properties.dewar_wall_thickness )*symmetry_axis, dewar_base_logical, detector_name + "_dewar_base", world_Logical, 0, 0, false);
+		// Dewar interior
+		G4Tubs *dewar_interior_solid = new G4Tubs(detector_name + "_dewar_interior_solid", 0., properties.dewar_outer_radius - properties.dewar_wall_thickness, properties.dewar_length*0.5 - properties.dewar_wall_thickness, 0., twopi);
+		G4LogicalVolume *dewar_interior_logical = new G4LogicalVolume(dewar_interior_solid, nist->FindOrBuildMaterial("G4_N"), detector_name + "_dewar_interior_logical");
+		dewar_interior_logical->SetVisAttributes(G4Color::Red());
+		new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), dewar_interior_logical, detector_name + "_dewar_interior", dewar_logical, 0, 0, false);
 	}
 
 }
