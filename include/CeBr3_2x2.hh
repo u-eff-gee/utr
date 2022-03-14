@@ -54,10 +54,15 @@ using std::vector;
 
 class CeBr3_2x2 : public Detector {
   public:
-  CeBr3_2x2(G4LogicalVolume *World_Logical, G4String name) : Detector(World_Logical, name){};
+  CeBr3_2x2(G4LogicalVolume *World_Logical, G4String name) : Detector(World_Logical, name), use_connectors(true){};
   ~CeBr3_2x2(){};
 
   void Construct(G4ThreeVector global_coordinates, G4double theta, G4double phi, G4double dist_from_center) const override;
   // When an intrinsic rotation angle is given, it will simply be ignored and the Construct() method above is called
   void Construct(G4ThreeVector global_coordinates, G4double theta, G4double phi, G4double dist_from_center, G4double intrinsic_rotation_angle) const override;
+
+  void disableConnectors() { use_connectors = false; };
+
+  private:
+  bool use_connectors;
 };
