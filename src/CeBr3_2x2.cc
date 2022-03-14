@@ -18,6 +18,9 @@ You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <sstream>
+using std::stringstream;
+
 #include "G4Color.hh"
 #include "G4NistManager.hh"
 #include "G4PVPlacement.hh"
@@ -105,7 +108,7 @@ void CeBr3_2x2::Construct(G4ThreeVector global_coordinates, G4double theta, G4do
   new G4PVPlacement(rotation_matrix, global_coordinates + (dist_from_center + main_case_length / 2.) * e_r, main_case_logical, detector_name + "_main_case", world_Logical, 0, 0, false);
 
   // Main case vacuum mother volume for crystal and pmt, which are assumed to be sourounded by this vacuum
-  
+
   auto *main_case_vacuum_solid = new G4Tubs(detector_name + "_main_case_vacuum_solid", 0., main_case_inner_radius, main_case_inner_length / 2., 0., twopi);
   auto *main_case_vacuum_logical = new G4LogicalVolume(main_case_vacuum_solid, nist->FindOrBuildMaterial("G4_Galactic"), detector_name + "_main_case_vacuum_logical");
   main_case_vacuum_logical->SetVisAttributes(G4Color(1., 1., 1., 0.75));
@@ -156,6 +159,51 @@ void CeBr3_2x2::Construct(G4ThreeVector global_coordinates, G4double theta, G4do
     auto *connector_signal_logical = new G4LogicalVolume(connector_signal_solid, nist->FindOrBuildMaterial(connector_material), detector_name + "_connector_signal_logical");
     connector_signal_logical->SetVisAttributes(G4Color::Grey());
     new G4PVPlacement(rotation_matrix, global_coordinates + (dist_from_center + total_housing_length + 0.5 * connector_signal_length) * e_r + 0.5 / sqrt(2.) * connector_base_outer_radius * e_theta - 0.5 / sqrt(2.) * connector_base_outer_radius * e_phi, connector_signal_logical, detector_name + "_connector_signal", world_Logical, 0, 0, false);
+  }
+
+  /************* Filters *************/
+  G4double filter_position_z = 0.; // Will be gradually increased to be able to place filters on top of each other
+
+  if (filter_materials.size()) {
+    G4Tubs *filter_solid = nullptr;
+    G4LogicalVolume *filter_logical = nullptr;
+    G4double filter_radius;
+    stringstream filter_base_name_ss;
+    for (unsigned int i = 0; i < filter_materials.size(); ++i) {
+      filter_radius = (filter_radii[i] < 0.) ? main_case_outer_radius : filter_radii[i]; // A negative filter radius value tells us to use the detector front radius as the filter radius
+      filter_base_name_ss << detector_name << "_filter_" << i + 1 << "_" << filter_materials[i] << "_" << filter_thicknesses[i] / mm << "mm_x_" << filter_radius / mm << "mm";
+      filter_solid = new G4Tubs(filter_base_name_ss.str() + "_solid", 0., filter_radius, filter_thicknesses[i] / 2., 0., twopi);
+      filter_logical = new G4LogicalVolume(filter_solid, nist->FindOrBuildMaterial(filter_materials[i]), filter_base_name_ss.str() + "_logical");
+      if (i % 2 == 0) {
+        filter_logical->SetVisAttributes(G4Color::Red());
+      } else {
+        filter_logical->SetVisAttributes(G4Color::Green());
+      }
+      new G4PVPlacement(rotation_matrix, global_coordinates + (dist_from_center - filter_position_z - filter_thicknesses[i] / 2.) * e_r, filter_logical, filter_base_name_ss.str(), world_Logical, 0, 0, false);
+      filter_position_z = filter_position_z + filter_thicknesses[i];
+      filter_base_name_ss.str("");
+    }
+  }
+
+  /************* Wraps *************/
+  if (wrap_materials.size()) {
+    G4Tubs *wrap_solid = nullptr;
+    G4LogicalVolume *wrap_logical = nullptr;
+    G4double wrap_radius = main_case_outer_radius; // Will be gradually increased to be able to place wraps on top of each other
+    stringstream wrap_base_name_ss;
+    for (unsigned int i = 0; i < wrap_materials.size(); ++i) {
+      wrap_base_name_ss << detector_name << "_wrap_" << i + 1 << "_" << wrap_materials[i] << "_" << wrap_thicknesses[i] / mm << "mm";
+      wrap_solid = new G4Tubs(wrap_base_name_ss.str() + "_solid", wrap_radius, wrap_radius + wrap_thicknesses[i], magnetic_shielding_offset / 2., 0., twopi);
+      wrap_logical = new G4LogicalVolume(wrap_solid, nist->FindOrBuildMaterial(wrap_materials[i]), wrap_base_name_ss.str() + "_logical");
+      if (i % 2 == 0) {
+        wrap_logical->SetVisAttributes(G4Color::Green());
+      } else {
+        wrap_logical->SetVisAttributes(G4Color::Red());
+      }
+      new G4PVPlacement(rotation_matrix, global_coordinates + (dist_from_center + magnetic_shielding_offset / 2.) * e_r, wrap_logical, wrap_base_name_ss.str(), world_Logical, 0, 0, false);
+      wrap_radius = wrap_radius + wrap_thicknesses[i];
+      wrap_base_name_ss.str("");
+    }
   }
 }
 

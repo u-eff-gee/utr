@@ -23,6 +23,9 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
  * Eurysis manual for clover detectors.
  */
 
+#include <sstream>
+using std::stringstream;
+
 #include "G4Box.hh"
 #include "G4Color.hh"
 #include "G4NistManager.hh"
@@ -138,10 +141,31 @@ void HPGe_Clover::Construct(G4ThreeVector global_coordinates, G4double theta, G4
 		new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), dewar_interior_logical, detector_name + "_dewar_interior", dewar_logical, 0, 0, false);
 	}
 
+	/************* Filters *************/
+	G4double filter_position_z = 0.; // Will be gradually increased to be able to place filters on top of each other
+	if (filter_materials.size()) {
+		G4Box *filter_solid = nullptr;
+		G4LogicalVolume *filter_logical = nullptr;
+		G4double filter_half_length;
+		stringstream filter_base_name_ss;
+		for (unsigned int i = 0; i < filter_materials.size(); ++i) {
+			filter_half_length = (filter_radii[i] < 0.) ? properties.end_cap_front_side_length / 2. : filter_radii[i]; // A negative filter "radius" (half-length) value tells us to use the detector front size as the filter size
+			filter_base_name_ss << detector_name << "_filter_" << i + 1 << "_" << filter_materials[i] << "_" << filter_thicknesses[i] / mm << "mm_x_" << 2 * filter_half_length / mm << "mm";
+			filter_solid = new G4Box(filter_base_name_ss.str() + "_solid", filter_half_length, filter_half_length, filter_thicknesses[i] / 2.);
+			filter_logical = new G4LogicalVolume(filter_solid, nist->FindOrBuildMaterial(filter_materials[i]), filter_base_name_ss.str() + "_logical");
+			if (i % 2 == 0) {
+				filter_logical->SetVisAttributes(G4Color::Red());
+			} else {
+				filter_logical->SetVisAttributes(G4Color::Green());
+			}
+			new G4PVPlacement(rotation, global_coordinates + (dist_from_center - filter_position_z - filter_thicknesses[i] / 2.) * symmetry_axis, filter_logical, filter_base_name_ss.str(), world_Logical, 0, 0, false);
+			filter_position_z = filter_position_z + filter_thicknesses[i];
+			filter_base_name_ss.str("");
+		}
+	}
 }
 
-void HPGe_Clover::Construct(G4ThreeVector global_coordinates, G4double theta, G4double phi,
-			       G4double dist_from_center) const {
+void HPGe_Clover::Construct(G4ThreeVector global_coordinates, G4double theta, G4double phi, G4double dist_from_center) const {
 	Construct(global_coordinates, theta, phi, dist_from_center, 0.);
 }
 
