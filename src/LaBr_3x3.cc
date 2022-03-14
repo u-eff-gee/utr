@@ -80,7 +80,7 @@ void LaBr_3x3::Construct(G4ThreeVector global_coordinates, G4double theta, G4dou
   const auto circuit_housing_2_rmin = circuit_housing_3_radius; // Measured
 
   const auto pmt_housing_length = 7. * cm; // Measured
-  const auto pmt_housing_radius = 2.5 / 2. * inch; // Measured
+  // const auto pmt_housing_radius = 2.5 / 2. * inch; // Measured, unused at is the same as circuit_housing_3_radius, so they can be constructed as one volume anyway
 
   const auto circuit_housing_3_and_pmt_length = circuit_housing_3_length + pmt_housing_length;
   const auto circuit_housing_3_and_pmt_radius = circuit_housing_3_radius;
@@ -140,38 +140,34 @@ void LaBr_3x3::Construct(G4ThreeVector global_coordinates, G4double theta, G4dou
     new G4PVPlacement(nullptr, G4ThreeVector(0., 0., -circuit_housing_thickness / 2.), circuit_housing_3_and_pmt_interior_logical, detector_name + "_circuit_housing_3_and_pmt_interior", circuit_housing_3_and_pmt_logical, 0, 0, false);
   }
 
+  // Filters
+  G4double filter_position_z = 0.; // Will be gradually increased to be able to place filters on top of each other
+
   // Filter case
   Filter_Case filter_case(world_Logical, detector_name);
   if (use_filter_case_ring) {
     filter_case.Construct_Ring(global_coordinates, theta, phi, dist_from_center - filter_case.get_filter_case_ring_thickness() / 2.);
+    filter_position_z = filter_position_z + filter_case.get_filter_case_ring_thickness();
   }
 
-  // Filters
-  G4double filter_position_z = 0.; // Will be gradually increased to be able to place filters on top of each other
   if (filter_materials.size()) {
-    if (use_filter_case_ring)
-      filter_position_z = filter_position_z + filter_case.get_filter_case_ring_thickness();
     G4Tubs *filter_solid = nullptr;
     G4LogicalVolume *filter_logical = nullptr;
-    stringstream filter_solid_name, filter_logical_name, filter_name;
+    G4double filter_radius;
+    stringstream filter_base_name_ss;
     for (unsigned int i = 0; i < filter_materials.size(); ++i) {
-      filter_solid_name << "filter_" << detector_name << "_" << i << "_solid";
-      filter_solid = new G4Tubs(filter_solid_name.str(), 0., filter_radii[i], filter_thicknesses[i] / 2., 0., twopi);
-      filter_solid_name.clear();
-
-      filter_logical_name << "filter_" << detector_name << "_" << i << "_logical";
-      filter_logical = new G4LogicalVolume(filter_solid, nist->FindOrBuildMaterial(filter_materials[i]), filter_logical_name.str());
-      filter_logical_name.clear();
+      filter_radius = (filter_radii[i] < 0.) ? crystal_housing_outer_radius : filter_radii[i]; // A negative filter radius value tells us to use the detector front radius as the filter radius
+      filter_base_name_ss << detector_name << "_filter_" << i + 1 << "_" << filter_materials[i] << "_" << filter_thicknesses[i] / mm << "mm_x_" << filter_radius / mm << "mm";
+      filter_solid = new G4Tubs(filter_base_name_ss.str() + "_solid", 0., filter_radius, filter_thicknesses[i] / 2., 0., twopi);
+      filter_logical = new G4LogicalVolume(filter_solid, nist->FindOrBuildMaterial(filter_materials[i]), filter_base_name_ss.str() + "_logical");
       if (i % 2 == 0) {
         filter_logical->SetVisAttributes(G4Color::Red());
       } else {
         filter_logical->SetVisAttributes(G4Color::Green());
       }
-
-      filter_name << "filter_" << detector_name << "_" << i;
-      new G4PVPlacement(rotation, global_coordinates + (dist_from_center - filter_position_z - filter_thicknesses[i] / 2.) * symmetry_axis, filter_logical, filter_name.str(), world_Logical, 0, 0, false);
-      filter_name.clear();
+      new G4PVPlacement(rotation, global_coordinates + (dist_from_center - filter_position_z - filter_thicknesses[i] / 2.) * symmetry_axis, filter_logical, filter_base_name_ss.str(), world_Logical, 0, 0, false);
       filter_position_z = filter_position_z + filter_thicknesses[i];
+      filter_base_name_ss.str("");
     }
   }
 
@@ -181,24 +177,22 @@ void LaBr_3x3::Construct(G4ThreeVector global_coordinates, G4double theta, G4dou
 
   // Wraps
   if (wrap_materials.size()) {
-    G4double wrap_radius = crystal_housing_outer_radius; // Will be gradually increased to be able to place wraps on top of each other
     G4Tubs *wrap_solid = nullptr;
     G4LogicalVolume *wrap_logical = nullptr;
-    stringstream wrap_solid_name, wrap_logical_name, wrap_name;
+    G4double wrap_radius = crystal_housing_outer_radius; // Will be gradually increased to be able to place wraps on top of each other
+    stringstream wrap_base_name_ss;
     for (unsigned int i = 0; i < wrap_materials.size(); ++i) {
-      wrap_solid_name << "wrap_" << detector_name << "_" << i << "_solid";
-      wrap_solid = new G4Tubs(wrap_solid_name.str(), wrap_radius, wrap_radius + wrap_thicknesses[i], (crystal_housing_length + crystal_housing_thickness) / 2., 0., twopi);
-      wrap_solid_name.clear();
-
-      wrap_logical_name << "wrap_" << detector_name << "_" << i << "_logical";
-      wrap_logical = new G4LogicalVolume(wrap_solid, nist->FindOrBuildMaterial(wrap_materials[i]), wrap_logical_name.str());
-      wrap_logical_name.clear();
-      wrap_logical->SetVisAttributes(G4Color::Green());
-
-      wrap_name << "wrap_" << detector_name << "_" << i;
-      new G4PVPlacement(rotation, global_coordinates + (dist_from_center + (crystal_housing_thickness + crystal_housing_length) / 2.) * symmetry_axis, wrap_logical, wrap_name.str(), world_Logical, 0, 0, false);
-      wrap_name.clear();
+      wrap_base_name_ss << detector_name << "_wrap_" << i + 1 << "_" << wrap_materials[i] << "_" << wrap_thicknesses[i] / mm << "mm";
+      wrap_solid = new G4Tubs(wrap_base_name_ss.str() + "_solid", wrap_radius, wrap_radius + wrap_thicknesses[i], crystal_housing_length / 2., 0., twopi);
+      wrap_logical = new G4LogicalVolume(wrap_solid, nist->FindOrBuildMaterial(wrap_materials[i]), wrap_base_name_ss.str() + "_logical");
+      if (i % 2 == 0) {
+        wrap_logical->SetVisAttributes(G4Color::Green());
+      } else {
+        wrap_logical->SetVisAttributes(G4Color::Red());
+      }
+      new G4PVPlacement(rotation, global_coordinates + (dist_from_center + crystal_housing_length / 2.) * symmetry_axis, wrap_logical, wrap_base_name_ss.str(), world_Logical, 0, 0, false);
       wrap_radius = wrap_radius + wrap_thicknesses[i];
+      wrap_base_name_ss.str("");
     }
   }
 }
