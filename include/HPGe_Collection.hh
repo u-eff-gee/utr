@@ -297,14 +297,13 @@ struct HPGe_Collection{
 		HPGe_120_TUNL_40383.mount_cup_thickness = 0.76*mm; // (H) in ORTEC data sheet
 		HPGe_120_TUNL_40383.mount_cup_base_thickness = 3.2*mm; // (C) in ORTEC data sheet
 		HPGe_120_TUNL_40383.mount_cup_material = "G4_Al"; // ORTEC data sheet
-		HPGe_120_TUNL_40383.end_cap_outer_radius = 0.5*90.*mm; // Estimated
 		HPGe_120_TUNL_40383.end_cap_to_crystal_gap_front = 4.*mm; // (B) in ORTEC data sheet
 		HPGe_120_TUNL_40383.end_cap_to_crystal_gap_side = 4.*mm; // (B) in ORTEC data sheet
 		HPGe_120_TUNL_40383.end_cap_thickness = 1.5*mm; // (I) in ORTEC data sheet
 		HPGe_120_TUNL_40383.end_cap_window_thickness = 1.5*mm; // (D) in ORTEC data sheet
 		HPGe_120_TUNL_40383.end_cap_length = 5.5*inch; // Estimated
 		HPGe_120_TUNL_40383.end_cap_material = "G4_Al"; // ORTEC data sheet
-		HPGe_120_TUNL_40383.end_cap_window_material = "G4_Be"; // ORTEC data sheet
+		HPGe_120_TUNL_40383.end_cap_window_material = "G4_Al"; // ORTEC data sheet
 		HPGe_120_TUNL_40383.cold_finger_radius = 0.5*4.*mm; // Suggestion by B. Fallin, Duke University. Not in ORTEC data sheet
 		HPGe_120_TUNL_40383.cold_finger_material = "G4_Cu"; // Estimated
 		HPGe_120_TUNL_40383.connection_length = 2.*inch; // Estimated and irrelevant
@@ -317,6 +316,7 @@ struct HPGe_Collection{
 		HPGe_120_TUNL_40383.dewar_material = "G4_Al"; // Estimated and irrelevant
 		HPGe_120_TUNL_40383.hole_face_radius = HPGe_120_TUNL_40383.hole_radius; // Estimated to be the same as hole radius
 		HPGe_120_TUNL_40383.cold_finger_penetration_depth = HPGe_120_TUNL_40383.hole_depth - 5.*mm; // Estimated
+		HPGe_120_TUNL_40383.end_cap_outer_radius = HPGe_120_TUNL_40383.detector_radius + HPGe_120_TUNL_40383.mount_cup_thickness + HPGe_120_TUNL_40383.end_cap_to_crystal_gap_side + HPGe_120_TUNL_40383.end_cap_thickness;
 		HPGe_120_TUNL_40383.mount_cup_length = 
 			HPGe_120_TUNL_40383.end_cap_length-
 			HPGe_120_TUNL_40383.end_cap_window_thickness-
@@ -390,7 +390,7 @@ struct HPGe_Collection{
 		HPGe_100_TUD_73760.end_cap_window_thickness = 0.5*mm; // Estimated
 		HPGe_100_TUD_73760.end_cap_length = 150.*mm; // Measured at the detector
 		HPGe_100_TUD_73760.end_cap_material = "G4_Al"; // From original simulation
-		HPGe_100_TUD_73760.end_cap_window_material = "G4_Be"; // Estimated
+		HPGe_100_TUD_73760.end_cap_window_material = "G4_Al"; // Estimated
 		HPGe_100_TUD_73760.cold_finger_radius = 0.5*6.*mm; // Estimated. The original simulation has a radius of 6 mm in it, which seemed extremely large. Assumed that the diameter and radius were confused.
 		HPGe_100_TUD_73760.cold_finger_material = "G4_Cu"; // Estimated
 		HPGe_100_TUD_73760.connection_length = 2.*inch; // Estimated
@@ -432,7 +432,7 @@ struct HPGe_Collection{
 		HPGe_100_TUD_72902.end_cap_window_thickness = 0.5*mm; // Estimated
 		HPGe_100_TUD_72902.end_cap_length = 258.*mm; // Measured at the detector
 		HPGe_100_TUD_72902.end_cap_material = "G4_Al"; // From original simulation
-		HPGe_100_TUD_72902.end_cap_window_material = "G4_Be"; // Estimated
+		HPGe_100_TUD_72902.end_cap_window_material = "G4_Al"; // Estimated
 		HPGe_100_TUD_72902.cold_finger_radius = 0.5*6.*mm; // Estimated. The original simulation has a radius of 6 mm in it, which seemed extremely large. Assumed that the diameter and radius were confused.
 		HPGe_100_TUD_72902.cold_finger_material = "G4_Cu"; // Estimated
 		HPGe_100_TUD_72902.connection_length = 60.*mm; // Measured
@@ -475,7 +475,7 @@ struct HPGe_Collection{
 		HPGe_100_TUD_72930.end_cap_window_thickness = 0.5*mm; // Estimated
 		HPGe_100_TUD_72930.end_cap_length = 350.*mm; // Measured at the detector
 		HPGe_100_TUD_72930.end_cap_material = "G4_Al"; // From original simulation
-		HPGe_100_TUD_72930.end_cap_window_material = "G4_Be"; // Estimated
+		HPGe_100_TUD_72930.end_cap_window_material = "G4_Al"; // Estimated
 		HPGe_100_TUD_72930.cold_finger_radius = 0.5*6.*mm; // Estimated. The original simulation has a radius of 6 mm in it, which seemed extremely large. Assumed that the diameter and radius were confused.
 		HPGe_100_TUD_72930.cold_finger_material = "G4_Cu"; // Estimated
 		HPGe_100_TUD_72930.connection_length = 50.*mm; // Measured
