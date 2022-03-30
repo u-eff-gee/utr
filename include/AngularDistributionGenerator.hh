@@ -121,29 +121,12 @@ class AngularDistributionGenerator : public G4VUserPrimaryGeneratorAction {
 	G4double range_y;
 	G4double range_z;
 
-	G4String pv;
-	G4String pvx;
-	G4String pvmx;
-	G4String pvy;
-	G4String pvmy;
-	G4String pvz;
-	G4String pvmz;
-	G4double random_x;
-	G4double random_y;
-	G4double random_z;
-
 	G4bool is_polarized;
-
-	G4double random_theta;
-	G4double random_phi;
-	G4double random_w;
 
 	G4Navigator *navi;
 
 	G4double MAX_TRIES_POSITION;
-	G4bool position_found;
 	G4double MAX_TRIES_MOMENTUM;
-	G4bool momentum_found;
 
 	G4bool checked_position_generator;
 	G4bool checked_momentum_generator;

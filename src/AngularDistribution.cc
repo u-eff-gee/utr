@@ -3,7 +3,7 @@
 
 #include "AngularDistribution.hh"
 
-using std::cout;
+using std::cerr;
 using std::endl;
 
 // PI/(180 DEGREE_TO_RAD)
@@ -961,6 +961,6 @@ double AngularDistribution::AngDist(
             return ((pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1) - 1.0/241472.0*sqrt(77)*(pow(mix[1], 2) + 10)*(-6*pow(sin(phi), 2)*pow(sin(theta), 2) + 2)*(21*sqrt(77)*pow(mix[2], 2) + 56*sqrt(154)*mix[2] - 16*sqrt(77)) - 1.0/155387232.0*sqrt(2002)*(2*pow(mix[1], 2) - 1)*(203*sqrt(2002)*pow(mix[2], 2) + 1540*sqrt(1001)*mix[2] + 88*sqrt(2002))*(-5*(7*pow(cos(theta), 2) - 1)*pow(sin(theta), 2)*cos(2*phi) + 35*pow(cos(theta), 4) - 30*pow(cos(theta), 2) + 3))/((pow(mix[0], 2) + 1)*(pow(mix[1], 2) + 1)*(pow(mix[2], 2) + 1));
         }
     } 
-    cout << "Warning: AngularDistributionGenerator:: Required spin sequence not found." << endl;
-    return 0.;
+    cerr << "ERROR: AngularDistributionGenerator:: Required spin sequence not found." << endl;
+    throw std::exception();
 }
