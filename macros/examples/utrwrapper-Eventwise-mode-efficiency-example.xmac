@@ -27,6 +27,7 @@
 #[getHistogramArgs]
 #maxenergy=5
 #addback=5
+#threads=50
 
 #[histogramToTxtArgs]
 #begin=1

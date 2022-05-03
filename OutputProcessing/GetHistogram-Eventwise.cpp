@@ -62,6 +62,7 @@ static struct argp_option options[] = {
     {"maxid", 'n', "MAXID", 0, "Highest detection volume ID (default: 12). 'getHistogram-Eventwise' only processes energy depositions in detectors with integer volume ID numbers from 0 to MAXID (MAXID is included)."},
     {"addback", 'a', "ADDBACKSTARTID", 0, "Add back energy depositions that occurred in 4 leaves of clover detectors. Assumes clover leaves' volume IDs start at ADDBACKSTARTID and volume IDs of all leaves of one clover are consecutive. -1 to disable (default: -1)"},
     {"silent", 's', 0, 0, "Silent mode (does not silence -B option) (default: Off"},
+    {"threads", 'T', "THREADS", 0, "Number of threads to be used, 0 for number of cpu cores (default: Number of cpu cores)"},
     {0, 0, 0, 0, 0}};
 
 // Used by main to communicate with parse_opt
@@ -80,6 +81,7 @@ struct arguments {
   unsigned int nhistograms = 12 + 1; // Default value for MAXID of 12 and +1 (histograms 0 to 12)
   int addback = -1;
   bool verbose = true;
+  unsigned int threads = 0;
 };
 
 // Function to parse a single option
@@ -124,6 +126,9 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state) {
     case 's':
       arguments->verbose = false;
       break;
+    case 'T':
+      arguments->threads = (unsigned int)atoi(arg);
+      break;
     case ARGP_KEY_ARG:
       cerr << "> Error: getHistogram-Eventwise takes only options and no arguments!" << endl;
       argp_usage(state);
@@ -159,37 +164,40 @@ int main(int argc, char *argv[]) {
   }
 
   if (arguments.verbose) {
-    cout << "#############################################" << endl;
-    cout << "> getHistogram-Eventwise" << endl;
-    cout << "> TREENAME     : " << arguments.tree << endl;
+    cout << "#############################################\n";
+    cout << "> getHistogram-Eventwise\n";
+    cout << "> TREENAME     : " << arguments.tree << "\n";
     cout << "> FILES        : "
-         << "*" << arguments.p1 << "*" << arguments.p2 << "*" << endl;
-    cout << "> INPUTDIR     : " << arguments.inputDir << endl;
-    cout << "> OUTPUTFILE   : " << arguments.outputFilename << endl;
-    cout << "> OUTPUTDIR    : " << arguments.outputDir << endl;
-    cout << "> BINNING      : " << arguments.binning * 1000 << " keV" << endl;
-    cout << "> EMAX         : " << arguments.eMax << " MeV" << endl;
-    cout << "> MAXID        : " << arguments.nhistograms - 1 << endl;
+         << "*" << arguments.p1 << "*" << arguments.p2 << "*\n";
+    cout << "> INPUTDIR     : " << arguments.inputDir << "\n";
+    cout << "> OUTPUTFILE   : " << arguments.outputFilename << "\n";
+    cout << "> OUTPUTDIR    : " << arguments.outputDir << "\n";
+    cout << "> BINNING      : " << arguments.binning * 1000 << " keV\n";
+    cout << "> EMAX         : " << arguments.eMax << " MeV\n";
+    cout << "> MAXID        : " << arguments.nhistograms - 1 << "\n";
     if (arguments.binToPrint != -1) {
-      cout << "> BIN          : " << arguments.binToPrint << endl;
+      cout << "> BIN          : " << arguments.binToPrint << "\n";
     }
     if (arguments.addback != -1) {
-      cout << "> ADDBACK      : " << arguments.addback << endl;
+      cout << "> ADDBACK      : " << arguments.addback << "\n";
     }
-    cout << "#############################################" << endl;
+    if (arguments.threads != 0) {
+      cout << "> THREADS      : " << arguments.threads << "\n";
+    }
+    cout << "#############################################\n";
   }
 
   // Find all files in the current directory that contain pattern1 and pattern1 and connect them to a TChain
   if (!opendir(arguments.inputDir.c_str())) {
-    cerr << "> ERROR: Supplied INPUTDIR is not a valid directory! Aborting..." << endl;
+    cerr << "> ERROR: Supplied INPUTDIR is not a valid directory! Aborting...\n";
     exit(1);
   }
   if (!opendir(arguments.outputDir.c_str())) {
-    cerr << "> ERROR: Supplied OUTPUTDIR is not a valid directory! Aborting..." << endl;
+    cerr << "> ERROR: Supplied OUTPUTDIR is not a valid directory! Aborting...\n";
     exit(1);
   }
   if (arguments.verbose) {
-    cout << "> Joining all files in '" << arguments.inputDir << "' that contain '" << arguments.p1 << "' and '" << arguments.p2 << "':" << endl;
+    cout << "> Joining all files in '" << arguments.inputDir << "' that contain '" << arguments.p1 << "' and '" << arguments.p2 << "':\n";
   }
   TSystemDirectory dir("INPUTDIRECTORY", arguments.inputDir.c_str());
   TChain fileChain(arguments.tree.c_str());
@@ -201,7 +209,7 @@ int main(int argc, char *argv[]) {
     fname = arguments.inputDir + "/" + file->GetName();
     if (!file->IsDirectory() && fname.Contains(arguments.p1) && fname.Contains(arguments.p2)) {
       if (arguments.verbose) {
-        cout << fname << endl;
+        cout << fname << "\n";
       }
       fileChain.Add(fname);
     }
@@ -218,10 +226,15 @@ int main(int argc, char *argv[]) {
   const double eMax = emin + nbins * arguments.binning;
 
   if (arguments.verbose && eMax != arguments.eMax) {
-    cout << "> Rounded up EMAX from " << arguments.eMax << " MeV to " << eMax << " MeV in order to match the requested BINNING of " << arguments.binning << " MeV" << endl;
+    cout << "> Rounded up EMAX from " << arguments.eMax << " MeV to " << eMax << " MeV in order to match the requested BINNING of " << arguments.binning << " MeV\n";
   }
 
-  ROOT::EnableImplicitMT();
+  if (arguments.threads == 0) {
+    ROOT::EnableImplicitMT();
+  } else if (arguments.threads != 1) {
+    ROOT::EnableImplicitMT(arguments.threads);
+  }
+
   auto df = ROOT::RDataFrame(fileChain);
 
   vector<ROOT::RDF::RResultPtr<TH1D>> histPtr(arguments.nhistograms);
@@ -272,7 +285,7 @@ int main(int argc, char *argv[]) {
   }
 
   if (arguments.verbose) {
-    cout << "> Processed " << fileChain.GetEntries() << " entries" << endl;
+    cout << "> Processed " << fileChain.GetEntries() << " entries\n";
   }
 
   // Display counts of a specific bin in each histogram, if requested
@@ -284,7 +297,7 @@ int main(int argc, char *argv[]) {
       }
       cout << hist[i].GetBinContent(arguments.binToPrint);
     }
-    cout << "]" << endl;
+    cout << "]\n";
   }
 
   // Write histogram to a new TFile
@@ -295,6 +308,6 @@ int main(int argc, char *argv[]) {
   outFile->Close();
 
   if (arguments.verbose) {
-    cout << "> Created output file " << arguments.outputFilename << endl;
+    cout << "> Created output file " << arguments.outputFilename << "\n";
   }
 }
