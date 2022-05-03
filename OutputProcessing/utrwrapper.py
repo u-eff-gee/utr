@@ -279,7 +279,9 @@ if logging :
 # Define function to run processes, respecting logging and checking exit status
 def runProcess(prog, procArgs, announce=True, **kwargs) :
     if announce :
-        loggingPrint("Running", prog)
+        currentTime=datetime.datetime.now()
+        elapsedSeconds=int((currentTime-startTime).total_seconds())
+        loggingPrint("Running", prog, " at", currentTime.strftime("%Y-%m-%d %H-%M-%S"), f"(current runtime: {elapsedSeconds//(60*60)}h {(elapsedSeconds//60)%60:02}m {elapsedSeconds%60:02}s)")
     if not logging :
         if (subprocess.run(procArgs, **kwargs).returncode != 0) :
             error(prog, "failed!")
@@ -333,7 +335,9 @@ if not args.skipSimulation :
 
 # Process the output if requested
 if processOutput :
-    loggingPrint("Processing output...")
+    currentTime=datetime.datetime.now()
+    elapsedSeconds=int((currentTime-startTime).total_seconds())
+    loggingPrint("Processing output at", currentTime.strftime("%Y-%m-%d %H-%M-%S"), f"(current runtime: {elapsedSeconds//(60*60)}h {(elapsedSeconds//60)%60:02}m {elapsedSeconds%60:02}s)")
     # Get a list of all simulation output basenames (without _t{THREADID}.root) by the known composition of the output filenames and the always present _t0 file
     outputFiles=glob.glob(
         glob.escape(os.path.join(outputDirRaw, filenamePrefix))
@@ -356,6 +360,6 @@ if processOutput :
             os.path.join(outputDirHists, rootFilename) + "_hist.root"
             ] + histogramToTxtArgs, announce=False)
 
-endTime=datetime.datetime.now()
-elapsedSeconds=int((endTime-startTime).total_seconds())
-loggingPrint("Finished processing extended macro file '" + macFile + "' at", datetime.datetime.now().strftime("%Y-%m-%d %H-%M-%S"), f"(took {elapsedSeconds//(60*60)}h {(elapsedSeconds//60)%60:02}m {elapsedSeconds%60:02}s)")
+currentTime=datetime.datetime.now()
+elapsedSeconds=int((currentTime-startTime).total_seconds())
+loggingPrint("Finished processing extended macro file '" + macFile + "' at", currentTime.strftime("%Y-%m-%d %H-%M-%S"), f"(took {elapsedSeconds//(60*60)}h {(elapsedSeconds//60)%60:02}m {elapsedSeconds%60:02}s)")
