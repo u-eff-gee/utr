@@ -563,7 +563,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
     auto *target140CeMaterialSolid = new G4Tubs("target140CeMaterialSolid", 0, target140CeContainerInnerDiameter / 2., target140CeContainerInnerLength / 2., 0., twopi);
     auto *target140CeMaterialLogical = new G4LogicalVolume(target140CeMaterialSolid, target140CeMaterial, "target140CeMaterialLogical");
-    new G4PVPlacement(nullptr, G4ThreeVector(0, 0, -target140CeContainerWallThickness/2), target140CeMaterialLogical, "target140CeMaterial", target140CeContainerLogical, false, 0);
+    new G4PVPlacement(nullptr, G4ThreeVector(0, 0, -target140CeContainerWallThickness / 2), target140CeMaterialLogical, "target140CeMaterial", target140CeContainerLogical, false, 0);
     target140CeMaterialLogical->SetVisAttributes(yellow);
 
     auto *target140CeMaterialIrradiatedSolid = new G4Tubs("target140CeMaterialIrradiatedSolid", 0, std::min(beamDiameterAtTargetPos, target140CeContainerInnerDiameter) / 2., target140CeContainerInnerLength / 2., 0., twopi);

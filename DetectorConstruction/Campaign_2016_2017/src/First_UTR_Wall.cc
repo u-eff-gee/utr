@@ -21,42 +21,40 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4Box.hh"
 #include "G4NistManager.hh"
 #include "G4PVPlacement.hh"
-#include "G4VisAttributes.hh"
+#include "G4PhysicalConstants.hh"
 #include "G4SubtractionSolid.hh"
 #include "G4Tubs.hh"
-#include "G4PhysicalConstants.hh"
+#include "G4VisAttributes.hh"
 
-#include "Units.hh"
 #include "First_UTR_Wall.hh"
+#include "Units.hh"
 
 #include "Bricks.hh"
 
-First_UTR_Wall::First_UTR_Wall(G4LogicalVolume *World_Log): 
-World_Logical(World_Log), 
-First_UTR_Wall_Length(200.*mm)
-{}
+First_UTR_Wall::First_UTR_Wall(G4LogicalVolume *World_Log) : World_Logical(World_Log),
+                                                             First_UTR_Wall_Length(200. * mm) {}
 
-void First_UTR_Wall::Construct(G4ThreeVector global_coordinates){
+void First_UTR_Wall::Construct(G4ThreeVector global_coordinates) {
 
-	NormBrick *nb = new NormBrick(World_Logical);
-	NormBrickWithHole *nbh = new NormBrickWithHole(World_Logical);
+  NormBrick *nb = new NormBrick(World_Logical);
+  NormBrickWithHole *nbh = new NormBrickWithHole(World_Logical);
 
-	for (int ny = -2; ny <= 2; ny++) {
-		for (int nx = -1; nx <= 1; nx++) {
-			for (int nz = 0; nz < 4; nz++) {
-				if (ny == 0 && nx == 0) {
-					nbh->Put(global_coordinates.x() + nb->L * nx,
-						 global_coordinates.y() + nb->M * ny,
-					         global_coordinates.z() - nb->S * (nz + 0.5), 0. * deg,
-					         90. * deg, 90. * deg);
-					continue;
-				}
+  for (int ny = -2; ny <= 2; ny++) {
+    for (int nx = -1; nx <= 1; nx++) {
+      for (int nz = 0; nz < 4; nz++) {
+        if (ny == 0 && nx == 0) {
+          nbh->Put(global_coordinates.x() + nb->L * nx,
+                   global_coordinates.y() + nb->M * ny,
+                   global_coordinates.z() - nb->S * (nz + 0.5), 0. * deg,
+                   90. * deg, 90. * deg);
+          continue;
+        }
 
-				nb->Put(global_coordinates.x() + nb->L * nx,
-					global_coordinates.y() + nb->M * ny,
-				        global_coordinates.z() - nb->S * (nz + 0.5), 0. * deg,
-				        90. * deg, 90. * deg);
-			}
-		}
-	}
+        nb->Put(global_coordinates.x() + nb->L * nx,
+                global_coordinates.y() + nb->M * ny,
+                global_coordinates.z() - nb->S * (nz + 0.5), 0. * deg,
+                90. * deg, 90. * deg);
+      }
+    }
+  }
 }

@@ -44,145 +44,145 @@ LaBr_Cologne::LaBr_Cologne(G4String Detector_Name)
       innerRadiusEndcap(18.75 * mm), thicknessEndcap(1. * mm),
       thicknessFoam(2. * mm), thicknessVacuumFront(0. * mm) {
 
-	G4NistManager *nist = G4NistManager::Instance();
+  G4NistManager *nist = G4NistManager::Instance();
 
-	G4Material *vacuum = nist->FindOrBuildMaterial("G4_Galactic");
-	G4Material *Al = nist->FindOrBuildMaterial("G4_Al");
+  G4Material *vacuum = nist->FindOrBuildMaterial("G4_Galactic");
+  G4Material *Al = nist->FindOrBuildMaterial("G4_Al");
 
-	G4Material *LaBr3Ce = nist->FindOrBuildMaterial("Brillance380");
-	G4Material *air = nist->FindOrBuildMaterial("G4_AIR");
+  G4Material *LaBr3Ce = nist->FindOrBuildMaterial("Brillance380");
+  G4Material *air = nist->FindOrBuildMaterial("G4_AIR");
 
-	G4double zPos = 0.;
+  G4double zPos = 0.;
 
-	// Thickness of vacuum between aluminum housing and crystal surface
-	thicknessVacuumFront =
-	    (lengthHousing - lengthCrystal - 2 * thicknessHousing) / 2.;
+  // Thickness of vacuum between aluminum housing and crystal surface
+  thicknessVacuumFront =
+      (lengthHousing - lengthCrystal - 2 * thicknessHousing) / 2.;
 
-	/***********************LaBr Mothervolume*********************/
+  /***********************LaBr Mothervolume*********************/
 
-	Radius = radiusEndcap;
-	Length = lengthEndcap;
+  Radius = radiusEndcap;
+  Length = lengthEndcap;
 
-	G4Tubs *labrSolid = new G4Tubs("labrSolid", 0, radiusEndcap,
-	                               lengthEndcap / 2., 0. * deg, 360. * deg);
-	detectorLogical =
-	    new G4LogicalVolume(labrSolid, air, "labrLogical", 0, 0, 0);
-	G4VisAttributes *LaBr_CologneVisAtt = new G4VisAttributes(cyan);
-	detectorLogical->SetVisAttributes(LaBr_CologneVisAtt);
+  G4Tubs *labrSolid = new G4Tubs("labrSolid", 0, radiusEndcap,
+                                 lengthEndcap / 2., 0. * deg, 360. * deg);
+  detectorLogical =
+      new G4LogicalVolume(labrSolid, air, "labrLogical", 0, 0, 0);
+  G4VisAttributes *LaBr_CologneVisAtt = new G4VisAttributes(cyan);
+  detectorLogical->SetVisAttributes(LaBr_CologneVisAtt);
 
-	/***********************LaBr Aluminum Endcap*********************/
+  /***********************LaBr Aluminum Endcap*********************/
 
-	G4Tubs *endcapSolid =
-	    new G4Tubs("endcapSolid", innerRadiusEndcap, radiusEndcap,
-	               thicknessEndcap / 2., 0. * deg, 360. * deg);
+  G4Tubs *endcapSolid =
+      new G4Tubs("endcapSolid", innerRadiusEndcap, radiusEndcap,
+                 thicknessEndcap / 2., 0. * deg, 360. * deg);
 
-	G4LogicalVolume *endcapLogical =
-	    new G4LogicalVolume(endcapSolid, Al, "endcapLogical", 0, 0, 0);
+  G4LogicalVolume *endcapLogical =
+      new G4LogicalVolume(endcapSolid, Al, "endcapLogical", 0, 0, 0);
 
-	G4VisAttributes *endcapVisAtt = new G4VisAttributes(grey);
-	endcapLogical->SetVisAttributes(endcapVisAtt);
+  G4VisAttributes *endcapVisAtt = new G4VisAttributes(grey);
+  endcapLogical->SetVisAttributes(endcapVisAtt);
 
-	zPos = lengthEndcap / 2. - thicknessEndcap / 2.;
-	new G4PVPlacement(0, G4ThreeVector(0., 0., zPos), endcapLogical,
-	                  "endcapFront", detectorLogical, false, 0);
+  zPos = lengthEndcap / 2. - thicknessEndcap / 2.;
+  new G4PVPlacement(0, G4ThreeVector(0., 0., zPos), endcapLogical,
+                    "endcapFront", detectorLogical, false, 0);
 
-	/***********************LaBr Aluminum Outer Shell*********************/
+  /***********************LaBr Aluminum Outer Shell*********************/
 
-	G4Tubs *shellSolid =
-	    new G4Tubs("shellSolid", radiusEndcap - thicknessEndcap, radiusEndcap,
-	               lengthEndcap / 2., 0. * deg, 360. * deg);
+  G4Tubs *shellSolid =
+      new G4Tubs("shellSolid", radiusEndcap - thicknessEndcap, radiusEndcap,
+                 lengthEndcap / 2., 0. * deg, 360. * deg);
 
-	G4LogicalVolume *shellLogical =
-	    new G4LogicalVolume(shellSolid, Al, "shellLogical", 0, 0, 0);
+  G4LogicalVolume *shellLogical =
+      new G4LogicalVolume(shellSolid, Al, "shellLogical", 0, 0, 0);
 
-	G4VisAttributes *shellVisAtt = new G4VisAttributes(grey);
-	endcapLogical->SetVisAttributes(shellVisAtt);
+  G4VisAttributes *shellVisAtt = new G4VisAttributes(grey);
+  endcapLogical->SetVisAttributes(shellVisAtt);
 
-	zPos = 0.;
-	new G4PVPlacement(0, G4ThreeVector(0., 0., zPos), shellLogical,
-	                  "endcapShell", detectorLogical, false, 0);
+  zPos = 0.;
+  new G4PVPlacement(0, G4ThreeVector(0., 0., zPos), shellLogical,
+                    "endcapShell", detectorLogical, false, 0);
 
-	/***********************LaBr Foam Front********************/
+  /***********************LaBr Foam Front********************/
 
-	G4Tubs *foamFrontSolid = new G4Tubs(
-	    "foamFrontSolid", innerRadiusEndcap, radiusEndcap - thicknessEndcap,
-	    thicknessFoam / 2., 0. * deg, 360. * deg);
+  G4Tubs *foamFrontSolid = new G4Tubs(
+      "foamFrontSolid", innerRadiusEndcap, radiusEndcap - thicknessEndcap,
+      thicknessFoam / 2., 0. * deg, 360. * deg);
 
-	G4LogicalVolume *foamFrontLogical = new G4LogicalVolume(
-	    foamFrontSolid, vacuum, "foamFrontLogical", 0, 0, 0);
+  G4LogicalVolume *foamFrontLogical = new G4LogicalVolume(
+      foamFrontSolid, vacuum, "foamFrontLogical", 0, 0, 0);
 
-	G4VisAttributes *foamFrontVisAtt = new G4VisAttributes(white);
-	foamFrontLogical->SetVisAttributes(foamFrontVisAtt);
+  G4VisAttributes *foamFrontVisAtt = new G4VisAttributes(white);
+  foamFrontLogical->SetVisAttributes(foamFrontVisAtt);
 
-	zPos = lengthEndcap / 2. - thicknessEndcap - thicknessFoam / 2.;
-	new G4PVPlacement(0, G4ThreeVector(0., 0., zPos), foamFrontLogical,
-	                  "foamFront", detectorLogical, false, 0);
+  zPos = lengthEndcap / 2. - thicknessEndcap - thicknessFoam / 2.;
+  new G4PVPlacement(0, G4ThreeVector(0., 0., zPos), foamFrontLogical,
+                    "foamFront", detectorLogical, false, 0);
 
-	/***********************LaBr Foam Shell*********************/
+  /***********************LaBr Foam Shell*********************/
 
-	G4Tubs *foamShellSolid = new G4Tubs(
-	    "foamShellSolid", radiusEndcap - thicknessEndcap - thicknessFoam,
-	    radiusEndcap - thicknessEndcap,
-	    lengthEndcap / 2. - thicknessEndcap - thicknessFoam, 0. * deg,
-	    360. * deg);
+  G4Tubs *foamShellSolid = new G4Tubs(
+      "foamShellSolid", radiusEndcap - thicknessEndcap - thicknessFoam,
+      radiusEndcap - thicknessEndcap,
+      lengthEndcap / 2. - thicknessEndcap - thicknessFoam, 0. * deg,
+      360. * deg);
 
-	G4LogicalVolume *foamShellLogical = new G4LogicalVolume(
-	    foamShellSolid, vacuum, "foamShellLogical", 0, 0, 0);
+  G4LogicalVolume *foamShellLogical = new G4LogicalVolume(
+      foamShellSolid, vacuum, "foamShellLogical", 0, 0, 0);
 
-	G4VisAttributes *foamShellVisAtt = new G4VisAttributes(white);
-	endcapLogical->SetVisAttributes(foamShellVisAtt);
+  G4VisAttributes *foamShellVisAtt = new G4VisAttributes(white);
+  endcapLogical->SetVisAttributes(foamShellVisAtt);
 
-	zPos = 0.;
-	new G4PVPlacement(0, G4ThreeVector(0., 0., zPos), foamShellLogical,
-	                  "foamShell", detectorLogical, false, 0);
+  zPos = 0.;
+  new G4PVPlacement(0, G4ThreeVector(0., 0., zPos), foamShellLogical,
+                    "foamShell", detectorLogical, false, 0);
 
-	/***********************LaBr Aluminum Hull*********************/
+  /***********************LaBr Aluminum Hull*********************/
 
-	G4Tubs *AluHull_Solid =
-	    new G4Tubs("AluHull1_Solid", radiusHousing - thicknessHousing,
-	               radiusHousing, lengthHousing / 2., 0. * deg, 360. * deg);
+  G4Tubs *AluHull_Solid =
+      new G4Tubs("AluHull1_Solid", radiusHousing - thicknessHousing,
+                 radiusHousing, lengthHousing / 2., 0. * deg, 360. * deg);
 
-	G4LogicalVolume *aluHullLogical =
-	    new G4LogicalVolume(AluHull_Solid, Al, "aluHullLogical", 0, 0, 0);
+  G4LogicalVolume *aluHullLogical =
+      new G4LogicalVolume(AluHull_Solid, Al, "aluHullLogical", 0, 0, 0);
 
-	G4VisAttributes *aluHullVisAtt = new G4VisAttributes(grey);
-	aluHullLogical->SetVisAttributes(aluHullVisAtt);
+  G4VisAttributes *aluHullVisAtt = new G4VisAttributes(grey);
+  aluHullLogical->SetVisAttributes(aluHullVisAtt);
 
-	zPos = lengthEndcap / 2. - lengthHousing / 2. - thicknessFoam -
-	       thicknessEndcap;
-	new G4PVPlacement(0, G4ThreeVector(0., 0., zPos), aluHullLogical, "aluHull",
-	                  detectorLogical, false, 0);
+  zPos = lengthEndcap / 2. - lengthHousing / 2. - thicknessFoam -
+         thicknessEndcap;
+  new G4PVPlacement(0, G4ThreeVector(0., 0., zPos), aluHullLogical, "aluHull",
+                    detectorLogical, false, 0);
 
-	/************************ Vacuum Layer *****************************/
+  /************************ Vacuum Layer *****************************/
 
-	G4Tubs *Vacuum_Solid = new G4Tubs(
-	    "Vacuum1_Solid", 0, radiusHousing - thicknessHousing,
-	    lengthHousing / 2. - thicknessHousing * 2., 0. * deg, 360. * deg);
+  G4Tubs *Vacuum_Solid = new G4Tubs(
+      "Vacuum1_Solid", 0, radiusHousing - thicknessHousing,
+      lengthHousing / 2. - thicknessHousing * 2., 0. * deg, 360. * deg);
 
-	G4LogicalVolume *Vacuum_Logical =
-	    new G4LogicalVolume(Vacuum_Solid, vacuum, "Vacuum1_Logical", 0, 0, 0);
+  G4LogicalVolume *Vacuum_Logical =
+      new G4LogicalVolume(Vacuum_Solid, vacuum, "Vacuum1_Logical", 0, 0, 0);
 
-	G4VisAttributes *VacuumVisAtt = new G4VisAttributes(white);
-	Vacuum_Logical->SetVisAttributes(VacuumVisAtt);
+  G4VisAttributes *VacuumVisAtt = new G4VisAttributes(white);
+  Vacuum_Logical->SetVisAttributes(VacuumVisAtt);
 
-	zPos = lengthEndcap / 2. - lengthHousing / 2. + thicknessHousing * 2. -
-	       thicknessFoam - thicknessEndcap;
-	new G4PVPlacement(0, G4ThreeVector(0., 0., zPos), Vacuum_Logical, "Vacuum1",
-	                  detectorLogical, false, 0);
+  zPos = lengthEndcap / 2. - lengthHousing / 2. + thicknessHousing * 2. -
+         thicknessFoam - thicknessEndcap;
+  new G4PVPlacement(0, G4ThreeVector(0., 0., zPos), Vacuum_Logical, "Vacuum1",
+                    detectorLogical, false, 0);
 
-	/************************LaBr Crystal*************************/
+  /************************LaBr Crystal*************************/
 
-	G4Tubs *Crystal_Solid =
-	    new G4Tubs("Crystal1_Solid", 0. * cm, radiusCrystal, lengthCrystal / 2.,
-	               0. * deg, 360. * deg);
+  G4Tubs *Crystal_Solid =
+      new G4Tubs("Crystal1_Solid", 0. * cm, radiusCrystal, lengthCrystal / 2.,
+                 0. * deg, 360. * deg);
 
-	G4LogicalVolume *Crystal1_Logical =
-	    new G4LogicalVolume(Crystal_Solid, LaBr3Ce, Detector_Name, 0, 0, 0);
+  G4LogicalVolume *Crystal1_Logical =
+      new G4LogicalVolume(Crystal_Solid, LaBr3Ce, Detector_Name, 0, 0, 0);
 
-	Crystal1_Logical->SetVisAttributes(new G4VisAttributes(green));
+  Crystal1_Logical->SetVisAttributes(new G4VisAttributes(green));
 
-	new G4PVPlacement(0, G4ThreeVector(), Crystal1_Logical, "Crystal1",
-	                  Vacuum_Logical, false, 0);
+  new G4PVPlacement(0, G4ThreeVector(), Crystal1_Logical, "Crystal1",
+                    Vacuum_Logical, false, 0);
 }
 
 LaBr_Cologne::~LaBr_Cologne() {}

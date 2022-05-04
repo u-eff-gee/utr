@@ -21,20 +21,20 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "G4LogicalVolume.hh"
 
-class First_Setup_318_576{
-public:
-	First_Setup_318_576(G4LogicalVolume *World_Log);
-	~First_Setup_318_576(){};
+class First_Setup_318_576 {
+  public:
+  First_Setup_318_576(G4LogicalVolume *World_Log);
+  ~First_Setup_318_576(){};
 
-	void Construct(G4ThreeVector global_coordinates);
+  void Construct(G4ThreeVector global_coordinates);
 
-	G4double Get_Length(){ return First_Setup_Length; };
-	G4double Get_X(){ return First_Setup_X; };
-	G4double Get_Y(){ return First_Setup_Y; };
+  G4double Get_Length() { return First_Setup_Length; };
+  G4double Get_X() { return First_Setup_X; };
+  G4double Get_Y() { return First_Setup_Y; };
 
-private:
-	G4LogicalVolume *World_Logical;
-	G4double First_Setup_Length;
-	G4double First_Setup_X;
-	G4double First_Setup_Y;
+  private:
+  G4LogicalVolume *World_Logical;
+  G4double First_Setup_Length;
+  G4double First_Setup_X;
+  G4double First_Setup_Y;
 };

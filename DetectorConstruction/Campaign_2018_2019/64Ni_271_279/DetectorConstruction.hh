@@ -29,23 +29,23 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 class DetectorConstruction : public G4VUserDetectorConstruction {
   public:
-	DetectorConstruction();
-	~DetectorConstruction();
+  DetectorConstruction();
+  ~DetectorConstruction();
 
-	virtual G4VPhysicalVolume *Construct();
-	virtual void ConstructSDandField();
+  virtual G4VPhysicalVolume *Construct();
+  virtual void ConstructSDandField();
 
-	void print_info() const;
+  void print_info() const;
 
-	unsigned int Max_Sensitive_Detector_ID;
+  unsigned int Max_Sensitive_Detector_ID;
 
-private:
-	G4double World_x;
-	G4double World_y;
-	G4double World_z;
+  private:
+  G4double World_x;
+  G4double World_y;
+  G4double World_z;
 
-	G4double G3_Target_To_2nd_Target;
-	G4double Collimator_Entrance_To_G3_Target;
+  G4double G3_Target_To_2nd_Target;
+  G4double Collimator_Entrance_To_G3_Target;
 };
 
 #endif

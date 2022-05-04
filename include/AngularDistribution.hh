@@ -19,10 +19,10 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 #pragma once
 
-class AngularDistribution{
-public:
-	AngularDistribution(){};
-	~AngularDistribution(){};
+class AngularDistribution {
+  public:
+  AngularDistribution(){};
+  ~AngularDistribution(){};
 
-	double AngDist(double theta, double phi, double *st, int nst, double *mix) const;
+  double AngDist(double theta, double phi, double *st, int nst, double *mix) const;
 };

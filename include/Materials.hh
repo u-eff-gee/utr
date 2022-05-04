@@ -25,85 +25,85 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 class Materials {
 
   private:
-	~Materials();
+  ~Materials();
 
   public:
-	Materials();
+  Materials();
 
-	static Materials *Instance() {
-		if (instance == nullptr) {
-			instance = new Materials();
-		}
-		return instance;
-	}
+  static Materials *Instance() {
+    if (instance == nullptr) {
+      instance = new Materials();
+    }
+    return instance;
+  }
 
-	static Materials *instance;
+  static Materials *instance;
 
-	void ConstructMaterials();
+  void ConstructMaterials();
 
-	// Get Materials
-	G4Material *Get_target_TiO2() { return target_TiO2; }
-	G4Material *Get_target_Se() { return target_Se; }
-	G4Material *Get_target_Sn() { return target_Sn; }
-	G4Material *Get_target_Kr() { return target_Kr; }
-	G4Material *Get_target_Nd150() { return target_Nd150; }
-	G4Material *Get_target_Sm152() { return target_Sm152; }
-	G4Material *Get_target_Dy164() { return target_Dy164; }
-	G4Material *Get_target_Dy164_2O3() { return target_Dy164_2O3; }
-	G4Material *Get_target_Cr54_2O3() { return target_Cr54_2O3; }
-	G4Material *Get_target_Pu240() { return target_Pu240; }
-	G4Material *Get_target_Pu239() { return target_Pu239; }
-	G4Material *Get_target_Th232() { return target_Th232; }
-	G4Material *Get_target_U238() { return target_U238; }
+  // Get Materials
+  G4Material *Get_target_TiO2() { return target_TiO2; }
+  G4Material *Get_target_Se() { return target_Se; }
+  G4Material *Get_target_Sn() { return target_Sn; }
+  G4Material *Get_target_Kr() { return target_Kr; }
+  G4Material *Get_target_Nd150() { return target_Nd150; }
+  G4Material *Get_target_Sm152() { return target_Sm152; }
+  G4Material *Get_target_Dy164() { return target_Dy164; }
+  G4Material *Get_target_Dy164_2O3() { return target_Dy164_2O3; }
+  G4Material *Get_target_Cr54_2O3() { return target_Cr54_2O3; }
+  G4Material *Get_target_Pu240() { return target_Pu240; }
+  G4Material *Get_target_Pu239() { return target_Pu239; }
+  G4Material *Get_target_Th232() { return target_Th232; }
+  G4Material *Get_target_U238() { return target_U238; }
 
-	G4Material *Get_Stainless_Steel() { return stainlessSteel; }
-	G4Material *Get_Brass() { return brass; }
-	G4Material *Get_One_Third_Density_Brass() { return one_third_density_brass; }
-	G4Material *Get_Half_Density_Al() { return half_density_Al; }
-	G4Material *Get_One_Third_Density_Al() { return one_third_density_Al; }
-	G4Material *Get_Peek() { return peek; }
-	G4Material *Get_P10() { return P10; }
-	G4Material *Get_CF4() { return CF4; }
-	G4Material *Get_PCB_coating() { return PCB_coating; }
-	G4Material *Get_PA2200() { return PA2200; }
-	G4Material *Get_PA2200_printed() { return PA2200_printed; }
+  G4Material *Get_Stainless_Steel() { return stainlessSteel; }
+  G4Material *Get_Brass() { return brass; }
+  G4Material *Get_One_Third_Density_Brass() { return one_third_density_brass; }
+  G4Material *Get_Half_Density_Al() { return half_density_Al; }
+  G4Material *Get_One_Third_Density_Al() { return one_third_density_Al; }
+  G4Material *Get_Peek() { return peek; }
+  G4Material *Get_P10() { return P10; }
+  G4Material *Get_CF4() { return CF4; }
+  G4Material *Get_PCB_coating() { return PCB_coating; }
+  G4Material *Get_PA2200() { return PA2200; }
+  G4Material *Get_PA2200_printed() { return PA2200_printed; }
 
-	G4Material *Get_Labr3() { return LaBr3; }
-	G4Material *Get_LaBr3Ce() { return LaBr3Ce; }
-	G4Material *Get_LaCl3Ce() { return LaCl3Ce; }
+  G4Material *Get_Labr3() { return LaBr3; }
+  G4Material *Get_LaBr3Ce() { return LaBr3Ce; }
+  G4Material *Get_LaCl3Ce() { return LaCl3Ce; }
 
-	G4Material *Get_Pump_Vacuum() { return pump_vacuum; }
+  G4Material *Get_Pump_Vacuum() { return pump_vacuum; }
 
   private:
-	G4Material *target_TiO2;
-	G4Material *target_Se;
-	G4Material *target_Sn;
-	G4Material *target_Kr;
-	G4Material *target_Nd150;
-	G4Material *target_Sm152;
-	G4Material *target_Dy164;
-	G4Material *target_Dy164_2O3;
-	G4Material *target_Cr54_2O3;
-	G4Material *target_Pu240;
-	G4Material *target_Pu239;
-	G4Material *target_Th232;
-	G4Material *target_U238;
+  G4Material *target_TiO2;
+  G4Material *target_Se;
+  G4Material *target_Sn;
+  G4Material *target_Kr;
+  G4Material *target_Nd150;
+  G4Material *target_Sm152;
+  G4Material *target_Dy164;
+  G4Material *target_Dy164_2O3;
+  G4Material *target_Cr54_2O3;
+  G4Material *target_Pu240;
+  G4Material *target_Pu239;
+  G4Material *target_Th232;
+  G4Material *target_U238;
 
-	G4Material *half_density_Al;
-	G4Material *one_third_density_Al;
-	G4Material *stainlessSteel;
-	G4Material *brass;
-	G4Material *one_third_density_brass;
-	G4Material *peek;
-	G4Material *P10;
-	G4Material *CF4;
-	G4Material *PCB_coating;
-	G4Material *PA2200;
-	G4Material *PA2200_printed;
+  G4Material *half_density_Al;
+  G4Material *one_third_density_Al;
+  G4Material *stainlessSteel;
+  G4Material *brass;
+  G4Material *one_third_density_brass;
+  G4Material *peek;
+  G4Material *P10;
+  G4Material *CF4;
+  G4Material *PCB_coating;
+  G4Material *PA2200;
+  G4Material *PA2200_printed;
 
-	G4Material *LaBr3;
-	G4Material *LaBr3Ce;
-	G4Material *LaCl3Ce;
+  G4Material *LaBr3;
+  G4Material *LaBr3Ce;
+  G4Material *LaCl3Ce;
 
-	G4Material *pump_vacuum;
+  G4Material *pump_vacuum;
 };

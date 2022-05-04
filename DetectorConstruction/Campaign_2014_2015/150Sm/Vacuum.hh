@@ -17,20 +17,20 @@ You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef VACUUM_HH 
+#ifndef VACUUM_HH
 #define VACUUM_HH 1
 
 #include "G4Material.hh"
 
-class Vacuum{
-public:
-	Vacuum(G4double relative_density, G4String material_name);
-	~Vacuum(){};
+class Vacuum {
+  public:
+  Vacuum(G4double relative_density, G4String material_name);
+  ~Vacuum(){};
 
-	G4Material *Get_Material(){ return Vacuum_Material; }
+  G4Material *Get_Material() { return Vacuum_Material; }
 
-private:
-	G4Material *Vacuum_Material;
+  private:
+  G4Material *Vacuum_Material;
 };
 
 #endif

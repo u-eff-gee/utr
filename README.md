@@ -12,32 +12,32 @@ This is a [Geant4](https://geant4.web.cern.ch/) [[1]](#ref-g4_1) [[2]](#ref-g4_2
 
  1. [Quick Start](#quickstart)
  2. [Features](#features)
- 
+
     2.1 [Geometry](#geometry)
-    
+
     2.2 [Sensitive Detectors](#sensitivedetectors)
-    
+
     2.3 [Event Generation](#eventgeneration)
-    
+
     2.4 [Physics](#physics)
-    
+
     2.5 [Random Number Engine](#random)
-    
+
     2.6 [Output File Format](#outputfileformat)
-    
+
  3. [Installation](#installation)
- 
+
     3.1 [Dependencies](#dependencies)
-    
+
     3.2 [Compilation](#compilation)
-    
+
  4. [Usage and Visualization](#usage)
  5. [Output Processing](#outputprocessing)
  6. [The utr Wrapper](#utrwrapper)
  7. [Unit Tests](#unittests)
- 
+
     7.1 [AngularDistributionGenerator](#angulardistributiongenerator)
-    
+
  8. [License](#license)
  9. [Acknowledgements](#acknowledgements)
  10. [References](#references)
@@ -79,7 +79,7 @@ In `src/utr.cc`, set the random number seed explicitly to get deterministic resu
 
 ### 1.8 Set up a macro file
 
-Create a macro file that contains instructions for the primary generator (see section [2.3 Event Generation](#eventgeneration)). 
+Create a macro file that contains instructions for the primary generator (see section [2.3 Event Generation](#eventgeneration)).
 
 Do not simulate more than 2^32 ~ 2 billion particles using `/run/beamOn`, since this causes an overflow in the random number seed, giving you in principle the same results over and over again. Execute the same simulation multiple times instead.
 
@@ -238,7 +238,7 @@ Detector detector_instance(World_Logical, detector_name);
 Detector_Collection collection_instance;
 detector_instance.setProperties(instance.DetectorXY)
 // Code similar to the following 3 lines can be used to add shielding to the detector which
-// will be placed automatically. By convention, shielding which is added first will be placed closest to 
+// will be placed automatically. By convention, shielding which is added first will be placed closest to
 // the detector. The set of parameters of the methods may depend on the detector type.
 detector_instance.Add_Wrap("G4_Pb", 1.*mm)
 detector_instance.AddFilter("G4_Cu", 1.*mm, 45.*mm)
@@ -339,7 +339,7 @@ Information about the simulated particles is recorded by instances of the G4VSen
 
 *Unique* means volumes with a unique logical volume name. This precaution is here because all bricks and filters of the same type from the previous sections have the same logical volume names. Making one of those a sensitive detector might yield unexpected results.
 
-Any time a particle produces a hit inside a G4VSensitiveDetector object, its ProcessHits routine will access information of the hit. This way, live information about a particle can be accessed. Note that a "hit" in the GEANT4 sense does not necessarily imply an interaction with the sensitive detector. Any volume crossing is also a hit. Therefore, also non-interacting geantinos can generate hits, making them a nice tool to explore the geometry, measure solid-angle coverage etc. 
+Any time a particle produces a hit inside a G4VSensitiveDetector object, its ProcessHits routine will access information of the hit. This way, live information about a particle can be accessed. Note that a "hit" in the GEANT4 sense does not necessarily imply an interaction with the sensitive detector. Any volume crossing is also a hit. Therefore, also non-interacting geantinos can generate hits, making them a nice tool to explore the geometry, measure solid-angle coverage etc.
 After a complete event, a collection of all hits inside a given volume will be accessible via its HitsCollection. This way, cumulative information like the energy deposition inside the volume can be accessed.
 
 Three types of sensitive detectors are implemented at the moment:
@@ -426,7 +426,7 @@ vy_real = 1/sqrt(vx^2 + vy^2)*sin(arctan(y/x))*ekin/c
 
 ### 2.3 Event Generation <a name="eventgeneration"></a>
 
-Event generation is done by classes derived from the `G4VUserPrimaryGeneratorAction`. In the following, the three existing event generators are described. 
+Event generation is done by classes derived from the `G4VUserPrimaryGeneratorAction`. In the following, the three existing event generators are described.
 
 By default, `utr` uses the Geant4 standard [`G4GeneralParticleSource`](#generalparticlesource). To use the [`AngularDistributionGenerator`](#angulardistributiongenerator) or the [`AngularCorrelationGenerator`](#angularcorrelationgenerator) of `utr`, which implement angular distributions and correlations (not exclusively, but mainly for Nuclear Resonance Fluorescence (NRF) applications at the moment), set the corresponding `GENERATOR_XY` option when building the source code (see also [3.3 Build configuration](#build)):
 
@@ -463,12 +463,12 @@ Given a(n)
 * Angular distribution W(θ, φ)
 
 `AngularDistributionGenerator` generates
- 
-* Uniform random positions `(source_x + random_x, source_y + random_y, source_z + random_z), |random_I| <= 0.5*sourceDI, I in {x, y, z}` 
+
+* Uniform random positions `(source_x + random_x, source_y + random_y, source_z + random_z), |random_I| <= 0.5*sourceDI, I in {x, y, z}`
 * Random tuples `(random_θ, random_φ)` with a distribution such that they represent uniformly distributed random directional vectors in spherical coordinates
 * Uniform random numbers `random_W, so that  |random_W| <= MAX_W`
 
-until 
+until
 
 * The position `(random_x, random_y, random_z)` is inside one of the source physical volumes
 * `random_W <= W(random_θ, random_φ)`
@@ -509,8 +509,8 @@ G4WT0 > ========================================================================
 ```
 
 Both the momentum and position generator will also check whether the given limits `MAX_W` and `SOURCE_DI` are large enough. For the position generator, it is clear why this needs to be checked.
-For the momentum generator, the check is necessary because the value of `MAX_W` that was introduced above has been arbitrarily set to 3 in `AngularDistributionGenerator.hh` and `AngularCorrelationGenerator`, which should be a sensible choice for most angular distributions. However, it may be that `W(θ, φ) > 3` for some distribution. 
-Too small values of `MAX_W` and `SOURCE_DI` can also be detected by the self-check with a Monte-Carlo method. For each of the MAX_TRIES_MOMENTUM (MAX_TRIES_POSITION) tries, `utr` will also check whether 
+For the momentum generator, the check is necessary because the value of `MAX_W` that was introduced above has been arbitrarily set to 3 in `AngularDistributionGenerator.hh` and `AngularCorrelationGenerator`, which should be a sensible choice for most angular distributions. However, it may be that `W(θ, φ) > 3` for some distribution.
+Too small values of `MAX_W` and `SOURCE_DI` can also be detected by the self-check with a Monte-Carlo method. For each of the MAX_TRIES_MOMENTUM (MAX_TRIES_POSITION) tries, `utr` will also check whether
 
  * the inequality `W_max <= W(random_θ, random_φ)` holds.
  * the randomly sampled points `(+- 0.5*SOURCE_DX, random_y, random_z)`, `(random_x, +- 0.5*SOURCE_DY, random_z)`, `(random_x, random_y, +- 0.5*SOURCE_DY)` are still inside the source volume.
@@ -553,7 +553,7 @@ To change parameters of the AngularDistributionGenerator, an AngularDistribution
 * `/ang/energy ENERGY UNIT`
     Set the kinetic energy of the particle
 * `/ang/nstates NSTATES`
-    Define the number of states for the angular distribution (see below) 
+    Define the number of states for the angular distribution (see below)
 * `/ang/stateN VALUE`
     Define state number N (where N is in {1, 2, 3, 4})
 * `/ang/deltaN1N2 VALUE`
@@ -582,7 +582,7 @@ The macro file `angdist.mac` in the `macros/examples` directory shows a commente
 
 ##### 2.3.2.3 Caveat: Multiple sources <a name="multiplesources"></a>
 
-When using multiple sources, be aware that `AngularDistributionGenerator` samples the points with a uniform random distribution inside the container volume. How many particles are emitted from a certain part of the source will only depend on its volume. 
+When using multiple sources, be aware that `AngularDistributionGenerator` samples the points with a uniform random distribution inside the container volume. How many particles are emitted from a certain part of the source will only depend on its volume.
 
 This is not always desirable. Imagine the following example: The goal is to simulate a beam on two disconnected targets. The first target has twice the volume of the second target, but the second target has a four times larger density. That means, the reaction would occur approximately twice as often in the second target than in the first. Implementing the targets like this in `AngularDistributionGenerator` would not give realistic results because of the weighting by volume. In a case like this, one would rather simulate the individual parts of the target and compute a weighted sum of the results.
 
@@ -655,8 +655,8 @@ At the start of a simulation using the `AngularCorrelationGenerator`, the code w
 ```
 G4WT0 > ========================================================================
 G4WT0 > Monte-Carlo momentum generator with 10000 3D vectors for
-G4WT0 > Cascade step #2 ( Particle: geantino ) 
-G4WT0 > Angular distribution : 0 -> 1 -> 0 
+G4WT0 > Cascade step #2 ( Particle: geantino )
+G4WT0 > Angular distribution : 0 -> 1 -> 0
 G4WT0 > Polarization         : ( 1, 0, 0 )
 G4WT0 > Check finished. Of 10000 random 3D momentum vectors, 3315 were valid ( 33.15 % )
 G4WT0 > Probability of failure: pow( 0.6685, 10000 ) = 0 %
@@ -671,7 +671,7 @@ For a commented example, see the `angcorr.mac` macro file in the `macros/example
 `utr` makes use of the `G4VModularPhysicsList`, which allows to integrate physics modules in a straightforward way by calling the `G4ModularPhysicsList::RegisterPhysics(G4VPhysicsConstructor*)` method. The registered `G4VPhysicsConstructor` class takes care of the introduction of particles and physics processes.
 The physics processes are separated into two logical groups, which contain the most probably occurring processes in NRF experiments: electromagnetic (EM) and hadronic.
 
-Geant4 provides complete EM and hadronic modules for different energy ranges and with different precision. In `utr`, a selection of those, which was considered most suitable for low-energy NRF applications, can be selected via the `HADRON*` and `EM*` cmake build options (see also [3.3 Build configuration](#build)): 
+Geant4 provides complete EM and hadronic modules for different energy ranges and with different precision. In `utr`, a selection of those, which was considered most suitable for low-energy NRF applications, can be selected via the `HADRON*` and `EM*` cmake build options (see also [3.3 Build configuration](#build)):
 
 ```
 $ cmake -S . -B build -DEM_LIVERMORE=ON -DHADRON_ELASTIC_HP=ON
@@ -686,7 +686,7 @@ compt:   for  gamma    SubType= 13  BuildTable= 1
       ===== EM models for the G4Region  DefaultRegionForTheWorld ======
     LivermoreCompton :  Emin=        0 eV    Emax=        1 GeV  FluoActive
         KleinNishina :  Emin=        1 GeV   Emax=      100 TeV  FluoActive
-``` 
+```
 
 This shows that the unpolarized model is used (otherwise, `LivermoreCompton` would be replaced by `LivermorePolarizedCompton`), which may not be what the user expected.
 
@@ -698,7 +698,7 @@ Physics modules can be switched by setting the different `HADRON*` and `EM*` cma
 $ cmake -S . -B build -DEM_LIVERMORE=ON -DHADRON_ELASTIC_HP=ON
 ```
 
-An output like 
+An output like
 
 ```
 ================================================================================
@@ -706,12 +706,12 @@ Using the following physics lists:
         G4EmLivermorePolarizedPhysics ...
         G4HadronElasticPhysicsLEND ...
         G4HadronPhysicsFTFP_BERT ...
-================================================================================ 
+================================================================================
 ```
 
 at the beginning of a simulation will show which physics lists are currently used.
 
-Most of the physics lists are probably a little too extensive for the intended use of `utr`. This is also why lots of warnings concerning very exotic particles like 
+Most of the physics lists are probably a little too extensive for the intended use of `utr`. This is also why lots of warnings concerning very exotic particles like
 
 ```
 *** G4Exception : PART10116
@@ -735,17 +735,17 @@ time_t timer;
 G4Random::setTheSeed(time(&timer));
 ```
 
-If you want deterministic results for some reason, comment these lines out and uncomment 
+If you want deterministic results for some reason, comment these lines out and uncomment
 
 ```
 G4Random::setTheSeed(long n);
 ```
 
-Re-compile afterwards. 
+Re-compile afterwards.
 After this change, every restart of the simulation with unchanged code will yield the same results.
 
 ### 2.6 Output File Format <a name="outputfileformat"></a>
-In section [2.2 Sensitive Detectors](#sensitivedetectors) the format of the ROOT output file was already introduced. The possible branches are 
+In section [2.2 Sensitive Detectors](#sensitivedetectors) the format of the ROOT output file was already introduced. The possible branches are
 
 * **event**
 * **ekin**
@@ -950,7 +950,7 @@ $ cmake -S . -B build -DPRINT_PROGRESS=NEVENTS
 
 Running `utr` without any argument will launch a UI session where macro commands can be entered. It should also automatically execute the macro file `init_vis.mac` in the `scripts` directory, which visualizes the geometry.
 
-If this does not work, or to execute any other macro file MACROFILE, type 
+If this does not work, or to execute any other macro file MACROFILE, type
 ```bash
 /control/execute MACROFILE
 ```
@@ -1068,7 +1068,7 @@ shows how to use the script. The meaning of the arguments to the most important 
 * TREENAME: Name of the ROOT tree (Default: TREENAME=="utr") to be processed in all of the input files (which usually are utr output files).
 * PATTERN1 and PATTERN2: Two strings that identify the set of files to be merged. See also the example below. (Default: PATTERN1=="utr", PATTERN2==".root")
 * INPUTDIR: This optional argument sets the directory in which getHistogram searches for files to be processed (files containing the patterns) (Default: search in current working directory ".")
-* OUTPUTFILENAME: Name of the output file to be created that will contain the histograms. Note that an exisiting file will be overwritten! The default behaviour is to use the PATTERN1 value with a possibly trailing _t removed and _hist.root appended. 
+* OUTPUTFILENAME: Name of the output file to be created that will contain the histograms. Note that an exisiting file will be overwritten! The default behaviour is to use the PATTERN1 value with a possibly trailing _t removed and _hist.root appended.
 * OUTPUTDIR: This optional argument sets the directory in which getHistogram writes its output histogram file (Default: Use the input directory INPUTDIR)
 * MAXID: This optional argument determines the highest volume ID for which an output histogram is created. In total MAXID + 2 energy deposition histograms (for detectors 0 to MAXID, and a histogram called `sum` which contains the sum of all other ones) are created.  The optimum performance and memory usage can be obtained by numbering the sensitive volumes (using `G4SensitiveDetector::SetDetectorID()`, see also [2.2 Sensitive Detectors](#sensitivedetectors)) from 0 to MAXID. Otherwise, `getHistogram` will create a lot of unnecessary histograms. For example, if MAXID=10 is set, but the simulation only contains two detectors with IDs 0 and 10, eight empty histograms from 1 to 9 will be in the output of `getHistogram`. On the other hand warnings will be printed when a volume is encountered whose number is larger than MAXID. (Default MAXID is 12)
 * MULTIPLICITY: Determines how many events per detector should be accumulated before adding the energy deposition to the histogram. This can be used, for example, to simulate higher multiplicity events in a detector: Imagine two photons with energies of 511 keV hit a detector and deposit all their energy. However, the two events cannot be distinguished by the detector due to pileup, so a single event with an energy of 1022 keV will be added to the spectrum in the experiment. Similarly, Geant4 simulates event by event. In order to simulate pileup of n events, set MULTIPLICITY to n. (Default: MULTIPLICITY is 1)
@@ -1126,7 +1126,7 @@ Mandatory or optional arguments to long options are also mandatory or optional
 for any corresponding short options.
 ```
 
-shows how to use the script. For example 
+shows how to use the script. For example
 
 ```bash
 $ build/OutputProcessing/histogramToTxt utr0_hist.root
@@ -1336,7 +1336,7 @@ With the bad choice `W_max == 1`, the same analysis would result in the followin
 
 ![Output of AngDist unit test](.media/010_histogram_bad.png)
 
-In order to have a more quantitative analysis, the histogram can also be fit with the input distribution as it is implemented in `src/AngularDistribution.cc`. For this purpose, `AngularDistribution.hh` is already included in `AngularDistributionGenerator_Test.cpp`. 
+In order to have a more quantitative analysis, the histogram can also be fit with the input distribution as it is implemented in `src/AngularDistribution.cc`. For this purpose, `AngularDistribution.hh` is already included in `AngularDistributionGenerator_Test.cpp`.
 To select a certain distribution, hard code the identifiers and parameters in the source code of the script where it says
 ```
 	//
@@ -1403,9 +1403,9 @@ We thank D. Savran for reporting and investigating architecture-dependent runtim
 
 ## 10 References <a name="references"></a>
 
-<a name="ref-g4_1">[1]</a> S. Agostinelli *et al.*, “GEANT4 - a simulation toolkit”, Nucl. Inst. Meth. A **506.3**, 250 (2003). [`doi:10.1016/S0168-9002(03)01368-8`](https://doi.org/10.1016/S0168-9002(03)01368-8).  
-<a name="ref-g4_2">[2]</a> J. Allison *et al.*, “GEANT4 developments and applications”, IEEE Transactions on Nuclear Science, **53.1**, 270 (2006). [`doi:10.1109/TNS.2006.869826`](https://doi.org/10.1109/TNS.2006.869826).  
-<a name="ref-g4_3">[3]</a> J. Allison *et al.*, “Recent developments in GEANT4”, Nucl. Inst. Meth. A **835**, 186 (2016). [`doi:10.1016/j.nima.2016.06.125`](https://doi.org/10.1016/j.nima.2016.06.125).  
-<a name="ref-higs">[4]</a> H. R. Weller *et al.*, “Research opportunities at the upgraded HIγS facility”, Prog. Part. Nucl. Phys. **62.1**, 257 (2009). [`doi:10.1016/j.ppnp.2008.07.001`](https://doi.org/10.1016/j.ppnp.2008.07.001).  
-<a name="ref-g3">[5]</a> B. Löher *et al.*, “The high-efficiency γ-ray spectroscopy setup γ³ at HIγS”, Nucl. Instr. Meth. Phys. Res. A **723**, 136 (2013). [`doi:10.1016/j.nima.2013.04.087`](https://doi.org/10.1016/j.nima.2013.04.087).   
-<a name="ref-dhips">[6]</a> K. Sonnabend *et al.*, "The Darmstadt High-Intensity Photon setup (DHIPS) at the S-DALINAC", Nucl. Instr. Meth. Phys. Res. A **640**, 6 (2011). [`https://doi.org/10.1016/j.nima.2011.02.107`](https://doi.org/10.1016/j.nima.2011.02.107)  
+<a name="ref-g4_1">[1]</a> S. Agostinelli *et al.*, “GEANT4 - a simulation toolkit”, Nucl. Inst. Meth. A **506.3**, 250 (2003). [`doi:10.1016/S0168-9002(03)01368-8`](https://doi.org/10.1016/S0168-9002(03)01368-8).
+<a name="ref-g4_2">[2]</a> J. Allison *et al.*, “GEANT4 developments and applications”, IEEE Transactions on Nuclear Science, **53.1**, 270 (2006). [`doi:10.1109/TNS.2006.869826`](https://doi.org/10.1109/TNS.2006.869826).
+<a name="ref-g4_3">[3]</a> J. Allison *et al.*, “Recent developments in GEANT4”, Nucl. Inst. Meth. A **835**, 186 (2016). [`doi:10.1016/j.nima.2016.06.125`](https://doi.org/10.1016/j.nima.2016.06.125).
+<a name="ref-higs">[4]</a> H. R. Weller *et al.*, “Research opportunities at the upgraded HIγS facility”, Prog. Part. Nucl. Phys. **62.1**, 257 (2009). [`doi:10.1016/j.ppnp.2008.07.001`](https://doi.org/10.1016/j.ppnp.2008.07.001).
+<a name="ref-g3">[5]</a> B. Löher *et al.*, “The high-efficiency γ-ray spectroscopy setup γ³ at HIγS”, Nucl. Instr. Meth. Phys. Res. A **723**, 136 (2013). [`doi:10.1016/j.nima.2013.04.087`](https://doi.org/10.1016/j.nima.2013.04.087).
+<a name="ref-dhips">[6]</a> K. Sonnabend *et al.*, "The Darmstadt High-Intensity Photon setup (DHIPS) at the S-DALINAC", Nucl. Instr. Meth. Phys. Res. A **640**, 6 (2011). [`https://doi.org/10.1016/j.nima.2011.02.107`](https://doi.org/10.1016/j.nima.2011.02.107)

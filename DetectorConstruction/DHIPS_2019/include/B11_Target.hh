@@ -21,30 +21,30 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef B11_TARGET_HH
 #define B11_TARGET_HH 1
 
-#include "G4LogicalVolume.hh"
-#include "G4Isotope.hh"
 #include "G4Element.hh"
+#include "G4Isotope.hh"
+#include "G4LogicalVolume.hh"
 #include "G4Material.hh"
 
-class B11_Target{
-public:
-	B11_Target();
-	B11_Target(G4LogicalVolume *World_Log);
-	~B11_Target(){};
+class B11_Target {
+  public:
+  B11_Target();
+  B11_Target(G4LogicalVolume *World_Log);
+  ~B11_Target(){};
 
-	void Construct(G4ThreeVector global_coordinates);
-	void ConstructAbsorber(G4ThreeVector global_coordinates);
-	void Set_Containing_Volume(G4LogicalVolume *World_Log){ World_Logical = World_Log; };
+  void Construct(G4ThreeVector global_coordinates);
+  void ConstructAbsorber(G4ThreeVector global_coordinates);
+  void Set_Containing_Volume(G4LogicalVolume *World_Log) { World_Logical = World_Log; };
 
-private:
-	G4LogicalVolume *World_Logical;
-	G4Isotope* B10;
-	G4Isotope* B11;
-	G4Element *Target_Element;
-	G4double Target_Density;
-	G4Material *Target_Material;
-	G4Material *nat_Cu;
-	G4Material *nat_Al;
+  private:
+  G4LogicalVolume *World_Logical;
+  G4Isotope *B10;
+  G4Isotope *B11;
+  G4Element *Target_Element;
+  G4double Target_Density;
+  G4Material *Target_Material;
+  G4Material *nat_Cu;
+  G4Material *nat_Al;
 };
 
 #endif

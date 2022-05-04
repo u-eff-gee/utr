@@ -26,13 +26,13 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "G4LogicalVolume.hh"
 
-class Detectors_G3_Setup_6{
-public:
-	Detectors_G3_Setup_6(G4LogicalVolume *World_Log);
-	~Detectors_G3_Setup_6(){};
+class Detectors_G3_Setup_6 {
+  public:
+  Detectors_G3_Setup_6(G4LogicalVolume *World_Log);
+  ~Detectors_G3_Setup_6(){};
 
-	void Construct(G4ThreeVector global_coordinates);
+  void Construct(G4ThreeVector global_coordinates);
 
-private:
-	G4LogicalVolume *World_Logical;
+  private:
+  G4LogicalVolume *World_Logical;
 };

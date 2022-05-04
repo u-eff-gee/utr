@@ -4,7 +4,7 @@
  * To change settings of utrConfig.h, edit
  * the utrConfig.h.in file in the include
  * directory and execute cmake again.
- * Note that this notice is copied from 
+ * Note that this notice is copied from
  * utrConfig.h.in to utrConfig.h.
  *
  */
@@ -18,8 +18,8 @@
 #cmakedefine USE_TARGETS
 #cmakedefine USE_ZERODEGREE
 
-#cmakedefine EM_FAST 
-#cmakedefine EM_STANDARD 
+#cmakedefine EM_FAST
+#cmakedefine EM_STANDARD
 #cmakedefine EM_LIVERMORE
 #cmakedefine EM_LIVERMORE_POLARIZED
 #cmakedefine EM_LIVERMORE_POLARIZED_JAEA
@@ -47,7 +47,7 @@
 #cmakedefine EVENT_MOMY
 #cmakedefine EVENT_MOMZ
 
-#cmakedefine ZERODEGREE_OFFSET 
+#cmakedefine ZERODEGREE_OFFSET
 
 const int print_progress = ${PRINT_PROGRESS};
 const double zerodegree_offset = ${ZERODEGREE_OFFSET};

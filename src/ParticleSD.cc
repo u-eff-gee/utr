@@ -19,9 +19,9 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "ParticleSD.hh"
-#include "G4RootAnalysisManager.hh"
 #include "G4Event.hh"
 #include "G4HCofThisEvent.hh"
+#include "G4RootAnalysisManager.hh"
 #include "G4RunManager.hh"
 #include "G4SDManager.hh"
 #include "G4Step.hh"
@@ -32,11 +32,11 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 ParticleSD::ParticleSD(const G4String &name, const G4String &hitsCollectionName)
     : G4VSensitiveDetector(name) {
-	collectionName.insert(hitsCollectionName);
+  collectionName.insert(hitsCollectionName);
 
-	currentEventID = 0;
-	currentTrackID = 0;
-	detectorID = 0;
+  currentEventID = 0;
+  currentTrackID = 0;
+  detectorID = 0;
 }
 
 ParticleSD::~ParticleSD() {}
@@ -44,70 +44,70 @@ ParticleSD::~ParticleSD() {}
 void ParticleSD::Initialize(G4HCofThisEvent *) {}
 
 G4bool ParticleSD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
-	G4Track *track = aStep->GetTrack();
+  G4Track *track = aStep->GetTrack();
 
-	G4int trackID = track->GetTrackID();
-	G4int eventID = G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID();
+  G4int trackID = track->GetTrackID();
+  G4int eventID = G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID();
 
-	if (trackID != getCurrentTrackID() || eventID != getCurrentEventID()) {
-		setCurrentTrackID(trackID);
-		setCurrentEventID(eventID);
+  if (trackID != getCurrentTrackID() || eventID != getCurrentEventID()) {
+    setCurrentTrackID(trackID);
+    setCurrentEventID(eventID);
 
-		if (aStep->GetPreStepPoint()->GetKineticEnergy() == 0.)
-			return false;
+    if (aStep->GetPreStepPoint()->GetKineticEnergy() == 0.)
+      return false;
 
-		G4RootAnalysisManager *analysisManager = G4RootAnalysisManager::Instance();
+    G4RootAnalysisManager *analysisManager = G4RootAnalysisManager::Instance();
 
-		unsigned int nentry = 0;
+    unsigned int nentry = 0;
 
 #ifdef EVENT_ID
-	analysisManager->FillNtupleDColumn(nentry, eventID);
-	++nentry;
+    analysisManager->FillNtupleDColumn(nentry, eventID);
+    ++nentry;
 #endif
 #ifdef EVENT_EDEP
-	analysisManager->FillNtupleDColumn(nentry, aStep->GetTotalEnergyDeposit());
-	++nentry;
+    analysisManager->FillNtupleDColumn(nentry, aStep->GetTotalEnergyDeposit());
+    ++nentry;
 #endif
 #ifdef EVENT_EKIN
-	analysisManager->FillNtupleDColumn(nentry, aStep->GetPreStepPoint()->GetKineticEnergy());	
-	++nentry;
+    analysisManager->FillNtupleDColumn(nentry, aStep->GetPreStepPoint()->GetKineticEnergy());
+    ++nentry;
 #endif
 #ifdef EVENT_PARTICLE
-	analysisManager->FillNtupleDColumn(nentry, track->GetDefinition()->GetPDGEncoding());
-	++nentry;
+    analysisManager->FillNtupleDColumn(nentry, track->GetDefinition()->GetPDGEncoding());
+    ++nentry;
 #endif
 #ifdef EVENT_VOLUME
-	analysisManager->FillNtupleDColumn(nentry, getDetectorID());
-	++nentry;
+    analysisManager->FillNtupleDColumn(nentry, getDetectorID());
+    ++nentry;
 #endif
 #ifdef EVENT_POSX
-	analysisManager->FillNtupleDColumn(nentry, aStep->GetPreStepPoint()->GetPosition().x());
-	++nentry;
+    analysisManager->FillNtupleDColumn(nentry, aStep->GetPreStepPoint()->GetPosition().x());
+    ++nentry;
 #endif
 #ifdef EVENT_POSY
-	analysisManager->FillNtupleDColumn(nentry, aStep->GetPreStepPoint()->GetPosition().y());
-	++nentry;
+    analysisManager->FillNtupleDColumn(nentry, aStep->GetPreStepPoint()->GetPosition().y());
+    ++nentry;
 #endif
 #ifdef EVENT_POSZ
-	analysisManager->FillNtupleDColumn(nentry, aStep->GetPreStepPoint()->GetPosition().z());
-	++nentry;
+    analysisManager->FillNtupleDColumn(nentry, aStep->GetPreStepPoint()->GetPosition().z());
+    ++nentry;
 #endif
 #ifdef EVENT_MOMX
-	analysisManager->FillNtupleDColumn(nentry, aStep->GetPreStepPoint()->GetMomentum().x());
-	++nentry;
+    analysisManager->FillNtupleDColumn(nentry, aStep->GetPreStepPoint()->GetMomentum().x());
+    ++nentry;
 #endif
 #ifdef EVENT_MOMY
-	analysisManager->FillNtupleDColumn(nentry, aStep->GetPreStepPoint()->GetMomentum().y());
-	++nentry;
+    analysisManager->FillNtupleDColumn(nentry, aStep->GetPreStepPoint()->GetMomentum().y());
+    ++nentry;
 #endif
 #ifdef EVENT_MOMZ
-	analysisManager->FillNtupleDColumn(nentry, aStep->GetPreStepPoint()->GetMomentum().z());
+    analysisManager->FillNtupleDColumn(nentry, aStep->GetPreStepPoint()->GetMomentum().z());
 #endif
 
-	analysisManager->AddNtupleRow();
-	}
+    analysisManager->AddNtupleRow();
+  }
 
-	return true;
+  return true;
 }
 
 void ParticleSD::EndOfEvent(G4HCofThisEvent *) {}

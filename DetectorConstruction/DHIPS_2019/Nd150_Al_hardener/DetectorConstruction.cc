@@ -25,12 +25,12 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
  * of excited states in 27Al and 59Co. This was supposed to clarify the
  * experimental situation of the systematics of B(E2; 0^+_1 -> 2^+_1)
  * strengths in the tin isotopic chain.
- * 
+ *
  * An alternative would have been to determine two B(E2) strengths
  * of the tin isotopes 112Sn and 116Sn simultaneously. A sandwich
  * target which would be necessary for this alternative experiment
  * has also been implemented.
-*/
+ */
 
 #include "DetectorConstruction.hh"
 
@@ -48,28 +48,28 @@ Materials *materials = Materials::Instance();
 #include "globals.hh"
 
 // Sensitive Detectors
-#include "G4SDManager.hh"
 #include "EnergyDepositionSD.hh"
+#include "G4SDManager.hh"
 #include "ParticleSD.hh"
 #include "SecondarySD.hh"
 
-//Detectors
-#include "RadiatorTarget.hh"
-#include "BeamPipe_Upstream.hh"
+// Detectors
 #include "BeamPipe_Downstream.hh"
-#include "LeadCastle.hh"
+#include "BeamPipe_Upstream.hh"
 #include "Detectors.hh"
+#include "LeadCastle.hh"
 #include "Nd150_Target.hh"
+#include "RadiatorTarget.hh"
 
 // Geometry
 #include "G4Box.hh"
+#include "G4GenericTrap.hh"
 #include "G4LogicalVolume.hh"
 #include "G4PVPlacement.hh"
 #include "G4SubtractionSolid.hh"
-#include "G4TwoVector.hh"
 #include "G4ThreeVector.hh"
 #include "G4Tubs.hh"
-#include "G4GenericTrap.hh"
+#include "G4TwoVector.hh"
 #include "G4UnionSolid.hh"
 #include "G4VisAttributes.hh"
 #include "globals.hh"
@@ -80,104 +80,100 @@ Materials *materials = Materials::Instance();
 
 #include <iostream>
 
-DetectorConstruction::DetectorConstruction()
-{
+DetectorConstruction::DetectorConstruction() {
 }
 
 DetectorConstruction::~DetectorConstruction() {}
 
-G4VPhysicalVolume *DetectorConstruction::Construct()
-{
-	G4NistManager *nist = G4NistManager::Instance();
-	G4Material *air = nist->FindOrBuildMaterial("G4_AIR");
+G4VPhysicalVolume *DetectorConstruction::Construct() {
+  G4NistManager *nist = G4NistManager::Instance();
+  G4Material *air = nist->FindOrBuildMaterial("G4_AIR");
 
-	/************************* World volume *****************/
+  /************************* World volume *****************/
 
-	/***************** WORLD *****************/
+  /***************** WORLD *****************/
 
-	World_x = 6000. * mm;
-	World_y = 6000. * mm;
-	World_z = 6000. * mm;
+  World_x = 6000. * mm;
+  World_y = 6000. * mm;
+  World_z = 6000. * mm;
 
-	G4Box *World_dim =
-		new G4Box("World_Solid", World_x * 0.5, World_y * 0.5, World_z * 0.5);
+  G4Box *World_dim =
+      new G4Box("World_Solid", World_x * 0.5, World_y * 0.5, World_z * 0.5);
 
-	G4LogicalVolume *World_Logical =
-		new G4LogicalVolume(World_dim, air, "World_Logical", 0, 0, 0);
+  G4LogicalVolume *World_Logical =
+      new G4LogicalVolume(World_dim, air, "World_Logical", 0, 0, 0);
 
-	G4VisAttributes *world_vis = new G4VisAttributes(true, G4Color::Red());
-	world_vis->SetForceWireframe(true);
+  G4VisAttributes *world_vis = new G4VisAttributes(true, G4Color::Red());
+  world_vis->SetForceWireframe(true);
 
-	World_Logical->SetVisAttributes(world_vis);
+  World_Logical->SetVisAttributes(world_vis);
 
-	G4VPhysicalVolume *World_Physical =
-		new G4PVPlacement(0, G4ThreeVector(), World_Logical, "World", 0, false, 0);
+  G4VPhysicalVolume *World_Physical =
+      new G4PVPlacement(0, G4ThreeVector(), World_Logical, "World", 0, false, 0);
 
-	/***************************************************/
-	/***************** INITIALIZATIONS *****************/
-	/***************************************************/
+  /***************************************************/
+  /***************** INITIALIZATIONS *****************/
+  /***************************************************/
 
-	BeamPipe_Upstream BeamPipe_Upstream(World_Logical);
-	RadiatorTarget RadiatorTarget(World_Logical);
-	LeadCastle LeadCastle(World_Logical);
-	Detectors Detectors(World_Logical);
+  BeamPipe_Upstream BeamPipe_Upstream(World_Logical);
+  RadiatorTarget RadiatorTarget(World_Logical);
+  LeadCastle LeadCastle(World_Logical);
+  Detectors Detectors(World_Logical);
 
-	/***************************************************/
-	/*****************  CONSTRUCTION  *****************/
-	/***************************************************/
+  /***************************************************/
+  /*****************  CONSTRUCTION  *****************/
+  /***************************************************/
 
-	BeamPipe_Upstream.Construct(G4ThreeVector(0, 0, -1500 * mm), 0.1);										// Position guesstimated
-	RadiatorTarget.Construct(G4ThreeVector(0, 0, -1190 * mm), "Radiator1", "Au", 2.5 * mm, "Al", 0.);		// Position guesstimated
-	RadiatorTarget.Construct(G4ThreeVector(0, 0, -1160 * mm), "Radiator2", "Au", 0.5 * mm, "Al", 30. * mm); // Position guesstimated
+  BeamPipe_Upstream.Construct(G4ThreeVector(0, 0, -1500 * mm), 0.1); // Position guesstimated
+  RadiatorTarget.Construct(G4ThreeVector(0, 0, -1190 * mm), "Radiator1", "Au", 2.5 * mm, "Al", 0.); // Position guesstimated
+  RadiatorTarget.Construct(G4ThreeVector(0, 0, -1160 * mm), "Radiator2", "Au", 0.5 * mm, "Al", 30. * mm); // Position guesstimated
 
-	auto BGO1 = BGO(World_Logical, "BGO1");
-	auto BGO2 = BGO(World_Logical, "BGO2");
-	auto BGOPol = BGO(World_Logical, "BGOPol");
-	auto HPGe80 = DetectorInfo::get(DetectorDHIPS::HPGe80, PositionDHIPS::Right90);
-	auto HPGe2 = DetectorInfo::get(DetectorDHIPS::HPGe2, PositionDHIPS::Left130, false);
-	auto HPGePol = DetectorInfo::get(DetectorDHIPS::HPGePol, PositionDHIPS::Left90);
+  auto BGO1 = BGO(World_Logical, "BGO1");
+  auto BGO2 = BGO(World_Logical, "BGO2");
+  auto BGOPol = BGO(World_Logical, "BGOPol");
+  auto HPGe80 = DetectorInfo::get(DetectorDHIPS::HPGe80, PositionDHIPS::Right90);
+  auto HPGe2 = DetectorInfo::get(DetectorDHIPS::HPGe2, PositionDHIPS::Left130, false);
+  auto HPGePol = DetectorInfo::get(DetectorDHIPS::HPGePol, PositionDHIPS::Left90);
 
-	Detectors.ConstructDetectorBGO(G4ThreeVector(), HPGe80, BGO1);
-	Detectors.ConstructDetectorBGO(G4ThreeVector(), HPGe2, BGO2);
-	Detectors.ConstructDetectorBGO(G4ThreeVector(), HPGePol, BGOPol);
-	LeadCastle.Construct(G4ThreeVector(), &BGO1, &BGO2, &BGOPol);
-	Detectors.ConstructDetectorFilter(G4ThreeVector(), HPGe80, 10. * mm, 30. * mm);
-	Detectors.ConstructDetectorFilter(G4ThreeVector(), HPGe2, 10. * mm, 20. * mm);
-	Detectors.ConstructDetectorFilter(G4ThreeVector(), HPGePol, 10. * mm, 30. * mm);
+  Detectors.ConstructDetectorBGO(G4ThreeVector(), HPGe80, BGO1);
+  Detectors.ConstructDetectorBGO(G4ThreeVector(), HPGe2, BGO2);
+  Detectors.ConstructDetectorBGO(G4ThreeVector(), HPGePol, BGOPol);
+  LeadCastle.Construct(G4ThreeVector(), &BGO1, &BGO2, &BGOPol);
+  Detectors.ConstructDetectorFilter(G4ThreeVector(), HPGe80, 10. * mm, 30. * mm);
+  Detectors.ConstructDetectorFilter(G4ThreeVector(), HPGe2, 10. * mm, 20. * mm);
+  Detectors.ConstructDetectorFilter(G4ThreeVector(), HPGePol, 10. * mm, 30. * mm);
 
 #ifdef USE_TARGETS
-	Nd150_Target Nd150_Target(World_Logical);
-	Nd150_Target.Construct(G4ThreeVector(0., 0., 0.));
+  Nd150_Target Nd150_Target(World_Logical);
+  Nd150_Target.Construct(G4ThreeVector(0., 0., 0.));
 #endif
 
-	print_info();
-	return World_Physical;
+  print_info();
+  return World_Physical;
 }
 
-void DetectorConstruction::ConstructSDandField()
-{
+void DetectorConstruction::ConstructSDandField() {
 
-	EnergyDepositionSD *HPGe80SD = new EnergyDepositionSD("HPGe80", "HPGe80");
-	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe80SD);
-	HPGe80SD->SetDetectorID(1);
-	SetSensitiveDetector("HPGe80", HPGe80SD, true);
+  EnergyDepositionSD *HPGe80SD = new EnergyDepositionSD("HPGe80", "HPGe80");
+  G4SDManager::GetSDMpointer()->AddNewDetector(HPGe80SD);
+  HPGe80SD->SetDetectorID(1);
+  SetSensitiveDetector("HPGe80", HPGe80SD, true);
 
-	EnergyDepositionSD *HPGe2SD = new EnergyDepositionSD("HPGe2", "HPGe2");
-	G4SDManager::GetSDMpointer()->AddNewDetector(HPGe2SD);
-	HPGe2SD->SetDetectorID(2);
-	SetSensitiveDetector("HPGe2", HPGe2SD, true);
+  EnergyDepositionSD *HPGe2SD = new EnergyDepositionSD("HPGe2", "HPGe2");
+  G4SDManager::GetSDMpointer()->AddNewDetector(HPGe2SD);
+  HPGe2SD->SetDetectorID(2);
+  SetSensitiveDetector("HPGe2", HPGe2SD, true);
 
-	EnergyDepositionSD *HPGePolSD = new EnergyDepositionSD("HPGePol", "HPGePol");
-	G4SDManager::GetSDMpointer()->AddNewDetector(HPGePolSD);
-	HPGePolSD->SetDetectorID(3);
-	SetSensitiveDetector("HPGePol", HPGePolSD, true);
+  EnergyDepositionSD *HPGePolSD = new EnergyDepositionSD("HPGePol", "HPGePol");
+  G4SDManager::GetSDMpointer()->AddNewDetector(HPGePolSD);
+  HPGePolSD->SetDetectorID(3);
+  SetSensitiveDetector("HPGePol", HPGePolSD, true);
 }
 
-void DetectorConstruction::print_info() const
-{
-	printf("==============================================================\n");
-	printf("  DetectorConstruction: Info (all dimensions in mm)\n");
-	G4cout << G4endl;
-	printf("> World dimensions             : ( %5.2f, %5.2f, %5.2f )\n", World_x, World_y, World_z);
-	printf("==============================================================\n");
+void DetectorConstruction::print_info() const {
+  printf("==============================================================\n");
+  printf("  DetectorConstruction: Info (all dimensions in mm)\n");
+  G4cout << G4endl;
+  printf("> World dimensions             : ( %5.2f, %5.2f, %5.2f )\n", World_x, World_y, World_z);
+  printf("==============================================================\n");
 }

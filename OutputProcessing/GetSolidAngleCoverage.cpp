@@ -1,13 +1,13 @@
-#include <iostream>
-#include <stdlib.h>
 #include <argp.h>
-#include <vector>
+#include <iostream>
 #include <map>
+#include <stdlib.h>
+#include <vector>
 
-#include <TROOT.h>
-#include <TSystemDirectory.h>
 #include <TChain.h>
 #include <TFile.h>
+#include <TROOT.h>
+#include <TSystemDirectory.h>
 
 using std::size_t;
 using std::vector;
@@ -15,129 +15,148 @@ using std::vector;
 static char doc[] = "GetSolidAngleCoverag";
 static char args_doc[] = "Determine Solid Angle Coverage";
 
-struct arguments{
-	const char* tree;
-	const char* p1;
-	const char* p2;
-	int num_events;
-	bool verbose;
-	
-	arguments() : tree("utr"), p1("utr"), p2(".root"), num_events(0), verbose(false) {};
+struct arguments {
+  const char *tree;
+  const char *p1;
+  const char *p2;
+  int num_events;
+  bool verbose;
+
+  arguments() : tree("utr"), p1("utr"), p2(".root"), num_events(0), verbose(false){};
 };
 
 static struct argp_option options[] = {
-{ 0, 't', "TREENAME", 0, "Name of tree" },
-{ 0, 'p', "PATTERN1", 0, "File name pattern 1" },
-{ 0, 'q', "PATTERN2", 0, "File name pattern 2" },
-{ 0, 'n', "NUM_EVENTS", 0, "Number of simulated events" },
-{ 0, 'v', 0, 0, "Verbose mode" },
-{ 0, 0, 0, 0, 0 }
-};
+    {0, 't', "TREENAME", 0, "Name of tree"},
+    {0, 'p', "PATTERN1", 0, "File name pattern 1"},
+    {0, 'q', "PATTERN2", 0, "File name pattern 2"},
+    {0, 'n', "NUM_EVENTS", 0, "Number of simulated events"},
+    {0, 'v', 0, 0, "Verbose mode"},
+    {0, 0, 0, 0, 0}};
 
 static error_t parse_opt(int key, char *arg, struct argp_state *state) {
 
-	struct arguments *args = (struct arguments *) state->input;
+  struct arguments *args = (struct arguments *)state->input;
 
-switch (key) {
-		case ARGP_KEY_ARG: break;
-		case 't': args->tree = arg; break;
-		case 'p': args->p1 = arg; break;
-		case 'q': args->p2 = arg; break;
-		case 'n': args->num_events = atoi(arg); break;
-		case 'v': args->verbose = true; break;
-		case ARGP_KEY_END: break;
-		default: return ARGP_ERR_UNKNOWN;
-	}
+  switch (key) {
+    case ARGP_KEY_ARG:
+      break;
+    case 't':
+      args->tree = arg;
+      break;
+    case 'p':
+      args->p1 = arg;
+      break;
+    case 'q':
+      args->p2 = arg;
+      break;
+    case 'n':
+      args->num_events = atoi(arg);
+      break;
+    case 'v':
+      args->verbose = true;
+      break;
+    case ARGP_KEY_END:
+      break;
+    default:
+      return ARGP_ERR_UNKNOWN;
+  }
 
-	return 0;
+  return 0;
 }
 
-static struct argp argp = { options, parse_opt, args_doc, doc, 0, 0, 0 };
-
+static struct argp argp = {options, parse_opt, args_doc, doc, 0, 0, 0};
 
 using namespace std;
 
-int main(int argc, char* argv[]){
-	
-	struct arguments args;
-	argp_parse(&argp, argc, argv, 0, 0, &args);
+int main(int argc, char *argv[]) {
 
-	if(args.verbose){
-		cout << "#############################################" << "\n";
-		cout << "> GetSolidAngleCoverage" << "\n";
-		cout << "> TREENAME     : " << args.tree << "\n";
-		cout << "> FILES        : " << "*" << args.p1 << "*" << args.p2 << "*" << "\n";
-		cout << "> NUM_EVENTS   : " << args.num_events << "\n";
-		cout << "#############################################" << "\n";
-	}
+  struct arguments args;
+  argp_parse(&argp, argc, argv, 0, 0, &args);
 
-	// Find all files in the current directory that contain pattern1 and pattern1 and connect them to a TChain
-	TSystemDirectory dir(".",".");
+  if (args.verbose) {
+    cout << "#############################################"
+         << "\n";
+    cout << "> GetSolidAngleCoverage"
+         << "\n";
+    cout << "> TREENAME     : " << args.tree << "\n";
+    cout << "> FILES        : "
+         << "*" << args.p1 << "*" << args.p2 << "*"
+         << "\n";
+    cout << "> NUM_EVENTS   : " << args.num_events << "\n";
+    cout << "#############################################"
+         << "\n";
+  }
 
-	TList *files = dir.GetListOfFiles();
-	TChain utr("utr");
+  // Find all files in the current directory that contain pattern1 and pattern1 and connect them to a TChain
+  TSystemDirectory dir(".", ".");
 
-	if(args.verbose){
-		cout << "> WARNING: All objects that could shadow the detector have to be defined as detectors.\n";
-		cout << "> Joining all files that contain '" << args.p1 << "' and '" << args.p2 << "':\n";
-	}
-	
-	if(files){
-		TSystemFile *file;
-		TString fname;
+  TList *files = dir.GetListOfFiles();
+  TChain utr("utr");
 
-		TIter next(files);
-		file = (TSystemFile*) next();
-		while (file){
-			fname = file->GetName();
-			if(!file->IsDirectory() && fname.Contains(args.p1) && fname.Contains(args.p2)){
-				if(args.verbose){
-					cout << fname << "\n";
-				}
-				utr.Add(fname);
-			}
-			file = (TSystemFile*) next();
-		}
-	}
+  if (args.verbose) {
+    cout << "> WARNING: All objects that could shadow the detector have to be defined as detectors.\n";
+    cout << "> Joining all files that contain '" << args.p1 << "' and '" << args.p2 << "':\n";
+  }
 
-	Double_t prev_event = -1;
-	Double_t event = 0;
-	Double_t volume;
-	
-	utr.SetBranchAddress("volume", &volume);
-	utr.SetBranchAddress("event", &event);
+  if (files) {
+    TSystemFile *file;
+    TString fname;
 
-	map<Double_t,int> counters, counters_first;
-	for(int i = 0; i < utr.GetEntries(); ++i) {
-		utr.GetEntry(i);
-		if (!counters.count(volume)) counters[volume] = 0;
-		if (!counters_first.count(volume)) counters_first[volume] = 0;
+    TIter next(files);
+    file = (TSystemFile *)next();
+    while (file) {
+      fname = file->GetName();
+      if (!file->IsDirectory() && fname.Contains(args.p1) && fname.Contains(args.p2)) {
+        if (args.verbose) {
+          cout << fname << "\n";
+        }
+        utr.Add(fname);
+      }
+      file = (TSystemFile *)next();
+    }
+  }
 
-		if (event != prev_event)
-			counters_first[volume]++;
-		counters[volume]++;
-		prev_event = event;
-	}
+  Double_t prev_event = -1;
+  Double_t event = 0;
+  Double_t volume;
 
-	if(args.verbose){
-		cout << "> Processed " << utr.GetEntries() << " entries" << "\n";
-	}
+  utr.SetBranchAddress("volume", &volume);
+  utr.SetBranchAddress("event", &event);
 
-	cout << "> Results:\n";
-	for(auto it = counters.begin(); it != counters.end(); ++it){
-		if (args.num_events > 0)
-			printf("    Volume%3.0f: %12d (%0.8f).\n", it->first, it->second,
-				((double)it->second/args.num_events));
-		else
-			printf("    Volume%3.0f: %12d.\n", it->first, it->second);
-	}
+  map<Double_t, int> counters, counters_first;
+  for (int i = 0; i < utr.GetEntries(); ++i) {
+    utr.GetEntry(i);
+    if (!counters.count(volume))
+      counters[volume] = 0;
+    if (!counters_first.count(volume))
+      counters_first[volume] = 0;
 
-	cout << "> Results (only first hit per event):\n";
-	for(auto it = counters_first.begin(); it != counters_first.end(); ++it){
-		if (args.num_events > 0)
-			printf("    Volume%3.0f: %12d (%0.8f).\n", it->first, it->second,
-				((double)it->second/args.num_events));
-		else
-			printf("    Volume%3.0f: %12d.\n", it->first, it->second);
-	}
-}	
+    if (event != prev_event)
+      counters_first[volume]++;
+    counters[volume]++;
+    prev_event = event;
+  }
+
+  if (args.verbose) {
+    cout << "> Processed " << utr.GetEntries() << " entries"
+         << "\n";
+  }
+
+  cout << "> Results:\n";
+  for (auto it = counters.begin(); it != counters.end(); ++it) {
+    if (args.num_events > 0)
+      printf("    Volume%3.0f: %12d (%0.8f).\n", it->first, it->second,
+             ((double)it->second / args.num_events));
+    else
+      printf("    Volume%3.0f: %12d.\n", it->first, it->second);
+  }
+
+  cout << "> Results (only first hit per event):\n";
+  for (auto it = counters_first.begin(); it != counters_first.end(); ++it) {
+    if (args.num_events > 0)
+      printf("    Volume%3.0f: %12d (%0.8f).\n", it->first, it->second,
+             ((double)it->second / args.num_events));
+    else
+      printf("    Volume%3.0f: %12d.\n", it->first, it->second);
+  }
+}

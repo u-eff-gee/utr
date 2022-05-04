@@ -27,19 +27,19 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 class HPGe_60_TUNL_30986 {
   public:
-	HPGe_60_TUNL_30986(G4String Detector_Name);
-	~HPGe_60_TUNL_30986();
+  HPGe_60_TUNL_30986(G4String Detector_Name);
+  ~HPGe_60_TUNL_30986();
 
-	G4LogicalVolume *Get_Logical() { return HPGe_60_TUNL_30986_Logical; }
+  G4LogicalVolume *Get_Logical() { return HPGe_60_TUNL_30986_Logical; }
 
-	G4double Get_Length() { return Length; };
-	G4double Get_Radius() { return Radius; };
-	G4double Get_Front_Radius() { return Front_Radius; };
+  G4double Get_Length() { return Length; };
+  G4double Get_Radius() { return Radius; };
+  G4double Get_Front_Radius() { return Front_Radius; };
 
   private:
-	G4double Length;
-	G4double Radius;
-	G4double Front_Radius;
+  G4double Length;
+  G4double Radius;
+  G4double Front_Radius;
 
-	G4LogicalVolume *HPGe_60_TUNL_30986_Logical;
+  G4LogicalVolume *HPGe_60_TUNL_30986_Logical;
 };

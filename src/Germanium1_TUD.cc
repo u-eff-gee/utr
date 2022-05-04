@@ -29,7 +29,6 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4MaterialTable.hh"
 #include "G4PVPlacement.hh"
 #include "G4RotationMatrix.hh"
-#include "G4RotationMatrix.hh"
 #include "G4SubtractionSolid.hh"
 #include "G4ThreeVector.hh"
 #include "G4Tubs.hh"
@@ -44,85 +43,83 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 Germanium1_TUD::Germanium1_TUD(G4String Detector_Name) {
 
-	G4NistManager *man = G4NistManager::Instance();
+  G4NistManager *man = G4NistManager::Instance();
 
-	G4Material *Cu = man->FindOrBuildMaterial("G4_Cu");
-	G4Material *Al = man->FindOrBuildMaterial("G4_Al");
-	G4Material *Ge = man->FindOrBuildMaterial("G4_Ge");
-	G4Material *vacuum = man->FindOrBuildMaterial("G4_Galactic");
+  G4Material *Cu = man->FindOrBuildMaterial("G4_Cu");
+  G4Material *Al = man->FindOrBuildMaterial("G4_Al");
+  G4Material *Ge = man->FindOrBuildMaterial("G4_Ge");
+  G4Material *vacuum = man->FindOrBuildMaterial("G4_Galactic");
 
-	/***********************Germanium Mothervolume*********************/
+  /***********************Germanium Mothervolume*********************/
 
-	G4double case_Radius = 5. * cm;
-	// G4double case_Thickness=0.1*cm;
-	G4double case_Length = 16. * cm;
+  G4double case_Radius = 5. * cm;
+  // G4double case_Thickness=0.1*cm;
+  G4double case_Length = 16. * cm;
 
-	Length = case_Length;
-	Radius = case_Radius;
+  Length = case_Length;
+  Radius = case_Radius;
 
-	G4Tubs *case_Solid = new G4Tubs("AluCase1_Solid", 0, case_Radius,
-	                                case_Length / 2, 0. * deg, 360. * deg);
+  G4Tubs *case_Solid = new G4Tubs("AluCase1_Solid", 0, case_Radius,
+                                  case_Length / 2, 0. * deg, 360. * deg);
 
-	germanium1_Logical =
-	    new G4LogicalVolume(case_Solid, Al, "AluCase1_Logical", 0, 0, 0);
+  germanium1_Logical =
+      new G4LogicalVolume(case_Solid, Al, "AluCase1_Logical", 0, 0, 0);
 
-	// G4VisAttributes* germanium1VisAtt=new G4VisAttributes(grey);
-	germanium1_Logical->SetVisAttributes(grey);
+  // G4VisAttributes* germanium1VisAtt=new G4VisAttributes(grey);
+  germanium1_Logical->SetVisAttributes(grey);
 
-	/************************Vacuumlayer*****************************/
+  /************************Vacuumlayer*****************************/
 
-	G4double vacuum_Radius = 49. * mm;
-	G4double vacuum_front_Thickness = 3.5 * mm;
-	G4double vacuum_Length = 158. * mm;
+  G4double vacuum_Radius = 49. * mm;
+  G4double vacuum_front_Thickness = 3.5 * mm;
+  G4double vacuum_Length = 158. * mm;
 
-	G4Tubs *vacuum_Solid = new G4Tubs("Vacuum1_Solid", 0, vacuum_Radius,
-	                                  vacuum_Length / 2, 0. * deg, 360. * deg);
+  G4Tubs *vacuum_Solid = new G4Tubs("Vacuum1_Solid", 0, vacuum_Radius,
+                                    vacuum_Length / 2, 0. * deg, 360. * deg);
 
-	G4LogicalVolume *vacuum_Logical =
-	    new G4LogicalVolume(vacuum_Solid, vacuum, "Vacuum1_Logical", 0, 0, 0);
+  G4LogicalVolume *vacuum_Logical =
+      new G4LogicalVolume(vacuum_Solid, vacuum, "Vacuum1_Logical", 0, 0, 0);
 
-	//  G4VisAttributes* vacuumVisAtt=new G4VisAttributes(G4Color(0.,0.,0.5));
-	vacuum_Logical->SetVisAttributes(cyan);
+  //  G4VisAttributes* vacuumVisAtt=new G4VisAttributes(G4Color(0.,0.,0.5));
+  vacuum_Logical->SetVisAttributes(cyan);
 
-	new G4PVPlacement(0, G4ThreeVector(), vacuum_Logical, "Vacuum1",
-	                  germanium1_Logical, false, 0);
+  new G4PVPlacement(0, G4ThreeVector(), vacuum_Logical, "Vacuum1",
+                    germanium1_Logical, false, 0);
 
-	/************************Germanium Crystal*************************/
+  /************************Germanium Crystal*************************/
 
-	G4double crystal_Radius = 39.45 * mm;
-	G4double crystal_Length = 79. * mm;
+  G4double crystal_Radius = 39.45 * mm;
+  G4double crystal_Length = 79. * mm;
 
-	G4Tubs *crystal_Solid =
-	    new G4Tubs("Crystal1_Solid", 0. * cm, crystal_Radius,
-	               crystal_Length / 2, 0. * deg, 360. * deg);
+  G4Tubs *crystal_Solid =
+      new G4Tubs("Crystal1_Solid", 0. * cm, crystal_Radius,
+                 crystal_Length / 2, 0. * deg, 360. * deg);
 
-	G4LogicalVolume *crystal1_Logical =
-	    new G4LogicalVolume(crystal_Solid, Ge, Detector_Name, 0, 0, 0);
+  G4LogicalVolume *crystal1_Logical =
+      new G4LogicalVolume(crystal_Solid, Ge, Detector_Name, 0, 0, 0);
 
-	crystal1_Logical->SetVisAttributes(green);
+  crystal1_Logical->SetVisAttributes(green);
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., vacuum_Length / 2 -
-	                                               vacuum_front_Thickness -
-	                                               crystal_Length / 2),
-	                  crystal1_Logical, "Crystal1", vacuum_Logical, false, 0);
+  new G4PVPlacement(0, G4ThreeVector(0., 0., vacuum_Length / 2 - vacuum_front_Thickness - crystal_Length / 2),
+                    crystal1_Logical, "Crystal1", vacuum_Logical, false, 0);
 
-	/****************************Coldfinger*******************************/
+  /****************************Coldfinger*******************************/
 
-	G4double coldfinger_Radius = 6. * mm;
-	G4double coldfinger_Length = 39. * mm;
+  G4double coldfinger_Radius = 6. * mm;
+  G4double coldfinger_Length = 39. * mm;
 
-	G4Tubs *coldfinger_Solid =
-	    new G4Tubs("Coldfinger1_Solid", 0. * cm, coldfinger_Radius,
-	               coldfinger_Length / 2, 0. * deg, 360. * deg);
+  G4Tubs *coldfinger_Solid =
+      new G4Tubs("Coldfinger1_Solid", 0. * cm, coldfinger_Radius,
+                 coldfinger_Length / 2, 0. * deg, 360. * deg);
 
-	G4LogicalVolume *coldfinger_Logical = new G4LogicalVolume(
-	    coldfinger_Solid, Cu, "Coldfinger1_Logical", 0, 0, 0);
+  G4LogicalVolume *coldfinger_Logical = new G4LogicalVolume(
+      coldfinger_Solid, Cu, "Coldfinger1_Logical", 0, 0, 0);
 
-	coldfinger_Logical->SetVisAttributes(orange);
+  coldfinger_Logical->SetVisAttributes(orange);
 
-	new G4PVPlacement(
-	    0, G4ThreeVector(0., 0., -(crystal_Length / 2 - coldfinger_Length / 2)),
-	    coldfinger_Logical, "Coldfinger1", crystal1_Logical, false, 0);
+  new G4PVPlacement(
+      0, G4ThreeVector(0., 0., -(crystal_Length / 2 - coldfinger_Length / 2)),
+      coldfinger_Logical, "Coldfinger1", crystal1_Logical, false, 0);
 }
 
 Germanium1_TUD::~Germanium1_TUD() {}

@@ -19,59 +19,59 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "EnergyDepositionSD.hh"
-#include "G4RootAnalysisManager.hh"
+#include "DetectorConstruction.hh"
 #include "G4HCofThisEvent.hh"
+#include "G4RootAnalysisManager.hh"
 #include "G4RunManager.hh"
 #include "G4SDManager.hh"
 #include "G4Step.hh"
+#include "G4Threading.hh"
 #include "G4ThreeVector.hh"
 #include "G4VProcess.hh"
 #include "G4ios.hh"
 #include "RunAction.hh"
 #include "TargetHit.hh"
-#include "DetectorConstruction.hh"
-#include "G4Threading.hh"
 
 #include "utrConfig.h"
 
 EnergyDepositionSD::EnergyDepositionSD(const G4String &name,
                                        const G4String &hitsCollectionName)
     : G4VSensitiveDetector(name), hitsCollection(NULL), detectorID(0), eventID(0) {
-	
-	collectionName.insert(hitsCollectionName);
+
+  collectionName.insert(hitsCollectionName);
 }
 
 EnergyDepositionSD::~EnergyDepositionSD() {}
 
 void EnergyDepositionSD::Initialize(G4HCofThisEvent *hce) {
 
-	hitsCollection =
-	    new TargetHitsCollection(SensitiveDetectorName, collectionName[0]);
+  hitsCollection =
+      new TargetHitsCollection(SensitiveDetectorName, collectionName[0]);
 
-	G4int hcID =
-	    G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]);
-	hce->AddHitsCollection(hcID, hitsCollection);
+  G4int hcID =
+      G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]);
+  hce->AddHitsCollection(hcID, hitsCollection);
 
-	eventID = G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID();	
+  eventID = G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID();
 }
 
 G4bool EnergyDepositionSD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
 
-	TargetHit *hit = new TargetHit();
+  TargetHit *hit = new TargetHit();
 
-	G4Track *track = aStep->GetTrack();
+  G4Track *track = aStep->GetTrack();
 
-	hit->SetKineticEnergy(aStep->GetPreStepPoint()->GetKineticEnergy());
-	hit->SetEnergyDeposition(aStep->GetTotalEnergyDeposit());
-	hit->SetParticleType(track->GetDefinition()->GetPDGEncoding());
-	hit->SetDetectorID(GetDetectorID());
-	hit->SetEventID(eventID);
-	hit->SetPosition(track->GetPosition());
-	hit->SetMomentum(track->GetMomentum());
+  hit->SetKineticEnergy(aStep->GetPreStepPoint()->GetKineticEnergy());
+  hit->SetEnergyDeposition(aStep->GetTotalEnergyDeposit());
+  hit->SetParticleType(track->GetDefinition()->GetPDGEncoding());
+  hit->SetDetectorID(GetDetectorID());
+  hit->SetEventID(eventID);
+  hit->SetPosition(track->GetPosition());
+  hit->SetMomentum(track->GetMomentum());
 
-	hitsCollection->insert(hit);
+  hitsCollection->insert(hit);
 
-	return true;
+  return true;
 }
 
 // Initialize static member needed for EVENT_EVENTWISE mode, actual initialization values is, however, set in utr.cc
@@ -79,74 +79,73 @@ std::vector<bool> EnergyDepositionSD::anyDetectorHitInEvent = std::vector<bool>(
 
 void EnergyDepositionSD::EndOfEvent(G4HCofThisEvent *) {
 
-	G4int nHits = hitsCollection->entries();
-	G4double totalEnergyDeposition = 0.;
+  G4int nHits = hitsCollection->entries();
+  G4double totalEnergyDeposition = 0.;
 
-	for (G4int i = 0; i < nHits; i++) {
-		totalEnergyDeposition += (*hitsCollection)[i]->GetEnergyDeposition();
-	}
+  for (G4int i = 0; i < nHits; i++) {
+    totalEnergyDeposition += (*hitsCollection)[i]->GetEnergyDeposition();
+  }
 
+#ifdef EVENT_EVENTWISE
+  G4RootAnalysisManager *analysisManager = G4RootAnalysisManager::Instance();
+  if (totalEnergyDeposition > 0.) {
+    analysisManager->FillNtupleDColumn(0, GetDetectorID(), totalEnergyDeposition);
+    anyDetectorHitInEvent[G4Threading::G4GetThreadId()] = true;
+  }
+  if (anyDetectorHitInEvent[G4Threading::G4GetThreadId()] && GetDetectorID() == ((DetectorConstruction *)G4RunManager::GetRunManager()->GetUserDetectorConstruction())->Max_Sensitive_Detector_ID) {
+    analysisManager->AddNtupleRow();
+    anyDetectorHitInEvent[G4Threading::G4GetThreadId()] = false;
+  }
+#else
+  if (totalEnergyDeposition > 0.) {
+    G4RootAnalysisManager *analysisManager = G4RootAnalysisManager::Instance();
 
-	#ifdef EVENT_EVENTWISE
-		G4RootAnalysisManager *analysisManager = G4RootAnalysisManager::Instance();
-		if (totalEnergyDeposition > 0.) {
-			analysisManager->FillNtupleDColumn(0, GetDetectorID(), totalEnergyDeposition);
-			anyDetectorHitInEvent[G4Threading::G4GetThreadId()]=true;
-		}
-		if (anyDetectorHitInEvent[G4Threading::G4GetThreadId()] && GetDetectorID() == ((DetectorConstruction*) G4RunManager::GetRunManager()->GetUserDetectorConstruction())->Max_Sensitive_Detector_ID) {
-			analysisManager->AddNtupleRow();
-			anyDetectorHitInEvent[G4Threading::G4GetThreadId()]=false;
-		}
-	#else
-		if (totalEnergyDeposition > 0.) {
-			G4RootAnalysisManager *analysisManager = G4RootAnalysisManager::Instance();
+    unsigned int nentry = 0;
 
-			unsigned int nentry = 0;
-
-			#ifdef EVENT_ID
-				analysisManager->FillNtupleDColumn(nentry, eventID);
-				++nentry;
-			#endif
-			#ifdef EVENT_EDEP
-				analysisManager->FillNtupleDColumn(nentry, totalEnergyDeposition);
-				++nentry;
-			#endif
-			#ifdef EVENT_EKIN
-				analysisManager->FillNtupleDColumn(nentry, (*hitsCollection)[0]->GetKineticEnergy());	
-				++nentry;
-			#endif
-			#ifdef EVENT_PARTICLE
-				analysisManager->FillNtupleDColumn(nentry, (*hitsCollection)[0]->GetParticleType());
-				++nentry;
-			#endif
-			#ifdef EVENT_VOLUME
-				analysisManager->FillNtupleDColumn(nentry, GetDetectorID());
-				++nentry;
-			#endif
-			#ifdef EVENT_POSX
-				analysisManager->FillNtupleDColumn(nentry, (*hitsCollection)[0]->GetPosition().x());
-				++nentry;
-			#endif
-			#ifdef EVENT_POSY
-				analysisManager->FillNtupleDColumn(nentry, (*hitsCollection)[0]->GetPosition().y());
-				++nentry;
-			#endif
-			#ifdef EVENT_POSZ
-				analysisManager->FillNtupleDColumn(nentry, (*hitsCollection)[0]->GetPosition().z());
-				++nentry;
-			#endif
-			#ifdef EVENT_MOMX
-				analysisManager->FillNtupleDColumn(nentry, (*hitsCollection)[0]->GetMomentum().x());
-				++nentry;
-			#endif
-			#ifdef EVENT_MOMY
-				analysisManager->FillNtupleDColumn(nentry, (*hitsCollection)[0]->GetMomentum().y());
-				++nentry;
-			#endif
-			#ifdef EVENT_MOMZ
-				analysisManager->FillNtupleDColumn(nentry, (*hitsCollection)[0]->GetMomentum().z());
-			#endif
-			analysisManager->AddNtupleRow();
-		}
-	#endif
+#ifdef EVENT_ID
+    analysisManager->FillNtupleDColumn(nentry, eventID);
+    ++nentry;
+#endif
+#ifdef EVENT_EDEP
+    analysisManager->FillNtupleDColumn(nentry, totalEnergyDeposition);
+    ++nentry;
+#endif
+#ifdef EVENT_EKIN
+    analysisManager->FillNtupleDColumn(nentry, (*hitsCollection)[0]->GetKineticEnergy());
+    ++nentry;
+#endif
+#ifdef EVENT_PARTICLE
+    analysisManager->FillNtupleDColumn(nentry, (*hitsCollection)[0]->GetParticleType());
+    ++nentry;
+#endif
+#ifdef EVENT_VOLUME
+    analysisManager->FillNtupleDColumn(nentry, GetDetectorID());
+    ++nentry;
+#endif
+#ifdef EVENT_POSX
+    analysisManager->FillNtupleDColumn(nentry, (*hitsCollection)[0]->GetPosition().x());
+    ++nentry;
+#endif
+#ifdef EVENT_POSY
+    analysisManager->FillNtupleDColumn(nentry, (*hitsCollection)[0]->GetPosition().y());
+    ++nentry;
+#endif
+#ifdef EVENT_POSZ
+    analysisManager->FillNtupleDColumn(nentry, (*hitsCollection)[0]->GetPosition().z());
+    ++nentry;
+#endif
+#ifdef EVENT_MOMX
+    analysisManager->FillNtupleDColumn(nentry, (*hitsCollection)[0]->GetMomentum().x());
+    ++nentry;
+#endif
+#ifdef EVENT_MOMY
+    analysisManager->FillNtupleDColumn(nentry, (*hitsCollection)[0]->GetMomentum().y());
+    ++nentry;
+#endif
+#ifdef EVENT_MOMZ
+    analysisManager->FillNtupleDColumn(nentry, (*hitsCollection)[0]->GetMomentum().z());
+#endif
+    analysisManager->AddNtupleRow();
+  }
+#endif
 }

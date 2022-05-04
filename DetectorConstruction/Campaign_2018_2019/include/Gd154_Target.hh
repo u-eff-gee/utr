@@ -23,17 +23,17 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "G4LogicalVolume.hh"
 
-class Gd154_Target{
-public:
-	Gd154_Target();
-	Gd154_Target(G4LogicalVolume *World_Log);
-	~Gd154_Target(){};
+class Gd154_Target {
+  public:
+  Gd154_Target();
+  Gd154_Target(G4LogicalVolume *World_Log);
+  ~Gd154_Target(){};
 
-	void Construct(G4ThreeVector global_coordinates);
-	void Set_Containing_Volume(G4LogicalVolume *World_Log){ World_Logical = World_Log; };
+  void Construct(G4ThreeVector global_coordinates);
+  void Set_Containing_Volume(G4LogicalVolume *World_Log) { World_Logical = World_Log; };
 
-private:
-	G4LogicalVolume *World_Logical;
+  private:
+  G4LogicalVolume *World_Logical;
 };
 
 #endif

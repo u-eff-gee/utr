@@ -24,167 +24,166 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "LaBr_TUD.hh"
 #include "G4Box.hh"
+#include "G4Cons.hh"
 #include "G4LogicalVolume.hh"
 #include "G4Material.hh"
 #include "G4MaterialTable.hh"
 #include "G4NistManager.hh"
 #include "G4PVPlacement.hh"
 #include "G4RotationMatrix.hh"
-#include "G4RotationMatrix.hh"
 #include "G4SubtractionSolid.hh"
 #include "G4ThreeVector.hh"
 #include "G4Tubs.hh"
-#include "G4Cons.hh"
 #include "G4VisAttributes.hh"
 
+#include "G4PhysicalConstants.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4UnitsTable.hh"
-#include "G4PhysicalConstants.hh"
 #include "Units.hh"
 
 #include "NamedColors.hh"
 
-LaBr_TUD::LaBr_TUD(G4String Detector_Name){
+LaBr_TUD::LaBr_TUD(G4String Detector_Name) {
 
-	G4NistManager *nist = G4NistManager::Instance();
+  G4NistManager *nist = G4NistManager::Instance();
 
-	G4Material *vacuum = nist->FindOrBuildMaterial("G4_Galactic");
-	G4Material *air= nist->FindOrBuildMaterial("G4_AIR");
-	G4Material *Al = nist->FindOrBuildMaterial("G4_Al");
+  G4Material *vacuum = nist->FindOrBuildMaterial("G4_Galactic");
+  G4Material *air = nist->FindOrBuildMaterial("G4_AIR");
+  G4Material *Al = nist->FindOrBuildMaterial("G4_Al");
 
-	// Dimensions from previous implementation by B. Loeher and J. Isaak (especially the inner parts) or measured in 2018
+  // Dimensions from previous implementation by B. Loeher and J. Isaak (especially the inner parts) or measured in 2018
 
-	G4double Crystal_Length = 3.*inch;
-	G4double Crystal_Radius = 3.*inch * 0.5;
-	G4double Crystal_Housing_Thickness = 0.5*mm;
-	G4double Crystal_Housing_Outer_Radius = 3.25*inch*0.5;
-	G4double Vacuum_Thickness_Front = 2.*mm;
-	G4double Vacuum_Thickness_Back = 2.*mm;
+  G4double Crystal_Length = 3. * inch;
+  G4double Crystal_Radius = 3. * inch * 0.5;
+  G4double Crystal_Housing_Thickness = 0.5 * mm;
+  G4double Crystal_Housing_Outer_Radius = 3.25 * inch * 0.5;
+  G4double Vacuum_Thickness_Front = 2. * mm;
+  G4double Vacuum_Thickness_Back = 2. * mm;
 
-	G4double Circuit_Housing_1_Length = 2.25*inch;
-	G4double Circuit_Housing_1_Radius = 3.5*inch *0.5;
+  G4double Circuit_Housing_1_Length = 2.25 * inch;
+  G4double Circuit_Housing_1_Radius = 3.5 * inch * 0.5;
 
-	G4double Circuit_Housing_2_Length = 3.*cm;
-	G4double Circuit_Housing_2_Rmin = 2.5*inch * 0.5;
-	G4double Circuit_Housing_2_Rmax = 3.5*inch * 0.5;
-	
-	G4double Circuit_Housing_3_Length = 3.*cm;
-	G4double Circuit_Housing_3_Radius = 2.5*inch *0.5;
+  G4double Circuit_Housing_2_Length = 3. * cm;
+  G4double Circuit_Housing_2_Rmin = 2.5 * inch * 0.5;
+  G4double Circuit_Housing_2_Rmax = 3.5 * inch * 0.5;
 
-	G4double PMT_Housing_Length = 7.*cm;
-	G4double PMT_Housing_Radius = 2.5*inch * 0.5;
+  G4double Circuit_Housing_3_Length = 3. * cm;
+  G4double Circuit_Housing_3_Radius = 2.5 * inch * 0.5;
 
-	/*********************** Mother volume *********************/
+  G4double PMT_Housing_Length = 7. * cm;
+  G4double PMT_Housing_Radius = 2.5 * inch * 0.5;
 
-	Length = Crystal_Housing_Thickness*2. + Crystal_Length + Vacuum_Thickness_Front + Vacuum_Thickness_Back + Circuit_Housing_1_Length + Circuit_Housing_2_Length + Circuit_Housing_3_Length + PMT_Housing_Length;
+  /*********************** Mother volume *********************/
 
-	Radius = Circuit_Housing_1_Radius;
-	Front_Radius = Crystal_Housing_Outer_Radius;
+  Length = Crystal_Housing_Thickness * 2. + Crystal_Length + Vacuum_Thickness_Front + Vacuum_Thickness_Back + Circuit_Housing_1_Length + Circuit_Housing_2_Length + Circuit_Housing_3_Length + PMT_Housing_Length;
 
-	G4Tubs *LaBr_TUD_Solid = new G4Tubs("LaBr_TUD_Solid", 0., Radius, Length * 0.5,  0., twopi);
-	LaBr_TUD_Logical = new G4LogicalVolume(LaBr_TUD_Solid, air, "LaBr_TUD_Logical");
-	LaBr_TUD_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());
+  Radius = Circuit_Housing_1_Radius;
+  Front_Radius = Crystal_Housing_Outer_Radius;
 
-	/*********************** LaBr Crystal Housing *********************/
+  G4Tubs *LaBr_TUD_Solid = new G4Tubs("LaBr_TUD_Solid", 0., Radius, Length * 0.5, 0., twopi);
+  LaBr_TUD_Logical = new G4LogicalVolume(LaBr_TUD_Solid, air, "LaBr_TUD_Logical");
+  LaBr_TUD_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());
 
-	G4Tubs *Crystal_Housing_Lid_Solid = new G4Tubs("Crystal_Housing_Lid_Solid", 0., Crystal_Housing_Outer_Radius, Crystal_Housing_Thickness*0.5, 0., twopi);
-	G4LogicalVolume *Crystal_Housing_Lid_Logical = new G4LogicalVolume(Crystal_Housing_Lid_Solid, Al, "Crystal_Housing_Lid_Logical");
-	Crystal_Housing_Lid_Logical->SetVisAttributes(grey);
+  /*********************** LaBr Crystal Housing *********************/
 
-	G4double Crystal_Housing_Wall_Length = Vacuum_Thickness_Front + Crystal_Length + Vacuum_Thickness_Back;
-	G4Tubs *Crystal_Housing_Wall_Solid = new G4Tubs("Crystal_Housing_Wall_Solid", Crystal_Housing_Outer_Radius - Crystal_Housing_Thickness, Crystal_Housing_Outer_Radius, Crystal_Housing_Wall_Length*0.5, 0., twopi);
-	G4LogicalVolume *Crystal_Housing_Wall_Logical = new G4LogicalVolume(Crystal_Housing_Wall_Solid, Al, "Crystal_Housing_Wall_Logical");
-	Crystal_Housing_Wall_Logical->SetVisAttributes(cyan);
+  G4Tubs *Crystal_Housing_Lid_Solid = new G4Tubs("Crystal_Housing_Lid_Solid", 0., Crystal_Housing_Outer_Radius, Crystal_Housing_Thickness * 0.5, 0., twopi);
+  G4LogicalVolume *Crystal_Housing_Lid_Logical = new G4LogicalVolume(Crystal_Housing_Lid_Solid, Al, "Crystal_Housing_Lid_Logical");
+  Crystal_Housing_Lid_Logical->SetVisAttributes(grey);
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., Length*0.5 - Crystal_Housing_Thickness*0.5), Crystal_Housing_Lid_Logical, "Crystal_Housing_Lid1", LaBr_TUD_Logical, false, 0, false);	
+  G4double Crystal_Housing_Wall_Length = Vacuum_Thickness_Front + Crystal_Length + Vacuum_Thickness_Back;
+  G4Tubs *Crystal_Housing_Wall_Solid = new G4Tubs("Crystal_Housing_Wall_Solid", Crystal_Housing_Outer_Radius - Crystal_Housing_Thickness, Crystal_Housing_Outer_Radius, Crystal_Housing_Wall_Length * 0.5, 0., twopi);
+  G4LogicalVolume *Crystal_Housing_Wall_Logical = new G4LogicalVolume(Crystal_Housing_Wall_Solid, Al, "Crystal_Housing_Wall_Logical");
+  Crystal_Housing_Wall_Logical->SetVisAttributes(cyan);
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., Length*0.5 - Crystal_Housing_Thickness - Crystal_Housing_Wall_Length*0.5), Crystal_Housing_Wall_Logical, "Crystal_Housing_Lid1", LaBr_TUD_Logical, false, 0, false);	
+  new G4PVPlacement(0, G4ThreeVector(0., 0., Length * 0.5 - Crystal_Housing_Thickness * 0.5), Crystal_Housing_Lid_Logical, "Crystal_Housing_Lid1", LaBr_TUD_Logical, false, 0, false);
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., Length*0.5 - Crystal_Housing_Thickness*1.5 - Vacuum_Thickness_Front - Crystal_Length - Vacuum_Thickness_Back), Crystal_Housing_Lid_Logical, "Crystal_Housing_Lid1", LaBr_TUD_Logical, false, 0, false);	
+  new G4PVPlacement(0, G4ThreeVector(0., 0., Length * 0.5 - Crystal_Housing_Thickness - Crystal_Housing_Wall_Length * 0.5), Crystal_Housing_Wall_Logical, "Crystal_Housing_Lid1", LaBr_TUD_Logical, false, 0, false);
 
-	/************************ Vacuum Layer *****************************/
+  new G4PVPlacement(0, G4ThreeVector(0., 0., Length * 0.5 - Crystal_Housing_Thickness * 1.5 - Vacuum_Thickness_Front - Crystal_Length - Vacuum_Thickness_Back), Crystal_Housing_Lid_Logical, "Crystal_Housing_Lid1", LaBr_TUD_Logical, false, 0, false);
 
-	G4Tubs *Vacuum_Front_Solid = new G4Tubs("Vacuum_Front_Solid", 0, Crystal_Housing_Outer_Radius - Crystal_Housing_Thickness, Vacuum_Thickness_Front*0.5, 0., twopi);
-	G4LogicalVolume *Vacuum_Front_Logical =
-	    new G4LogicalVolume(Vacuum_Front_Solid, vacuum, "Vacuum_Front_Logical");
-	Vacuum_Front_Logical->SetVisAttributes(white);
+  /************************ Vacuum Layer *****************************/
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., Length*0.5 - Crystal_Housing_Thickness - Vacuum_Thickness_Front*0.5), Vacuum_Front_Logical, "Vacuum_Front", LaBr_TUD_Logical, false, 0, false);
+  G4Tubs *Vacuum_Front_Solid = new G4Tubs("Vacuum_Front_Solid", 0, Crystal_Housing_Outer_Radius - Crystal_Housing_Thickness, Vacuum_Thickness_Front * 0.5, 0., twopi);
+  G4LogicalVolume *Vacuum_Front_Logical =
+      new G4LogicalVolume(Vacuum_Front_Solid, vacuum, "Vacuum_Front_Logical");
+  Vacuum_Front_Logical->SetVisAttributes(white);
 
-	G4Tubs *Vacuum_Back_Solid = new G4Tubs("Vacuum_Back_Solid", 0, Crystal_Housing_Outer_Radius - Crystal_Housing_Thickness, Vacuum_Thickness_Back*0.5, 0., twopi);
-	G4LogicalVolume *Vacuum_Back_Logical =
-	    new G4LogicalVolume(Vacuum_Back_Solid, vacuum, "Vacuum_Back_Logical");
-	Vacuum_Back_Logical->SetVisAttributes(white);
+  new G4PVPlacement(0, G4ThreeVector(0., 0., Length * 0.5 - Crystal_Housing_Thickness - Vacuum_Thickness_Front * 0.5), Vacuum_Front_Logical, "Vacuum_Front", LaBr_TUD_Logical, false, 0, false);
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., Length*0.5 - Crystal_Housing_Thickness - Vacuum_Thickness_Front - Crystal_Length - Vacuum_Thickness_Back*0.5), Vacuum_Back_Logical, "Vacuum_Back", LaBr_TUD_Logical, false, 0, false);
+  G4Tubs *Vacuum_Back_Solid = new G4Tubs("Vacuum_Back_Solid", 0, Crystal_Housing_Outer_Radius - Crystal_Housing_Thickness, Vacuum_Thickness_Back * 0.5, 0., twopi);
+  G4LogicalVolume *Vacuum_Back_Logical =
+      new G4LogicalVolume(Vacuum_Back_Solid, vacuum, "Vacuum_Back_Logical");
+  Vacuum_Back_Logical->SetVisAttributes(white);
 
-	/************************LaBr Crystal*************************/
+  new G4PVPlacement(0, G4ThreeVector(0., 0., Length * 0.5 - Crystal_Housing_Thickness - Vacuum_Thickness_Front - Crystal_Length - Vacuum_Thickness_Back * 0.5), Vacuum_Back_Logical, "Vacuum_Back", LaBr_TUD_Logical, false, 0, false);
 
-	G4Element *nat_La = nist->FindOrBuildElement("La");
-	G4Element *nat_Br = nist->FindOrBuildElement("Br");
-	G4Element *nat_Ce = nist->FindOrBuildElement("Ce");
-	G4double labr_density = 5.06 * g / cm3;
+  /************************LaBr Crystal*************************/
 
-	// Brillance 380 from Enrique Nacher (Santiago)
-	G4Material *LaBr3Ce = new G4Material("LaBr3Ce", labr_density, 3);
-	LaBr3Ce->AddElement(nat_La, 34.855 * perCent);
-	LaBr3Ce->AddElement(nat_Br, 60.145 * perCent);
-	LaBr3Ce->AddElement(nat_Ce, 5.0 * perCent);
+  G4Element *nat_La = nist->FindOrBuildElement("La");
+  G4Element *nat_Br = nist->FindOrBuildElement("Br");
+  G4Element *nat_Ce = nist->FindOrBuildElement("Ce");
+  G4double labr_density = 5.06 * g / cm3;
 
-	G4Tubs *Crystal_Solid =
-	    new G4Tubs("Crystal_Solid", 0., Crystal_Radius,
-	               Crystal_Length*0.5, 0. * deg, 360. * deg);
-	G4LogicalVolume *Crystal_Logical =
-	    new G4LogicalVolume(Crystal_Solid, LaBr3Ce, Detector_Name, 0, 0, 0);
+  // Brillance 380 from Enrique Nacher (Santiago)
+  G4Material *LaBr3Ce = new G4Material("LaBr3Ce", labr_density, 3);
+  LaBr3Ce->AddElement(nat_La, 34.855 * perCent);
+  LaBr3Ce->AddElement(nat_Br, 60.145 * perCent);
+  LaBr3Ce->AddElement(nat_Ce, 5.0 * perCent);
 
-	Crystal_Logical->SetVisAttributes(green);
+  G4Tubs *Crystal_Solid =
+      new G4Tubs("Crystal_Solid", 0., Crystal_Radius,
+                 Crystal_Length * 0.5, 0. * deg, 360. * deg);
+  G4LogicalVolume *Crystal_Logical =
+      new G4LogicalVolume(Crystal_Solid, LaBr3Ce, Detector_Name, 0, 0, 0);
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., Length*0.5 - Crystal_Housing_Thickness - Vacuum_Thickness_Front - Crystal_Length*0.5), Crystal_Logical, "Crystal", LaBr_TUD_Logical, false, 0, false);
+  Crystal_Logical->SetVisAttributes(green);
 
-	/************************ Circuit Housing 1 *************************/
+  new G4PVPlacement(0, G4ThreeVector(0., 0., Length * 0.5 - Crystal_Housing_Thickness - Vacuum_Thickness_Front - Crystal_Length * 0.5), Crystal_Logical, "Crystal", LaBr_TUD_Logical, false, 0, false);
 
-	G4Tubs *Circuit_Housing_1_Solid =
-	    new G4Tubs("Circuit_Housing_1_Solid", 0., Circuit_Housing_1_Radius,
-	               Circuit_Housing_1_Length*0.5, 0. * deg, 360. * deg);
-	G4LogicalVolume *Circuit_Housing_1_Logical =
-	    new G4LogicalVolume(Circuit_Housing_1_Solid, Al, "Circuit_Housing_1_Logical", 0, 0, 0);
+  /************************ Circuit Housing 1 *************************/
 
-	Circuit_Housing_1_Logical->SetVisAttributes(grey);
+  G4Tubs *Circuit_Housing_1_Solid =
+      new G4Tubs("Circuit_Housing_1_Solid", 0., Circuit_Housing_1_Radius,
+                 Circuit_Housing_1_Length * 0.5, 0. * deg, 360. * deg);
+  G4LogicalVolume *Circuit_Housing_1_Logical =
+      new G4LogicalVolume(Circuit_Housing_1_Solid, Al, "Circuit_Housing_1_Logical", 0, 0, 0);
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., Length*0.5 - Vacuum_Thickness_Front - Crystal_Length - Vacuum_Thickness_Back - Crystal_Housing_Thickness*2. - Circuit_Housing_1_Length*0.5), Circuit_Housing_1_Logical, "Circuit_Housing_1", LaBr_TUD_Logical, false, 0, false);
+  Circuit_Housing_1_Logical->SetVisAttributes(grey);
 
-	/************************ Circuit Housing 2 *************************/
+  new G4PVPlacement(0, G4ThreeVector(0., 0., Length * 0.5 - Vacuum_Thickness_Front - Crystal_Length - Vacuum_Thickness_Back - Crystal_Housing_Thickness * 2. - Circuit_Housing_1_Length * 0.5), Circuit_Housing_1_Logical, "Circuit_Housing_1", LaBr_TUD_Logical, false, 0, false);
 
-	G4Cons *Circuit_Housing_2_Solid =
-	    new G4Cons("Circuit_Housing_2_Solid", 0., Circuit_Housing_2_Rmin, 0., Circuit_Housing_2_Rmax, Circuit_Housing_2_Length*0.5, 0. * deg, 360. * deg);
-	G4LogicalVolume *Circuit_Housing_2_Logical =
-	    new G4LogicalVolume(Circuit_Housing_2_Solid, Al, "Circuit_Housing_2_Logical", 0, 0, 0);
+  /************************ Circuit Housing 2 *************************/
 
-	Circuit_Housing_2_Logical->SetVisAttributes(grey);
+  G4Cons *Circuit_Housing_2_Solid =
+      new G4Cons("Circuit_Housing_2_Solid", 0., Circuit_Housing_2_Rmin, 0., Circuit_Housing_2_Rmax, Circuit_Housing_2_Length * 0.5, 0. * deg, 360. * deg);
+  G4LogicalVolume *Circuit_Housing_2_Logical =
+      new G4LogicalVolume(Circuit_Housing_2_Solid, Al, "Circuit_Housing_2_Logical", 0, 0, 0);
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., Length*0.5 - Vacuum_Thickness_Front - Crystal_Length - Vacuum_Thickness_Back - Crystal_Housing_Thickness*2. - Circuit_Housing_1_Length - Circuit_Housing_2_Length*0.5), Circuit_Housing_2_Logical, "Circuit_Housing_2", LaBr_TUD_Logical, false, 0, false);
+  Circuit_Housing_2_Logical->SetVisAttributes(grey);
 
-	/************************ Circuit Housing 3 *************************/
+  new G4PVPlacement(0, G4ThreeVector(0., 0., Length * 0.5 - Vacuum_Thickness_Front - Crystal_Length - Vacuum_Thickness_Back - Crystal_Housing_Thickness * 2. - Circuit_Housing_1_Length - Circuit_Housing_2_Length * 0.5), Circuit_Housing_2_Logical, "Circuit_Housing_2", LaBr_TUD_Logical, false, 0, false);
 
-	G4Tubs *Circuit_Housing_3_Solid =
-	    new G4Tubs("Circuit_Housing_3_Solid", 0., Circuit_Housing_3_Radius,
-	               Circuit_Housing_3_Length*0.5, 0. * deg, 360. * deg);
-	G4LogicalVolume *Circuit_Housing_3_Logical =
-	    new G4LogicalVolume(Circuit_Housing_3_Solid, Al, "Circuit_Housing_3_Logical", 0, 0, 0);
+  /************************ Circuit Housing 3 *************************/
 
-	Circuit_Housing_3_Logical->SetVisAttributes(grey);
+  G4Tubs *Circuit_Housing_3_Solid =
+      new G4Tubs("Circuit_Housing_3_Solid", 0., Circuit_Housing_3_Radius,
+                 Circuit_Housing_3_Length * 0.5, 0. * deg, 360. * deg);
+  G4LogicalVolume *Circuit_Housing_3_Logical =
+      new G4LogicalVolume(Circuit_Housing_3_Solid, Al, "Circuit_Housing_3_Logical", 0, 0, 0);
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., Length*0.5 - Vacuum_Thickness_Front - Crystal_Length - Vacuum_Thickness_Back - Crystal_Housing_Thickness*2. - Circuit_Housing_1_Length - Circuit_Housing_2_Length - Circuit_Housing_3_Length*0.5), Circuit_Housing_3_Logical, "Circuit_Housing_3", LaBr_TUD_Logical, false, 0, false);
+  Circuit_Housing_3_Logical->SetVisAttributes(grey);
 
-	/************************ PMT Housing *************************/
+  new G4PVPlacement(0, G4ThreeVector(0., 0., Length * 0.5 - Vacuum_Thickness_Front - Crystal_Length - Vacuum_Thickness_Back - Crystal_Housing_Thickness * 2. - Circuit_Housing_1_Length - Circuit_Housing_2_Length - Circuit_Housing_3_Length * 0.5), Circuit_Housing_3_Logical, "Circuit_Housing_3", LaBr_TUD_Logical, false, 0, false);
 
-	G4Tubs *PMT_Housing_Solid =
-	    new G4Tubs("PMT_Housing_Solid", 0., PMT_Housing_Radius,
-	               PMT_Housing_Length*0.5, 0. * deg, 360. * deg);
-	G4LogicalVolume *PMT_Housing_Logical =
-	    new G4LogicalVolume(PMT_Housing_Solid, Al, "PMT_Housing_Logical", 0, 0, 0);
+  /************************ PMT Housing *************************/
 
-	PMT_Housing_Logical->SetVisAttributes(grey);
+  G4Tubs *PMT_Housing_Solid =
+      new G4Tubs("PMT_Housing_Solid", 0., PMT_Housing_Radius,
+                 PMT_Housing_Length * 0.5, 0. * deg, 360. * deg);
+  G4LogicalVolume *PMT_Housing_Logical =
+      new G4LogicalVolume(PMT_Housing_Solid, Al, "PMT_Housing_Logical", 0, 0, 0);
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., Length*0.5 - Vacuum_Thickness_Front - Crystal_Length - Vacuum_Thickness_Back - Crystal_Housing_Thickness*2. - Circuit_Housing_1_Length - Circuit_Housing_2_Length - Circuit_Housing_2_Length - PMT_Housing_Length*0.5), PMT_Housing_Logical, "PMT_Housing", LaBr_TUD_Logical, false, 0, false);
+  PMT_Housing_Logical->SetVisAttributes(grey);
+
+  new G4PVPlacement(0, G4ThreeVector(0., 0., Length * 0.5 - Vacuum_Thickness_Front - Crystal_Length - Vacuum_Thickness_Back - Crystal_Housing_Thickness * 2. - Circuit_Housing_1_Length - Circuit_Housing_2_Length - Circuit_Housing_2_Length - PMT_Housing_Length * 0.5), PMT_Housing_Logical, "PMT_Housing", LaBr_TUD_Logical, false, 0, false);
 }

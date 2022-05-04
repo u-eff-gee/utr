@@ -26,13 +26,13 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 class EventAction : public G4UserEventAction {
   public:
-	EventAction();
-	virtual ~EventAction();
+  EventAction();
+  virtual ~EventAction();
 
-	virtual void EndOfEventAction(const G4Event *);
+  virtual void EndOfEventAction(const G4Event *);
 
-	void setNThreads(const int nt){ n_threads = (G4double) nt; };
+  void setNThreads(const int nt) { n_threads = (G4double)nt; };
 
   private:
-	G4int n_threads;
+  G4int n_threads;
 };

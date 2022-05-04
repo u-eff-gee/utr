@@ -28,10 +28,10 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "G4FileUtilities.hh"
 
-#include "RunAction.hh"
-#include "utrFilenameTools.hh"
 #include "DetectorConstruction.hh"
 #include "G4RootAnalysisManager.hh"
+#include "RunAction.hh"
+#include "utrFilenameTools.hh"
 #include <limits.h>
 
 #include "utrConfig.h"
@@ -41,121 +41,121 @@ RunAction::RunAction() : G4UserRunAction() {}
 RunAction::~RunAction() { delete G4RootAnalysisManager::Instance(); }
 
 void RunAction::BeginOfRunAction(const G4Run *) {
-	// Get analysis manager
-	G4RootAnalysisManager *analysisManager = G4RootAnalysisManager::Instance();
+  // Get analysis manager
+  G4RootAnalysisManager *analysisManager = G4RootAnalysisManager::Instance();
 
-  #ifdef EVENT_EVENTWISE
-    analysisManager->CreateNtuple("edep", "Energy Deposition");
-		auto max_sensitive_detector_ID = ((DetectorConstruction*) G4RunManager::GetRunManager()->GetUserDetectorConstruction())->Max_Sensitive_Detector_ID;
-    for(size_t i = 0; i < max_sensitive_detector_ID + 1; ++i){
-      analysisManager->CreateNtupleDColumn("det" + std::to_string(i));
+#ifdef EVENT_EVENTWISE
+  analysisManager->CreateNtuple("edep", "Energy Deposition");
+  auto max_sensitive_detector_ID = ((DetectorConstruction *)G4RunManager::GetRunManager()->GetUserDetectorConstruction())->Max_Sensitive_Detector_ID;
+  for (size_t i = 0; i < max_sensitive_detector_ID + 1; ++i) {
+    analysisManager->CreateNtupleDColumn("det" + std::to_string(i));
+  }
+#else
+  analysisManager->CreateNtuple("utr", "Particle information");
+#ifdef EVENT_ID
+  analysisManager->CreateNtupleDColumn("event");
+#endif
+#ifdef EVENT_EDEP
+  analysisManager->CreateNtupleDColumn("edep");
+#endif
+#ifdef EVENT_EKIN
+  analysisManager->CreateNtupleDColumn("ekin");
+#endif
+#ifdef EVENT_PARTICLE
+  analysisManager->CreateNtupleDColumn("particle");
+#endif
+#ifdef EVENT_VOLUME
+  analysisManager->CreateNtupleDColumn("volume");
+#endif
+#ifdef EVENT_POSX
+  analysisManager->CreateNtupleDColumn("x");
+#endif
+#ifdef EVENT_POSY
+  analysisManager->CreateNtupleDColumn("y");
+#endif
+#ifdef EVENT_POSZ
+  analysisManager->CreateNtupleDColumn("z");
+#endif
+#ifdef EVENT_MOMX
+  analysisManager->CreateNtupleDColumn("vx");
+#endif
+#ifdef EVENT_MOMY
+  analysisManager->CreateNtupleDColumn("vy");
+#endif
+#ifdef EVENT_MOMZ
+  analysisManager->CreateNtupleDColumn("vz");
+#endif
+#endif
+  analysisManager->FinishNtuple();
+
+  // Open an output file
+  // Geant4 in Multithreading mode creates files with naming convention
+  //
+  // <filename>_t<threadId>.root
+  //
+  // where the filename is given by the user in analysisManager->OpenFile()
+
+  if (IsMaster()) { // G4UserRunAction::IsMaster should be equivalent to G4Threading::G4GetThreadId() == -1
+    // Master thread (running this function before all other threads) increments the file ID to use, if used
+    if (utrFilenameTools::getUseFilenameID()) {
+      utrFilenameTools::incrementFilenameID();
     }
-  #else
-	  analysisManager->CreateNtuple("utr", "Particle information");
-	  #ifdef EVENT_ID
-	  	analysisManager->CreateNtupleDColumn("event");
-	  #endif
-	  #ifdef EVENT_EDEP
-	  	analysisManager->CreateNtupleDColumn("edep");
-	  #endif
-	  #ifdef EVENT_EKIN
-	  	analysisManager->CreateNtupleDColumn("ekin");
-	  #endif
-	  #ifdef EVENT_PARTICLE
-	  	analysisManager->CreateNtupleDColumn("particle");
-	  #endif
-	  #ifdef EVENT_VOLUME
-	  	analysisManager->CreateNtupleDColumn("volume");
-	  #endif
-	  #ifdef EVENT_POSX
-	  	analysisManager->CreateNtupleDColumn("x");
-	  #endif
-	  #ifdef EVENT_POSY
-	  	analysisManager->CreateNtupleDColumn("y");
-	  #endif
-	  #ifdef EVENT_POSZ
-	  	analysisManager->CreateNtupleDColumn("z");
-	  #endif
-	  #ifdef EVENT_MOMX
-	  	analysisManager->CreateNtupleDColumn("vx");
-	  #endif
-	  #ifdef EVENT_MOMY
-	  	analysisManager->CreateNtupleDColumn("vy");
-	  #endif
-	  #ifdef EVENT_MOMZ
-	  	analysisManager->CreateNtupleDColumn("vz");
-	  #endif
-	#endif
-	analysisManager->FinishNtuple();
-
-	// Open an output file
-	// Geant4 in Multithreading mode creates files with naming convention
-	//
-	// <filename>_t<threadId>.root
-	//
-	// where the filename is given by the user in analysisManager->OpenFile()
-
-    if (IsMaster()) { // G4UserRunAction::IsMaster should be equivalent to G4Threading::G4GetThreadId() == -1
-		// Master thread (running this function before all other threads) increments the file ID to use, if used
-        if (utrFilenameTools::getUseFilenameID()) {
-			utrFilenameTools::incrementFilenameID();
-		}
-		analysisManager->OpenFile(utrFilenameTools::getMasterFilename());
+    analysisManager->OpenFile(utrFilenameTools::getMasterFilename());
+  } else {
+    // Worker threads check whether their designated output file already exists and if so abort
+    G4FileUtilities fu;
+    std::stringstream filename;
+    filename << utrFilenameTools::getOutputDir() << "/" << utrFilenameTools::getFilenamePrefix();
+    if (utrFilenameTools::getUseFilenameID()) {
+      filename << utrFilenameTools::getFilenameID();
+    }
+    std::stringstream filenameWithThreadID;
+    filenameWithThreadID << filename.str() << "_t" << G4Threading::G4GetThreadId() << ".root";
+    filename << ".root";
+    if (fu.FileExists(filenameWithThreadID.str())) {
+      G4cerr << "ERROR: Designated outputfile '" << filenameWithThreadID.str() << "' already exists! Aborting..." << G4endl;
+      throw std::exception();
     } else {
-		// Worker threads check whether their designated output file already exists and if so abort
-        G4FileUtilities fu;
-        std::stringstream filename;
-		filename << utrFilenameTools::getOutputDir() << "/" << utrFilenameTools::getFilenamePrefix();
-		if (utrFilenameTools::getUseFilenameID()) {
-		  filename << utrFilenameTools::getFilenameID();
-		}
-		std::stringstream filenameWithThreadID;
-		filenameWithThreadID << filename.str() << "_t" << G4Threading::G4GetThreadId() << ".root";
-		filename << ".root";
-        if (fu.FileExists(filenameWithThreadID.str())) {
-            G4cerr << "ERROR: Designated outputfile '" << filenameWithThreadID.str() << "' already exists! Aborting..." << G4endl;
-            throw std::exception();
-        } else {
-			analysisManager->OpenFile(filename.str());
-        }
-	}
+      analysisManager->OpenFile(filename.str());
+    }
+  }
 }
 
 void RunAction::EndOfRunAction(const G4Run *) {
-	G4RootAnalysisManager *analysisManager = G4RootAnalysisManager::Instance();
+  G4RootAnalysisManager *analysisManager = G4RootAnalysisManager::Instance();
 
-	analysisManager->Write();
-	analysisManager->CloseFile();
+  analysisManager->Write();
+  analysisManager->CloseFile();
 
-	delete G4RootAnalysisManager::Instance();
+  delete G4RootAnalysisManager::Instance();
 }
 
 G4String RunAction::GetOutputFlagName(unsigned int n) {
-	switch (n) {
-	case ID:
-		return "ID";
-	case EKIN:
-		return "EKIN";
-	case EDEP:
-		return "EDEP";
-	case PARTICLE:
-		return "PARTICLE";
-	case VOLUME:
-		return "VOLUME";
-	case POSX:
-		return "POSX";
-	case POSY:
-		return "POSY";
-	case POSZ:
-		return "POSZ";
-	case MOMX:
-		return "MOMX";
-	case MOMY:
-		return "MOMY";
-	case MOMZ:
-		return "MOMZ";
-	default:
-		G4cout << "RunAction: Error! Output flag index not found." << G4endl;
-		return "";
-	}
+  switch (n) {
+    case ID:
+      return "ID";
+    case EKIN:
+      return "EKIN";
+    case EDEP:
+      return "EDEP";
+    case PARTICLE:
+      return "PARTICLE";
+    case VOLUME:
+      return "VOLUME";
+    case POSX:
+      return "POSX";
+    case POSY:
+      return "POSY";
+    case POSZ:
+      return "POSZ";
+    case MOMX:
+      return "MOMX";
+    case MOMY:
+      return "MOMY";
+    case MOMZ:
+      return "MOMZ";
+    default:
+      G4cout << "RunAction: Error! Output flag index not found." << G4endl;
+      return "";
+  }
 }

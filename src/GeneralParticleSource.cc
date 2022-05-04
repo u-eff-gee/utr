@@ -24,11 +24,11 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 GeneralParticleSource::GeneralParticleSource()
     : G4VUserPrimaryGeneratorAction(), particleGun(0) {
-	particleGun = new G4GeneralParticleSource();
+  particleGun = new G4GeneralParticleSource();
 }
 
 GeneralParticleSource::~GeneralParticleSource() { delete particleGun; }
 
 void GeneralParticleSource::GeneratePrimaries(G4Event *anEvent) {
-	particleGun->GeneratePrimaryVertex(anEvent);
+  particleGun->GeneratePrimaryVertex(anEvent);
 }

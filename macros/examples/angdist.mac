@@ -14,9 +14,9 @@
 # in a cascade (and the parities via their sign).
 # A list of the implemented angular distributions can
 # be found below the macro commands.
-# 
+#
 # All implemented distributions for cascades are
-# assumed to be after excitation by a polarized beam that 
+# assumed to be after excitation by a polarized beam that
 # propagates in positive z-direction. The polarization
 # axis, which is perpendicular to the propagation axis,
 # is assumed to be the x-axis.
@@ -24,9 +24,9 @@
 # To simulate an unpolarized beam, use the
 #
 # /ang/polarized BOOL
-# 
+#
 # command. If an unpolarized beam is set, the angular
-# distributions of both possible polarizations 
+# distributions of both possible polarizations
 # (along the x-axis and along the y-axis) will
 # be added up to create the unpolarized distribution.
 # That means that both of them need to be implemented.
@@ -50,10 +50,10 @@
 # where {N} is the number of the initial state in the transition,
 # {N+1} the number of the final state in the transition and DELTA
 # the multipole mixing ratios of the transition.
-# The state numbers {N} and {N+1} used here refer to the states' 
+# The state numbers {N} and {N+1} used here refer to the states'
 # positions in the overall casecade of transitions.
 # At the moment, only the mixing ratio between the two dominant
-# multipole orders can be given. 
+# multipole orders can be given.
 /ang/delta12 0.
 /ang/delta23 0.
 
@@ -72,7 +72,7 @@
 #/ang/sourceZ 1574.80 mm # Ideal position of 2nd target in generation '18 geometries
 #/ang/sourceZ 1612.10 mm # Ideal position of 2nd target in generation '16/17 geometries
 
-# Determine the dimensions of the envelope box. Random numbers will be sampled in the 
+# Determine the dimensions of the envelope box. Random numbers will be sampled in the
 # intervals [-0.5*sourceDX, 0.5*sourceDX], [-0.5*sourceDY, 0.5*sourceDY], and
 # [-0.5*sourceDZ, 0.5*sourceDZ].
 /ang/sourceDX 20. mm
@@ -80,7 +80,7 @@
 /ang/sourceDZ 10. mm
 
 # Set the name of a physical volume that should act as a source.
-# To add more physical volumes, call /ang/sourcePV multiple times with different arguments 
+# To add more physical volumes, call /ang/sourcePV multiple times with different arguments
 # (about using multiple sources, see also the caveat in the README.md).
 /ang/sourcePV source
 

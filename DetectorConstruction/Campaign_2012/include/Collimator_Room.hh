@@ -23,18 +23,18 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "G4LogicalVolume.hh"
 
-class Collimator_Room{
-public:
-	Collimator_Room(G4LogicalVolume *World_Log, G4double Coll_Radius);
-	~Collimator_Room(){};
+class Collimator_Room {
+  public:
+  Collimator_Room(G4LogicalVolume *World_Log, G4double Coll_Radius);
+  ~Collimator_Room(){};
 
-	void Construct(G4ThreeVector global_coordinates);
-	G4double Get_Length(){ return Collimator_Room_Length; };
+  void Construct(G4ThreeVector global_coordinates);
+  G4double Get_Length() { return Collimator_Room_Length; };
 
-private:
-	G4LogicalVolume *World_Logical;
-	G4double Collimator_Radius;
-	G4double Collimator_Room_Length;
+  private:
+  G4LogicalVolume *World_Logical;
+  G4double Collimator_Radius;
+  G4double Collimator_Room_Length;
 };
 
 #endif

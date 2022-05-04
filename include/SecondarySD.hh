@@ -25,24 +25,24 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 class SecondarySD : public G4VSensitiveDetector {
   public:
-	SecondarySD(const G4String &name, const G4String &hitsCollectionName);
-	virtual ~SecondarySD();
+  SecondarySD(const G4String &name, const G4String &hitsCollectionName);
+  virtual ~SecondarySD();
 
-	virtual void Initialize(G4HCofThisEvent *hitCollection);
-	virtual G4bool ProcessHits(G4Step *step, G4TouchableHistory *history);
-	virtual void EndOfEvent(G4HCofThisEvent *hitCollection);
+  virtual void Initialize(G4HCofThisEvent *hitCollection);
+  virtual G4bool ProcessHits(G4Step *step, G4TouchableHistory *history);
+  virtual void EndOfEvent(G4HCofThisEvent *hitCollection);
 
-	G4int getCurrentTrackID() { return currentTrackID; };
-	void setCurrentTrackID(int trackID) { currentTrackID = trackID; };
+  G4int getCurrentTrackID() { return currentTrackID; };
+  void setCurrentTrackID(int trackID) { currentTrackID = trackID; };
 
-	G4int getCurrentEventID() { return currentEventID; };
-	void setCurrentEventID(unsigned int eventID) { currentEventID = eventID; };
+  G4int getCurrentEventID() { return currentEventID; };
+  void setCurrentEventID(unsigned int eventID) { currentEventID = eventID; };
 
-	unsigned int getDetectorID() { return detectorID; };
-	void SetDetectorID(unsigned int detID) { detectorID = detID; };
+  unsigned int getDetectorID() { return detectorID; };
+  void SetDetectorID(unsigned int detID) { detectorID = detID; };
 
   private:
-	G4int currentTrackID;
-	G4int currentEventID;
-	G4int detectorID;
+  G4int currentTrackID;
+  G4int currentEventID;
+  G4int detectorID;
 };

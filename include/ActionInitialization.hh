@@ -20,22 +20,22 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 #include "G4VUserActionInitialization.hh"
-#include "utrConfig.h"
 #include "globals.hh"
+#include "utrConfig.h"
 
 using std::string;
 
 // Custom class definition
 class ActionInitialization : public G4VUserActionInitialization {
   public:
-	ActionInitialization();
-	virtual ~ActionInitialization();
+  ActionInitialization();
+  virtual ~ActionInitialization();
 
-	virtual void BuildForMaster() const;
-	virtual void Build() const;
+  virtual void BuildForMaster() const;
+  virtual void Build() const;
 
-	void setNThreads(const int nt) { n_threads = nt; };
+  void setNThreads(const int nt) { n_threads = nt; };
 
   private:
-	G4int n_threads;
+  G4int n_threads;
 };

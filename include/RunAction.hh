@@ -26,28 +26,28 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 using std::string;
 
-enum output_flags: short {
-	ID = 0,
-	EDEP = 1,	
-	EKIN = 2,	
-	PARTICLE = 3,	
-	VOLUME = 4,	
-	POSX = 5,	
-	POSY = 6,	
-	POSZ = 7,	
-	MOMX = 8,	
-	MOMY = 9,	
-	MOMZ = 10,
-	NFLAGS = 11
+enum output_flags : short {
+  ID = 0,
+  EDEP = 1,
+  EKIN = 2,
+  PARTICLE = 3,
+  VOLUME = 4,
+  POSX = 5,
+  POSY = 6,
+  POSZ = 7,
+  MOMX = 8,
+  MOMY = 9,
+  MOMZ = 10,
+  NFLAGS = 11
 };
 
 class RunAction : public G4UserRunAction {
   public:
-	RunAction();
-	virtual ~RunAction();
+  RunAction();
+  virtual ~RunAction();
 
-	virtual void BeginOfRunAction(const G4Run *);
-	virtual void EndOfRunAction(const G4Run *);
+  virtual void BeginOfRunAction(const G4Run *);
+  virtual void EndOfRunAction(const G4Run *);
 
-	G4String GetOutputFlagName(unsigned int n);
+  G4String GetOutputFlagName(unsigned int n);
 };

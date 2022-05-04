@@ -25,22 +25,22 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 class ParticleSD : public G4VSensitiveDetector {
   public:
-	ParticleSD(const G4String &name, const G4String &hitsCollectionName);
-	virtual ~ParticleSD();
+  ParticleSD(const G4String &name, const G4String &hitsCollectionName);
+  virtual ~ParticleSD();
 
-	virtual void Initialize(G4HCofThisEvent *hitCollection);
-	virtual G4bool ProcessHits(G4Step *step, G4TouchableHistory *history);
-	virtual void EndOfEvent(G4HCofThisEvent *hitCollection);
+  virtual void Initialize(G4HCofThisEvent *hitCollection);
+  virtual G4bool ProcessHits(G4Step *step, G4TouchableHistory *history);
+  virtual void EndOfEvent(G4HCofThisEvent *hitCollection);
 
-	G4int getCurrentTrackID() { return currentTrackID; };
-	void setCurrentTrackID(unsigned int trackID) { currentTrackID = trackID; };
-	G4int getCurrentEventID() { return currentEventID; };
-	void setCurrentEventID(unsigned int eventID) { currentEventID = eventID; };
-	unsigned int getDetectorID() { return detectorID; };
-	void SetDetectorID(unsigned int detID) { detectorID = detID; };
+  G4int getCurrentTrackID() { return currentTrackID; };
+  void setCurrentTrackID(unsigned int trackID) { currentTrackID = trackID; };
+  G4int getCurrentEventID() { return currentEventID; };
+  void setCurrentEventID(unsigned int eventID) { currentEventID = eventID; };
+  unsigned int getDetectorID() { return detectorID; };
+  void SetDetectorID(unsigned int detID) { detectorID = detID; };
 
   private:
-	G4int currentEventID;
-	G4int currentTrackID;
-	G4int detectorID;
+  G4int currentEventID;
+  G4int currentTrackID;
+  G4int detectorID;
 };

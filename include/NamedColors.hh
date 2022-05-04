@@ -21,16 +21,16 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "G4Color.hh"
 
-static const G4Color white        (1.0, 1.0, 1.0) ;
-static const G4Color grey         (0.5, 0.5, 0.5) ;
-static const G4Color black        (0.0, 0.0, 0.0) ;
-static const G4Color red          (1.0, 0.0, 0.0) ;
-static const G4Color green        (0.0, 1.0, 0.0) ;
-static const G4Color blue         (0.0, 0.0, 1.0) ;
-static const G4Color cyan         (0.0, 1.0, 1.0) ;
-static const G4Color magenta      (1.0, 0.0, 1.0) ;
-static const G4Color yellow       (1.0, 1.0, 0.0) ;
-static const G4Color orange       (1.0, 0.5, 0.0) ;
-static const G4Color brown        (0.45, 0.25, 0.);
-static const G4Color light_blue   (1.0, 0.82, 0.36) ;
-static const G4Color light_orange (1.0, 0.82, 0.36);
+static const G4Color white(1.0, 1.0, 1.0);
+static const G4Color grey(0.5, 0.5, 0.5);
+static const G4Color black(0.0, 0.0, 0.0);
+static const G4Color red(1.0, 0.0, 0.0);
+static const G4Color green(0.0, 1.0, 0.0);
+static const G4Color blue(0.0, 0.0, 1.0);
+static const G4Color cyan(0.0, 1.0, 1.0);
+static const G4Color magenta(1.0, 0.0, 1.0);
+static const G4Color yellow(1.0, 1.0, 0.0);
+static const G4Color orange(1.0, 0.5, 0.0);
+static const G4Color brown(0.45, 0.25, 0.);
+static const G4Color light_blue(1.0, 0.82, 0.36);
+static const G4Color light_orange(1.0, 0.82, 0.36);

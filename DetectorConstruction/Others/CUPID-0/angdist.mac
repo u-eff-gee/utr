@@ -14,9 +14,9 @@
 # in a cascade (and the parities via their sign).
 # A list of the implemented angular distributions can
 # be found below the macro commands.
-# 
+#
 # All implemented distributions for cascades are
-# assumed to be after excitation by a polarized beam that 
+# assumed to be after excitation by a polarized beam that
 # propagates in positive z-direction. The polarization
 # axis, which is perpendicular to the propagation axis,
 # is assumed to be the x-axis.
@@ -24,9 +24,9 @@
 # To simulate an unpolarized beam, use the
 #
 # /ang/polarized BOOL
-# 
+#
 # command. If an unpolarized beam is set, the angular
-# distributions of both possible polarizations 
+# distributions of both possible polarizations
 # (along the x-axis and along the y-axis) will
 # be added up to create the unpolarized distribution.
 # That means that both of them need to be implemented.
@@ -49,7 +49,7 @@
 # /ang/delta(N)(N+1)
 # where N is the number of the first state in the transition.
 # At the moment, only the mixing ratio between the two dominant
-# multipole orders can be given. 
+# multipole orders can be given.
 /ang/delta12 0.
 /ang/delta23 0.
 

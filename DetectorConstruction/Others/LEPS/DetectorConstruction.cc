@@ -25,11 +25,11 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4NistManager.hh"
 
 // Geometry
-#include "G4Sphere.hh"
-#include "G4Tubs.hh"
 #include "G4LogicalVolume.hh"
 #include "G4PVPlacement.hh"
+#include "G4Sphere.hh"
 #include "G4ThreeVector.hh"
+#include "G4Tubs.hh"
 #include "G4VisAttributes.hh"
 #include "globals.hh"
 
@@ -50,54 +50,54 @@ DetectorConstruction::~DetectorConstruction() {}
 
 G4VPhysicalVolume *DetectorConstruction::Construct() {
 
-	G4Colour orange(1.0, 0.5, 0.0);
+  G4Colour orange(1.0, 0.5, 0.0);
 
-	G4NistManager *nist = G4NistManager::Instance();
+  G4NistManager *nist = G4NistManager::Instance();
 
-	G4Material *Ge = nist->FindOrBuildMaterial("G4_Ge");
+  G4Material *Ge = nist->FindOrBuildMaterial("G4_Ge");
 
-	G4Material *vacuum = nist->FindOrBuildMaterial("G4_Galactic");
+  G4Material *vacuum = nist->FindOrBuildMaterial("G4_Galactic");
 
-	/***************** World Volume *****************/
+  /***************** World Volume *****************/
 
-	G4double world_r = 300. * mm;
+  G4double world_r = 300. * mm;
 
-	G4Sphere *world_dim =
-	    new G4Sphere("world_dim", 0., world_r, 0., twopi, 0., pi);
+  G4Sphere *world_dim =
+      new G4Sphere("world_dim", 0., world_r, 0., twopi, 0., pi);
 
-	G4LogicalVolume *world_log =
-	    new G4LogicalVolume(world_dim, vacuum, "world_log", 0, 0, 0);
+  G4LogicalVolume *world_log =
+      new G4LogicalVolume(world_dim, vacuum, "world_log", 0, 0, 0);
 
-	//world_log->SetVisAttributes(G4VisAttributes::GetInvisible());
+  // world_log->SetVisAttributes(G4VisAttributes::GetInvisible());
 
-	G4VPhysicalVolume *world_phys =
-	    new G4PVPlacement(0, G4ThreeVector(), world_log, "world", 0, false, 0);
+  G4VPhysicalVolume *world_phys =
+      new G4PVPlacement(0, G4ThreeVector(), world_log, "world", 0, false, 0);
 
-    /***************** Detector ********************/
+  /***************** Detector ********************/
 
-	G4double LEPS_Radius = 8 * mm;
-	G4double LEPS_Length = 10. * mm;
+  G4double LEPS_Radius = 8 * mm;
+  G4double LEPS_Length = 10. * mm;
 
-	G4Tubs *LEPS_Solid =
-	    new G4Tubs("LEPS_Solid", 0. * cm, LEPS_Radius,
-	               LEPS_Length / 2, 0. * deg, 360. * deg);
+  G4Tubs *LEPS_Solid =
+      new G4Tubs("LEPS_Solid", 0. * cm, LEPS_Radius,
+                 LEPS_Length / 2, 0. * deg, 360. * deg);
 
-	G4LogicalVolume *LEPS_Logical =
-	    new G4LogicalVolume(LEPS_Solid, Ge, "LEPS_Logical", 0, 0, 0);
+  G4LogicalVolume *LEPS_Logical =
+      new G4LogicalVolume(LEPS_Solid, Ge, "LEPS_Logical", 0, 0, 0);
 
-	G4Colour green(0.0, 1.0, 0.0);
-	LEPS_Logical->SetVisAttributes(green);
+  G4Colour green(0.0, 1.0, 0.0);
+  LEPS_Logical->SetVisAttributes(green);
 
-	new G4PVPlacement(0, G4ThreeVector(0., 0., 80. * mm),
-	                  LEPS_Logical, "LEPS", world_log, false, 0);
+  new G4PVPlacement(0, G4ThreeVector(0., 0., 80. * mm),
+                    LEPS_Logical, "LEPS", world_log, false, 0);
 
-	return world_phys;
+  return world_phys;
 }
 
 void DetectorConstruction::ConstructSDandField() {
 
-	EnergyDepositionSD *LEPS_EnergyDepositionSD = new EnergyDepositionSD("LEPS_edep", "LEPS_edep");
-	G4SDManager::GetSDMpointer()->AddNewDetector(LEPS_EnergyDepositionSD);
-	LEPS_EnergyDepositionSD->SetDetectorID(0);
-	SetSensitiveDetector("LEPS_Logical", LEPS_EnergyDepositionSD, true);
+  EnergyDepositionSD *LEPS_EnergyDepositionSD = new EnergyDepositionSD("LEPS_edep", "LEPS_edep");
+  G4SDManager::GetSDMpointer()->AddNewDetector(LEPS_EnergyDepositionSD);
+  LEPS_EnergyDepositionSD->SetDetectorID(0);
+  SetSensitiveDetector("LEPS_Logical", LEPS_EnergyDepositionSD, true);
 }

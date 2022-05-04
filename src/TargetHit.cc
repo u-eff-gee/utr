@@ -29,28 +29,28 @@ TargetHit::TargetHit() : G4VHit() {}
 TargetHit::~TargetHit() {}
 
 TargetHit::TargetHit(const TargetHit &right) : G4VHit() {
-	edep = right.edep;
-	ekin = right.ekin;
-	type = right.type;
-	detectorID = right.detectorID;
-	pos = right.pos;
-	mom = right.mom;
+  edep = right.edep;
+  ekin = right.ekin;
+  type = right.type;
+  detectorID = right.detectorID;
+  pos = right.pos;
+  mom = right.mom;
 }
 
 const TargetHit &TargetHit::operator=(const TargetHit &right) {
 
-	edep = right.edep;
-	ekin = right.ekin;
-	type = right.type;
-	detectorID = right.detectorID;
-	pos = right.pos;
-	mom = right.mom;
+  edep = right.edep;
+  ekin = right.ekin;
+  type = right.type;
+  detectorID = right.detectorID;
+  pos = right.pos;
+  mom = right.mom;
 
-	return *this;
+  return *this;
 }
 
 G4int TargetHit::operator==(const TargetHit &right) const {
-	return (this == &right) ? 1 : 0;
+  return (this == &right) ? 1 : 0;
 }
 
 void TargetHit::Draw() {}

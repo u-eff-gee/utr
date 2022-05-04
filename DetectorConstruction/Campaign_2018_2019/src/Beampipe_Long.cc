@@ -20,140 +20,137 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "G4NistManager.hh"
 #include "G4PVPlacement.hh"
-#include "G4VisAttributes.hh"
-#include "G4Tubs.hh"
 #include "G4PhysicalConstants.hh"
 #include "G4SystemOfUnits.hh"
+#include "G4Tubs.hh"
 #include "G4UnionSolid.hh"
+#include "G4VisAttributes.hh"
 
+#include "Beampipe_Long.hh"
 #include "Units.hh"
 #include "Vacuum.hh"
-#include "Beampipe_Long.hh"
 
-Beampipe_Long::Beampipe_Long(G4LogicalVolume *World_Log):
-World_Logical(World_Log),
-Beampipe_Long_Upstream_Length(112.*inch), // Estimated
-Beampipe_Long_Downstream_Length(2107.3*mm) // Estimated
+Beampipe_Long::Beampipe_Long(G4LogicalVolume *World_Log) : World_Logical(World_Log),
+                                                           Beampipe_Long_Upstream_Length(112. * inch), // Estimated
+                                                           Beampipe_Long_Downstream_Length(2107.3 * mm) // Estimated
 {
-	Beampipe_Long_Length = Beampipe_Long_Upstream_Length + Beampipe_Long_Downstream_Length;
-	Z_Axis_Offset_Z = 0.5*(Beampipe_Long_Downstream_Length - Beampipe_Long_Upstream_Length);
-
+  Beampipe_Long_Length = Beampipe_Long_Upstream_Length + Beampipe_Long_Downstream_Length;
+  Z_Axis_Offset_Z = 0.5 * (Beampipe_Long_Downstream_Length - Beampipe_Long_Upstream_Length);
 }
 
-void Beampipe_Long::Construct(G4ThreeVector global_coordinates, G4double relative_density){
-	
-	G4Colour white(1.0, 1.0, 1.0);
-	G4Colour orange(1.0, 0.5, 0.0);
-	G4Colour red(1.0, 0., 0.);
+void Beampipe_Long::Construct(G4ThreeVector global_coordinates, G4double relative_density) {
 
-	G4NistManager *nist = G4NistManager::Instance();
+  G4Colour white(1.0, 1.0, 1.0);
+  G4Colour orange(1.0, 0.5, 0.0);
+  G4Colour red(1.0, 0., 0.);
 
-	Vacuum vac(relative_density, "beampipe_upstream_vacuum");
-	G4Material *vacuum = vac.Get_Material();
-	G4Material *plexiglass = nist->FindOrBuildMaterial("G4_PLEXIGLASS");
+  G4NistManager *nist = G4NistManager::Instance();
 
-	G4double Beampipe_Inner_Radius = .5 * 45.2 * mm;
-	G4double Beampipe_Outer_Radius = .5 * 51.1 * mm;
-	G4double Beampipe_Joint_Outer_Radius = .5 * 69. * mm;
-	G4double Beampipe_Joint_Length = 81.6 * mm;
-	
-	// Beam pipe vacuum
-	G4Tubs *Vacuum_Solid = new G4Tubs("Vacuum_Solid", 0., Beampipe_Inner_Radius, Beampipe_Long_Length*0.5, 0., twopi);
-	Vacuum_Logical = new G4LogicalVolume(Vacuum_Solid, vacuum, "Vacuum_Logical");
+  Vacuum vac(relative_density, "beampipe_upstream_vacuum");
+  G4Material *vacuum = vac.Get_Material();
+  G4Material *plexiglass = nist->FindOrBuildMaterial("G4_PLEXIGLASS");
 
-	//Vacuum_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());
-	Vacuum_Logical->SetVisAttributes(red);
-	
-	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., 0.), Vacuum_Logical, "Vacuum", World_Logical, false, 0, false);
+  G4double Beampipe_Inner_Radius = .5 * 45.2 * mm;
+  G4double Beampipe_Outer_Radius = .5 * 51.1 * mm;
+  G4double Beampipe_Joint_Outer_Radius = .5 * 69. * mm;
+  G4double Beampipe_Joint_Length = 81.6 * mm;
 
-	// Beam pipe
-	G4Tubs *Pipe_Long_Solid = new G4Tubs("Pipe_Long_Solid", Beampipe_Inner_Radius, Beampipe_Outer_Radius, Beampipe_Long_Length*0.5, 0., twopi);
-	G4LogicalVolume *Pipe_Long_Logical = new G4LogicalVolume(Pipe_Long_Solid, plexiglass, "Pipe_Long_Logical");
+  // Beam pipe vacuum
+  G4Tubs *Vacuum_Solid = new G4Tubs("Vacuum_Solid", 0., Beampipe_Inner_Radius, Beampipe_Long_Length * 0.5, 0., twopi);
+  Vacuum_Logical = new G4LogicalVolume(Vacuum_Solid, vacuum, "Vacuum_Logical");
 
-	Pipe_Long_Logical->SetVisAttributes(white);	
-	
-	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., 0.), Pipe_Long_Logical, "Pipe_Long", World_Logical, false, 0, false);
+  // Vacuum_Logical->SetVisAttributes(G4VisAttributes::GetInvisible());
+  Vacuum_Logical->SetVisAttributes(red);
 
-	// Beampipe downstream joint
-	
-	G4double Downstream_Joint_To_Target = 9.8*inch; // Estimated
-	
-	G4Tubs *Downstream_Joint_Solid = new G4Tubs("Downstream_Joint_Solid", Beampipe_Outer_Radius, Beampipe_Joint_Outer_Radius, Beampipe_Joint_Length*0.5, 0., twopi);
-	G4LogicalVolume *Downstream_Joint_Logical = new G4LogicalVolume(Downstream_Joint_Solid, plexiglass, "Downstream_Joint_Logical");
+  new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., 0.), Vacuum_Logical, "Vacuum", World_Logical, false, 0, false);
 
-	Downstream_Joint_Logical->SetVisAttributes(white);
-	
-	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., Beampipe_Long_Length*0.5 - Beampipe_Long_Downstream_Length + Downstream_Joint_To_Target), Downstream_Joint_Logical, "Downstream_Joint", World_Logical, false, 0, false);
-	
-	// Downstream exit window
-	
-	G4double Downstream_Exit_Window_Thickness = 2.*mm; // Estimated
-	
-	G4Tubs *Downstream_Exit_Window_Solid = new G4Tubs("Downstream_Exit_Window_Solid", 0., Beampipe_Inner_Radius, Downstream_Exit_Window_Thickness*0.5, 0., twopi);
-	G4LogicalVolume *Downstream_Exit_Window_Logical = new G4LogicalVolume(Downstream_Exit_Window_Solid, plexiglass, "Downstream_Exit_Window_Logical");
+  // Beam pipe
+  G4Tubs *Pipe_Long_Solid = new G4Tubs("Pipe_Long_Solid", Beampipe_Inner_Radius, Beampipe_Outer_Radius, Beampipe_Long_Length * 0.5, 0., twopi);
+  G4LogicalVolume *Pipe_Long_Logical = new G4LogicalVolume(Pipe_Long_Solid, plexiglass, "Pipe_Long_Logical");
 
-	Downstream_Exit_Window_Logical->SetVisAttributes(white);
-	
-	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., Beampipe_Long_Length*0.5 - Downstream_Exit_Window_Thickness*0.5), Downstream_Exit_Window_Logical, "Downstream_Exit_Window", World_Logical, false, 0, false);
+  Pipe_Long_Logical->SetVisAttributes(white);
 
-	// Upstream exit window
-	
-	G4double Upstream_Exit_Window_Thickness = 2.*mm; // Estimated
-	
-	G4Tubs *Upstream_Exit_Window_Solid = new G4Tubs("Upstream_Exit_Window_Solid", 0., Beampipe_Inner_Radius, Upstream_Exit_Window_Thickness*0.5, 0., twopi);
-	G4LogicalVolume *Upstream_Exit_Window_Logical = new G4LogicalVolume(Upstream_Exit_Window_Solid, plexiglass, "Upstream_Exit_Window_Logical");
+  new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., 0.), Pipe_Long_Logical, "Pipe_Long", World_Logical, false, 0, false);
 
-	Upstream_Exit_Window_Logical->SetVisAttributes(white);
-	
-	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., -Beampipe_Long_Length*0.5 + Upstream_Exit_Window_Thickness*0.5), Upstream_Exit_Window_Logical, "Upstream_Exit_Window", World_Logical, false, 0, false);
-	
-	// Target Holder Tube
-	
-	G4double TargetTube_Outer_Radius = Beampipe_Inner_Radius;
+  // Beampipe downstream joint
 
-	G4double TargetTubeFront_Length = 2.*inch; 
-	G4double TargetTubeFront_Inner_Radius = TargetTube_Outer_Radius - 1. * mm;
+  G4double Downstream_Joint_To_Target = 9.8 * inch; // Estimated
 
-	G4double TargetTubeBack_Length = Downstream_Joint_To_Target - TargetTubeFront_Length*0.5;
-	G4double TargetTubeBack_Inner_Radius = TargetTube_Outer_Radius - 2. * mm; 
+  G4Tubs *Downstream_Joint_Solid = new G4Tubs("Downstream_Joint_Solid", Beampipe_Outer_Radius, Beampipe_Joint_Outer_Radius, Beampipe_Joint_Length * 0.5, 0., twopi);
+  G4LogicalVolume *Downstream_Joint_Logical = new G4LogicalVolume(Downstream_Joint_Solid, plexiglass, "Downstream_Joint_Logical");
 
-	G4double TargetTube_Total_Length =
-	    TargetTubeFront_Length + TargetTubeBack_Length;
+  Downstream_Joint_Logical->SetVisAttributes(white);
 
-	G4Tubs *TargetTubeBack_Solid =
-	    new G4Tubs("TargetTubeback_Solid",
-	               TargetTubeBack_Inner_Radius,
-	               TargetTube_Outer_Radius, TargetTubeBack_Length * 0.5,
-	               0. * deg, 360. * deg);
+  new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., Beampipe_Long_Length * 0.5 - Beampipe_Long_Downstream_Length + Downstream_Joint_To_Target), Downstream_Joint_Logical, "Downstream_Joint", World_Logical, false, 0, false);
 
-	G4Tubs *TargetTubeFront_Solid =
-	    new G4Tubs("TargetTubeFront_Solid",
-	               TargetTubeFront_Inner_Radius,
-	               TargetTube_Outer_Radius, TargetTubeFront_Length * 0.5,
-	               0. * deg, 360. * deg);
+  // Downstream exit window
 
-	G4UnionSolid *TargetTube_Solid = new G4UnionSolid(
-	    "TargetTube_Solid", TargetTubeBack_Solid, TargetTubeFront_Solid, 0,
-	    G4ThreeVector(0., 0., -TargetTubeBack_Length * 0.5 -
-	                              TargetTubeFront_Length * 0.5));
+  G4double Downstream_Exit_Window_Thickness = 2. * mm; // Estimated
 
-	G4LogicalVolume *TargetTube_Logical = new G4LogicalVolume(
-	    TargetTube_Solid, plexiglass, "TargetTube_Logical", 0, 0, 0);
+  G4Tubs *Downstream_Exit_Window_Solid = new G4Tubs("Downstream_Exit_Window_Solid", 0., Beampipe_Inner_Radius, Downstream_Exit_Window_Thickness * 0.5, 0., twopi);
+  G4LogicalVolume *Downstream_Exit_Window_Logical = new G4LogicalVolume(Downstream_Exit_Window_Solid, plexiglass, "Downstream_Exit_Window_Logical");
 
-	TargetTube_Logical->SetVisAttributes(new G4VisAttributes(orange));
+  Downstream_Exit_Window_Logical->SetVisAttributes(white);
 
-	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., Beampipe_Long_Length*0.5 - Beampipe_Long_Downstream_Length + Downstream_Joint_To_Target - TargetTube_Total_Length * 0.5 + TargetTubeFront_Length*0.5), TargetTube_Logical, "TargetTube", World_Logical, false, 0);
+  new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., Beampipe_Long_Length * 0.5 - Downstream_Exit_Window_Thickness * 0.5), Downstream_Exit_Window_Logical, "Downstream_Exit_Window", World_Logical, false, 0, false);
 
-	// Target ring
-	
-	G4double Target_Ring_Length = 1.5*inch; // Estimated
-	G4double Target_Ring_Outer_Radius = TargetTubeFront_Inner_Radius;
-	G4double Target_Ring_Inner_Radius = TargetTubeFront_Inner_Radius - 1.*mm;
-	
-	G4Tubs *Target_Ring_Solid = new G4Tubs("Target_Ring_Solid", Target_Ring_Inner_Radius, Target_Ring_Outer_Radius, Target_Ring_Length*0.5, 0., twopi);
-	G4LogicalVolume *Target_Ring_Logical = new G4LogicalVolume(Target_Ring_Solid, plexiglass, "Target_Ring_Logical");
+  // Upstream exit window
 
-	Target_Ring_Logical->SetVisAttributes(red);
-	
-	new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., Beampipe_Long_Length*0.5 - Beampipe_Long_Downstream_Length), Target_Ring_Logical, "Target_Ring", World_Logical, false, 0, false);
+  G4double Upstream_Exit_Window_Thickness = 2. * mm; // Estimated
+
+  G4Tubs *Upstream_Exit_Window_Solid = new G4Tubs("Upstream_Exit_Window_Solid", 0., Beampipe_Inner_Radius, Upstream_Exit_Window_Thickness * 0.5, 0., twopi);
+  G4LogicalVolume *Upstream_Exit_Window_Logical = new G4LogicalVolume(Upstream_Exit_Window_Solid, plexiglass, "Upstream_Exit_Window_Logical");
+
+  Upstream_Exit_Window_Logical->SetVisAttributes(white);
+
+  new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., -Beampipe_Long_Length * 0.5 + Upstream_Exit_Window_Thickness * 0.5), Upstream_Exit_Window_Logical, "Upstream_Exit_Window", World_Logical, false, 0, false);
+
+  // Target Holder Tube
+
+  G4double TargetTube_Outer_Radius = Beampipe_Inner_Radius;
+
+  G4double TargetTubeFront_Length = 2. * inch;
+  G4double TargetTubeFront_Inner_Radius = TargetTube_Outer_Radius - 1. * mm;
+
+  G4double TargetTubeBack_Length = Downstream_Joint_To_Target - TargetTubeFront_Length * 0.5;
+  G4double TargetTubeBack_Inner_Radius = TargetTube_Outer_Radius - 2. * mm;
+
+  G4double TargetTube_Total_Length =
+      TargetTubeFront_Length + TargetTubeBack_Length;
+
+  G4Tubs *TargetTubeBack_Solid =
+      new G4Tubs("TargetTubeback_Solid",
+                 TargetTubeBack_Inner_Radius,
+                 TargetTube_Outer_Radius, TargetTubeBack_Length * 0.5,
+                 0. * deg, 360. * deg);
+
+  G4Tubs *TargetTubeFront_Solid =
+      new G4Tubs("TargetTubeFront_Solid",
+                 TargetTubeFront_Inner_Radius,
+                 TargetTube_Outer_Radius, TargetTubeFront_Length * 0.5,
+                 0. * deg, 360. * deg);
+
+  G4UnionSolid *TargetTube_Solid = new G4UnionSolid(
+      "TargetTube_Solid", TargetTubeBack_Solid, TargetTubeFront_Solid, 0,
+      G4ThreeVector(0., 0., -TargetTubeBack_Length * 0.5 - TargetTubeFront_Length * 0.5));
+
+  G4LogicalVolume *TargetTube_Logical = new G4LogicalVolume(
+      TargetTube_Solid, plexiglass, "TargetTube_Logical", 0, 0, 0);
+
+  TargetTube_Logical->SetVisAttributes(new G4VisAttributes(orange));
+
+  new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., Beampipe_Long_Length * 0.5 - Beampipe_Long_Downstream_Length + Downstream_Joint_To_Target - TargetTube_Total_Length * 0.5 + TargetTubeFront_Length * 0.5), TargetTube_Logical, "TargetTube", World_Logical, false, 0);
+
+  // Target ring
+
+  G4double Target_Ring_Length = 1.5 * inch; // Estimated
+  G4double Target_Ring_Outer_Radius = TargetTubeFront_Inner_Radius;
+  G4double Target_Ring_Inner_Radius = TargetTubeFront_Inner_Radius - 1. * mm;
+
+  G4Tubs *Target_Ring_Solid = new G4Tubs("Target_Ring_Solid", Target_Ring_Inner_Radius, Target_Ring_Outer_Radius, Target_Ring_Length * 0.5, 0., twopi);
+  G4LogicalVolume *Target_Ring_Logical = new G4LogicalVolume(Target_Ring_Solid, plexiglass, "Target_Ring_Logical");
+
+  Target_Ring_Logical->SetVisAttributes(red);
+
+  new G4PVPlacement(0, global_coordinates + G4ThreeVector(0., 0., Beampipe_Long_Length * 0.5 - Beampipe_Long_Downstream_Length), Target_Ring_Logical, "Target_Ring", World_Logical, false, 0, false);
 }

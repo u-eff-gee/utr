@@ -13,7 +13,7 @@ fi
 echo "Applying llvm style to source code…"
 clang-format -style="{BasedOnStyle: llvm, IndentWidth: 4, \
              UseTab: ForIndentation, TabWidth: 4}" -i \
-             utr.cc src/*.cc include/*.hh 
+             utr.cc src/*.cc include/*.hh
 
 # Format detector constructions
 for i in `ls DetectorConstruction/`; do

@@ -57,8 +57,8 @@ listing all available options with their effect and default values
 #                                     # to utr's code directory and using all
 #                                     # other supplied paths relative to it
 #                                     # (Default: True)
-#ensureTerminalMultiplexer=False      # Whether to warn and abort if """+ programName +""" 
-#                                     # is not run inside a tmux or GNU Screen 
+#ensureTerminalMultiplexer=False      # Whether to warn and abort if """+ programName +"""
+#                                     # is not run inside a tmux or GNU Screen
 #                                     # session (Default: False)
 #cmakeArgs=--debug-output             # Pure string of additional arguments to
 #                                     # cmake on utr, see also [utrBuildOptions]

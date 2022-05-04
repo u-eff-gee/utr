@@ -1,6 +1,6 @@
 /run/initialize
 
-/ang/particle geantino 
+/ang/particle geantino
 
 /ang/nstates 3
 /ang/state1 0.

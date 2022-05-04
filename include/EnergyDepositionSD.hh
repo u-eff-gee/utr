@@ -30,20 +30,20 @@ class G4HCofThisEvent;
 
 class EnergyDepositionSD : public G4VSensitiveDetector {
   public:
-	EnergyDepositionSD(const G4String &name,
-	                   const G4String &hitsCollectionName);
-	virtual ~EnergyDepositionSD();
+  EnergyDepositionSD(const G4String &name,
+                     const G4String &hitsCollectionName);
+  virtual ~EnergyDepositionSD();
 
-	// methods from base class
-	virtual void Initialize(G4HCofThisEvent *hitCollection);
-	virtual G4bool ProcessHits(G4Step *step, G4TouchableHistory *history);
-	virtual void EndOfEvent(G4HCofThisEvent *hitCollection);
-	unsigned int GetDetectorID() { return detectorID; };
-	void SetDetectorID(unsigned int detID) { detectorID = detID; };
-	static std::vector<bool> anyDetectorHitInEvent; // Needed for EVENT_EVENTWISE mode, signals whether an entry (row) needs to be written to the root file for the current event (or whether the row would be zeroes only)
+  // methods from base class
+  virtual void Initialize(G4HCofThisEvent *hitCollection);
+  virtual G4bool ProcessHits(G4Step *step, G4TouchableHistory *history);
+  virtual void EndOfEvent(G4HCofThisEvent *hitCollection);
+  unsigned int GetDetectorID() { return detectorID; };
+  void SetDetectorID(unsigned int detID) { detectorID = detID; };
+  static std::vector<bool> anyDetectorHitInEvent; // Needed for EVENT_EVENTWISE mode, signals whether an entry (row) needs to be written to the root file for the current event (or whether the row would be zeroes only)
 
   private:
-	TargetHitsCollection *hitsCollection;
-	G4int detectorID;
-	G4int eventID;
+  TargetHitsCollection *hitsCollection;
+  G4int detectorID;
+  G4int eventID;
 };

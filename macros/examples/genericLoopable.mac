@@ -1,6 +1,6 @@
 # A very minimal and generic macro to be used with /control/loop or /control/foreach commands in other macros.
 # Using environment variables which can be easily set with the utrwrapper, this macro can be used for virtually
-# any type of simulation (efficiency and angular distribution), by packing the relevant commands and variables 
+# any type of simulation (efficiency and angular distribution), by packing the relevant commands and variables
 # in a environment variable, whose alias values are resolved when /control/getEnv is used.
 # Without using environment variables one can still achieve most of the functionality but with each possibility
 # hard-coded in strdoif statements or by forgoing additional parameters, see below for three possible implementations

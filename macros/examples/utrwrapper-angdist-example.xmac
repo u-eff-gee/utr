@@ -70,7 +70,7 @@
 #/ang/sourceZ 1574.80 mm # Ideal position of 2nd target in generation '18 geometries
 #/ang/sourceZ 1612.10 mm # Ideal position of 2nd target in generation '16/17 geometries
 
-# Determine the dimensions of the envelope box. Random numbers will be sampled in the 
+# Determine the dimensions of the envelope box. Random numbers will be sampled in the
 # intervals [-0.5*sourceDX, 0.5*sourceDX], [-0.5*sourceDY, 0.5*sourceDY], and
 # [-0.5*sourceDZ, 0.5*sourceDZ].
 /ang/sourceDX 20. mm

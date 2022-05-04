@@ -25,9 +25,9 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 class DetectorConstruction : public G4VUserDetectorConstruction {
   public:
-	DetectorConstruction();
-	~DetectorConstruction();
+  DetectorConstruction();
+  ~DetectorConstruction();
 
-	virtual G4VPhysicalVolume *Construct();
-	virtual void ConstructSDandField();
+  virtual G4VPhysicalVolume *Construct();
+  virtual void ConstructSDandField();
 };

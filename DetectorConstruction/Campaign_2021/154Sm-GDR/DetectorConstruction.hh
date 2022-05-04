@@ -33,5 +33,4 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
   void print_info() const;
 
   unsigned int Max_Sensitive_Detector_ID;
-
 };

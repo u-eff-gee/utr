@@ -58,70 +58,69 @@ DetectorConstruction::~DetectorConstruction() {}
 
 G4VPhysicalVolume *DetectorConstruction::Construct() {
 
-	G4Colour white(1.0, 1.0, 1.0);
-	G4Colour grey(0.5, 0.5, 0.5);
-	G4Colour black(0.0, 0.0, 0.0);
-	G4Colour red(1.0, 0.0, 0.0);
-	G4Colour green(0.0, 1.0, 0.0);
-	G4Colour blue(0.0, 0.0, 1.0);
-	G4Colour cyan(0.0, 1.0, 1.0);
-	G4Colour magenta(1.0, 0.0, 1.0);
-	G4Colour yellow(1.0, 1.0, 0.0);
-	G4Colour orange(1.0, 0.5, 0.0);
-	G4Colour light_orange(1.0, 0.82, 0.36);
+  G4Colour white(1.0, 1.0, 1.0);
+  G4Colour grey(0.5, 0.5, 0.5);
+  G4Colour black(0.0, 0.0, 0.0);
+  G4Colour red(1.0, 0.0, 0.0);
+  G4Colour green(0.0, 1.0, 0.0);
+  G4Colour blue(0.0, 0.0, 1.0);
+  G4Colour cyan(0.0, 1.0, 1.0);
+  G4Colour magenta(1.0, 0.0, 1.0);
+  G4Colour yellow(1.0, 1.0, 0.0);
+  G4Colour orange(1.0, 0.5, 0.0);
+  G4Colour light_orange(1.0, 0.82, 0.36);
 
-	G4NistManager *nist = G4NistManager::Instance();
+  G4NistManager *nist = G4NistManager::Instance();
 
-	G4Material *vacuum = nist->FindOrBuildMaterial("G4_Galactic");
+  G4Material *vacuum = nist->FindOrBuildMaterial("G4_Galactic");
 
-	/***************** World Volume *****************/
+  /***************** World Volume *****************/
 
-	G4double world_r = 7000. * mm;
+  G4double world_r = 7000. * mm;
 
-	G4Sphere *world_dim =
-	    new G4Sphere("world_dim", 0., world_r, 0., twopi, 0., pi);
+  G4Sphere *world_dim =
+      new G4Sphere("world_dim", 0., world_r, 0., twopi, 0., pi);
 
-	G4LogicalVolume *world_log =
-	    new G4LogicalVolume(world_dim, vacuum, "world_log", 0, 0, 0);
+  G4LogicalVolume *world_log =
+      new G4LogicalVolume(world_dim, vacuum, "world_log", 0, 0, 0);
 
-	//world_log->SetVisAttributes(G4VisAttributes::GetInvisible());
+  // world_log->SetVisAttributes(G4VisAttributes::GetInvisible());
 
-	G4VPhysicalVolume *world_phys =
-	    new G4PVPlacement(0, G4ThreeVector(), world_log, "world", 0, false, 0);
+  G4VPhysicalVolume *world_phys =
+      new G4PVPlacement(0, G4ThreeVector(), world_log, "world", 0, false, 0);
 
-	/***************** Source Volume *****************/
+  /***************** Source Volume *****************/
 
-	G4double source_rmin = 0.*mm;
-	G4double source_rmax = 1.*mm;
+  G4double source_rmin = 0. * mm;
+  G4double source_rmax = 1. * mm;
 
-	G4Sphere *source_Solid = new G4Sphere("source_Solid", source_rmin, source_rmax, 0., twopi, 0., pi);
+  G4Sphere *source_Solid = new G4Sphere("source_Solid", source_rmin, source_rmax, 0., twopi, 0., pi);
 
-	G4LogicalVolume *source_Logical = new G4LogicalVolume(source_Solid, vacuum, "source_Logical");
-	source_Logical->SetVisAttributes(yellow);
+  G4LogicalVolume *source_Logical = new G4LogicalVolume(source_Solid, vacuum, "source_Logical");
+  source_Logical->SetVisAttributes(yellow);
 
-	new G4PVPlacement(0, G4ThreeVector(), source_Logical, "source", world_log, false, 0);
+  new G4PVPlacement(0, G4ThreeVector(), source_Logical, "source", world_log, false, 0);
 
-	/***************** Detection Volume *****************/
+  /***************** Detection Volume *****************/
 
-	G4double detector_rmin = 1000.*mm;
-	G4double detector_rmax = 1100.*mm;
+  G4double detector_rmin = 1000. * mm;
+  G4double detector_rmax = 1100. * mm;
 
-	G4Sphere *detector_Solid = new G4Sphere("detector_Solid", detector_rmin, detector_rmax, 0., twopi, 0., pi);
+  G4Sphere *detector_Solid = new G4Sphere("detector_Solid", detector_rmin, detector_rmax, 0., twopi, 0., pi);
 
-	G4LogicalVolume *detector_Logical = new G4LogicalVolume(detector_Solid, vacuum, "detector_Logical");
-	detector_Logical->SetVisAttributes(red);
-	
-	new G4PVPlacement(0, G4ThreeVector(), detector_Logical, "detector", world_log, false, 0);
-	
+  G4LogicalVolume *detector_Logical = new G4LogicalVolume(detector_Solid, vacuum, "detector_Logical");
+  detector_Logical->SetVisAttributes(red);
 
-	return world_phys;
+  new G4PVPlacement(0, G4ThreeVector(), detector_Logical, "detector", world_log, false, 0);
+
+  return world_phys;
 }
 
 void DetectorConstruction::ConstructSDandField() {
 
-	// HPGe detectors in g3
-	ParticleSD *detectorSD = new ParticleSD("Detector", "Detector");
-	G4SDManager::GetSDMpointer()->AddNewDetector(detectorSD);
-	detectorSD->SetDetectorID(0);
-	SetSensitiveDetector("detector_Logical", detectorSD, true);
+  // HPGe detectors in g3
+  ParticleSD *detectorSD = new ParticleSD("Detector", "Detector");
+  G4SDManager::GetSDMpointer()->AddNewDetector(detectorSD);
+  detectorSD->SetDetectorID(0);
+  SetSensitiveDetector("detector_Logical", detectorSD, true);
 }

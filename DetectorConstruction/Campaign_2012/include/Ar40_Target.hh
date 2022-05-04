@@ -24,16 +24,16 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4LogicalVolume.hh"
 #include "G4UnionSolid.hh"
 
-class Ar40_Target{
-public:
-	Ar40_Target(G4LogicalVolume *World_Log);
-	~Ar40_Target(){};
+class Ar40_Target {
+  public:
+  Ar40_Target(G4LogicalVolume *World_Log);
+  ~Ar40_Target(){};
 
-	void Construct(G4ThreeVector global_coordinates);
-	G4UnionSolid* Create_Pill_Shape(const G4String &Solid_Name, G4double Pill_Length, G4double Pill_Rmin, G4double Pill_Rmax);
+  void Construct(G4ThreeVector global_coordinates);
+  G4UnionSolid *Create_Pill_Shape(const G4String &Solid_Name, G4double Pill_Length, G4double Pill_Rmin, G4double Pill_Rmax);
 
-private:
-	G4LogicalVolume *World_Logical;
+  private:
+  G4LogicalVolume *World_Logical;
 };
 
 #endif

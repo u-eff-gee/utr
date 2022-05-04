@@ -19,7 +19,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 //**************************************************************//
-//	3 inch x 3 inch LaBr Detector of the Galatea Array 
+//	3 inch x 3 inch LaBr Detector of the Galatea Array
 //	at the Institut für Kernphysik, TU Darmstadt
 //**************************************************************//
 #pragma once
@@ -32,19 +32,19 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 using std::vector;
 
-class LaBr_Galatea : public Detector{
+class LaBr_Galatea : public Detector {
   public:
-	LaBr_Galatea(G4LogicalVolume *World_Logical, G4String name, bool use_old_config) : Detector (World_Logical, name), use_old_configuration(use_old_config){};
-	LaBr_Galatea(G4LogicalVolume *World_Logical, G4String name) : Detector (World_Logical, name), use_old_configuration(false){};
-	~LaBr_Galatea(){};
+  LaBr_Galatea(G4LogicalVolume *World_Logical, G4String name, bool use_old_config) : Detector(World_Logical, name), use_old_configuration(use_old_config){};
+  LaBr_Galatea(G4LogicalVolume *World_Logical, G4String name) : Detector(World_Logical, name), use_old_configuration(false){};
+  ~LaBr_Galatea(){};
 
-	void Construct(G4ThreeVector global_coordinates, G4double theta, G4double phi,
-		       G4double dist_from_center) const override;
-	// When an intrinsic rotation angle is given, it will simply be ignored and
-	// the Construct() method above is called
-	void Construct(G4ThreeVector global_coordinates, G4double theta, G4double phi,
-		       G4double dist_from_center, G4double intrinsic_rotation_angle) const override;
+  void Construct(G4ThreeVector global_coordinates, G4double theta, G4double phi,
+                 G4double dist_from_center) const override;
+  // When an intrinsic rotation angle is given, it will simply be ignored and
+  // the Construct() method above is called
+  void Construct(G4ThreeVector global_coordinates, G4double theta, G4double phi,
+                 G4double dist_from_center, G4double intrinsic_rotation_angle) const override;
 
   protected:
-	bool use_old_configuration;
+  bool use_old_configuration;
 };

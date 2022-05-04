@@ -23,18 +23,18 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "G4LogicalVolume.hh"
 
-class First_UTR_Wall{
-public:
-	First_UTR_Wall(G4LogicalVolume *World_Log);
-	~First_UTR_Wall(){};
+class First_UTR_Wall {
+  public:
+  First_UTR_Wall(G4LogicalVolume *World_Log);
+  ~First_UTR_Wall(){};
 
-	void Construct(G4ThreeVector coordinates);
+  void Construct(G4ThreeVector coordinates);
 
-	G4double Get_Length(){ return First_UTR_Wall_Length; };
+  G4double Get_Length() { return First_UTR_Wall_Length; };
 
-private:
-	G4LogicalVolume *World_Logical;
-	G4double First_UTR_Wall_Length;
+  private:
+  G4LogicalVolume *World_Logical;
+  G4double First_UTR_Wall_Length;
 };
 
 #endif

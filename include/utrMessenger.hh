@@ -19,9 +19,9 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 #pragma once
 
-#include "G4UIcommand.hh"
-#include "G4UIcmdWithAString.hh"
 #include "G4UIcmdWithABool.hh"
+#include "G4UIcmdWithAString.hh"
+#include "G4UIcommand.hh"
 #include "G4UIdirectory.hh"
 #include "G4UImessenger.hh"
 #include "globals.hh"
@@ -30,16 +30,16 @@ class AngularDistributionGenerator;
 
 class utrMessenger : public G4UImessenger {
   public:
-	utrMessenger();
-	~utrMessenger();
+  utrMessenger();
+  ~utrMessenger();
 
-	void SetNewValue(G4UIcommand *command, G4String newValues);
-	G4String GetCurrentValue(G4UIcommand *command);
+  void SetNewValue(G4UIcommand *command, G4String newValues);
+  G4String GetCurrentValue(G4UIcommand *command);
 
   private:
-	G4UIdirectory *utrDirectory;
+  G4UIdirectory *utrDirectory;
 
-	G4UIcmdWithAString *setFilenameCmd;
-	G4UIcmdWithABool *setUseFilenameIDCmd;
-	G4UIcmdWithAString *appendZerosToVarCmd;
+  G4UIcmdWithAString *setFilenameCmd;
+  G4UIcmdWithABool *setUseFilenameIDCmd;
+  G4UIcmdWithAString *appendZerosToVarCmd;
 };

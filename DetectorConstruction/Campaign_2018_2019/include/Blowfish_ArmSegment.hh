@@ -23,29 +23,28 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "G4LogicalVolume.hh"
 
-class Blowfish_ArmSegment{
-public:
-	Blowfish_ArmSegment();
-	~Blowfish_ArmSegment(){};
+class Blowfish_ArmSegment {
+  public:
+  Blowfish_ArmSegment();
+  ~Blowfish_ArmSegment(){};
 
-	void Construct(G4ThreeVector global_coordinates);
+  void Construct(G4ThreeVector global_coordinates);
 
+  // Gets a pointer to the logical volume
+  inline G4LogicalVolume *GetLVPointer(void) { return theArmSegLogicalVolume; }
 
-	//Gets a pointer to the logical volume
-	inline G4LogicalVolume * GetLVPointer(void){return theArmSegLogicalVolume;}
+  // Gets the dimensions of the arm's container
+  inline G4double GetArmWidth(void) { return contArmWidth; }
+  inline G4double GetOuterRadius(void) { return outerRadius; }
+  inline G4double GetInnerRadius(void) { return innerRadius; }
 
-	//Gets the dimensions of the arm's container
-	inline G4double GetArmWidth(void){return contArmWidth;}
-	inline G4double GetOuterRadius(void){return outerRadius;}
-	inline G4double GetInnerRadius(void){return innerRadius;}
+  private:
+  G4LogicalVolume *theArmSegLogicalVolume;
 
-private:
-	G4LogicalVolume *theArmSegLogicalVolume;
-
-	//dimensions of the arm's container
-	G4double contArmWidth;
-	G4double outerRadius;
-	G4double innerRadius;
+  // dimensions of the arm's container
+  G4double contArmWidth;
+  G4double outerRadius;
+  G4double innerRadius;
 };
 
 #endif

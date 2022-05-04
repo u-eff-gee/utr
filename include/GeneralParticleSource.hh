@@ -24,11 +24,11 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 class GeneralParticleSource : public G4VUserPrimaryGeneratorAction {
   public:
-	GeneralParticleSource();
-	~GeneralParticleSource();
+  GeneralParticleSource();
+  ~GeneralParticleSource();
 
-	void GeneratePrimaries(G4Event *anEvent);
+  void GeneratePrimaries(G4Event *anEvent);
 
   private:
-	G4GeneralParticleSource *particleGun;
+  G4GeneralParticleSource *particleGun;
 };

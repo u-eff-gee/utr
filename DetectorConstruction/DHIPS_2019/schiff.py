@@ -12,7 +12,7 @@ ELECTRON_CHARGE_SQUARED = 2.5669699242381073e-38
 
 def auxiliary_b(E, E0, k, Z):
     """Auxiliary function b
-    
+
     Defined immediately below Eq. (3) in [1]
     """
     return 2.0 * E0 * E * Z ** (1.0 / 3.0) / (C * mu * k)
@@ -21,7 +21,7 @@ def auxiliary_b(E, E0, k, Z):
 def auxiliary_M(x, E, E0, k, Z):
     """
     Auxiliary function M
-    
+
     Eq. (2) in [1]
     """
     return 1.0 / (
@@ -32,13 +32,13 @@ def auxiliary_M(x, E, E0, k, Z):
 def schiff(k, E0, Z, e2=ELECTRON_CHARGE_SQUARED):
     """
     Energy distribution of thin-target bremsstrahlung
-    
+
     This is an analytical expression for the energy spectrum of the bremsstrahlung
     emitted by an electron beam impinging on a thin target as derived by L.I. Schiff [1].
-        
+
     [1] L.I. Schiff, Energy-Angle Distribution of Thin Target Bremsstrahlung,
     Phys. Rev. 83 (1951)
-        
+
     Parameters
     ----------
     k: float

@@ -18,13 +18,13 @@ You should have received a copy of the GNU General Public License
 along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "G4NistManager.hh"
 #include "G4Material.hh"
+#include "G4NistManager.hh"
 #include "G4PVPlacement.hh"
-#include "G4VisAttributes.hh"
-#include "G4Tubs.hh"
 #include "G4PhysicalConstants.hh"
 #include "G4SystemOfUnits.hh"
+#include "G4Tubs.hh"
+#include "G4VisAttributes.hh"
 
 #include "Si28_Target.hh"
 
@@ -39,33 +39,29 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
-Si28_Target::Si28_Target():
-World_Logical(nullptr)
-{}
+Si28_Target::Si28_Target() : World_Logical(nullptr) {}
 
-Si28_Target::Si28_Target(G4LogicalVolume *World_Log):
-World_Logical(World_Log)
-{}
+Si28_Target::Si28_Target(G4LogicalVolume *World_Log) : World_Logical(World_Log) {}
 
-void Si28_Target::Construct(G4ThreeVector global_coordinates){
+void Si28_Target::Construct(G4ThreeVector global_coordinates) {
 
-	G4Colour white(1.0, 1.0, 1.0);
+  G4Colour white(1.0, 1.0, 1.0);
 
-	G4NistManager *nist = G4NistManager::Instance();
-	G4Material *silicon = nist->FindOrBuildMaterial("G4_Si");
+  G4NistManager *nist = G4NistManager::Instance();
+  G4Material *silicon = nist->FindOrBuildMaterial("G4_Si");
 
-	// Create Materials
-	G4double Target_Density = 2.3290*g/cm3; // Wikipedia	
-	G4double Target_Mass = 2.*g;
-	G4double Target_Radius = 10.*mm;
-	G4double Target_Length = Target_Mass/(Target_Density*pi*Target_Radius*Target_Radius);
+  // Create Materials
+  G4double Target_Density = 2.3290 * g / cm3; // Wikipedia
+  G4double Target_Mass = 2. * g;
+  G4double Target_Radius = 10. * mm;
+  G4double Target_Length = Target_Mass / (Target_Density * pi * Target_Radius * Target_Radius);
 
-	// Create physical target
-	
-	G4Tubs *Target_Solid = new G4Tubs("Si28_Solid", 0., Target_Radius, Target_Length*0.5, 0., twopi);
+  // Create physical target
 
-	G4LogicalVolume *Target_Logical = new G4LogicalVolume(Target_Solid, silicon, "Si28_Logical");
-	Target_Logical->SetVisAttributes(white);
+  G4Tubs *Target_Solid = new G4Tubs("Si28_Solid", 0., Target_Radius, Target_Length * 0.5, 0., twopi);
 
-	new G4PVPlacement(0, global_coordinates + G4ThreeVector(), Target_Logical, "Si28_Target", World_Logical, false, 0);
+  G4LogicalVolume *Target_Logical = new G4LogicalVolume(Target_Solid, silicon, "Si28_Logical");
+  Target_Logical->SetVisAttributes(white);
+
+  new G4PVPlacement(0, global_coordinates + G4ThreeVector(), Target_Logical, "Si28_Target", World_Logical, false, 0);
 }

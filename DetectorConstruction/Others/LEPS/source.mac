@@ -1,6 +1,6 @@
 /run/initialize
 
-/gps/particle gamma 
+/gps/particle gamma
 /gps/pos/type Point
 /gps/pos/centre 0. 0. 0. mm
 /gps/ang/type iso

@@ -25,19 +25,19 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "G4LogicalVolume.hh"
 
-class Wheel{
-public:
-	Wheel(G4LogicalVolume *World_Log);
-	~Wheel(){};
+class Wheel {
+  public:
+  Wheel(G4LogicalVolume *World_Log);
+  ~Wheel(){};
 
-	void Construct(G4ThreeVector global_coordinates);
+  void Construct(G4ThreeVector global_coordinates);
 
-	G4double Get_Length(){ return Wheel_Thickness; };
+  G4double Get_Length() { return Wheel_Thickness; };
 
-private:
-	G4LogicalVolume* World_Logical;
-	G4double Wheel_Thickness;
-	std::vector<G4double> Ring_Thickness;
+  private:
+  G4LogicalVolume *World_Logical;
+  G4double Wheel_Thickness;
+  std::vector<G4double> Ring_Thickness;
 };
 
 #endif

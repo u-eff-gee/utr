@@ -10,7 +10,7 @@
 #
 # The information about particles and their angular distribution is given
 # step by step to AngularDistributionGenerator.
-# 
+#
 # There are up to three possibilities to define the direction of emission:
 #
 # 1) /angcorr/direction X Y Z
@@ -41,7 +41,7 @@
 #
 # where X, Y and Z are the components of the (normalized)
 # polarization vector of the outgoing radiation. Similar as
-# the emission direction, the polarization axis of the n-th 
+# the emission direction, the polarization axis of the n-th
 # particle will be rotated w.r.t. the (n-1)-th particle.
 #########################################################################
 
@@ -52,7 +52,7 @@
 # Define the first step
 ##################################
 
-# /angcorr/particle initiates the creation of a new cascade step. 
+# /angcorr/particle initiates the creation of a new cascade step.
 # The macro will fail if this is not the first command in a step definition.
 /angcorr/particle gamma
 /angcorr/energy 1. MeV

@@ -19,41 +19,38 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "G4Box.hh"
-#include "G4Tubs.hh"
+#include "G4LogicalVolume.hh"
 #include "G4NistManager.hh"
 #include "G4PVPlacement.hh"
-#include "G4LogicalVolume.hh"
-#include "G4SystemOfUnits.hh"
 #include "G4PhysicalConstants.hh"
+#include "G4SystemOfUnits.hh"
+#include "G4Tubs.hh"
 #include "G4VisAttributes.hh"
 
-#include "ZeroDegree_Setup.hh"
-#include "ZeroDegree.hh"
 #include "Units.hh"
+#include "ZeroDegree.hh"
+#include "ZeroDegree_Setup.hh"
 
 #include "utrConfig.h"
 
-ZeroDegree_Setup::ZeroDegree_Setup(G4LogicalVolume *World_Log):
-World_Logical(World_Log)
-{}
+ZeroDegree_Setup::ZeroDegree_Setup(G4LogicalVolume *World_Log) : World_Logical(World_Log) {}
 
-void ZeroDegree_Setup::Construct(G4ThreeVector global_coordinates){
+void ZeroDegree_Setup::Construct(G4ThreeVector global_coordinates) {
 
-	// Zero degree detector
-	
-	ZeroDegree zeroDegree("ZeroDegree");
+  // Zero degree detector
 
-	G4double ZeroDegree_X = 0.*mm; // X = 0, if beam profile is measured, otherwise, X < 0
-	G4double ZeroDegree_Y = zerodegree_offset*mm; // Seems to reproduce the beam spectra best
-	G4double ZeroDegree_Z = zeroDegree.Get_Length()*0.5;
+  ZeroDegree zeroDegree("ZeroDegree");
 
-	G4double ZeroDegree_AngleX = 0 * deg;
-	G4double ZeroDegree_AngleY = 180. * deg;
+  G4double ZeroDegree_X = 0. * mm; // X = 0, if beam profile is measured, otherwise, X < 0
+  G4double ZeroDegree_Y = zerodegree_offset * mm; // Seems to reproduce the beam spectra best
+  G4double ZeroDegree_Z = zeroDegree.Get_Length() * 0.5;
 
-	G4RotationMatrix *rotateZeroDegree = new G4RotationMatrix();
-	rotateZeroDegree->rotateX(ZeroDegree_AngleX);
-	rotateZeroDegree->rotateY(ZeroDegree_AngleY);
+  G4double ZeroDegree_AngleX = 0 * deg;
+  G4double ZeroDegree_AngleY = 180. * deg;
 
-	new G4PVPlacement(rotateZeroDegree, global_coordinates + G4ThreeVector(ZeroDegree_X, ZeroDegree_Y, ZeroDegree_Z), zeroDegree.Get_Logical(), "ZeroDegree", World_Logical, false, 0, false);
+  G4RotationMatrix *rotateZeroDegree = new G4RotationMatrix();
+  rotateZeroDegree->rotateX(ZeroDegree_AngleX);
+  rotateZeroDegree->rotateY(ZeroDegree_AngleY);
 
+  new G4PVPlacement(rotateZeroDegree, global_coordinates + G4ThreeVector(ZeroDegree_X, ZeroDegree_Y, ZeroDegree_Z), zeroDegree.Get_Logical(), "ZeroDegree", World_Logical, false, 0, false);
 }

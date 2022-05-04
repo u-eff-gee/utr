@@ -67,72 +67,73 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 #include "G4EmExtraPhysics.hh"
 #endif
 
-Physics::Physics(){
-	G4cout << "================================================================"
-	          "================" << G4endl;
-	G4cout << "Using the following physics lists:" << G4endl;
+Physics::Physics() {
+  G4cout << "================================================================"
+            "================"
+         << G4endl;
+  G4cout << "Using the following physics lists:" << G4endl;
 
 // Electromagnetic modular physics lists
-#ifdef EM_FAST 
-	G4cout << "\tG4EmStandardPhysics_option1 ..." << G4endl;
-	RegisterPhysics( new G4EmStandardPhysics_option1() );
+#ifdef EM_FAST
+  G4cout << "\tG4EmStandardPhysics_option1 ..." << G4endl;
+  RegisterPhysics(new G4EmStandardPhysics_option1());
 #endif
 #ifdef EM_LIVERMORE
-	G4cout << "\tG4EmLivermorePhysics ..." << G4endl;
-	RegisterPhysics( new G4EmLivermorePhysics() );
+  G4cout << "\tG4EmLivermorePhysics ..." << G4endl;
+  RegisterPhysics(new G4EmLivermorePhysics());
 #endif
 #ifdef EM_LIVERMORE_POLARIZED
-	G4cout << "\tG4EmLivermorePolarizedPhysics ..." << G4endl;
-	RegisterPhysics( new G4EmLivermorePolarizedPhysics() );
+  G4cout << "\tG4EmLivermorePolarizedPhysics ..." << G4endl;
+  RegisterPhysics(new G4EmLivermorePolarizedPhysics());
 #endif
 #ifdef EM_PENELOPE
-	G4cout << "\tG4EmPenelopePhysics ..." << G4endl;
-	RegisterPhysics( new G4EmPenelopePhysics() );
+  G4cout << "\tG4EmPenelopePhysics ..." << G4endl;
+  RegisterPhysics(new G4EmPenelopePhysics());
 #endif
-#ifdef EM_STANDARD 
-	G4cout << "\tG4EmStandardPhysics_option4 ..." << G4endl;
-	RegisterPhysics( new G4EmStandardPhysics_option4() );
+#ifdef EM_STANDARD
+  G4cout << "\tG4EmStandardPhysics_option4 ..." << G4endl;
+  RegisterPhysics(new G4EmStandardPhysics_option4());
 #endif
 
 // EM extra physics. Contains photonuclear processes.
-#ifdef EM_EXTRA 
-	G4cout << "\tG4EmExtraPhysics ..." << G4endl;
-	RegisterPhysics( new G4EmExtraPhysics() );
+#ifdef EM_EXTRA
+  G4cout << "\tG4EmExtraPhysics ..." << G4endl;
+  RegisterPhysics(new G4EmExtraPhysics());
 #endif
-
 
 // Hadronic elastic modular physics lists
 #ifdef HADRON_ELASTIC_STANDARD
-	G4cout << "\tG4HadronElasticPhysics ..." << G4endl;
-	RegisterPhysics( new G4HadronElasticPhysics() );
+  G4cout << "\tG4HadronElasticPhysics ..." << G4endl;
+  RegisterPhysics(new G4HadronElasticPhysics());
 #endif
 
 #ifdef HADRON_ELASTIC_HP
-	G4cout << "\tG4HadronElasticPhysicsHP ..." << G4endl;
-	RegisterPhysics( new G4HadronElasticPhysicsHP() );
+  G4cout << "\tG4HadronElasticPhysicsHP ..." << G4endl;
+  RegisterPhysics(new G4HadronElasticPhysicsHP());
 #endif
 
 #ifdef HADRON_ELASTIC_LEND
-	G4cout << "\tG4HadronElasticPhysicsLEND ..." << G4endl;
-	RegisterPhysics( new G4HadronElasticPhysicsLEND() );
+  G4cout << "\tG4HadronElasticPhysicsLEND ..." << G4endl;
+  RegisterPhysics(new G4HadronElasticPhysicsLEND());
 #endif
 
 // Hadronic inelastic modular physics lists
 #ifdef HADRON_INELASTIC_STANDARD
-	G4cout << "\tG4HadronPhysicsFTFP_BERT ..." << G4endl;
-	RegisterPhysics( new G4HadronPhysicsFTFP_BERT() );
+  G4cout << "\tG4HadronPhysicsFTFP_BERT ..." << G4endl;
+  RegisterPhysics(new G4HadronPhysicsFTFP_BERT());
 #endif
 
 #ifdef HADRON_INELASTIC_HP
-	G4cout << "\tG4HadronPhysicsFTFP_BERT_HP ..." << G4endl;
-	RegisterPhysics( new G4HadronPhysicsFTFP_BERT_HP() );
+  G4cout << "\tG4HadronPhysicsFTFP_BERT_HP ..." << G4endl;
+  RegisterPhysics(new G4HadronPhysicsFTFP_BERT_HP());
 #endif
 
 #ifdef HADRON_INELASTIC_LEND
-	G4cout << "\tG4HadronPhysicsShieldingLEND ..." << G4endl;
-	RegisterPhysics( new G4HadronPhysicsShieldingLEND() );
+  G4cout << "\tG4HadronPhysicsShieldingLEND ..." << G4endl;
+  RegisterPhysics(new G4HadronPhysicsShieldingLEND());
 #endif
 
-G4cout << "================================================================"
-	  "================" << G4endl;
+  G4cout << "================================================================"
+            "================"
+         << G4endl;
 }

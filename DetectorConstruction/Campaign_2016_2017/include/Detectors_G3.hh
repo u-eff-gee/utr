@@ -23,15 +23,15 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "G4LogicalVolume.hh"
 
-class Detectors_G3{
-public:
-	Detectors_G3(G4LogicalVolume *World_Log);
-	~Detectors_G3(){};
+class Detectors_G3 {
+  public:
+  Detectors_G3(G4LogicalVolume *World_Log);
+  ~Detectors_G3(){};
 
-	void Construct(G4ThreeVector global_coordinates);
+  void Construct(G4ThreeVector global_coordinates);
 
-private:
-	G4LogicalVolume *World_Logical;
+  private:
+  G4LogicalVolume *World_Logical;
 };
 
 #endif

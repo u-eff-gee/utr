@@ -27,28 +27,28 @@ using std::string;
 // Custom class definition
 class utrFilenameTools {
   public:
-	utrFilenameTools();
-	virtual ~utrFilenameTools();
+  utrFilenameTools();
+  virtual ~utrFilenameTools();
 
-	static bool setOutputDir(string odir); // Also checks whether directory exists (return false) and creates it if necessary (return true)
-	static string getOutputDir() { return outputDir; };
-	static void setFilenamePrefix(string fpre) { filenamePrefix = fpre; };
-	static string getFilenamePrefix() { return filenamePrefix; };
-	static void setFilenameID(unsigned int fid) { filenameID = fid; };
-    static unsigned int getFilenameID() { return filenameID; };
-	static unsigned int incrementFilenameID() { return ++filenameID; };
-	static void setUseFilenameID(unsigned int ufid) { useFilenameID = ufid; };
-    static bool getUseFilenameID() { return useFilenameID; };
-	static unsigned int findNextFreeFilenameID();
-	static string getMasterFilename();
-	static void deleteMasterFilename();
+  static bool setOutputDir(string odir); // Also checks whether directory exists (return false) and creates it if necessary (return true)
+  static string getOutputDir() { return outputDir; };
+  static void setFilenamePrefix(string fpre) { filenamePrefix = fpre; };
+  static string getFilenamePrefix() { return filenamePrefix; };
+  static void setFilenameID(unsigned int fid) { filenameID = fid; };
+  static unsigned int getFilenameID() { return filenameID; };
+  static unsigned int incrementFilenameID() { return ++filenameID; };
+  static void setUseFilenameID(unsigned int ufid) { useFilenameID = ufid; };
+  static bool getUseFilenameID() { return useFilenameID; };
+  static unsigned int findNextFreeFilenameID();
+  static string getMasterFilename();
+  static void deleteMasterFilename();
 
   private:
-    // statics are set as statics here so they are shared and available to all threads
-	// they got introduced because the master thread did/does not run through utrFilenameTools::Build() and hence had no acess to these variables needed in RunAction::BeginOfRunAction
-	static string outputDir;
-	static string filenamePrefix;
-	static unsigned int filenameID;
-	static bool useFilenameID;
-	static string masterFilename;
+  // statics are set as statics here so they are shared and available to all threads
+  // they got introduced because the master thread did/does not run through utrFilenameTools::Build() and hence had no acess to these variables needed in RunAction::BeginOfRunAction
+  static string outputDir;
+  static string filenamePrefix;
+  static unsigned int filenameID;
+  static bool useFilenameID;
+  static string masterFilename;
 };

@@ -22,16 +22,16 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "G4LogicalVolume.hh"
 
-class G3_Table_318_576{
-public:
-	G3_Table_318_576(G4LogicalVolume *World_Log);
-	~G3_Table_318_576(){};
+class G3_Table_318_576 {
+  public:
+  G3_Table_318_576(G4LogicalVolume *World_Log);
+  ~G3_Table_318_576(){};
 
-	void Construct(G4ThreeVector global_coordinates);
+  void Construct(G4ThreeVector global_coordinates);
 
-	G4double Get_Length(){ return G3_Table_Length; };
+  G4double Get_Length() { return G3_Table_Length; };
 
-private:
-	G4LogicalVolume *World_Logical;
-	G4double G3_Table_Length;
+  private:
+  G4LogicalVolume *World_Logical;
+  G4double G3_Table_Length;
 };

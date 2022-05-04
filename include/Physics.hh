@@ -25,7 +25,6 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 class Physics : public G4VModularPhysicsList {
 
-public:
-	Physics();
-
+  public:
+  Physics();
 };
