@@ -38,7 +38,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 
 RunAction::RunAction() : G4UserRunAction() {}
 
-RunAction::~RunAction() { }
+RunAction::~RunAction() { delete G4RootAnalysisManager::Instance(); }
 
 void RunAction::BeginOfRunAction(const G4Run *) {
   // Get analysis manager
@@ -126,6 +126,8 @@ void RunAction::EndOfRunAction(const G4Run *) {
 
   analysisManager->Write();
   analysisManager->CloseFile();
+
+  delete G4RootAnalysisManager::Instance();
 }
 
 G4String RunAction::GetOutputFlagName(unsigned int n) {
