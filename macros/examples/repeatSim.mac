@@ -1,0 +1,1 @@
+/control/loop macros/examples/genericLoopable.mac dummyVar 0.5 {simulationRepeatCount} 1
