@@ -81,4 +81,4 @@
 # To use the variable in the macro to be looped refer to it wrapped in {} as {Variable} in the macro
 # Remember that due to the numerical inaccuracies when adding float numbers, a loop might generate a run more or less than expected!
 /control/alias simulationRepeatCount 1 
-/control/foreach macros/repeatSim.mac loopVar 2.5
+/control/foreach macros/examples/repeatSim.mac loopVar 2.5
