@@ -92,6 +92,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
   G4NistManager *nist = G4NistManager::Instance();
   G4Material *vacuum = nist->FindOrBuildMaterial("G4_Galactic");
   G4Material *target_material = nist->FindOrBuildMaterial(target_material_name);
+  //auto *target_material = new G4Material("target_material", new_density, nist->FindOrBuildMaterial(target_material_name));
 
   /***************** World Volume *****************/
 
@@ -107,6 +108,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
   auto *target_solid = new G4Tubs("target_solid", 0., target_radius, 0.5 * target_length, 0., twopi);
   auto *target_logical = new G4LogicalVolume(target_solid, target_material, "target_logical");
+
   target_logical->SetVisAttributes(new G4VisAttributes(G4Color::Yellow()));
   new G4PVPlacement(0, G4ThreeVector(0., 0., target_length/2), target_logical,  "Target", world_logical, false, 0);
 
