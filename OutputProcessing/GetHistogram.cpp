@@ -54,6 +54,7 @@ static struct argp_option options[] = {
     {"outputdir", 'O', "OUTPUTDIR", 0, "Directory in which the output files will be written (default: same as INPUTDIR)"},
     //{ "begin",    'b', "START",  0,  "ID of first detector to extract" },
     //{ "end",      'e', "END",    0,  "ID of last detector to extract" },
+    {"quantity", 'y', "QUANTITY", 0, "Either 'edep' or 'ekin' values are processed to create histograms (default: edep)"},
     {"binning", 'b', "BINNING", 0, "Size of bins in the histogram in keV (default: 1 keV)"},
     {"maxenergy", 'e', "EMAX", 0, "Maximum energy displayed in histogram in MeV (rounded up to match BINNING) (default: 10 MeV)"},
     {"showbin", 'B', "BIN", 0, "Number of energy bin whose value should be displayed, -1 to disable (default: -1)"},
@@ -73,6 +74,7 @@ struct arguments {
   string outputDir = "";
   // int firstDetectorID=0;
   // int lastDetectorID=12;
+  string quantity = "edep";
   double binning = 1. / 1000.;
   double eMax = 10.;
   int binToPrint = -1;
@@ -105,6 +107,9 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state) {
       break;
     case 'O':
       arguments->outputDir = arg;
+      break;
+    case 'y':
+      arguments->quantity = arg;
       break;
     case 'b':
       arguments->binning = atof(arg) / 1000.;
@@ -170,6 +175,7 @@ int main(int argc, char *argv[]) {
     cout << "> INPUTDIR     : " << arguments.inputDir << endl;
     cout << "> OUTPUTFILE   : " << arguments.outputFilename << endl;
     cout << "> OUTPUTDIR    : " << arguments.outputDir << endl;
+    cout << "> QUANTITY     : " << arguments.quantity << endl;
     cout << "> BINNING      : " << arguments.binning * 1000 << " keV" << endl;
     cout << "> EMAX         : " << arguments.eMax << " MeV" << endl;
     cout << "> MAXID        : " << arguments.nhistograms - 1 << endl;
@@ -256,7 +262,7 @@ int main(int argc, char *argv[]) {
   double Edep;
   vector<double> EdepBuffer(arguments.nhistograms, 0.);
 
-  fileChain.SetBranchAddress("edep", &Edep);
+  fileChain.SetBranchAddress(arguments.quantity.c_str(), &Edep);   
   fileChain.SetBranchAddress("volume", &Volume);
   if (arguments.addback) {
     fileChain.SetBranchAddress("event", &Event);
