@@ -97,7 +97,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
   const double world_x = 4. * target_radius;
   const double world_y = 4. * target_radius;
-  const double world_z = 4. * target_length/2 + distance + detector_length/2;
+  const double world_z = 4. * target_length + distance + detector_length;
 
   G4Box *world_solid = new G4Box("world_solid", world_x, world_y, world_z);
   G4LogicalVolume *world_logical = new G4LogicalVolume(world_solid, vacuum, "world_logical");
@@ -108,7 +108,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
   auto *target_solid = new G4Tubs("target_solid", 0., target_radius, 0.5 * target_length, 0., twopi);
   auto *target_logical = new G4LogicalVolume(target_solid, target_material, "target_logical");
   target_logical->SetVisAttributes(new G4VisAttributes(G4Color::Yellow()));
-  new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), target_logical,  "Target", world_logical, false, 0);
+  new G4PVPlacement(0, G4ThreeVector(0., 0., target_length/2), target_logical,  "Target", world_logical, false, 0);
 
   
   /******************** Detector ******************/
@@ -118,19 +118,19 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
 	//Visualisierung (Farbe)
 	Detector_logical->SetVisAttributes(new G4VisAttributes(G4Color::Blue()));
-	new G4PVPlacement(0, G4ThreeVector(0, 0, target_length/2 + distance + detector_length/2), Detector_logical, "Detector", world_logical, false, 0);
+	new G4PVPlacement(0, G4ThreeVector(0, 0, target_length + distance + detector_length/2), Detector_logical, "Detector", world_logical, false, 0);
 	
-
-
-
-
 
   return world_physical;
 }
 
+// Definiere das Detektorvolumen als Detektor/sensitives Volumen in Geant4
 void DetectorConstruction::ConstructSDandField() {
 
-  
+	// Use ParticleSD instead of EnergyDepositionSD, as ParticleSD records the hits of each particle within a event individually regardless whether the particle actually deposited energy in the detector or not.
+	// An EnergyDepositionSD however only records a single particle per event and only if it actually left some energy in the detector
+	ParticleSD *DetectorSD = new ParticleSD("Detector_logical", "Detector_logical");
+	G4SDManager::GetSDMpointer()->AddNewDetector(DetectorSD);
+	DetectorSD->SetDetectorID(0);
+	SetSensitiveDetector("Detector_logical", DetectorSD, true);
 }
-
-
