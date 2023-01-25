@@ -20,15 +20,15 @@
 #setterCmd=/gps/ene/mono {loopVar} MeV
 
 #[utrBuildOptions]
-#CAMPAIGN=DHIPS_2019
-#DETECTOR_CONSTRUCTION=Others
+#CAMPAIGN=Others
+#DETECTOR_CONSTRUCTION=Attenuation
 #GENERATOR_ANGCORR=OFF
 #GENERATOR_ANGDIST=OFF
 #EVENT_EKIN=ON
-#EVENT_EDEP=OFF
+#EVENT_EDEP=ON
 #EVENT_ID=OFF
 #EVENT_PARTICLE=ON
-#PRINT_PROGRESS=1000000
+#PRINT_PROGRESS=2000000
 #EM_LIVERMORE_POLARIZED=OFF
 #EM_LIVERMORE=OFF
 #EM_PENELOPE=ON
@@ -80,7 +80,7 @@
 # for each Syntax: /control/foreach MacroFile Variable ValueList
 # To use the variable in the macro to be looped refer to it wrapped in {} as {Variable} in the macro
 # Remember that due to the numerical inaccuracies when adding float numbers, a loop might generate a run more or less than expected!
-/control/foreach macros/examples/genericLoopable.mac loopVar 0.5 1.0 1.5 2.0 2.5 3.0 4.0 5. 6. 7. 8. 9. 10. 
+/control/foreach macros/examples/genericLoopable.mac loopVar 1. 2. # 0.5 1.0 1.5 2.0 2.5 3.0 4.0 5. 6. 7. 8. 9. 10. 
 #/control/loop macros/examples/genericLoopable.mac loopVar 10. 15. 2.5
 
  
