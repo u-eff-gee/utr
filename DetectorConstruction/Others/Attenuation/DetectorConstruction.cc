@@ -81,6 +81,8 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
   /***************** Target Properties *****************/
 
+  const double detector_length = 1. * mm;
+  const double distance = 5. * mm;
   const double target_length = 10. * mm;
   const double target_radius = 10. * mm;
   const G4String target_material_name = "G4_Pb";
@@ -95,7 +97,7 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
   const double world_x = 4. * target_radius;
   const double world_y = 4. * target_radius;
-  const double world_z = 4. * target_length;
+  const double world_z = 4. * target_length/2 + distance + detector_length/2;
 
   G4Box *world_solid = new G4Box("world_solid", world_x, world_y, world_z);
   G4LogicalVolume *world_logical = new G4LogicalVolume(world_solid, vacuum, "world_logical");
@@ -110,14 +112,14 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
   
   /******************** Detector ******************/
-  /*
-	G4Tubs *Detector_solid = new G4Tubs("Detector_solid", 0, detector_radius, detector_length * 0.5, 0, twopi);
+
+	G4Tubs *Detector_solid = new G4Tubs("Detector_solid", 0, target_radius, detector_length * 0.5, 0, twopi);
 	G4LogicalVolume *Detector_logical = new G4LogicalVolume(Detector_solid, vacuum, "Detector_logical", 0, 0, 0);
 
 	//Visualisierung (Farbe)
 	Detector_logical->SetVisAttributes(new G4VisAttributes(G4Color::Blue()));
-	new G4PVPlacement(0, G4ThreeVector(0, 0, detector_to_bremstarget/2), Detector_logical, "Detector", World_logical, false, 0);
-  */
+	new G4PVPlacement(0, G4ThreeVector(0, 0, target_length/2 + distance + detector_length/2), Detector_logical, "Detector", world_logical, false, 0);
+	
 
 
 
