@@ -1,0 +1,90 @@
+#!/usr/bin/env utrwrapper.py
+## An (utrwrapper.py) extended macro starts with a configuration header embedded in comment lines (preceded by a single '#')
+## For real comment lines in the header use multiple '#'s
+## Run utrwrapper.py -h for a list of all available configuration options and their effects
+
+## This macro is an example of using utrwrapper.py to prepare utr for and execute an angular distribution simulation looping over the multiple mixing ratio delta
+
+#[generalConfig]
+#outputDir=output/AngDist
+
+#[environmentVariables]
+#filenamePrefix=AngDist_0+_1+_2+_Delta=
+#filenameSuffix=
+#filenameTemplate={filenamePrefix}{loopVar}
+#setterCmd=/ang/delta23 {loopVar}
+
+#[utrBuildOptions]
+#CMAKE_BUILD_TYPE=Release
+#CAMPAIGN=Campaign_2014_2015
+#DETECTOR_CONSTRUCTION=150Sm
+#USE_TARGETS=ON
+#GENERATOR_ANGCORR=OFF
+#GENERATOR_ANGDIST=ON
+#EVENT_EVENTWISE=OFF
+
+#[getHistogramArgs]
+#maxenergy=5
+
+#[histogramToTxtArgs]
+#begin=1
+#end=4
+
+## The required magic string signals the end of the configuration header
+#START_OF_MACRO
+
+# Never simulate more than 2^32= 4294967296 particles using /run/beamOn, since this causes an overflow in the random number seed, giving you in principle the same results over and over again.
+# In such cases execute the same simulation multiple times instead.
+/control/alias beamOnStatistics 100000
+
+# Get the filenamePrefix and filenameSuffix variables defined in the configuration header as GEANT4 aliases
+/control/getEnv filenamePrefix
+#/control/getEnv filenameSuffix
+
+# Disable appendage of additional IDs to filenames (as unique filenames containing the simulated energy will be used for each beamOn)
+/utr/setUseFilenameID False
+# Set the number of required decimal places for padding of loopVar (no padding here as loopVar only takes integer values)
+/control/alias appendZerosToVarPadding -1
+
+
+
+# Do the usual initialization steps for an angular distribution simulation
+/run/initialize
+
+/ang/particle gamma
+/ang/energy 3. MeV
+
+/ang/nstates 3
+/ang/state1 0.
+/ang/state2 1.
+/ang/state3 2.
+/ang/polarized true
+
+/ang/delta12 0.
+
+# Determine the position of the source.
+/ang/sourceX 0. mm
+/ang/sourceY 0. mm
+/ang/sourceZ 0. mm
+#/ang/sourceZ 0. mm # Ideal position of gamma3 target in all geometries
+#/ang/sourceZ 1574.80 mm # Ideal position of 2nd target in generation '18 geometries
+#/ang/sourceZ 1612.10 mm # Ideal position of 2nd target in generation '16/17 geometries
+
+# Determine the dimensions of the envelope box. Random numbers will be sampled in the
+# intervals [-0.5*sourceDX, 0.5*sourceDX], [-0.5*sourceDY, 0.5*sourceDY], and
+# [-0.5*sourceDZ, 0.5*sourceDZ].
+/ang/sourceDX 20. mm
+/ang/sourceDY 20. mm
+/ang/sourceDZ 10. mm
+
+# Set the name of a physical volume that should act as a source.
+/ang/sourcePV Sm150_Target
+
+
+
+# Run the generic macro in a loop
+# loop Syntax: /control/loop MacroFile Variable Start End Increment
+# for each Syntax: /control/foreach MacroFile Variable ValueList
+# To use the variable in the macro to be looped refer to it wrapped in {} as {Variable} in the macro
+# Remember that due to the numerical inaccuracies when adding float numbers, a loop might generate a run more or less than expected!
+/control/loop macros/examples/genericLoopable.mac loopVar -2 2 1

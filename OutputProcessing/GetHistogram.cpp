@@ -262,7 +262,7 @@ int main(int argc, char *argv[]) {
   double Edep;
   vector<double> EdepBuffer(arguments.nhistograms, 0.);
 
-  fileChain.SetBranchAddress(arguments.quantity.c_str(), &Edep);   
+  fileChain.SetBranchAddress(arguments.quantity.c_str(), &Edep);
   fileChain.SetBranchAddress("volume", &Volume);
   if (arguments.addback) {
     fileChain.SetBranchAddress("event", &Event);
