@@ -6,7 +6,7 @@
 ## This macro simulates the generation of a bremsstrahlungs beam from electrons with an Au bremstarget to obtain the bremsstrahlung spectrum of the 112Sn relative measurement at DHIPS in 2015.
 
 #[generalConfig]
-#outputDir=output/Bremsstrahlung_2.5MeV
+#outputDir=../Output_utr/Bremsstrahlung/test
 #niceness=19
 #threads=200
 #ensureTerminalMultiplexer=True
@@ -35,7 +35,8 @@
 
 
 #[getHistogramArgs]
-#maxenergy=2.5
+#quantity=ekin
+#maxenergy=15
 #maxid=0       # max ID of sensitive volumes
 
 #[histogramToTxtArgs]

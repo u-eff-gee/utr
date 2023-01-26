@@ -3,83 +3,74 @@
 ## For real comment lines in the header use multiple '#'s
 ## Run utrwrapper.py -h for a list of all available configuration options and their effects
 
-## This macro is an example of using utrwrapper.py to prepare utr for and execute an angular distribution simulation looping over the multiple mixing ratio delta
+## This macro simulates the attenuation effect of a disk with a given material (see DETECTOR_CONSTRUCTION/DHIPS_2019/Attenuation).
+
 
 #[generalConfig]
-#outputDir=output/AngDist
+#outputDir=../Output_utr/Attenuation/test
+#niceness=19
+#threads=100
+#ensureTerminalMultiplexer=True
+
 
 #[environmentVariables]
-#filenamePrefix=AngDist_0+_1+_2+_Delta=
+#filenamePrefix=attenuation_
 #filenameSuffix=
-#filenameTemplate={filenamePrefix}{loopVar}
-#setterCmd=/ang/delta23 {loopVar}
+#filenameTemplate={filenamePrefix}{loopVar}_MeV_sim_
+#setterCmd=/gps/ene/mono {loopVar} MeV
 
 #[utrBuildOptions]
-#CMAKE_BUILD_TYPE=Release
-#CAMPAIGN=Campaign_2014_2015
-#DETECTOR_CONSTRUCTION=150Sm
-#USE_TARGETS=ON
+#CAMPAIGN=Others
+#DETECTOR_CONSTRUCTION=Attenuation
 #GENERATOR_ANGCORR=OFF
-#GENERATOR_ANGDIST=ON
-#EVENT_EVENTWISE=OFF
+#GENERATOR_ANGDIST=OFF
+#EVENT_EKIN=ON
+#EVENT_EDEP=OFF
+#EVENT_ID=OFF
+#EVENT_PARTICLE=ON
+#PRINT_PROGRESS=2000000
+#EM_LIVERMORE_POLARIZED=OFF
+#EM_LIVERMORE=OFF
+#EM_PENELOPE=ON
+
 
 #[getHistogramArgs]
-#maxenergy=5
+#quantity=ekin
+#maxenergy=12
+#maxid=0       # max ID of sensitive volumes
 
 #[histogramToTxtArgs]
-#begin=1
-#end=4
+#end=0         # Don't export sum hist to txt
 
 ## The required magic string signals the end of the configuration header
 #START_OF_MACRO
 
 # Never simulate more than 2^32= 4294967296 particles using /run/beamOn, since this causes an overflow in the random number seed, giving you in principle the same results over and over again.
 # In such cases execute the same simulation multiple times instead.
-/control/alias beamOnStatistics 100000
+/control/alias beamOnStatistics 200000000    #2000000000
+
 
 # Get the filenamePrefix and filenameSuffix variables defined in the configuration header as GEANT4 aliases
 /control/getEnv filenamePrefix
-#/control/getEnv filenameSuffix
+/control/getEnv filenameSuffix
 
 # Disable appendage of additional IDs to filenames (as unique filenames containing the simulated energy will be used for each beamOn)
-/utr/setUseFilenameID False
+/utr/setUseFilenameID True
 # Set the number of required decimal places for padding of loopVar (no padding here as loopVar only takes integer values)
-/control/alias appendZerosToVarPadding -1
+/control/alias appendZerosToVarPadding 2
 
 
-
-# Do the usual initialization steps for an angular distribution simulation
+# Set up a monoenergetic, circular, polarized beam with a diameter that is slightly larger than the collimator diameter (0.75in <-> 9.525 mm) in order to simulate scattering off the collimator as well.
 /run/initialize
-
-/ang/particle gamma
-/ang/energy 3. MeV
-
-/ang/nstates 3
-/ang/state1 0.
-/ang/state2 1.
-/ang/state3 2.
-/ang/polarized true
-
-/ang/delta12 0.
-
-# Determine the position of the source.
-/ang/sourceX 0. mm
-/ang/sourceY 0. mm
-/ang/sourceZ 0. mm
-#/ang/sourceZ 0. mm # Ideal position of gamma3 target in all geometries
-#/ang/sourceZ 1574.80 mm # Ideal position of 2nd target in generation '18 geometries
-#/ang/sourceZ 1612.10 mm # Ideal position of 2nd target in generation '16/17 geometries
-
-# Determine the dimensions of the envelope box. Random numbers will be sampled in the
-# intervals [-0.5*sourceDX, 0.5*sourceDX], [-0.5*sourceDY, 0.5*sourceDY], and
-# [-0.5*sourceDZ, 0.5*sourceDZ].
-/ang/sourceDX 20. mm
-/ang/sourceDY 20. mm
-/ang/sourceDZ 10. mm
-
-# Set the name of a physical volume that should act as a source.
-/ang/sourcePV Sm150_Target
-
+/gps/particle gamma
+/gps/pos/type Point
+#/gps/pos/type Beam
+#/gps/pos/shape Circle
+#/gps/pos/radius 0.5 mm
+/gps/pos/centre 0. 0. -5 mm
+/gps/direction 0. 0. 1.
+#/gps/polarization 1. 0. 0.
+/gps/ene/type Mono
 
 
 # Run the generic macro in a loop
@@ -87,4 +78,5 @@
 # for each Syntax: /control/foreach MacroFile Variable ValueList
 # To use the variable in the macro to be looped refer to it wrapped in {} as {Variable} in the macro
 # Remember that due to the numerical inaccuracies when adding float numbers, a loop might generate a run more or less than expected!
-/control/loop macros/examples/genericLoopable.mac loopVar -2 2 1
+/control/foreach macros/examples/genericLoopable.mac loopVar 1. 2. # 0.5 1.0 1.5 2.0 2.5 3.0 4.0 5. 6. 7. 8. 9. 10. 
+#/control/loop macros/examples/genericLoopable.mac loopVar 10. 15. 2.5
