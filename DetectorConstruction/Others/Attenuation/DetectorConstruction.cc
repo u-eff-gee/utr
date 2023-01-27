@@ -81,18 +81,18 @@ G4VPhysicalVolume *DetectorConstruction::Construct() {
 
   /***************** Target Properties *****************/
 
+  const double target_radius = 10. * mm;           // <------ adjust thickness
+  const G4String target_material_name = "G4_Co";   // <------ adjust material
+  const double target_length = 10. * mm;
   const double detector_length = 1. * mm;
   const double distance = 5. * mm;
-  const double target_length = 10. * mm;
-  const double target_radius = 10. * mm;
-  const G4String target_material_name = "G4_Pb";
 
   /***************** Materials *****************/
 
+  //G4Material *target_material = nist->FindOrBuildMaterial(target_material_name);  // <------ material with natural density
+  auto *target_material = new G4Material("target_material", new_density, nist->FindOrBuildMaterial(target_material_name));  // <------  material with arbitrary density ()
   G4NistManager *nist = G4NistManager::Instance();
   G4Material *vacuum = nist->FindOrBuildMaterial("G4_Galactic");
-  G4Material *target_material = nist->FindOrBuildMaterial(target_material_name);
-  //auto *target_material = new G4Material("target_material", new_density, nist->FindOrBuildMaterial(target_material_name));
 
   /***************** World Volume *****************/
 
