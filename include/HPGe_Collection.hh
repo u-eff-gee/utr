@@ -669,6 +669,8 @@ struct HPGe_Collection {
     HPGe_Clover_Yale.crystal_gap = 0.2 * mm; // From Eurisys Mesures manual
     HPGe_Clover_Yale.end_cap_to_crystal_gap_front = 10. * mm; // From Eurisys Mesures manual
     HPGe_Clover_Yale.vacuum_length = 125. * mm;
+    HPGe_Clover_Yale.anode_length = 72. * mm, // Estimated
+    HPGe_Clover_Yale.anode_radius = 5. * mm,  // Estimated
     HPGe_Clover_Yale.end_cap_front_side_length = 101. * mm; // From Eurisys Mesures manual
     HPGe_Clover_Yale.end_cap_front_rounding_radius = 15.5 * mm; // From Eurisys Mesures manual
     HPGe_Clover_Yale.end_cap_front_length = 260. * mm; // From Eurisys Mesures manual

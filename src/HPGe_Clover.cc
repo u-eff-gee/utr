@@ -74,7 +74,9 @@ void HPGe_Clover::Construct(G4ThreeVector global_coordinates, G4double theta, G4
 
   /******** Crystals ********/
 
-  G4Tubs *crystal_original = new G4Tubs(detector_name + "_crystal_original", 0., properties.crystal_radius, properties.crystal_length * 0.5, 0., twopi);
+  G4Tubs *crystal_full_solid = new G4Tubs(detector_name + "_crystal_full_solid", 0., properties.crystal_radius, properties.crystal_length * 0.5, 0., twopi);
+  G4Tubs *anode_solid = new G4Tubs(detector_name + "_anode_solid", 0., properties.anode_radius, properties.anode_length * 0.5, 0., twopi);
+  G4SubtractionSolid *crystal_original = new G4SubtractionSolid(detector_name + "_crystal_original", crystal_full_solid, anode_solid, 0, G4ThreeVector(0., 0., 0.5 * properties.crystal_length - 0.5 * properties.anode_length));
   G4Box *subtraction_solid = new G4Box(detector_name + "_subtraction_solid", properties.crystal_radius, properties.crystal_radius, properties.crystal_length);
   G4SubtractionSolid *crystal_step1_solid = new G4SubtractionSolid(detector_name + "_crystal_step1_solid", crystal_original, subtraction_solid, 0, G4ThreeVector(properties.crystal_radius + 23. * mm, 0., 0.));
   G4SubtractionSolid *crystal_step2_solid = new G4SubtractionSolid(detector_name + "_crystal_step2_solid", crystal_step1_solid, subtraction_solid, 0, G4ThreeVector(-properties.crystal_radius - 22. * mm, 0., 0.));

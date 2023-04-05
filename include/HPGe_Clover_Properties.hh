@@ -19,7 +19,7 @@ along with utr.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 // Struct that contains the properties of a specific
-// coaxial High-purity Germanium (HPGe) detector
+// clover-type High-purity Germanium (HPGe) detector
 
 #pragma once
 
@@ -42,17 +42,17 @@ struct HPGe_Clover_Properties {
   // they usually have a thickness of less than a millimeter and are made of
   // very light materials
   G4double crystal_gap; // The four crystals do not touch each other, but there is some gap in between
-  G4double end_cap_to_crystal_gap_front; // Vacuum-filled gap between the end cap and the detector
-                                         // crystals at the front
+  G4double end_cap_to_crystal_gap_front; // Vacuum-filled gap between the end cap and the detector crystals at the front
   G4double vacuum_length; // Length of the evacuated area inside the end cap
+  G4double anode_length; // Length of the anode hole from the back of each crystal
+  G4double anode_radius; // Radius of the anode hole
 
   // End cap
   // Case with quadratic base area and smoothed edges which covers the whole mount cup.
-  // It consists of the fron part that contains the detector crystals and a back part
+  // It consists of the front part that contains the detector crystals and a back part
   // that contains the electronics.
   // The back part is modelled as an skeleton, since the inner composition is unknown.
-  G4double end_cap_front_side_length; // Side length of the front end cap with a quadratic (see next variable)
-                                      // base area
+  G4double end_cap_front_side_length; // Side length of the front end cap with a quadratic (see next variable) base area
   G4double end_cap_front_rounding_radius; // Rounding radius of the edges
   G4double end_cap_front_length; // Length of the end cap around the crystal.
   G4double end_cap_front_thickness; // Thickness of the end cap at the front (But not at the part that faces
@@ -64,10 +64,9 @@ struct HPGe_Clover_Properties {
    * the back, the dewar and the connecting piece.
    */
 
-  G4double end_cap_back_side_length; // Side length of the back end cap with a quadratic (see next variable)
-                                     // base area
+  G4double end_cap_back_side_length; // Side length of the back end cap with a quadratic (see next variable) base area
   G4double end_cap_back_rounding_radius; // Rounding radius of the edges
-  G4double end_cap_back_length; // Length of the end cap around the electronics.
+  G4double end_cap_back_length; // Length of the end cap around the electronics
   G4double end_cap_back_thickness; // Thickness of the end cap
   G4String end_cap_material;
 
@@ -82,7 +81,6 @@ struct HPGe_Clover_Properties {
   // A cylindric tube with top and bottom
   G4double dewar_length; // Dewar length, including top and bottom
   G4double dewar_outer_radius; // Outer radius, can be measured most easily
-  G4double dewar_wall_thickness; // Dewar wall thickness. Assumed to be the same for
-                                 // top, bottom and side
+  G4double dewar_wall_thickness; // Dewar wall thickness. Assumed to be the same for top, bottom and side
   G4String dewar_material;
 };
