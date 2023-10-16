@@ -19,7 +19,7 @@ angdisttest
 angcorrtest
 
 # Build directory
-build
+build*
 
 # C++ objects
 unit_test/AngularDistributionGenerator/AngularDistribution.o
